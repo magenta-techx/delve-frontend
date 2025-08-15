@@ -13,7 +13,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const body = await request.json() as { name?: string };
+    const body = (await request.json()) as { name?: string };
     const name = body.name ?? 'Anonymous';
 
     return NextResponse.json({

@@ -17,7 +17,6 @@ const FingerPrintIcon = (): JSX.Element => {
         stroke='#5F2EEA'
         strokeWidth='2'
         strokeLinejoin='round'
-        strokeLinejoin='round'
       />
     </svg>
   );

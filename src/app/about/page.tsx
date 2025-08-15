@@ -15,7 +15,8 @@ export default function AboutPage(): JSX.Element {
         <div className='text-center'>
           <h1 className='mb-4 text-4xl font-bold'>About This Boilerplate</h1>
           <p className='text-xl text-muted-foreground'>
-            A comprehensive Next.js 15 TypeScript boilerplate with strict enforcement
+            A comprehensive Next.js 15 TypeScript boilerplate with strict
+            enforcement
           </p>
         </div>
 
@@ -37,18 +38,32 @@ export default function AboutPage(): JSX.Element {
           <div className='space-y-4'>
             <h2 className='text-2xl font-semibold'>Tech Stack</h2>
             <ul className='space-y-2 text-muted-foreground'>
-              <li><strong>Framework:</strong> Next.js 15</li>
-              <li><strong>Language:</strong> TypeScript 5.6</li>
-              <li><strong>Styling:</strong> Tailwind CSS 3.4</li>
-              <li><strong>Linting:</strong> ESLint 9</li>
-              <li><strong>Formatting:</strong> Prettier 3</li>
-              <li><strong>Package Manager:</strong> npm</li>
+              <li>
+                <strong>Framework:</strong> Next.js 15
+              </li>
+              <li>
+                <strong>Language:</strong> TypeScript 5.6
+              </li>
+              <li>
+                <strong>Styling:</strong> Tailwind CSS 3.4
+              </li>
+              <li>
+                <strong>Linting:</strong> ESLint 9
+              </li>
+              <li>
+                <strong>Formatting:</strong> Prettier 3
+              </li>
+              <li>
+                <strong>Package Manager:</strong> npm
+              </li>
             </ul>
           </div>
         </div>
 
         <div className='rounded-lg border bg-muted/50 p-6'>
-          <h3 className='mb-4 text-xl font-semibold'>Strict TypeScript Enforcement</h3>
+          <h3 className='mb-4 text-xl font-semibold'>
+            Strict TypeScript Enforcement
+          </h3>
           <p className='mb-4 text-muted-foreground'>
             This boilerplate enforces strict TypeScript usage by:
           </p>
@@ -63,9 +78,7 @@ export default function AboutPage(): JSX.Element {
 
         <div className='text-center'>
           <Button asChild>
-            <Link href='/'>
-              Back to Home
-            </Link>
+            <Link href='/'>Back to Home</Link>
           </Button>
         </div>
       </div>

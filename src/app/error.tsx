@@ -25,10 +25,11 @@ export default function Error({ error, reset }: ErrorProps): JSX.Element {
           An unexpected error occurred. Please try again.
         </p>
         <div className='space-x-4'>
-          <Button onClick={reset}>
-            Try again
-          </Button>
-          <Button variant='outline' onClick={() => window.location.href = '/'}>
+          <Button onClick={reset}>Try again</Button>
+          <Button
+            variant='outline'
+            onClick={() => (window.location.href = '/')}
+          >
             Go home
           </Button>
         </div>
