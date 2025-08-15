@@ -20,6 +20,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [],
     formats: ['image/webp', 'image/avif'],
   },
+  webpack(config: any) {
+    // Add SVGR loader for .svg files
+    config.module?.rules?.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    });
+    return config;
+  },
   // Bundle analyzer
   ...(process.env['ANALYZE'] === 'true' && {
     webpack: (config: any) => {

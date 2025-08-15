@@ -1,25 +1,48 @@
-import { Slot } from '@radix-ui/react-slot';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { forwardRef } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { Slot } from '@radix-ui/react-slot';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  icon?: ReactNode;
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'neutral'
+    | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   asChild?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = '', variant = 'default', size = 'default', asChild = false, children, ...props }, ref) => {
-    const baseClasses = 'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+  (
+    {
+      className = '',
+      variant = 'default',
+      size = 'default',
+      asChild = false,
+      children,
+      icon,
+      ...props
+    },
+    ref
+  ) => {
+    const baseClasses =
+      'inline-flex items-center w-full capitalize font-inter justify-center rounded-md text-sm font-medium focus:outline-none focus:border-none disabled:cursor-not-allowed disabled:bg-disabled disabled:text-disabled-foreground';
 
     const variantClasses = {
-      default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-      destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-      outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+      default: 'bg-primary text-primary-foreground hover:bg-primary/50',
+      destructive:
+        'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+      outline:
+        'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
       secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-      ghost: 'hover:bg-accent hover:text-accent-foreground',
+      ghost: 'bg-transparent',
       link: 'text-primary underline-offset-4 hover:underline',
+      neutral: 'bg-neutral text-neutral-foreground border border-neutral-200',
     };
 
     const sizeClasses = {
@@ -34,12 +57,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
 
     return (
-      <Comp
-        className={classes}
-        ref={ref}
-        {...props}
-      >
-        {children}
+      <Comp className={classes} ref={ref} {...props}>
+        <span className='inline-flex items-center gap-2'>
+          {icon && icon}
+          {children}
+        </span>
       </Comp>
     );
   }
@@ -49,4 +71,3 @@ Button.displayName = 'Button';
 
 export { Button };
 export type { ButtonProps };
-
