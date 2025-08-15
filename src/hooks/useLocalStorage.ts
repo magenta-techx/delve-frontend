@@ -5,7 +5,10 @@ type SetValue<T> = (value: T | ((val: T) => T)) => void;
 /**
  * Custom hook for managing localStorage with TypeScript support
  */
-export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, SetValue<T>] {
   // State to store our value
   const [storedValue, setStoredValue] = useState<T>(() => {
     if (typeof window === 'undefined') {
@@ -13,7 +16,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T
     }
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) as T : initialValue;
+      return item ? (JSON.parse(item) as T) : initialValue;
     } catch (error) {
       console.error(`Error reading localStorage key "${key}":`, error);
       return initialValue;
@@ -21,12 +24,13 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T
   });
 
   // Return a wrapped version of useState's setter function that persists the new value to localStorage
-  const setValue: SetValue<T> = (value) => {
+  const setValue: SetValue<T> = value => {
     try {
       // Allow value to be a function so we have the same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
-      
+
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
@@ -38,7 +42,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T
   // Sync with localStorage when key changes
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     try {
       const item = window.localStorage.getItem(key);
       if (item) {

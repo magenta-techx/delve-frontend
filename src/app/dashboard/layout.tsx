@@ -4,7 +4,9 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps): JSX.Element {
+export default function DashboardLayout({
+  children,
+}: DashboardLayoutProps): JSX.Element {
   return (
     <div className='min-h-screen bg-background'>
       <header className='border-b bg-card'>
@@ -30,9 +32,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): JSX
               </a>
             </nav>
           </aside>
-          <main className='lg:col-span-3'>
-            {children}
-          </main>
+          <main className='lg:col-span-3'>{children}</main>
         </div>
       </div>
     </div>

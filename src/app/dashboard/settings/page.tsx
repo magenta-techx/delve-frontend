@@ -79,9 +79,12 @@ export default function SettingsPage(): JSX.Element {
         </div>
 
         <div className='rounded-lg border border-destructive/50 bg-destructive/10 p-6'>
-          <h3 className='mb-4 text-lg font-semibold text-destructive'>Danger Zone</h3>
+          <h3 className='mb-4 text-lg font-semibold text-destructive'>
+            Danger Zone
+          </h3>
           <p className='mb-4 text-sm text-muted-foreground'>
-            Once you delete your account, there is no going back. Please be certain.
+            Once you delete your account, there is no going back. Please be
+            certain.
           </p>
           <Button variant='destructive'>Delete Account</Button>
         </div>

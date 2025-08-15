@@ -1,0 +1,22 @@
+.carousel .control-dots {
+  display: flex;
+  padding-left: 25px !important;
+}
+
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
+
+/* input[type='password']::-webkit-credentials-auto-fill-button,
+input[type='password']::-webkit-clear-button {
+  display: none;
+} */
+@media screen and (max-width: 425px) {
+  input[type='tel'] {
+    width: 40px !important;
+    height: 50px !important;
+    font-size: 22px;
+    border-radius: 8px;
+  }
+}

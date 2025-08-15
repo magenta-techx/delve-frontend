@@ -1,16 +1,27 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Karma } from 'next/font/google';
 
 import '@/styles/globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
+});
+
+const karma = Karma({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-karma',
+});
 
 export const metadata: Metadata = {
   title: {
     default: 'Next.js 15 TypeScript Boilerplate',
     template: '%s | Next.js 15 TypeScript Boilerplate',
   },
-  description: 'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
+  description:
+    'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
   keywords: ['Next.js', 'TypeScript', 'React', 'Tailwind CSS', 'App Router'],
   authors: [{ name: 'Your Name' }],
   creator: 'Your Name',
@@ -20,13 +31,15 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://your-domain.com',
     title: 'Next.js 15 TypeScript Boilerplate',
-    description: 'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
+    description:
+      'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
     siteName: 'Next.js 15 TypeScript Boilerplate',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Next.js 15 TypeScript Boilerplate',
-    description: 'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
+    description:
+      'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
     creator: '@yourusername',
   },
   robots: {
@@ -48,7 +61,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
   return (
-    <html lang='en' className={inter.variable}>
+    <html lang='en' className={`${inter.variable} ${karma.variable}`}>
       <body className='min-h-screen bg-background font-sans antialiased'>
         {children}
       </body>

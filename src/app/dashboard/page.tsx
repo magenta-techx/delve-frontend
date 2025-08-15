@@ -9,7 +9,9 @@ export default function DashboardPage(): JSX.Element {
   return (
     <div className='space-y-8'>
       <div>
-        <h2 className='text-3xl font-bold tracking-tight'>Dashboard Overview</h2>
+        <h2 className='text-3xl font-bold tracking-tight'>
+          Dashboard Overview
+        </h2>
         <p className='text-muted-foreground'>
           Welcome to your dashboard. Here&apos;s what&apos;s happening.
         </p>

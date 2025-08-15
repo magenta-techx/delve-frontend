@@ -6,28 +6,33 @@ import { Button } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
   title: 'Home',
-  description: 'Welcome to the Next.js 15 TypeScript boilerplate with strict TypeScript enforcement',
+  description:
+    'Welcome to the Next.js 15 TypeScript boilerplate with strict TypeScript enforcement',
 };
 
 const features = [
   {
     title: 'Next.js 15',
-    description: 'Latest Next.js with App Router, Server Components, and modern features.',
+    description:
+      'Latest Next.js with App Router, Server Components, and modern features.',
     icon: '⚡',
   },
   {
     title: 'Strict TypeScript',
-    description: 'Configured with strict TypeScript rules and file extension enforcement.',
+    description:
+      'Configured with strict TypeScript rules and file extension enforcement.',
     icon: '🔒',
   },
   {
     title: 'Enhanced ESLint',
-    description: 'Comprehensive ESLint configuration with best practices and file naming conventions.',
+    description:
+      'Comprehensive ESLint configuration with best practices and file naming conventions.',
     icon: '🛠️',
   },
   {
     title: 'Tailwind CSS',
-    description: 'Pre-configured with Tailwind CSS and custom design system variables.',
+    description:
+      'Pre-configured with Tailwind CSS and custom design system variables.',
     icon: '🎨',
   },
 ] as const;
@@ -44,7 +49,7 @@ export default function HomePage(): JSX.Element {
         </h2>
 
         <div className='mb-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4'>
-          {features.map((feature) => (
+          {features.map(feature => (
             <FeatureCard
               key={feature.title}
               title={feature.title}
@@ -56,9 +61,7 @@ export default function HomePage(): JSX.Element {
 
         <div className='flex flex-col items-center gap-4'>
           <Button asChild size='lg'>
-            <Link href='/about'>
-              Get Started
-            </Link>
+            <Link href='/about'>Get Started</Link>
           </Button>
           <p className='text-sm text-muted-foreground'>
             Built with Next.js 15, TypeScript 5.6, and Tailwind CSS 3.4

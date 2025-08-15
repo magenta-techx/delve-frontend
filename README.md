@@ -39,16 +39,19 @@ src/
 ## 🛠️ Getting Started
 
 1. **Install dependencies:**
+
    ```bash
    npm install --legacy-peer-deps
    ```
 
 2. **Start development server:**
+
    ```bash
    npm run dev
    ```
 
 3. **Run type checking:**
+
    ```bash
    npm run type-check
    ```
@@ -128,12 +131,14 @@ This boilerplate uses Tailwind CSS with:
 ## 📦 Dependencies
 
 ### Core Dependencies
+
 - Next.js 15
 - React 18.3
 - TypeScript 5.6
 - Radix UI Slot (for composable components)
 
 ### Development Dependencies
+
 - ESLint 9 with TypeScript support
 - Prettier 3 with Tailwind plugin
 - Various ESLint plugins for enhanced rules
