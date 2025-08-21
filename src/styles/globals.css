@@ -5,7 +5,10 @@
 @layer base {
   :root {
     --primary: 261 71% 42%;
+    --primary-50: 250 100% 98%;
     --primary-foreground: 0 0% 100%;
+
+    --primary-grey: 0, 0%, 4%;
 
     --neutral: 210 40% 98%;
     --neutral-foreground: 218 39% 11%;

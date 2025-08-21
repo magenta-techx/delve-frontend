@@ -43,7 +43,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                   placeholder={placeholder}
                   {...field}
                   ref={ref} // forward the ref
-                  className={`w-full rounded-md border px-3 py-2 font-inter text-[16px] focus:border-primary focus:outline-none ${
+                  className={`w-full rounded-md border p-2 font-inter text-[16px] focus:border-primary focus:outline-none sm:p-3 sm:text-xs ${
                     meta.touched && meta.error
                       ? 'border-red-500'
                       : 'border-gray-300'
@@ -73,9 +73,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 )}
               </div>
 
-              {meta.touched && meta.error && (
-                <span className='text-sm text-red-500'>{meta.error}</span>
-              )}
+              <div className='-mt-2 min-h-[20px] p-0'>
+                {meta.touched && meta.error && (
+                  <span className='text-xs text-red-500'>{meta.error}</span>
+                )}
+              </div>
             </div>
           );
         }}

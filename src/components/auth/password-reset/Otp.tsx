@@ -9,25 +9,42 @@ import EmailIcon from '@/assets/icons/auth/EmailIcon';
 import '@/styles/auth.css';
 
 const Otp = (): JSX.Element => {
-  const router = useSearchParams();
+  const urlParams = useSearchParams();
   const navigate = useRouter();
   const [otp, setOtp] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleOtpSubmit = (): void => {
-    if (otp.length === 6) {
-      navigate.push('/auth/password-reset/create-new-password');
+  const handleOtpSubmit = async (): Promise<void> => {
+    if (otp.length !== 6) return;
+
+    const res = await fetch('/api/auth/otp-verify', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email,
+        otp: otp,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (res.ok) {
+      // {status: true, message: "Reset code is valid."}
+
+      navigate.push(
+        `/auth/password-reset/create-new-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
+      );
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Incorrect OTP');
     }
   };
-
   useEffect(() => {
-    const emailInput = router.get('email');
+    const emailInput = urlParams.get('email');
     if (emailInput) {
       setEmail(emailInput);
     } else {
       setEmail('');
     }
-  }, [router]);
+  }, [urlParams]);
 
   return (
     <div>
@@ -62,7 +79,7 @@ const Otp = (): JSX.Element => {
         }}
       />
 
-      <div className='mb-5 flex items-center justify-center gap-1 text-sm'>
+      <div className='mb-10 flex items-center justify-center gap-1 text-sm'>
         <p>Didn&apos;t receive an email? </p>
         <button className='font-semibold'> Click to resend</button>
       </div>

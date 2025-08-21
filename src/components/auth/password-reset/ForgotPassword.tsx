@@ -12,18 +12,29 @@ import { forgotPasswordSchema } from '@/schemas/authSchema';
 import FingerPrintIcon from '@/assets/icons/auth/FingerPrintIcon';
 
 const ForgotPassword = (): JSX.Element => {
-  const router = useRouter();
+  const navigate = useRouter();
+  const handleSendOtp = async (values: { email: string }): Promise<void> => {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify(values),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (res.ok) {
+      // toast : {"status":true,"message":"Reset code sent to your email"}
+      navigate.push(
+        `/auth/password-reset/otp?email=${encodeURIComponent(values.email)}`
+      );
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Forgot password failed');
+    }
+  };
   return (
     <Formik
       initialValues={{ email: '' }}
       validationSchema={forgotPasswordSchema}
-      onSubmit={values => {
-        console.warn(values);
-
-        router.push(
-          `/auth/password-reset/otp?email=${encodeURIComponent(values.email)}`
-        );
-      }}
+      onSubmit={handleSendOtp}
     >
       {({ errors }) => (
         <Form className='w-full sm:w-2/5'>
@@ -36,7 +47,7 @@ const ForgotPassword = (): JSX.Element => {
           />
 
           {/* Fields */}
-          <div className='mb-5 flex w-full flex-col gap-5'>
+          <div className='mb-10 flex w-full flex-col gap-5'>
             {/* Email Field */}
             <Input
               name='email'

@@ -8,8 +8,49 @@ import { signupSchema } from '@/schemas/authSchema';
 
 import { Button } from '@/components/ui/Button';
 import CancleIcon from '@/assets/icons/CancelIcon';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+
+import { showToastNotification } from '@/components/notifications/ToastNotification';
+import KeyIcon from '@/assets/icons/auth/KeyIcon';
 
 const SignUpForm = (): JSX.Element => {
+  const router = useRouter();
+  // Signup Handler
+  const handleSignup = async (values: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    confirm_password: string;
+  }): Promise<void> => {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(values),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (res.ok) {
+      await signIn('credentials', {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
+
+      showToastNotification(
+        {
+          header: 'Successfull',
+          body: 'Password successfully changed',
+        },
+        <KeyIcon />
+      );
+      router.push('/dashboard');
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Signup failed');
+    }
+  };
+
   return (
     <Formik
       initialValues={{
@@ -20,9 +61,7 @@ const SignUpForm = (): JSX.Element => {
         confirm_password: '',
       }}
       validationSchema={signupSchema}
-      onSubmit={values => {
-        console.warn(values);
-      }}
+      onSubmit={handleSignup}
     >
       {({ errors }) => (
         <Form className='w-full'>
@@ -33,8 +72,9 @@ const SignUpForm = (): JSX.Element => {
           />
 
           {/* Fields */}
-          <div className='mb-5 flex w-full flex-col gap-5'>
+          <div className='mb-5 flex w-full flex-col gap-2'>
             {/* First name and last name  */}
+
             <div className='flex flex-col gap-5 sm:flex-row sm:items-center'>
               {/* first name  */}
               <Input
@@ -42,6 +82,7 @@ const SignUpForm = (): JSX.Element => {
                 type='text'
                 placeholder='Enter first name'
                 label='First name'
+                className='w-full'
               />
 
               {/* last name  */}
@@ -50,6 +91,7 @@ const SignUpForm = (): JSX.Element => {
                 type='text'
                 placeholder='Enter last name'
                 label='Last name'
+                className='w-full'
               />
             </div>
             {/* Email Field */}

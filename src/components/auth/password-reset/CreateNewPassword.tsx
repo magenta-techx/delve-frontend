@@ -5,21 +5,51 @@ import { Formik, Form } from 'formik';
 import AuthFormheader from '../AuthFormheader';
 import Input from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createPasswordSchema } from '@/schemas/authSchema';
 import LockIcon from '@/assets/icons/auth/LockIcon';
+import { useEffect, useState } from 'react';
 
 const CreateNewPassword = (): JSX.Element => {
-  const router = useRouter();
+  const navigate = useRouter();
+  const urlParams = useSearchParams();
+  const [otp, setOtp] = useState('');
+  const [email, setEmail] = useState('');
+
+  const handleNewpasswordSubmit = async (values: {
+    password: string;
+    confirm_password: string;
+  }): Promise<void> => {
+    const res = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ ...values, email: email, otp: otp }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (res.ok) {
+      // {status: true, message: "Reset code is valid."}
+
+      navigate.push(`/auth/signin-signup`);
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Incorrect OTP');
+    }
+  };
+
+  useEffect(() => {
+    const email = urlParams.get('email');
+    const otp = urlParams.get('otp');
+    if (email && otp) {
+      setOtp(otp);
+      setEmail(email);
+    }
+  }, [urlParams]);
+
   return (
     <Formik
       initialValues={{ password: '', confirm_password: '' }}
       validationSchema={createPasswordSchema}
-      onSubmit={values => {
-        console.warn(values);
-
-        router.push(`/auth/signin-signup`);
-      }}
+      onSubmit={handleNewpasswordSubmit}
     >
       {({ errors }) => (
         <Form className='w-full sm:w-2/5'>
@@ -32,7 +62,7 @@ const CreateNewPassword = (): JSX.Element => {
           />
 
           {/* Fields */}
-          <div className='mb-5 flex w-full flex-col gap-5'>
+          <div className='mb-10 flex w-full flex-col gap-5'>
             {/* Password Field */}
             <Input
               name='password'
