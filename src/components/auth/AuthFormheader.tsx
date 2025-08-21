@@ -15,7 +15,7 @@ const AuthFormheader = ({
   return (
     <div className='mb-5 flex flex-col items-center text-center'>
       <div className='mb-3'>{icon}</div>
-      <h1 className='text-base-black-100 font-karma text-[20px] leading-9 sm:text-[24px]'>
+      <h1 className='text-base-black-100 font-karma text-[20px] font-semibold leading-9 sm:text-[24px]'>
         {header}
       </h1>
       <p

@@ -15,6 +15,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   asChild?: boolean;
+  isSubmitting?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -26,6 +27,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       asChild = false,
       children,
       icon,
+      isSubmitting = false,
       ...props
     },
     ref
@@ -46,7 +48,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizeClasses = {
-      default: 'h-10 px-4 py-2',
+      default: 'h-12 px-4',
       sm: 'h-9 rounded-md px-3',
       lg: 'h-11 rounded-md px-8',
       icon: 'h-10 w-10',
@@ -61,6 +63,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         <span className='inline-flex items-center gap-2'>
           {icon && icon}
           {children}
+          {isSubmitting && (
+            <div className='h-5 w-5 animate-spin rounded-full border-4 border-white border-t-transparent'></div>
+          )}
         </span>
       </Comp>
     );

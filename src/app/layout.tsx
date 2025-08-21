@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { Inter, Karma } from 'next/font/google';
 
 import '@/styles/globals.css';
-
+import ToastProvider from '@/components/ToastProvider';
+import SessionProviderWrapper from '@/components/providers/SessionProviderWrapper';
+import { getServerSession } from 'next-auth';
 const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -59,11 +61,17 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
+export default async function RootLayout({
+  children,
+}: RootLayoutProps): Promise<JSX.Element> {
+  const session = await getServerSession();
   return (
     <html lang='en' className={`${inter.variable} ${karma.variable}`}>
       <body className='min-h-screen bg-background font-sans antialiased'>
-        {children}
+        <SessionProviderWrapper session={session}>
+          {children}
+          <ToastProvider />
+        </SessionProviderWrapper>
       </body>
     </html>
   );

@@ -2,7 +2,6 @@ import { signIn } from 'next-auth/react';
 import { Button } from '../ui/Button';
 import FacebookIcon from '@/assets/icons/thirdParty/FacebookIcon';
 import GoogleIcon from '@/assets/icons/thirdParty/GoogleIcon';
-import AppleIcon from '@/assets/icons/thirdParty/AppleIcon';
 
 const AuthSocialLoginButtons = (): JSX.Element => {
   const SOCIAL_BUTTONS = [
@@ -13,10 +12,6 @@ const AuthSocialLoginButtons = (): JSX.Element => {
     {
       title: 'google',
       icon: <GoogleIcon />,
-    },
-    {
-      title: 'apple',
-      icon: <AppleIcon />,
     },
   ];
   return (

@@ -10,23 +10,52 @@ import CancleIcon from '@/assets/icons/CancelIcon';
 import { useRouter } from 'next/navigation';
 import { forgotPasswordSchema } from '@/schemas/authSchema';
 import FingerPrintIcon from '@/assets/icons/auth/FingerPrintIcon';
+import { showToastNotification } from '@/components/notifications/ToastNotification';
+import KeyIcon from '@/assets/icons/auth/KeyIcon';
 
 const ForgotPassword = (): JSX.Element => {
-  const router = useRouter();
+  const navigate = useRouter();
+  const handleSendOtp = async (values: { email: string }): Promise<void> => {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify(values),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (res.ok) {
+      const message = await res.json();
+      // toast : {"status":true,"message":"Reset code sent to your email"}
+      showToastNotification(
+        {
+          header: 'Successfull',
+          body:
+            `${message?.message} - ${values.email}` ||
+            `Reset code sent to your email - ${values.email}`,
+        },
+        <KeyIcon />
+      );
+      navigate.push(
+        `/auth/password-reset/otp?email=${encodeURIComponent(values.email)}`
+      );
+    } else {
+      const data = await res.json();
+      showToastNotification(
+        {
+          header: 'Error',
+          body: `${data.error}` || 'Forgot password failed',
+        },
+        <KeyIcon />
+      );
+    }
+  };
   return (
     <Formik
       initialValues={{ email: '' }}
       validationSchema={forgotPasswordSchema}
-      onSubmit={values => {
-        console.warn(values);
-
-        router.push(
-          `/auth/password-reset/otp?email=${encodeURIComponent(values.email)}`
-        );
-      }}
+      onSubmit={handleSendOtp}
     >
-      {({ errors }) => (
-        <Form className='w-full sm:w-2/5'>
+      {({ errors, isSubmitting }) => (
+        <Form className='w-full'>
           {/* Header */}
           <AuthFormheader
             header={'Forgot password?'}
@@ -36,7 +65,7 @@ const ForgotPassword = (): JSX.Element => {
           />
 
           {/* Fields */}
-          <div className='mb-5 flex w-full flex-col gap-5'>
+          <div className='mb-10 flex w-full flex-col gap-5'>
             {/* Email Field */}
             <Input
               name='email'
@@ -50,7 +79,11 @@ const ForgotPassword = (): JSX.Element => {
 
           {/* Submit Button */}
 
-          <Button type='submit' disabled={errors?.email ? true : false}>
+          <Button
+            type='submit'
+            disabled={errors?.email ? true : false}
+            isSubmitting={isSubmitting}
+          >
             Send 4-digit code
           </Button>
         </Form>

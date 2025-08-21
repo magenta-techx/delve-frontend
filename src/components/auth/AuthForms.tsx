@@ -13,6 +13,7 @@ import type { ButtonProps } from '../ui/Button';
 import DefaultLogoIcon from '@/assets/icons/logo/DefaultLogoIcon';
 import LoginIcon from '@/assets/icons/auth/LoginIcon';
 import SignUpIcon from '@/assets/icons/auth/SignUpIcon';
+// import { useSession } from 'next-auth/react';
 
 interface AuthFormButtonProps {
   text: string;
@@ -24,6 +25,11 @@ interface AuthFormButtonProps {
 
 const AuthForms = (): JSX.Element => {
   const router = useSearchParams();
+  // const { data: session } = useSession();
+
+  // if (session) {
+  //   redirect('/dashboard');
+  // }
 
   const [login, setLogin] = useState(true);
 
@@ -52,7 +58,7 @@ const AuthForms = (): JSX.Element => {
   return (
     <section className='flex w-full items-center justify-center py-10 sm:py-0'>
       <div className='flex w-full sm:w-[1600px]'>
-        <div className='flex w-full flex-col items-center bg-white sm:w-1/2'>
+        <div className='flex max-h-80 w-full flex-col items-center bg-white sm:w-1/2'>
           <div className='mb-7'>
             <Logo icon={<DefaultLogoIcon />} link='/' />
           </div>
