@@ -15,7 +15,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
   return (
-    <section className='h-screen w-screen overflow-x-hidden bg-cover bg-center px-5 pt-10 sm:bg-[url("/reset-Password-bg.png")] sm:px-20'>
+    <section className='h-screen w-screen overflow-x-hidden overflow-y-hidden bg-cover bg-center px-5 pt-10 sm:bg-[url("/reset-Password-bg.png")] sm:px-20'>
       <div className='hidden sm:block'>
         <Navbar />
       </div>
@@ -26,8 +26,8 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
           <p>Login</p>
         </Link>
       </div>
-      <div className='flex h-full w-full items-center justify-center'>
-        {children}
+      <div className='flex h-full w-full justify-center pt-32 sm:pt-32'>
+        <div className='w-full sm:w-[450px]'>{children}</div>
       </div>
     </section>
   );

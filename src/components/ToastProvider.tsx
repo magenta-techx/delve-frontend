@@ -23,7 +23,7 @@ const ToastProvider = (): JSX.Element => {
     <ToastContainer
       position='top-left'
       hideProgressBar={true}
-      autoClose={false}
+      autoClose={5000}
       toastClassName={() => 'bg-transparent shadow-none p-0'}
     />
   );

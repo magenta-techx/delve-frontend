@@ -43,7 +43,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                   placeholder={placeholder}
                   {...field}
                   ref={ref} // forward the ref
-                  className={`w-full rounded-md border p-2 font-inter text-[16px] focus:border-primary focus:outline-none sm:p-3 sm:text-xs ${
+                  className={`w-full rounded-md border p-2 font-inter text-[16px] focus:border-primary focus:outline-none sm:p-3 sm:text-[13px] ${
                     meta.touched && meta.error
                       ? 'border-red-500'
                       : 'border-gray-300'

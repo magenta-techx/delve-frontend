@@ -7,16 +7,19 @@ import AuthFormheader from '../AuthFormheader';
 import { Button } from '@/components/ui/Button';
 import EmailIcon from '@/assets/icons/auth/EmailIcon';
 import '@/styles/auth.css';
+import { showToastNotification } from '@/components/notifications/ToastNotification';
+import KeyIcon from '@/assets/icons/auth/KeyIcon';
 
 const Otp = (): JSX.Element => {
   const urlParams = useSearchParams();
   const navigate = useRouter();
   const [otp, setOtp] = useState('');
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleOtpSubmit = async (): Promise<void> => {
     if (otp.length !== 6) return;
-
+    setIsSubmitting(true);
     const res = await fetch('/api/auth/otp-verify', {
       method: 'POST',
       body: JSON.stringify({
@@ -27,15 +30,28 @@ const Otp = (): JSX.Element => {
     });
 
     if (res.ok) {
-      // {status: true, message: "Reset code is valid."}
-
+      const message = await res.json();
+      showToastNotification(
+        {
+          header: 'Successfull',
+          body: `${message?.message}` || 'Reset code is valid.',
+        },
+        <KeyIcon />
+      );
       navigate.push(
         `/auth/password-reset/create-new-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
       );
     } else {
       const data = await res.json();
-      alert(data.error || 'Incorrect OTP');
+      showToastNotification(
+        {
+          header: 'Successfull',
+          body: `${data.error}` || 'Reset code is valid.',
+        },
+        <KeyIcon />
+      );
     }
+    setIsSubmitting(false);
   };
   useEffect(() => {
     const emailInput = urlParams.get('email');
@@ -84,7 +100,11 @@ const Otp = (): JSX.Element => {
         <button className='font-semibold'> Click to resend</button>
       </div>
       {/* Submit Button */}
-      <Button disabled={otp.length !== 6} onClick={handleOtpSubmit}>
+      <Button
+        disabled={otp.length !== 6}
+        onClick={handleOtpSubmit}
+        isSubmitting={isSubmitting}
+      >
         Confirm
       </Button>
     </div>

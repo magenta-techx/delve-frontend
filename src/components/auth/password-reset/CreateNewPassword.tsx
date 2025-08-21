@@ -9,6 +9,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createPasswordSchema } from '@/schemas/authSchema';
 import LockIcon from '@/assets/icons/auth/LockIcon';
 import { useEffect, useState } from 'react';
+import { showToastNotification } from '@/components/notifications/ToastNotification';
+import KeyIcon from '@/assets/icons/auth/KeyIcon';
 
 const CreateNewPassword = (): JSX.Element => {
   const navigate = useRouter();
@@ -27,8 +29,13 @@ const CreateNewPassword = (): JSX.Element => {
     });
 
     if (res.ok) {
-      // {status: true, message: "Reset code is valid."}
-
+      showToastNotification(
+        {
+          header: 'Successfull',
+          body: 'Password successfully changed',
+        },
+        <KeyIcon />
+      );
       navigate.push(`/auth/signin-signup`);
     } else {
       const data = await res.json();
@@ -51,8 +58,8 @@ const CreateNewPassword = (): JSX.Element => {
       validationSchema={createPasswordSchema}
       onSubmit={handleNewpasswordSubmit}
     >
-      {({ errors }) => (
-        <Form className='w-full sm:w-2/5'>
+      {({ errors, isSubmitting }) => (
+        <Form className='w-full'>
           {/* Header */}
           <AuthFormheader
             header={'Create new password'}
@@ -86,6 +93,7 @@ const CreateNewPassword = (): JSX.Element => {
             disabled={
               errors?.password || errors.confirm_password ? true : false
             }
+            isSubmitting={isSubmitting}
           >
             Change password
           </Button>

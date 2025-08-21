@@ -11,9 +11,6 @@ import CancleIcon from '@/assets/icons/CancelIcon';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
-import { showToastNotification } from '@/components/notifications/ToastNotification';
-import KeyIcon from '@/assets/icons/auth/KeyIcon';
-
 const SignUpForm = (): JSX.Element => {
   const router = useRouter();
   // Signup Handler
@@ -37,13 +34,6 @@ const SignUpForm = (): JSX.Element => {
         password: values.password,
       });
 
-      showToastNotification(
-        {
-          header: 'Successfull',
-          body: 'Password successfully changed',
-        },
-        <KeyIcon />
-      );
       router.push('/dashboard');
     } else {
       const data = await res.json();
@@ -63,7 +53,7 @@ const SignUpForm = (): JSX.Element => {
       validationSchema={signupSchema}
       onSubmit={handleSignup}
     >
-      {({ errors }) => (
+      {({ errors, isSubmitting }) => (
         <Form className='w-full'>
           {/* Header */}
           <AuthFormheader
@@ -128,6 +118,7 @@ const SignUpForm = (): JSX.Element => {
                 ? true
                 : false
             }
+            isSubmitting={isSubmitting}
           >
             Log In
           </Button>

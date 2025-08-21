@@ -12,6 +12,8 @@ import { emailValidator } from '@/utils/validators';
 import CancleIcon from '@/assets/icons/CancelIcon';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { showToastNotification } from '@/components/notifications/ToastNotification';
+import KeyIcon from '@/assets/icons/auth/KeyIcon';
 
 const LoginForm = (): JSX.Element => {
   const router = useRouter();
@@ -27,7 +29,13 @@ const LoginForm = (): JSX.Element => {
     });
 
     if (res?.error) {
-      alert(res?.error);
+      showToastNotification(
+        {
+          header: 'Error',
+          body: `Invalid credentials`,
+        },
+        <KeyIcon />
+      );
     } else {
       router.push('/dashboard');
     }
@@ -84,11 +92,9 @@ const LoginForm = (): JSX.Element => {
             disabled={
               errors?.email || errors?.password || isSubmitting ? true : false
             }
+            isSubmitting={isSubmitting}
           >
             Log In{' '}
-            {isSubmitting && (
-              <div className='h-8 w-8 animate-spin rounded-full border-4 border-white border-t-transparent'></div>
-            )}
           </Button>
         </Form>
       )}

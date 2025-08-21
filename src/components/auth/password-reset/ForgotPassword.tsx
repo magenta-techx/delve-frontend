@@ -10,6 +10,8 @@ import CancleIcon from '@/assets/icons/CancelIcon';
 import { useRouter } from 'next/navigation';
 import { forgotPasswordSchema } from '@/schemas/authSchema';
 import FingerPrintIcon from '@/assets/icons/auth/FingerPrintIcon';
+import { showToastNotification } from '@/components/notifications/ToastNotification';
+import KeyIcon from '@/assets/icons/auth/KeyIcon';
 
 const ForgotPassword = (): JSX.Element => {
   const navigate = useRouter();
@@ -21,13 +23,29 @@ const ForgotPassword = (): JSX.Element => {
     });
 
     if (res.ok) {
+      const message = await res.json();
       // toast : {"status":true,"message":"Reset code sent to your email"}
+      showToastNotification(
+        {
+          header: 'Successfull',
+          body:
+            `${message?.message} - ${values.email}` ||
+            `Reset code sent to your email - ${values.email}`,
+        },
+        <KeyIcon />
+      );
       navigate.push(
         `/auth/password-reset/otp?email=${encodeURIComponent(values.email)}`
       );
     } else {
       const data = await res.json();
-      alert(data.error || 'Forgot password failed');
+      showToastNotification(
+        {
+          header: 'Error',
+          body: `${data.error}` || 'Forgot password failed',
+        },
+        <KeyIcon />
+      );
     }
   };
   return (
@@ -36,8 +54,8 @@ const ForgotPassword = (): JSX.Element => {
       validationSchema={forgotPasswordSchema}
       onSubmit={handleSendOtp}
     >
-      {({ errors }) => (
-        <Form className='w-full sm:w-2/5'>
+      {({ errors, isSubmitting }) => (
+        <Form className='w-full'>
           {/* Header */}
           <AuthFormheader
             header={'Forgot password?'}
@@ -61,7 +79,11 @@ const ForgotPassword = (): JSX.Element => {
 
           {/* Submit Button */}
 
-          <Button type='submit' disabled={errors?.email ? true : false}>
+          <Button
+            type='submit'
+            disabled={errors?.email ? true : false}
+            isSubmitting={isSubmitting}
+          >
             Send 4-digit code
           </Button>
         </Form>

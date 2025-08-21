@@ -22,14 +22,14 @@ const ToastNotification = ({
 }: ToastNotificationProps): JSX.Element => {
   return (
     <div
-      className={`${message?.header === 'Successfull' && 'bg-primary-50'} flex w-[350px] items-center gap-3 rounded-lg p-5 shadow-md`}
+      className={`${message?.header === 'Successfull' ? 'bg-primary-50' : message?.header === 'Error' && 'bg-red-50'} mb-4 flex w-[350px] items-center gap-3 rounded-lg p-5 shadow-md`}
     >
       {/* Dynamic Icon */}
       <div>{icon}</div>
 
       {/* Message */}
       <div
-        className={`${message?.header === 'Successfull' && 'text-primary'} flex-1 text-sm`}
+        className={`${message?.header === 'Successfull' ? 'text-primary' : message?.header === 'Error' ? 'text-red-500' : ''} flex-1 text-sm`}
       >
         <h1 className='font-semibold'>{message?.header}</h1>
         <p className='font-normal'>{message?.body}</p>
@@ -38,7 +38,7 @@ const ToastNotification = ({
       {/* Close Button */}
       <button onClick={closeToast}>
         <CancleIcon
-          color={`${message?.header === 'Successfull' && 'text-primary'}`}
+          color={`${message?.header === 'Successfull' ? 'text-primary' : message?.header === 'Error' ? 'text-red-500' : ''}`}
         />
       </button>
     </div>
