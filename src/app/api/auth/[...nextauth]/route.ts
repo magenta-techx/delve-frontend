@@ -1,24 +1,24 @@
-import NextAuth, { NextAuthOptions, Session } from 'next-auth';
+import NextAuth, { DefaultSession, NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
-
 import { JWT } from 'next-auth/jwt';
 
-interface JWTToken extends JWT {
-  accessToken?: string;
-  refreshToken?: string | undefined;
-  accessTokenExpires?: number;
-  user?: {
-    id?: string;
-    name?: string;
-    email?: string;
-    role?: string;
-  };
-  error?: string;
+declare module 'next-auth' {
+  interface User {
+    accessToken?: string | undefined;
+    refreshToken?: string | undefined;
+  }
+  interface Session {
+    user: {
+      accessToken?: string | undefined;
+      refreshToken?: string | undefined;
+    } & DefaultSession['user'];
+  }
 }
 
-async function refreshAccessToken(token: JWTToken): Promise<JWTToken> {
+async function refreshAccessToken(token: JWT): Promise<JWT> {
+  console.log('refreshedTokens token: ', token);
   try {
     const res = await fetch(
       `${process.env['API_BASE_URL']}/user/auth/token/refresh/`,
@@ -29,16 +29,18 @@ async function refreshAccessToken(token: JWTToken): Promise<JWTToken> {
       }
     );
 
-    const refreshedTokens: { access: string; refresh?: string } =
-      await res.json();
+    const refreshedTokens = await res.json();
+
+    console.log('refreshedTokens: ', refreshedTokens?.data?.access);
+    console.log(' refreshedTokens.access: ', refreshedTokens.access);
 
     if (!res.ok) throw refreshedTokens;
 
     return {
       ...token,
-      accessToken: refreshedTokens.access,
+      accessToken: refreshedTokens?.data?.access,
       accessTokenExpires: Date.now() + 60 * 60 * 1000, // adjust for backend expiry
-      refreshToken: refreshedTokens.refresh ?? token.refreshToken,
+      refreshToken: refreshedTokens?.data?.refresh,
     };
   } catch (error) {
     console.warn('Refresh token error:', error);
@@ -47,6 +49,8 @@ async function refreshAccessToken(token: JWTToken): Promise<JWTToken> {
 }
 
 export const authOptions: NextAuthOptions = {
+  session: { strategy: 'jwt' },
+
   providers: [
     GoogleProvider({
       clientId: process.env['GOOGLE_CLIENT_ID']!,
@@ -64,6 +68,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+        console.log('credentials: ', credentials);
 
         const res = await fetch(
           `${process.env['API_BASE_URL']}/user/auth/token/`,
@@ -77,46 +82,58 @@ export const authOptions: NextAuthOptions = {
           }
         );
 
-        const user = await res.json();
+        const result = await res.json();
 
-        if (res.ok && user) {
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          };
-        }
+        if (!res.ok || !result?.data) return null;
 
-        return null;
+        const { user, tokens } = result.data;
+
+        return {
+          id: user.id,
+          name: `${user.first_name} ${user.last_name}`,
+          email: user.email,
+          role: user.role ?? null,
+          image: user.profile_image,
+          accessToken: tokens.access,
+          refreshToken: tokens.refresh,
+        };
       },
     }),
   ],
+
   pages: {
     signIn: '/auth/signin-signup',
     signOut: '/auth/signin-signup',
   },
+
   callbacks: {
-    async jwt({ token, user }): Promise<JWTToken> {
+    async jwt({ token, user }): Promise<JWT> {
       // Initial login
       if (user) {
-        return {
-          ...token,
-        };
+        console.log(' Initial login JWT user :', user);
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+        token.accessTokenExpires = Date.now() + 60 * 60 * 1000; // token last an hour after login
+      }
+      if (token && Date.now() < (token.accessTokenExpires as number)) {
+        console.log(' Initial login JWT token check:', token);
       }
 
-      // If token is still valid, return it
-      if (Date.now() < (token['accessTokenExpires'] as number)) {
-        return token as JWTToken;
+      // If token still valid
+      if (
+        Date.now() < (token.accessTokenExpires as number) &&
+        token.accessToken
+      ) {
+        return token;
       }
 
       // Otherwise refresh
-      return await refreshAccessToken(token as JWTToken);
+      return await refreshAccessToken(token);
     },
-    async session({
-      session,
-      // token,
-    }): Promise<Session & { accessToken?: string; error?: string }> {
+    async session({ session, token }) {
+      console.log('Session session: ', session);
+      console.log('Session token: ', token);
+
       return session;
     },
   },

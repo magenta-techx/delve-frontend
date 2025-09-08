@@ -105,7 +105,7 @@ export default [
       'no-console': [
         'error',
         {
-          allow: ['error', 'warn'],
+          allow: ['error', 'warn', 'log'],
         },
       ],
       'prefer-const': 'error',

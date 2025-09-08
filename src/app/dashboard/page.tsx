@@ -1,3 +1,4 @@
+import DashBoardLayout from '@/components/dashboard/DashBoardLayout';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -13,8 +14,9 @@ export default function DashboardPage(): JSX.Element {
           Dashboard Overview
         </h2>
         <p className='text-muted-foreground'>
-          Welcome to your dashboard. Here&apos;s what&apos;s happening.
+          Welcome to your dashboard. Here&apos;s what&apos;s happening.{' '}
         </p>
+        <DashBoardLayout />
       </div>
 
       <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>

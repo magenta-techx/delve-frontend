@@ -1,0 +1,55 @@
+'use client';
+import React from 'react';
+
+const InstagramIconColored = (): JSX.Element => {
+  return (
+    <svg
+      width='20'
+      height='20'
+      viewBox='0 0 20 20'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <path
+        d='M10 14C11.933 14 13.5 12.433 13.5 10.5C13.5 8.567 11.933 7 10 7C8.067 7 6.5 8.567 6.5 10.5C6.5 12.433 8.067 14 10 14Z'
+        fill='url(#paint0_linear_3381_6369)'
+      />
+      <path
+        fillRule='evenodd'
+        clip-rule='evenodd'
+        d='M0 10C0 6.26154 0 4.3923 0.803847 3C1.33046 2.08788 2.08788 1.33046 3 0.803847C4.3923 0 6.26154 0 10 0C13.7385 0 15.6077 0 17 0.803847C17.9121 1.33046 18.6695 2.08788 19.1962 3C20 4.3923 20 6.26154 20 10C20 13.7385 20 15.6077 19.1962 17C18.6695 17.9121 17.9121 18.6695 17 19.1962C15.6077 20 13.7385 20 10 20C6.26154 20 4.3923 20 3 19.1962C2.08788 18.6695 1.33046 17.9121 0.803847 17C0 15.6077 0 13.7385 0 10ZM10 15.5C12.7614 15.5 15 13.2614 15 10.5C15 7.73858 12.7614 5.5 10 5.5C7.23858 5.5 5 7.73858 5 10.5C5 13.2614 7.23858 15.5 10 15.5ZM14.5 6C15.3284 6 16 5.32843 16 4.5C16 3.67157 15.3284 3 14.5 3C13.6716 3 13 3.67157 13 4.5C13 5.32843 13.6716 6 14.5 6Z'
+        fill='url(#paint1_linear_3381_6369)'
+      />
+      <defs>
+        <linearGradient
+          id='paint0_linear_3381_6369'
+          x1='10'
+          y1='0'
+          x2='10'
+          y2='20'
+          gradientUnits='userSpaceOnUse'
+        >
+          <stop stop-color='#CB30E0' />
+          <stop offset='0.389423' stop-color='#F0C140' />
+          <stop offset='0.634615' stop-color='#FEC601' />
+          <stop offset='1' stop-color='#BC1B06' />
+        </linearGradient>
+        <linearGradient
+          id='paint1_linear_3381_6369'
+          x1='10'
+          y1='0'
+          x2='10'
+          y2='20'
+          gradientUnits='userSpaceOnUse'
+        >
+          <stop stop-color='#CB30E0' />
+          <stop offset='0.389423' stop-color='#F0C140' />
+          <stop offset='0.634615' stop-color='#FEC601' />
+          <stop offset='1' stop-color='#BC1B06' />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
+
+export default InstagramIconColored;
