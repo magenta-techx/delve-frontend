@@ -25,7 +25,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh: token['refreshToken'] }),
+        body: JSON.stringify({ refresh: token?.refreshToken }),
       }
     );
 
@@ -111,17 +111,17 @@ export const authOptions: NextAuthOptions = {
       // Initial login
       if (user) {
         console.log(' Initial login JWT user :', user);
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
+        token.accessToken = user?.accessToken;
+        token.refreshToken = user?.refreshToken;
         token.accessTokenExpires = Date.now() + 60 * 60 * 1000; // token last an hour after login
       }
-      if (token && Date.now() < (token.accessTokenExpires as number)) {
+      if (token && Date.now() < (token?.accessTokenExpires as number)) {
         console.log(' Initial login JWT token check:', token);
       }
 
       // If token still valid
       if (
-        Date.now() < (token.accessTokenExpires as number) &&
+        Date.now() < (token?.accessTokenExpires as number) &&
         token.accessToken
       ) {
         return token;
@@ -130,10 +130,7 @@ export const authOptions: NextAuthOptions = {
       // Otherwise refresh
       return await refreshAccessToken(token);
     },
-    async session({ session, token }) {
-      console.log('Session session: ', session);
-      console.log('Session token: ', token);
-
+    async session({ session }) {
       return session;
     },
   },
