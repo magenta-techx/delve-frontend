@@ -25,7 +25,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh: token.refreshToken }),
+        body: JSON.stringify({ refresh: token['refreshToken'] }),
       }
     );
 
