@@ -68,8 +68,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                       : 'border-gray-300'
                   } ${inputClass}`}
                   onChange={e => {
-                    console.log(e);
-
                     if (isFile) {
                       const file = e.currentTarget.files?.[0] ?? null;
                       form.setFieldValue(name, file);
