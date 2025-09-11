@@ -16,6 +16,9 @@
     --disabled: 215 27% 91%;
     --disabled-foreground: 0 0% 100%;
 
+    /* --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%; */
+
     --radius: 12px;
 
     --font-inter: 'Inter', sans-serif;

@@ -14,8 +14,10 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { showToastNotification } from '@/components/notifications/ToastNotification';
 import KeyIcon from '@/assets/icons/auth/KeyIcon';
+// import { useDispatch } from 'react-redux';
 
 const LoginForm = (): JSX.Element => {
+  // const dispatch = useDispatch();
   const router = useRouter();
   // Login Handler
   const handleLogin = async (values: {
@@ -28,7 +30,11 @@ const LoginForm = (): JSX.Element => {
       password: values.password,
     });
 
+    console.log('res: ', res);
+
     if (res?.error) {
+      console.log(res?.error);
+
       showToastNotification(
         {
           header: 'Error',
@@ -37,7 +43,19 @@ const LoginForm = (): JSX.Element => {
         <KeyIcon />
       );
     } else {
+      // const data=res?.data
+      //        dispatch(
+      //          setBusinessData({
+      //            is_brand_owner: res.data.data.user.is_brand_owner,
+      //            number_of_owned_brands: data.data.user.number_of_owned_brands,
+      //            is_active: data.data.user.is_active,
+      //            current_plan: data.data.user.current_plan,
+      //            is_premium_plan_active: data.data.user.is_premium_plan_active,
+      //          })
+      //        );
+
       router.push('/dashboard');
+      console.log(res);
     }
   };
   return (

@@ -1,6 +1,6 @@
 'use client';
 import { ReactNode, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import Logo from '@/components/ui/Logo';
 
@@ -13,7 +13,7 @@ import type { ButtonProps } from '../ui/Button';
 import DefaultLogoIcon from '@/assets/icons/logo/DefaultLogoIcon';
 import LoginIcon from '@/assets/icons/auth/LoginIcon';
 import SignUpIcon from '@/assets/icons/auth/SignUpIcon';
-// import { useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 interface AuthFormButtonProps {
   text: string;
@@ -25,11 +25,8 @@ interface AuthFormButtonProps {
 
 const AuthForms = (): JSX.Element => {
   const router = useSearchParams();
-  // const { data: session } = useSession();
-
-  // if (session) {
-  //   redirect('/dashboard');
-  // }
+  const redirect = useRouter();
+  const { data: session } = useSession();
 
   const [login, setLogin] = useState(true);
 
@@ -51,10 +48,13 @@ const AuthForms = (): JSX.Element => {
   ];
 
   useEffect(() => {
+    if (session?.user.accessToken) {
+      redirect.push('/dashboard');
+    }
     if (router.get('login') === 'false') {
       setLogin(false);
     }
-  }, [router]);
+  }, [router, redirect, session]);
   return (
     <section className='flex w-full items-center justify-center py-10 sm:py-0'>
       <div className='flex w-full sm:w-[1600px]'>

@@ -82,7 +82,7 @@ const Otp = (): JSX.Element => {
         renderInput={props => (
           <input
             {...props}
-            className='mb-5 border border-primary text-[28px] focus:border-2 focus:outline-8 focus:outline-primary'
+            className='mb-5 border border-primary text-[28px] focus:outline-primary'
           />
         )}
         containerStyle='flex justify-center gap-3'

@@ -120,7 +120,7 @@ const SignUpForm = (): JSX.Element => {
             }
             isSubmitting={isSubmitting}
           >
-            Log In
+            Sign Up
           </Button>
         </Form>
       )}

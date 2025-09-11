@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
+  children?: ReactNode;
   icon?: ReactNode;
   variant?:
     | 'default'
@@ -12,7 +12,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | 'secondary'
     | 'ghost'
     | 'neutral'
+    | 'black'
+    | 'white'
     | 'link';
+
   size?: 'default' | 'sm' | 'lg' | 'icon';
   asChild?: boolean;
   isSubmitting?: boolean;
@@ -33,28 +36,29 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseClasses =
-      'inline-flex items-center w-full capitalize font-inter justify-center rounded-md text-sm font-medium focus:outline-none focus:border-none disabled:cursor-not-allowed disabled:bg-disabled disabled:text-disabled-foreground';
+      'inline-flex items-center w-full hover:cursor-pointer capitalize font-inter justify-center rounded-md sm:text-sm text-xs font-medium focus:outline-none focus:border-none disabled:cursor-not-allowed disabled:bg-disabled disabled:text-disabled-foreground';
 
     const variantClasses = {
       default: 'bg-primary text-primary-foreground hover:bg-primary/50',
       destructive:
         'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-      outline:
-        'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+      outline: ' bg-tranparent text-primary',
       secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
       ghost: 'bg-transparent',
       link: 'text-primary underline-offset-4 hover:underline',
       neutral: 'bg-neutral text-neutral-foreground border border-neutral-200',
+      black: 'bg-black text-white',
+      white: 'bg-white text-black',
     };
 
     const sizeClasses = {
       default: 'h-12 px-4',
-      sm: 'h-9 rounded-md px-3',
+      sm: 'h-9 rounded-md px-3 text-xs',
       lg: 'h-11 rounded-md px-8',
       icon: 'h-10 w-10',
     };
 
-    const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+    const classes = `${baseClasses} ${variantClasses[variant]} ${size && sizeClasses[size]} ${className}`;
 
     const Comp = asChild ? Slot : 'button';
 

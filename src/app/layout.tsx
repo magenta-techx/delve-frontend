@@ -1,10 +1,18 @@
 import type { Metadata } from 'next';
-import { Inter, Karma } from 'next/font/google';
+import { getServerSession } from 'next-auth';
 
-import '@/styles/globals.css';
+// import { Theme } from '@radix-ui/themes';
+import { Inter, Karma } from 'next/font/google';
+import 'swiper/css';
+
+import '@radix-ui/themes/styles.css';
+
 import ToastProvider from '@/components/ToastProvider';
 import SessionProviderWrapper from '@/components/providers/SessionProviderWrapper';
-import { getServerSession } from 'next-auth';
+
+import '@radix-ui/themes/styles.css';
+import '@/styles/globals.css';
+
 const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -65,13 +73,20 @@ export default async function RootLayout({
   children,
 }: RootLayoutProps): Promise<JSX.Element> {
   const session = await getServerSession();
+  console.log('Session in layout: ', session);
+
   return (
-    <html lang='en' className={`${inter.variable} ${karma.variable}`}>
+    <html
+      lang='en'
+      className={`${inter.variable} font-inter ${karma.variable}`}
+    >
       <body className='min-h-screen bg-background font-sans antialiased'>
+        {/* <Theme> */}
         <SessionProviderWrapper session={session}>
           {children}
           <ToastProvider />
         </SessionProviderWrapper>
+        {/* </Theme> */}
       </body>
     </html>
   );
