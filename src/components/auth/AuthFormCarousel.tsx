@@ -33,7 +33,7 @@ const AuthCarousel = (): JSX.Element => {
       showArrows={false}
       infiniteLoop
       autoPlay
-      interval={5000}
+      interval={8000}
       renderIndicator={(onClickHandler, isSelected, index, label) => {
         const baseStyle = {
           width: isSelected ? 46 : 3,
@@ -59,21 +59,23 @@ const AuthCarousel = (): JSX.Element => {
           />
         );
       }}
-      className='rounded-xl bg-black pb-5'
+      className='rounded-xl'
     >
       {CAROUSEL_CONTENT.map((content, key) => (
-        <div key={key} className='w-full'>
+        <div key={key} className='w-[480px]'>
           <Image
             src={content.imageUrl}
             alt={`Delve ${content.header}`}
-            width={800}
-            height={500}
+            width={500}
+            height={200}
             priority
           />
 
-          <div className='mb-1 w-[57%] py-5 pl-7 text-left font-karma text-white'>
-            <h1 className='text-[20px] leading-9'>{content.header}</h1>
-            <p className='text-sm'>{content.subheader}</p>
+          <div className='w-full rounded-bl-xl rounded-br-xl bg-black pb-5 pl-4 pt-2 text-left font-karma text-white'>
+            <h1 className='text-[17px] leading-9'>{content.header}</h1>
+            <p className='mb-1 w-[300px] text-[13px] leading-4'>
+              {content.subheader}
+            </p>
           </div>
         </div>
       ))}

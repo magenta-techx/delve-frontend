@@ -10,15 +10,19 @@ import Input from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { emailValidator } from '@/utils/validators';
 import CancleIcon from '@/assets/icons/CancelIcon';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { showToastNotification } from '@/components/notifications/ToastNotification';
 import KeyIcon from '@/assets/icons/auth/KeyIcon';
-// import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { setBusinessData } from '@/redux/slices/businessSlice';
 
 const LoginForm = (): JSX.Element => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const { data: sesson } = useSession();
   const router = useRouter();
+
   // Login Handler
   const handleLogin = async (values: {
     email: string;
@@ -43,21 +47,23 @@ const LoginForm = (): JSX.Element => {
         <KeyIcon />
       );
     } else {
-      // const data=res?.data
-      //        dispatch(
-      //          setBusinessData({
-      //            is_brand_owner: res.data.data.user.is_brand_owner,
-      //            number_of_owned_brands: data.data.user.number_of_owned_brands,
-      //            is_active: data.data.user.is_active,
-      //            current_plan: data.data.user.current_plan,
-      //            is_premium_plan_active: data.data.user.is_premium_plan_active,
-      //          })
-      //        );
-
       router.push('/dashboard');
       console.log(res);
     }
   };
+  useEffect(() => {
+    dispatch(
+      setBusinessData({
+        is_brand_owner: sesson?.user.is_brand_owner ?? undefined,
+        number_of_owned_brands:
+          sesson?.user.number_of_owned_brands ?? undefined,
+        is_active: sesson?.user.is_active ?? undefined,
+        current_plan: sesson?.user.current_plan ?? undefined,
+        is_premium_plan_active:
+          sesson?.user.is_premium_plan_active ?? undefined,
+      })
+    );
+  }, [sesson, dispatch]);
   return (
     <Formik
       initialValues={{ email: '', password: '' }}

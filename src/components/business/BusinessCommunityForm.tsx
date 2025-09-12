@@ -14,7 +14,7 @@ const BusinessCommunityForm = (): JSX.Element => {
   const navigate = useRouter();
   const handleSendOtp = async (values: { email: string }): Promise<void> => {
     console.warn(values);
-    navigate.push('/business/select-plan');
+    navigate.push('/business/introduction');
   };
   return (
     <Formik
@@ -23,14 +23,13 @@ const BusinessCommunityForm = (): JSX.Element => {
       onSubmit={handleSendOtp}
     >
       {({ errors, values }) => (
-        <Form className='flex flex-col items-end gap-3 sm:flex-row sm:items-start'>
+        <Form className='flex w-full flex-col justify-center gap-3 px-5 sm:flex-row sm:px-0'>
           {/* Email Field */}
           <Input
             name='email'
             type='email'
             placeholder='Input your email address'
             label=''
-            // icon={<CancleIcon />}
             validate={emailValidator}
             className='text-center'
             inputClass='sm:px-24 px-5 sm:py-4 py-3 sm:text-[15px] text-[14px] focus:border-white border-[#7B7B7B] placeholder:text-[#9AA4B2] text-white bg-[#1C1C1C80]/50 text-center'
@@ -39,7 +38,7 @@ const BusinessCommunityForm = (): JSX.Element => {
           {/* Submit Button */}
 
           <button
-            className={`flex h-full w-[60px] items-center justify-center rounded-md disabled:cursor-not-allowed ${errors?.email || values.email.length === 0 ? 'disabled- bg-[#4B5565]/50' : 'bg-white'} py-[22px]`}
+            className={`flex h-full w-[60px] items-center justify-center self-end rounded-md disabled:cursor-not-allowed sm:-mt-4 sm:self-center ${errors?.email || values.email.length === 0 ? 'disabled- bg-[#4B5565]/50' : 'bg-white'} py-[22px]`}
             type='submit'
             disabled={errors?.email || values.email.length === 0 ? true : false}
           >

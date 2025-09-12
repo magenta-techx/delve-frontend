@@ -1,7 +1,6 @@
 .carousel .control-dots {
   display: flex;
-  padding-left: 25px !important;
-  margin-top: -10px;
+  padding-left: 14px !important;
 }
 
 input[type='password']::-ms-reveal,

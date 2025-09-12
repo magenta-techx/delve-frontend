@@ -73,8 +73,6 @@ export default async function RootLayout({
   children,
 }: RootLayoutProps): Promise<JSX.Element> {
   const session = await getServerSession();
-  console.log('Session in layout: ', session);
-
   return (
     <html
       lang='en'

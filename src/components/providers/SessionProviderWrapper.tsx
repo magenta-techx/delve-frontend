@@ -16,10 +16,10 @@ export default function SessionProviderWrapper({
   children,
   session,
 }: Props): JSX.Element {
-  if (session === null) {
-    console.log('Session is currently none');
-    return <>{session}</>;
-  }
+  // if (session === null) {
+  //   console.log('Session is currently none');
+  //   return <>{session}</>;
+  // }
 
   return (
     <SessionProvider session={session}>

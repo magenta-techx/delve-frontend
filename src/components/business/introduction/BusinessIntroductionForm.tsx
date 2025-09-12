@@ -6,6 +6,7 @@ import { Form, Formik, FormikProps, FormikValues } from 'formik';
 import TextArea from '@/components/ui/TextArea';
 import { businessIntroductionSchema } from '@/schemas/businessSchema';
 import Image from 'next/image';
+import ImageUploadIcon from '@/assets/icons/ImageUploadIcon';
 
 type FormProps<T extends FormikValues> = {
   formikRef: React.Ref<FormikProps<T>>;
@@ -80,10 +81,11 @@ function BusinessIntroductionForm<T extends FormikValues>({
                   />
                 ) : (
                   <div
-                    className='flex h-24 w-36 items-center justify-center rounded-md border border-dashed border-primary hover:cursor-pointer sm:w-24'
+                    className='flex h-20 w-36 items-center justify-center rounded-md border border-dashed border-primary hover:cursor-pointer sm:h-24 sm:w-24'
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <div className=''>
+                      <ImageUploadIcon />
                       <p className='text-primary'>Upload logo</p>
                     </div>
                   </div>
