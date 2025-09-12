@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import Logo from '@/components/ui/Logo';
 
-import AuthFormCarousel from './AuthFormCarousel';
+// import AuthFormCarousel from './AuthFormCarousel';
 import LoginForm from './login/LoginForm';
 import SignUpForm from './signup/SignUpForm';
 import AuthSocialLoginButtons from './AuthFormSocialLoginButtons';
@@ -90,9 +90,9 @@ const AuthForms = (): JSX.Element => {
             <AuthSocialLoginButtons />
           </div>
         </div>
-        <div className='fixed right-20 hidden w-[40%] sm:flex'>
+        {/* <div className='fixed right-20 hidden w-[40%] bg-green-400 sm:flex'>
           <AuthFormCarousel />
-        </div>
+        </div> */}
       </div>
     </section>
   );

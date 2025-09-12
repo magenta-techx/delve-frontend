@@ -59,19 +59,20 @@ const AuthCarousel = (): JSX.Element => {
           />
         );
       }}
-      className='rounded-xl'
+      className=''
     >
       {CAROUSEL_CONTENT.map((content, key) => (
-        <div key={key} className='w-[480px]'>
+        <div key={key} className='w-[80%] p-3'>
           <Image
             src={content.imageUrl}
             alt={`Delve ${content.header}`}
-            width={500}
+            width={300}
             height={200}
             priority
+            // className='w-[90%]'
           />
 
-          <div className='w-full rounded-bl-xl rounded-br-xl bg-black pb-5 pl-4 pt-2 text-left font-karma text-white'>
+          <div className='h-[100px] w-full rounded-bl-xl rounded-br-xl bg-black pl-4 pt-2 text-left font-karma text-white'>
             <h1 className='text-[17px] leading-9'>{content.header}</h1>
             <p className='mb-1 w-[300px] text-[13px] leading-4'>
               {content.subheader}
