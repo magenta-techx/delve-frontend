@@ -47,17 +47,6 @@ const LoginForm = (): JSX.Element => {
         <KeyIcon />
       );
     } else {
-      // const data=res?.data
-      //        dispatch(
-      //          setBusinessData({
-      //            is_brand_owner: res.data.data.user.is_brand_owner,
-      //            number_of_owned_brands: data.data.user.number_of_owned_brands,
-      //            is_active: data.data.user.is_active,
-      //            current_plan: data.data.user.current_plan,
-      //            is_premium_plan_active: data.data.user.is_premium_plan_active,
-      //          })
-      //        );
-
       router.push('/dashboard');
       console.log(res);
     }

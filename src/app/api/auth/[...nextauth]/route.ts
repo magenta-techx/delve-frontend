@@ -114,6 +114,8 @@ export const authOptions: NextAuthOptions = {
 
         const { user, tokens } = result.data;
 
+        console.log('USer response: ', user);
+
         return {
           id: user.id,
 
@@ -149,7 +151,7 @@ export const authOptions: NextAuthOptions = {
         token.is_brand_owner = user.is_brand_owner;
         token.number_of_owned_brands = user.number_of_owned_brands;
         token.is_active = user.is_active;
-        token.current_plan = token.current_plan;
+        token.current_plan = user.current_plan;
         token.is_premium_plan_active = user.is_premium_plan_active;
       }
 

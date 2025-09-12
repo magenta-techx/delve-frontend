@@ -80,7 +80,7 @@ function BusinessIntroductionForm<T extends FormikValues>({
                   />
                 ) : (
                   <div
-                    className='flex h-24 w-36 items-center justify-center rounded-md border border-dashed border-primary hover:cursor-pointer sm:w-24'
+                    className='flex h-20 w-36 items-center justify-center rounded-md border border-dashed border-primary hover:cursor-pointer sm:h-24 sm:w-24'
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <div className=''>

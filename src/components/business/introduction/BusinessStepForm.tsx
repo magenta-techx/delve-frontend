@@ -14,25 +14,24 @@ import BusinessLocationForm from './BusinessLocationForm';
 import BusinessContactAndBusiness from './BusinessContactAndBusiness';
 import { FormikProps, FormikValues } from 'formik';
 import { BusinessIntroductionProps } from '@/types/business/types';
-// import { useSession } from 'next-auth/react';
-// import { useRouter } from 'next/navigation';
-// import { businessSchema } from '@/schemas/businessSchema';
-// import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectBusinessStep,
+  setBusinessRegistrationStage,
+} from '@/redux/slices/businessSlice';
+import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
+import { useRouter } from 'next/navigation';
 
 const BusinessStepForm = (): JSX.Element => {
-  // const redirect = useRouter();
-
-  const [pageNumber, setPageNumber] = useState(1);
+  const redirect = useRouter();
+  const formStep = useSelector(selectBusinessStep);
+  const dispatch = useDispatch();
+  const [pageNumber, setPageNumber] = useState(formStep);
   const [amenities, setAmeneties] = useState<string[]>([]);
 
   const formikRef = useRef<FormikProps<FormikValues>>(null);
 
   const handleContinue = async (): Promise<void> => {
-    if (pageNumber === 1) {
-      setPageNumber(prev => prev + 1);
-      return;
-    }
-
     if (!formikRef.current) return;
 
     const errors = await formikRef.current.validateForm();
@@ -54,12 +53,21 @@ const BusinessStepForm = (): JSX.Element => {
 
     await formikRef.current.submitForm();
     setPageNumber(prev => prev + 1);
+    dispatch(setBusinessRegistrationStage(pageNumber));
+  };
+
+  const handleBack = async (): Promise<void> => {
+    if (pageNumber === 0) {
+      redirect.push('/business/get-started');
+    } else {
+      setPageNumber(prev => prev - 1);
+      dispatch(setBusinessRegistrationStage(pageNumber));
+    }
   };
 
   const hanldeIntroductionFormsSubmittion = async (
     values: BusinessIntroductionProps
   ): Promise<void> => {
-    console.log('hanldeIntroductionFormsSubmittion: ', values);
     const formData = new FormData();
 
     Object.entries(values).forEach(([key, value]) => {
@@ -70,11 +78,28 @@ const BusinessStepForm = (): JSX.Element => {
       }
     });
 
-    await fetch('/api/business/business-introduction', {
-      method: 'POST',
-      body: formData, // 👈 this makes it multipart/form-data
-      // ❌ don’t set Content-Type, fetch will set the boundary automatically
-    });
+    try {
+      const res = await fetch('/api/business/business-introduction', {
+        method: 'POST',
+        body: formData, // ✅ automatically multipart/form-data
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error('Error submitting business intro:', data);
+        // optionally show toast or set error state
+        return;
+      }
+
+      console.log('✅ Business intro submitted successfully:', data);
+
+      // move to next step only if success
+      setPageNumber(prev => prev + 1);
+      dispatch(setBusinessRegistrationStage(pageNumber + 1));
+    } catch (error) {
+      console.error('Request failed:', error);
+    }
   };
 
   // const hanldeShowcaseBusinessFormsSubmittion = async (
@@ -217,53 +242,19 @@ const BusinessStepForm = (): JSX.Element => {
           )}
           {}
         </div>
-        <button className='flex text-sm text-gray-600 sm:hidden'>Cancel</button>
+
+        <button
+          onClick={handleBack}
+          className='flex items-center gap-2 text-sm text-gray-600 sm:hidden'
+        >
+          <ArrowLeftIconBlackSm /> <p>Back</p>
+        </button>
       </div>
       <div className='flex h-full w-full items-center justify-center'>
         <div
           className={`flex h-full w-full items-center justify-center py-10 sm:mb-0 sm:pt-14`}
         >
-          {/* <Formik
-            innerRef={formikRef}
-            initialValues={{
-              business_name: '',
-              about_business: '',
-              website: '',
-              amenity: '',
-              services: [
-                {
-                  service_title: '',
-                  description: '',
-                  file: '',
-                },
-              ],
-              business_location: '',
-            }}
-            validationSchema={businessSchema[pageNumber]}
-            onSubmit={values => {
-              if (pageNumber === 0) {
-                return hanldeIntroductionFormsSubmittion(values);
-              }
-              if (pageNumber === 1) {
-                return hanldeShowcaseBusinessFormsSubmittion(values);
-              }
-              if (pageNumber === 2) {
-                return;
-              }
-              if (pageNumber === 3 && amenities.length > 0) {
-                return hanldeBusinessAmenetiesFormsSubmittion(amenities);
-              }
-              if (pageNumber === 4) {
-                return hanldeBusinessServicesFormsSubmittion(values);
-              }
-              if (pageNumber === 6) {
-                return hanldeBusinessContactAndBusinessFormsSubmittion(values);
-              }
-              return undefined;
-            }}
-          > */}
           {PAGE_CONTENTS[pageNumber]?.component}
-          {/* </Formik> */}
         </div>
       </div>
 

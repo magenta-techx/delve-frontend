@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 
 export interface BusinessState {
   is_brand_owner: boolean | undefined;
@@ -6,6 +7,7 @@ export interface BusinessState {
   is_active: boolean | undefined;
   current_plan: string | undefined;
   is_premium_plan_active: boolean | undefined;
+  business_registrattion_step?: number;
 }
 
 const initialState: BusinessState = {
@@ -14,6 +16,7 @@ const initialState: BusinessState = {
   is_active: true,
   current_plan: '',
   is_premium_plan_active: false,
+  business_registrattion_step: 0,
 };
 
 const businessSlice = createSlice({
@@ -23,9 +26,18 @@ const businessSlice = createSlice({
     setBusinessData: (state, action: PayloadAction<BusinessState>) => {
       return { ...state, ...action.payload };
     },
+    setBusinessRegistrationStage: (state, action: PayloadAction<number>) => {
+      state.business_registrattion_step = action.payload;
+    },
     clearBusinessData: () => initialState,
   },
 });
 
-export const { setBusinessData, clearBusinessData } = businessSlice.actions;
+export const {
+  setBusinessData,
+  setBusinessRegistrationStage,
+  clearBusinessData,
+} = businessSlice.actions;
 export default businessSlice.reducer;
+export const selectBusinessStep = (state: RootState): number =>
+  state.business.business_registrattion_step ?? 0;

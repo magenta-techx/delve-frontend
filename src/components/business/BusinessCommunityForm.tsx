@@ -14,7 +14,7 @@ const BusinessCommunityForm = (): JSX.Element => {
   const navigate = useRouter();
   const handleSendOtp = async (values: { email: string }): Promise<void> => {
     console.warn(values);
-    navigate.push('/business/select-plan');
+    navigate.push('/business/introduction');
   };
   return (
     <Formik
