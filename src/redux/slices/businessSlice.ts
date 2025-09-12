@@ -29,7 +29,7 @@ const businessSlice = createSlice({
       return { ...state, ...action.payload };
     },
     setBusinessRegistrationStage: (state, action: PayloadAction<object>) => {
-      console.log(action.payload);
+      console.log(action.payload, state);
     },
     clearBusinessData: () => initialState,
   },
