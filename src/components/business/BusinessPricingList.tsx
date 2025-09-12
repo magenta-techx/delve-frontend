@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import ReactSwitch from 'react-switch';
 import { Button } from '../ui/Button';
+import { useRouter } from 'next/navigation';
 
 const BusinessPricingList = (): JSX.Element => {
   const [monthlyPlan, setMonthlyPlan] = useState(false);
+  const redirect = useRouter();
   const PRICING_PLANS = [
     {
       header: 'Feature/Benefits',
@@ -55,6 +57,11 @@ const BusinessPricingList = (): JSX.Element => {
       btnText: 'Premium',
     },
   ];
+  const handleSubscription = (plan: string): void => {
+    if (plan === 'freemium') {
+      redirect.push('/business/introduction');
+    }
+  };
   return (
     <div className='w-full'>
       {/* Mobile  */}
@@ -140,6 +147,7 @@ const BusinessPricingList = (): JSX.Element => {
                       <Button
                         variant={`${plan.btnText === 'freemium' ? 'black' : 'default'}`}
                         className='w-[86%] text-xs'
+                        onClick={() => handleSubscription(plan.btnText)}
                       >
                         Subscribe to {plan.btnText}
                       </Button>

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import '@/styles/auth.css';
+import AuthCarousel from '@/components/auth/AuthFormCarousel';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -10,5 +11,13 @@ export const metadata = {
 };
 
 export default function AuthLayout({ children }: AuthLayoutProps): JSX.Element {
-  return <section className='w-full p-[18px]'>{children}</section>;
+  return (
+    <section className='p-10'>
+      {children}
+
+      <div className='fixed right-0 top-3 h-[70vh] w-[50%]'>
+        <AuthCarousel />
+      </div>
+    </section>
+  );
 }
