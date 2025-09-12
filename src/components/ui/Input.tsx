@@ -41,7 +41,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {({ field, form, meta }: FieldProps) => {
           const isPassword = type === 'password';
           const isFile = type === 'file';
-          const inputType = isPassword && !showPassword ? 'password' : type;
+          const inputType = isPassword
+            ? showPassword
+              ? 'text'
+              : 'password'
+            : type;
 
           const hasValue = !!field.value;
 

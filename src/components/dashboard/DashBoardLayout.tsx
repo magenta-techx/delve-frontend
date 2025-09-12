@@ -1,13 +1,17 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
-import React from 'react';
+import { signOut, useSession } from 'next-auth/react';
 
 const DashBoardLayout = (): JSX.Element => {
+  const { data: session } = useSession();
+
+  console.log('Session in Dashboard: ', session);
+
   return (
-    <div>
-      {' '}
+    <div className='flex items-center gap-3'>
+      {session?.user.name}
       <button
+        className='rounded bg-primary px-3 py-1 text-white'
         onClick={() =>
           signOut({ redirect: true, callbackUrl: '/auth/signin-signup' })
         }

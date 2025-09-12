@@ -1,8 +1,7 @@
 import NextAuth, {
   DefaultSession,
-  // DefaultSession,
   NextAuthOptions,
-  // Session,
+  Session,
   User,
 } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -13,24 +12,6 @@ import { JWT } from 'next-auth/jwt';
 /**
  * --- Type Augmentation ---
  */
-declare module 'next-auth' {
-  interface User {
-    accessToken: string;
-    refreshToken: string;
-    is_brand_owner: boolean;
-    number_of_owned_brands: number;
-    is_active: boolean;
-
-    is_premium_plan_active: boolean;
-  }
-  interface Session {
-    user: {
-      accessToken: string;
-      refreshToken: string;
-    } & DefaultSession['user'];
-  }
-}
-
 declare module 'next-auth/jwt' {
   interface JWT {
     accessToken: string;
@@ -39,9 +20,32 @@ declare module 'next-auth/jwt' {
     is_brand_owner: boolean;
     number_of_owned_brands: number;
     is_active: boolean;
-
+    current_plan: string;
     is_premium_plan_active: boolean;
     error: string;
+  }
+}
+
+declare module 'next-auth' {
+  interface User {
+    accessToken: string;
+    refreshToken: string;
+    is_brand_owner: boolean;
+    number_of_owned_brands: number;
+    is_active: boolean;
+    current_plan: string;
+    is_premium_plan_active: boolean;
+  }
+  interface Session {
+    user: {
+      accessToken: string;
+      refreshToken: string;
+      is_brand_owner: boolean;
+      number_of_owned_brands: number;
+      is_active: boolean;
+      current_plan: string;
+      is_premium_plan_active: boolean;
+    } & DefaultSession['user'];
   }
 }
 
@@ -112,16 +116,18 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: user.id,
+
           name: `${user.first_name} ${user.last_name}`,
           email: user.email,
           image: user.profile_image,
+
           accessToken: tokens.access,
           refreshToken: tokens.refresh,
 
           is_brand_owner: user.is_brand_owner,
           number_of_owned_brands: user.number_of_owned_brands,
           is_active: user.is_active,
-
+          current_plan: user.current_plan,
           is_premium_plan_active: user.is_premium_plan_active,
         };
       },
@@ -134,15 +140,16 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }): Promise<JWT> {
+    async jwt({ token, user }: { token: JWT; user: User }): Promise<JWT> {
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
         token.accessTokenExpires = Date.now() + 60 * 60 * 1000;
+
         token.is_brand_owner = user.is_brand_owner;
         token.number_of_owned_brands = user.number_of_owned_brands;
         token.is_active = user.is_active;
-
+        token.current_plan = token.current_plan;
         token.is_premium_plan_active = user.is_premium_plan_active;
       }
 
@@ -155,6 +162,29 @@ export const authOptions: NextAuthOptions = {
       }
 
       return refreshAccessToken(token);
+    },
+    async session({
+      session,
+      token,
+    }: {
+      session: Session | DefaultSession;
+      token: JWT;
+    }): Promise<Session | DefaultSession> {
+      if (token) {
+        session.user = {
+          ...session.user,
+          email: token.email ?? null,
+          image: token.picture ?? null,
+          is_active: token.is_active ?? null,
+          is_brand_owner: token.is_brand_owner ?? null,
+          is_premium_plan_active: token.is_premium_plan_active ?? null,
+          current_plan: token.current_plan ?? null,
+          name: token.name ?? null,
+          number_of_owned_brands: token.number_of_owned_brands ?? null,
+        };
+      }
+
+      return session;
     },
   },
 };

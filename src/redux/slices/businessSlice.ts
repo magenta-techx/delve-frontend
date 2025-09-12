@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface BusinessState {
-  is_brand_owner: boolean;
-  number_of_owned_brands: number;
-  is_active: boolean;
-  current_plan: string;
-  is_premium_plan_active: boolean;
+  is_brand_owner: boolean | undefined;
+  number_of_owned_brands: number | undefined;
+  is_active: boolean | undefined;
+  current_plan: string | undefined;
+  is_premium_plan_active: boolean | undefined;
 }
 
 const initialState: BusinessState = {
