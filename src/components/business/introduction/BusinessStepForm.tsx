@@ -28,6 +28,7 @@ const BusinessStepForm = (): JSX.Element => {
   const dispatch = useDispatch();
   const [pageNumber, setPageNumber] = useState(formStep);
   const [amenities, setAmeneties] = useState<string[]>([]);
+  const [businessId, setBusinessId] = useState<number | null>(null);
 
   const formikRef = useRef<FormikProps<FormikValues>>(null);
 
@@ -53,7 +54,7 @@ const BusinessStepForm = (): JSX.Element => {
 
     await formikRef.current.submitForm();
     setPageNumber(prev => prev + 1);
-    dispatch(setBusinessRegistrationStage(pageNumber));
+    dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
   };
 
   const handleBack = async (): Promise<void> => {
@@ -61,7 +62,7 @@ const BusinessStepForm = (): JSX.Element => {
       redirect.push('/business/get-started');
     } else {
       setPageNumber(prev => prev - 1);
-      dispatch(setBusinessRegistrationStage(pageNumber));
+      dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
     }
   };
 
@@ -94,9 +95,11 @@ const BusinessStepForm = (): JSX.Element => {
 
       console.log('✅ Business intro submitted successfully:', data);
 
+      setBusinessId(data?.data?.id);
+
       // move to next step only if success
       setPageNumber(prev => prev + 1);
-      dispatch(setBusinessRegistrationStage(pageNumber + 1));
+      dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
     } catch (error) {
       console.error('Request failed:', error);
     }
@@ -269,7 +272,10 @@ const BusinessStepForm = (): JSX.Element => {
             </Button>
           )}
 
-          <Button onClick={handleContinue}>
+          <Button
+            onClick={handleContinue}
+            isSubmitting={formikRef.current?.isSubmitting ?? false}
+          >
             {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
             {pageNumber === 6 ? ' ' : <ArrowRightIconWhite />}
           </Button>

@@ -8,6 +8,7 @@ export interface BusinessState {
   current_plan: string | undefined;
   is_premium_plan_active: boolean | undefined;
   business_registrattion_step?: number;
+  business_id?: number;
 }
 
 const initialState: BusinessState = {
@@ -17,6 +18,7 @@ const initialState: BusinessState = {
   current_plan: '',
   is_premium_plan_active: false,
   business_registrattion_step: 0,
+  business_id: 0,
 };
 
 const businessSlice = createSlice({
@@ -26,8 +28,8 @@ const businessSlice = createSlice({
     setBusinessData: (state, action: PayloadAction<BusinessState>) => {
       return { ...state, ...action.payload };
     },
-    setBusinessRegistrationStage: (state, action: PayloadAction<number>) => {
-      state.business_registrattion_step = action.payload;
+    setBusinessRegistrationStage: (state, action: PayloadAction<object>) => {
+      console.log(action.payload);
     },
     clearBusinessData: () => initialState,
   },
