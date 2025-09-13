@@ -13,7 +13,7 @@ const BusinessTestimonies = ({
       {testimonies.map((testimony, key) => {
         return (
           <div
-            className={`flex items-center gap-[24px] ${key < 2 && 'border-b-2 border-gray-300'} py-4 pl-10 text-left`}
+            className={`flex items-center gap-[24px] ${key < 2 && 'border-b-2 border-gray-300'} px-4 py-4 text-left sm:pl-10`}
             key={key}
           >
             <p className='font-karma text-[53px] font-semibold'>
