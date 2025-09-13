@@ -62,7 +62,7 @@ const AuthCarousel = (): JSX.Element => {
       className='h-[100vh] rounded-xl'
     >
       {CAROUSEL_CONTENT.map((content, key) => (
-        <div key={key} className='w-[80%]'>
+        <div key={key} className='w-[40%]'>
           <Image
             src={content.imageUrl}
             alt={`Delve ${content.header}`}
