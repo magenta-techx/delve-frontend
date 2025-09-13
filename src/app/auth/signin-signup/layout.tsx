@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: AuthLayoutProps): JSX.Element {
     <section className='px-5 sm:p-10'>
       {children}
 
-      <div className='right-0 top-0 hidden h-[100vh] w-[50%] pt-5 sm:fixed'>
+      <div className='fixed right-0 top-0 hidden h-[100vh] w-[50%] pt-5 sm:flex'>
         <AuthCarousel />
       </div>
     </section>
