@@ -4,8 +4,8 @@ import React from 'react';
 const RoadMapIconsMobile = (): JSX.Element => {
   return (
     <svg
-      width='208'
-      height='272'
+      width='238'
+      height='292'
       viewBox='0 0 308 372'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'

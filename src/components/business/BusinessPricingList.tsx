@@ -65,7 +65,7 @@ const BusinessPricingList = (): JSX.Element => {
   return (
     <div className='w-full'>
       {/* Mobile  */}
-      <div className='mt-10 flex w-full flex-col justify-center gap-4 px-20 sm:hidden'>
+      <div className='mt-10 flex w-full flex-col justify-center gap-4 px-7 sm:hidden'>
         <div className='flex justify-center'>
           <div className='flex w-[180px] justify-center rounded-3xl border border-gray-300 bg-neutral text-sm'>
             <button

@@ -10,6 +10,7 @@ interface BusinessTextAndButtonProps {
   width?: string;
   header?: string;
   headerClass?: string;
+  btnClassName?: string;
   link?: string;
   buttonSize?: 'default' | 'sm' | 'lg' | 'icon';
 }
@@ -20,6 +21,7 @@ const BusinessTextAndButton = ({
   buttonSize = 'default',
   header,
   headerClass,
+  btnClassName,
   link = '',
   width = 'w-[280px]',
 }: BusinessTextAndButtonProps): JSX.Element => {
@@ -27,9 +29,9 @@ const BusinessTextAndButton = ({
     <div className={`${width} font-inter text-gray-600`}>
       {header && <h3 className={`${headerClass}`}>{header}</h3>}
       <p className={` ${textClass}`}>{text}</p>
-      <div className='w-[52%] text-xs'>
+      <div className='w-[52%] text-xs lg:w-[55%]'>
         {' '}
-        <Button asChild size={buttonSize}>
+        <Button asChild size={buttonSize} className={btnClassName}>
           <Link href={link} className='flex h-full items-center'>
             {buttonText}
           </Link>

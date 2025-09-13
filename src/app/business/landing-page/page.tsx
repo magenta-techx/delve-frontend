@@ -33,13 +33,13 @@ export default function DashboardPage(): JSX.Element {
   return (
     <section className='overflow-y-hidden'>
       <BuinessHero />
-      <div className='mb-20 hidden w-full justify-center sm:flex'>
+      <div className='mb-20 hidden w-full justify-center lg:flex'>
         <RoadMapIcons />
       </div>
-      <div className='mb-10 flex w-full justify-start px-20 sm:hidden'>
+      <div className='mb-10 flex w-full justify-start px-7 lg:hidden lg:px-20'>
         <RoadMapIconsMobile />
       </div>
-      <div className='mb-32 hidden w-full sm:flex sm:px-5'>
+      <div className='mb-32 hidden w-full px-5 lg:flex'>
         <Image
           src={'/business/business-man.jpg'}
           alt='Delveng business'
@@ -50,7 +50,7 @@ export default function DashboardPage(): JSX.Element {
           className='h-full'
         />
       </div>
-      <div className='mb-10 flex w-full px-20 sm:hidden'>
+      <div className='mb-10 flex w-full px-4 lg:hidden lg:px-20'>
         <Image
           src={'/business/business-man-mobile.png'}
           alt='Delveng business'
@@ -61,23 +61,25 @@ export default function DashboardPage(): JSX.Element {
           className='h-full'
         />
       </div>
-      <div className='mb-10 flex w-full flex-col items-center sm:mb-32 sm:px-0'>
-        <h1 className='ms:px-0 mb-5 w-full px-20 font-inter text-[14px] font-semibold sm:mb-16 sm:w-[800px] sm:text-center sm:text-3xl'>
+      <div className='mb-10 flex w-full flex-col items-center lg:mb-32 lg:px-0'>
+        <h1 className='ms:px-0 mb-5 w-full px-8 pr-10 font-inter text-[14px] font-semibold lg:mb-16 lg:w-[800px] lg:px-20 lg:text-center lg:text-3xl'>
           Delve is designed for all businesses, from established storefronts to
           independent service providers.
         </h1>
-        <div className='ms:px-0 flex flex-col items-center gap-10 px-20 sm:flex-row'>
-          <div className='flex flex-col gap-7 sm:gap-5'>
+        <div className='ms:px-0 flex flex-col items-center gap-10 lg:flex-row lg:pr-0'>
+          <div className='flex flex-col gap-7 pl-8 pr-7 lg:gap-5'>
             <BusinessTextAndButton
               text='Do you operate from a physical location, work remotely, or offer mobile services, you can list your business on Delve and connect with customers who need what you offer.'
               buttonText='Get started now'
-              width='sm:w-[300px] w-full'
+              width='lg:w-[300px] w-full'
               textClass='text-xs mb-4'
             />
-            <BusinessTestimonies testimonies={TESTIMONIES} />
+            <div className='lg:px-0'>
+              <BusinessTestimonies testimonies={TESTIMONIES} />
+            </div>
           </div>
 
-          <div className='flex flex-col items-center gap-3 sm:flex-row sm:gap-5'>
+          <div className='flex w-full flex-col items-center gap-3 lg:flex-row lg:gap-5'>
             <Image
               src={'/business/spa.png'}
               alt='Delveng spa'
@@ -85,9 +87,9 @@ export default function DashboardPage(): JSX.Element {
               height={482}
               priority
               quality={100}
-              className='w-[300px] sm:w-[545px]'
+              className='w-[320px] lg:w-[545px]'
             />
-            <div className='flex flex-row items-start gap-3 sm:flex-col sm:gap-5'>
+            <div className='flex flex-row items-start gap-3 lg:flex-col lg:gap-5'>
               <Image
                 src={'/business/salon.png'}
                 alt='Delveng spa'
@@ -95,7 +97,7 @@ export default function DashboardPage(): JSX.Element {
                 height={215}
                 priority
                 quality={100}
-                className='w-[150px] sm:w-[250px]'
+                className='w-[155px] lg:w-[238px]'
               />
               <Image
                 src={'/business/botique.png'}
@@ -104,13 +106,13 @@ export default function DashboardPage(): JSX.Element {
                 height={243}
                 priority
                 quality={100}
-                className='w-[150px] sm:w-[250px]'
+                className='w-[155px] lg:w-[238px]'
               />
             </div>
           </div>
         </div>
       </div>
-      <div className='mb-20 hidden justify-center sm:flex'>
+      <div className='mb-20 hidden justify-center lg:flex'>
         <Image
           src={'/business/clients.png'}
           alt='Delveng business'
@@ -120,7 +122,7 @@ export default function DashboardPage(): JSX.Element {
           quality={100}
         />
       </div>
-      <div className='flex justify-center sm:hidden'>
+      <div className='flex justify-center lg:hidden'>
         <Image
           src={'/business/clients-mobile.png'}
           alt='Delveng business'
@@ -130,8 +132,8 @@ export default function DashboardPage(): JSX.Element {
           quality={100}
         />
       </div>
-      <div className='flex w-full flex-col items-center py-10 sm:bg-[#FCFCFDCC] sm:py-24'>
-        <div className='hidden sm:flex'>
+      <div className='flex w-full flex-col items-center py-10 lg:bg-[#FCFCFDCC] lg:py-24'>
+        <div className='hidden lg:flex'>
           {' '}
           <BusinessSectionHeader text='Delve search listing pricing and features' />
         </div>
@@ -151,14 +153,14 @@ export default function DashboardPage(): JSX.Element {
         alt='Delve socials'
         width={1500}
         height={500}
-        className='hidden sm:flex'
+        className='hidden lg:flex'
       />
       <Image
         src={'/business/socials-mobile.png'}
         alt='Delve socials'
         width={500}
         height={500}
-        className='flex sm:hidden'
+        className='flex lg:hidden'
       />
       <BusinessFooter />
     </section>

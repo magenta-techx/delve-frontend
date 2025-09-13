@@ -7,6 +7,7 @@ import BusinessTextAndButton from './BusinessTextAndButton';
 import Link from 'next/link';
 import InstagramIconBlack from '@/assets/icons/business/InstagramIconBlack';
 import XIconBlack from '@/assets/icons/business/XIconBlack';
+import FacebookIcon from '@/assets/icons/thirdParty/FacebookIcon';
 
 const BusinessFooter = (): JSX.Element => {
   const FOOTER_LINKS = [
@@ -81,7 +82,7 @@ const BusinessFooter = (): JSX.Element => {
       header: 'Connect with us',
       links: [
         {
-          icon: <XIconBlack />,
+          icon: <FacebookIcon />,
           href: '/',
         },
         {
@@ -106,7 +107,7 @@ const BusinessFooter = (): JSX.Element => {
   ];
   return (
     <div className='flex flex-col items-start gap-5 pb-36 font-inter sm:flex-row sm:gap-14 sm:px-20 sm:pt-16'>
-      <div className='flex flex-col gap-0 bg-neutral px-20 sm:gap-3 sm:bg-transparent sm:px-0'>
+      <div className='flex flex-col gap-0 bg-neutral px-7 sm:gap-3 sm:bg-transparent sm:px-0'>
         <div className='-mb-7 sm:-mb-0'>
           <Logo icon={<DefaultLogoTextIcon />} link='/' />
         </div>
@@ -118,12 +119,13 @@ const BusinessFooter = (): JSX.Element => {
             buttonText='List your business'
             width='sm:w-[250px] w-full'
             buttonSize='sm'
+            btnClassName='lg:text-xs'
             textClass='text-[12px] text-black mb-4'
             headerClass='text-sm font-semibold text-black mb-2'
           />
         </div>
       </div>
-      <div className='flex flex-col items-start justify-between gap-10 px-20 sm:mt-5 sm:flex-row sm:px-0'>
+      <div className='flex flex-col items-start justify-between gap-10 px-7 sm:mt-5 sm:flex-row sm:px-0'>
         {FOOTER_LINKS.map((link, key) => {
           return (
             <div key={key}>
