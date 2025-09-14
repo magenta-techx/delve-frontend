@@ -101,7 +101,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
   const loginSignup = type === 'business' ? '' : 'text-white';
   return (
     <div
-      className={`z-40 flex h-24 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' ? 'bg-black/30 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-20 ${showMobileMenuItems ? 'fixed' : ''}`}
+      className={`z-50 flex h-24 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-20 ${showMobileMenuItems ? 'fixed' : ''}`}
     >
       <div
         className={`flex w-[1280px] items-center ${showMobileMenuItems ? 'justify-end' : 'justify-between'}`}
@@ -187,7 +187,10 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
         {/* Mobile menu bar  */}
         <div className='sm:hidden'>
           <Button
-            onClick={() => setShowMobileMenuItems(!showMobileMenuItems)}
+            onClick={() => {
+              console.log('Clicked');
+              setShowMobileMenuItems(!showMobileMenuItems);
+            }}
             variant='ghost'
           >
             {showMobileMenuItems ? <CancleIcon /> : menuBarIcon}

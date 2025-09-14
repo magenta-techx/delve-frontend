@@ -20,7 +20,7 @@ import { setBusinessData } from '@/redux/slices/businessSlice';
 
 const LoginForm = (): JSX.Element => {
   const dispatch = useDispatch();
-  const { data: sesson } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
   // Login Handler
@@ -47,23 +47,24 @@ const LoginForm = (): JSX.Element => {
         <KeyIcon />
       );
     } else {
-      router.push('/dashboard');
+      // router.push('/dashboard');
+      router.push('/business/get-started');
       console.log(res);
     }
   };
   useEffect(() => {
     dispatch(
       setBusinessData({
-        is_brand_owner: sesson?.user.is_brand_owner ?? undefined,
+        is_brand_owner: session?.user.is_brand_owner ?? undefined,
         number_of_owned_brands:
-          sesson?.user.number_of_owned_brands ?? undefined,
-        is_active: sesson?.user.is_active ?? undefined,
-        current_plan: sesson?.user.current_plan ?? undefined,
+          session?.user.number_of_owned_brands ?? undefined,
+        is_active: session?.user.is_active ?? undefined,
+        current_plan: session?.user.current_plan ?? undefined,
         is_premium_plan_active:
-          sesson?.user.is_premium_plan_active ?? undefined,
+          session?.user.is_premium_plan_active ?? undefined,
       })
     );
-  }, [sesson, dispatch]);
+  }, [session, dispatch]);
   return (
     <Formik
       initialValues={{ email: '', password: '' }}

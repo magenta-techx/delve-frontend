@@ -1,32 +1,66 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
-// import Input from '@/components/ui/Input';
-import { Form, useFormikContext } from 'formik';
-// Formik
-import { Button } from '@/components/ui/Button';
+import { Form, Formik } from 'formik';
 import Input from '@/components/ui/Input';
-// import { amenitySchema } from '@/schemas/businessSchema';
+import { amenitySchema } from '@/schemas/businessSchema';
+import { BusinessAmenitiesTypeProp } from '@/types/business/types';
+
+interface amenitiesType {
+  id: number | null;
+  icon_name: string;
+  name: string;
+}
 
 interface BusinessAmenetiesProps {
-  amenities: string[];
-  setAmeneties: (value: string[]) => void;
+  // amenity: string | File;
+  selectedAmenities: BusinessAmenitiesTypeProp[];
+  setSelectedAmenities: (value: BusinessAmenitiesTypeProp[]) => void;
 }
+
 const BusinessAmeneties = ({
-  amenities,
-  setAmeneties,
+  setSelectedAmenities,
+
+  selectedAmenities,
 }: BusinessAmenetiesProps): JSX.Element => {
   // Grab Formik values
-  const { values, setFieldValue } = useFormikContext<{
-    amenity: string;
-  }>();
+  // const { values, setFieldValue } = useFormikContext<{
+  //   amenity: string;
+  // }>();
+  // const AMENITY_LIST = [
+  //   {
+  //     icon:<
+  //   }
+  // ]
 
-  const handleAdd = (): void => {
-    if (values.amenity?.length >= 4) {
-      setAmeneties([...amenities, values.amenity]);
-      setFieldValue('amenity', '', false);
-    }
-    return;
+  const [amenities, setAmenities] = useState<amenitiesType[]>([
+    {
+      id: null,
+      icon_name: '',
+      name: '',
+    },
+  ]);
+  const handleAdd = (amenity: amenitiesType): void => {
+    setSelectedAmenities([...selectedAmenities, amenity]);
   };
+
+  useEffect(() => {
+    const fetchAmenities = async (): Promise<void> => {
+      try {
+        const res = await fetch('/api/business/business-amenities', {
+          method: 'GET',
+        });
+
+        const data = await res.json();
+        console.log('amenities: ', data);
+        if (data?.status) {
+          setAmenities(data?.data);
+        }
+      } catch (error) {
+        console.log('Error amennities: ', error);
+      }
+    };
+    fetchAmenities();
+  }, []);
   return (
     <div className='sm:w-[400px]'>
       {' '}
@@ -35,63 +69,72 @@ const BusinessAmeneties = ({
         header='Add your business ameneties'
         paragraph='Select the ameneties your business offers from the list of available options'
       />
-      {/* <Formik
-        initialValues={{
-          amenity: '',
-        }}
+      <Formik
+        initialValues={{ name: '' }}
         validationSchema={amenitySchema}
-        onSubmit={(values, { resetForm }) => {
-          // if (pageNumber === 1) {
-          //   return handleSubmit(values);
-          // }
-          // return undefined;
-          setAmeneties(prev => [...prev, values.amenity]);
-          resetForm();
-          console.log(values);
+        onSubmit={values => {
+          const { name } = values;
+          setSelectedAmenities([
+            ...selectedAmenities,
+            { name: name, id: 0, icon_name: '' },
+          ]);
         }}
       >
-        {() => ( */}
-      <Form className='mt-4 flex w-full flex-col gap-3'>
-        {/* Fields */}
-        <>
-          <Input
-            name='amenity'
-            type='text'
-            label='Amenities'
-            className='w-full'
-            placeholder='Type here to add'
-
-            // onChange={e => setAmenity(e.target.value)}
-          />
-          <div className='grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-3'>
-            {amenities.map((amenity, key) => (
-              <div
-                key={key}
-                className='relative rounded-lg border border-gray-200 bg-neutral-50 px-4 py-2 text-xs text-black text-primary'
+        {({ setFieldValue, errors }) => (
+          <Form className='mt-4 flex w-full flex-col gap-3'>
+            <Input
+              name='name'
+              label='Amenities (Optional)'
+              onChange={(e: string | File) => {
+                if (typeof e === 'string') {
+                  setFieldValue('name', e);
+                }
+              }}
+            />
+            {errors.name && (
+              <div className='text-sm text-red-600'>{errors.name}</div>
+            )}
+          </Form>
+        )}
+      </Formik>
+      <div className='mb-2 grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-3'>
+        {selectedAmenities.length > 0 &&
+          selectedAmenities.map((amenity, key) => (
+            <div
+              key={key}
+              className='relative rounded-lg border border-gray-200 bg-neutral-50 px-4 py-2 text-xs text-black text-primary'
+            >
+              <span className='truncate text-sm'>{amenity.name} </span>
+              <button
+                type='button'
+                onClick={() => {
+                  setSelectedAmenities(
+                    selectedAmenities.filter(a => a !== amenity)
+                  );
+                }}
+                className='absolute -left-4 top-[6px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-white'
               >
-                {amenity}
-                <button
-                  type='button'
-                  onClick={() => {
-                    setAmeneties(amenities.filter(a => a !== amenity));
-                  }}
-                  className='absolute -left-4 top-[6px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-white'
-                >
-                  X
-                </button>
-              </div>
-            ))}
-          </div>
-          <div className='w-[150px]'>
-            <Button type='button' onClick={handleAdd}>
-              {' '}
-              + Add
-            </Button>
-          </div>
-        </>
-      </Form>
-      {/* )}
-      </Formik> */}
+                X
+              </button>
+            </div>
+          ))}
+      </div>
+      {amenities && (
+        <div className='flex flex-col justify-start gap-4 rounded-md bg-neutral py-3 shadow-md lg:w-[50%]'>
+          {amenities.map((amenity, key) => {
+            return (
+              <button
+                key={key}
+                onClick={() => handleAdd(amenity)}
+                className='flex items-center px-10 text-left text-sm capitalize focus:text-primary'
+              >
+                <span>{amenity?.icon_name}</span>
+                <span className='truncate'>{amenity?.name}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

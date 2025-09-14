@@ -9,19 +9,16 @@ import Image from 'next/image';
 import { EffectCoverflow } from 'swiper/modules';
 import BinIcon from '@/assets/icons/BinIcon';
 
-// interface BusinessIntroductionFormProps {
-//   handleSubmit?: (values: {
-//     business_name: string;
-//     about_business: string;
-//     website: string;
-//   }) => void | Promise<void>;
-// }
-const BusinessShowCaseForm = (): JSX.Element => {
+interface BusinessShowCaseFormProps {
+  setBusinessShowCaseFile: (files: File | undefined) => void;
+}
+const BusinessShowCaseForm = ({
+  setBusinessShowCaseFile,
+}: BusinessShowCaseFormProps): JSX.Element => {
   const [files, setFiles] = useState<File[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const handleRemoveFile = (fileName: string): void => {
     const updatedFiles = files.filter(file => file.name !== fileName);
-    setFiles(updatedFiles);
     setFiles(updatedFiles);
   };
   return (
@@ -37,7 +34,12 @@ const BusinessShowCaseForm = (): JSX.Element => {
             spaceBetween={30}
             slidesPerView={5}
             centeredSlides
-            onSlideChange={swiper => setActiveIndex(swiper.activeIndex)}
+            onSlideChange={swiper => {
+              const newIndex = swiper.activeIndex;
+              setActiveIndex(newIndex);
+
+              setBusinessShowCaseFile(files[newIndex]);
+            }}
             slideToClickedSlide
             // className='flex w-full'
             className='flex w-full items-center justify-center py-5'
@@ -88,7 +90,16 @@ const BusinessShowCaseForm = (): JSX.Element => {
         </div>
       )}
 
-      <FileUpload onFileSelect={files => setFiles(files)} files={files} />
+      <FileUpload
+        onFileSelect={newFiles => {
+          setFiles(newFiles);
+          if (newFiles.length > 0) {
+            setActiveIndex(0);
+            setBusinessShowCaseFile(newFiles[0]); // ✅ first file as default
+          }
+        }}
+        files={files}
+      />
     </div>
   );
 };

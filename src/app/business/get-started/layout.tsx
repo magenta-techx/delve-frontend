@@ -10,13 +10,15 @@ export default async function DashboardLayout({
 }: DashboardLayoutProps): Promise<JSX.Element> {
   return (
     <section
-      className={`h-screen overflow-x-hidden bg-[url("/business/get-started.png")] bg-cover bg-top bg-no-repeat bg-blend-overlay`}
+      className={`-z-10 h-screen bg-[url("/business/get-started.png")] bg-cover bg-top bg-no-repeat`}
     >
-      <div className='absolute inset-0 h-full w-full bg-black/60'></div>
+      <div className='insert-0 absolute h-screen w-full bg-black/60'></div>
 
-      <Navbar type='community' authFormButtons={false} />
+      <div className='flex w-full flex-col items-center'>
+        <Navbar type='community' authFormButtons={false} />
 
-      <div className='flex w-full flex-col items-center'>{children}</div>
+        {children}
+      </div>
     </section>
   );
 }

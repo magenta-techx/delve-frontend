@@ -13,58 +13,38 @@ import BusinessServicesForm from './BusinessServicesForm';
 import BusinessLocationForm from './BusinessLocationForm';
 import BusinessContactAndBusiness from './BusinessContactAndBusiness';
 import { FormikProps, FormikValues } from 'formik';
-import { BusinessIntroductionProps } from '@/types/business/types';
+import {
+  BusinessAmenitiesTypeProp,
+  BusinessIntroductionProps,
+  BusinessShowCaseProps,
+} from '@/types/business/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  clearBusinessData,
+  selectBusinessId,
   selectBusinessStep,
   setBusinessRegistrationStage,
 } from '@/redux/slices/businessSlice';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 const BusinessStepForm = (): JSX.Element => {
   const redirect = useRouter();
   const formStep = useSelector(selectBusinessStep);
+  const currentBusinessId = useSelector(selectBusinessId);
   const dispatch = useDispatch();
   const [pageNumber, setPageNumber] = useState(formStep);
-  const [amenities, setAmeneties] = useState<string[]>([]);
-  const [businessId, setBusinessId] = useState<number | null>(null);
+  const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File>();
+  const [selectedAmenities, setSelectedAmenities] = useState<
+    BusinessAmenitiesTypeProp[] | []
+  >([]);
+  // const [amenity, setAmenity] = useState<string | File>('');
+  const [businessId, setBusinessId] = useState<number | undefined>(
+    currentBusinessId ?? undefined
+  );
 
   const formikRef = useRef<FormikProps<FormikValues>>(null);
-
-  const handleContinue = async (): Promise<void> => {
-    if (!formikRef.current) return;
-
-    const errors = await formikRef.current.validateForm();
-    console.log(errors);
-
-    if (Object.keys(errors).length > 0) {
-      // prevent moving forward
-      formikRef.current.setTouched(
-        Object.keys(errors).reduce((acc, key) => ({ ...acc, [key]: true }), {})
-      );
-      return;
-    }
-
-    console.log(formikRef.current.values);
-
-    if (pageNumber === 0) {
-      return hanldeIntroductionFormsSubmittion(formikRef.current.values);
-    }
-
-    await formikRef.current.submitForm();
-    setPageNumber(prev => prev + 1);
-    dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
-  };
-
-  const handleBack = async (): Promise<void> => {
-    if (pageNumber === 0) {
-      redirect.push('/business/get-started');
-    } else {
-      setPageNumber(prev => prev - 1);
-      dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
-    }
-  };
 
   const hanldeIntroductionFormsSubmittion = async (
     values: BusinessIntroductionProps
@@ -88,87 +68,170 @@ const BusinessStepForm = (): JSX.Element => {
       const data = await res.json();
 
       if (!res.ok) {
-        console.error('Error submitting business intro:', data);
+        alert(`Error submitting business intro: ${data}`);
+        // optionally show toast or set error state
+        return;
+      }
+
+      console.log('✅ Business intro submitted successfully:', data);
+      console.log('data?.data?.id:', data?.data?.id);
+
+      // move to next step only if success
+      if (data?.data?.id) {
+        setBusinessId(data?.data?.id);
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+            business_id: data?.data?.id,
+          })
+        );
+        setPageNumber(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('Request failed:', error);
+    }
+  };
+
+  const hanldeShowCaseFormsSubmittion = async (
+    values: BusinessShowCaseProps
+  ): Promise<void> => {
+    if (!values.images) {
+      return alert('Provide at least one image');
+    }
+    const formData = new FormData();
+
+    Object.entries(values).forEach(([key, value]) => {
+      if (value && typeof value === 'object' && 'name' in value) {
+        formData.append(key, value as File);
+      } else if (value) {
+        formData.append(key, String(value));
+      }
+    });
+
+    try {
+      const res = await fetch('/api/business/business-showcase', {
+        method: 'POST',
+        body: formData, // ✅ automatically multipart/form-data
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(`Error submitting business intro: ${res}`);
         // optionally show toast or set error state
         return;
       }
 
       console.log('✅ Business intro submitted successfully:', data);
 
-      setBusinessId(data?.data?.id);
-
       // move to next step only if success
-      setPageNumber(prev => prev + 1);
-      dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
+      if (data?.status) {
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+            business_id: data?.data?.id,
+          })
+        );
+        setPageNumber(prev => prev + 1);
+      }
     } catch (error) {
       console.error('Request failed:', error);
     }
   };
 
-  // const hanldeShowcaseBusinessFormsSubmittion = async (
-  //   values: BusinessOnboardingFormProps
-  // ): Promise<void> => {
-  //   try {
-  //     const res = await fetch('/api/auth/home', {
-  //       method: 'POST',
-  //       body: JSON.stringify(values),
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
+  const hanleAmenitiesFormsSubmittion = async (): Promise<void> => {
+    try {
+      if (selectedAmenities.length === 0) {
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+          })
+        );
+        return setPageNumber(prev => prev + 1);
+      }
 
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+      const res = await fetch('/api/business/business-amenities', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          business_id: businessId,
+          amenities_ids: selectedAmenities.map(amenity => amenity.id), // send only IDs
+        }),
+      });
 
-  // const hanldeBusinessAmenetiesFormsSubmittion = async (
-  //   values: string[]
-  // ): Promise<void> => {
-  //   try {
-  //     const res = await fetch('/api/auth/amenities', {
-  //       method: 'POST',
-  //       body: JSON.stringify(values),
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
+      const data = await res.json();
+      console.log('amenities data: ', data);
 
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+      if (!res.ok) {
+        alert(`Error submitting business intro: ${data}`);
+        // optionally show toast or set error state
+        return;
+      }
 
-  // const hanldeBusinessServicesFormsSubmittion = async (
-  //   values: BusinessOnboardingFormProps
-  // ): Promise<void> => {
-  //   try {
-  //     const res = await fetch('/api/auth/amenities', {
-  //       method: 'POST',
-  //       body: JSON.stringify(values),
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
+      dispatch(
+        setBusinessRegistrationStage({
+          business_registration_step: pageNumber + 1,
+        })
+      );
+      setPageNumber(prev => prev + 1);
+    } catch (error) {
+      console.error('Request failed:', error);
+    }
+  };
 
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const handleContinue = async (): Promise<void> => {
+    if (pageNumber === 1) {
+      return hanldeShowCaseFormsSubmittion({
+        business_id: businessId,
+        images: businessShowCaseFile,
+      });
+    }
+    if (pageNumber === 3) {
+      return hanleAmenitiesFormsSubmittion();
+    }
 
-  // const hanldeBusinessContactAndBusinessFormsSubmittion = async (
-  //   values: BusinessOnboardingFormProps
-  // ): Promise<void> => {
-  //   try {
-  //     const res = await fetch('/api/auth/amenities', {
-  //       method: 'POST',
-  //       body: JSON.stringify(values),
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
+    // For forms that require formik validations or have formik fields
+    if (!formikRef.current) return;
 
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
+    const errors = await formikRef.current.validateForm();
+    console.log(errors);
 
-  //   return redirect.push('/business/business-submitted');
+    if (Object.keys(errors).length > 0) {
+      // prevent moving forward
+      formikRef.current.setTouched(
+        Object.keys(errors).reduce((acc, key) => ({ ...acc, [key]: true }), {})
+      );
+      return;
+    }
+
+    console.log(formikRef.current.values);
+
+    if (pageNumber === 0) {
+      return hanldeIntroductionFormsSubmittion(formikRef.current.values);
+    }
+
+    await formikRef.current.submitForm();
+  };
+
+  const handleBack = async (): Promise<void> => {
+    if (pageNumber === 0) {
+      redirect.push('/business/get-started');
+    } else {
+      setPageNumber(prev => prev - 1);
+      dispatch(
+        setBusinessRegistrationStage({
+          business_registration_step: pageNumber - 1,
+        })
+      );
+    }
+  };
+
+  // const handleBUsinessDelete = async (): Promise<void> => {
+  //   const res = await fetch('/api/business/business-delete', {
+  //     method: 'DELETE',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ business_id: businessId }),
+  //   });
+  //   console.log('Deleted business: ', res);
   // };
 
   const PAGE_CONTENTS = [
@@ -182,14 +245,18 @@ const BusinessStepForm = (): JSX.Element => {
             description: '',
             website: '',
             logo: '',
-          }} // ✅ still works fine
+          }}
           onSubmit={values => console.log('Form submitted:', values)}
         />
       ),
     },
     {
       id: 1,
-      component: <BusinessShowCaseForm />,
+      component: (
+        <BusinessShowCaseForm
+          setBusinessShowCaseFile={File => setBusinessShowCaseFile(File)}
+        />
+      ),
     },
     {
       id: 2,
@@ -198,7 +265,10 @@ const BusinessStepForm = (): JSX.Element => {
     {
       id: 3,
       component: (
-        <BusinessAmeneties amenities={amenities} setAmeneties={setAmeneties} />
+        <BusinessAmeneties
+          setSelectedAmenities={setSelectedAmenities}
+          selectedAmenities={selectedAmenities}
+        />
       ),
     },
     {
@@ -214,8 +284,20 @@ const BusinessStepForm = (): JSX.Element => {
       component: <BusinessContactAndBusiness />,
     },
   ];
+
+  const handleLogOut = (): void => {
+    dispatch(clearBusinessData());
+    signOut({ redirect: true, callbackUrl: '/auth/signin-signup' });
+  };
   return (
     <section className='relative h-full w-full sm:pb-0'>
+      <Button
+        className='rounded bg-primary px-3 py-1 text-white'
+        onClick={handleLogOut}
+      >
+        Sign Out
+      </Button>
+
       <div className='-mt-4 mb-2 hidden w-full items-center gap-1 sm:flex'>
         {PAGE_CONTENTS.map((content, key) => {
           return (
@@ -229,6 +311,8 @@ const BusinessStepForm = (): JSX.Element => {
       </div>
       <div className='flex w-full items-center justify-between'>
         <Logo icon={<DefaultLogoTextIcon />} />
+
+        {/* Desktop  */}
         <div className='hidden items-center gap-2 sm:flex'>
           {pageNumber !== 0 && (
             <Button
@@ -261,39 +345,48 @@ const BusinessStepForm = (): JSX.Element => {
         </div>
       </div>
 
-      <div className='flex flex-col gap-20 sm:hidden'>
-        <div className='flex items-center gap-10'>
-          {pageNumber !== 0 && (
+      {/* Mobile  */}
+      {pageNumber != 2 && (
+        <div className='flex flex-col gap-20 sm:hidden'>
+          <div className='flex items-center gap-10'>
+            {/* {pageNumber !== 0 && (
             <Button
               onClick={() => setPageNumber(prev => prev - 1)}
               variant='black'
             >
               <ArrowLefttIconWhite /> Back
             </Button>
-          )}
+          )} */}
 
-          <Button
-            onClick={handleContinue}
+            <Button
+              onClick={handleContinue}
+              isSubmitting={formikRef.current?.isSubmitting ?? false}
+            >
+              {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
+              {pageNumber === 6 ? ' ' : <ArrowRightIconWhite />}
+            </Button>
+            {/* <Button
+            onClick={handleBUsinessDelete}
             isSubmitting={formikRef.current?.isSubmitting ?? false}
           >
-            {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
-            {pageNumber === 6 ? ' ' : <ArrowRightIconWhite />}
+            Delete business
           </Button>
 
-          {}
+          {} */}
+          </div>
+          <div className='mb-2 flex w-full items-center gap-1'>
+            {PAGE_CONTENTS.map((content, key) => {
+              return (
+                <div
+                  key={key}
+                  id={`${content.id}`}
+                  className={`${content.id === pageNumber ? 'bg-primary' : 'bg-[#F0F0F0]'} h-1 w-[33.33%] rounded-xl`}
+                ></div>
+              );
+            })}
+          </div>
         </div>
-        <div className='mb-2 flex w-full items-center gap-1'>
-          {PAGE_CONTENTS.map((content, key) => {
-            return (
-              <div
-                key={key}
-                id={`${content.id}`}
-                className={`${content.id === pageNumber ? 'bg-primary' : 'bg-[#F0F0F0]'} h-1 w-[33.33%] rounded-xl`}
-              ></div>
-            );
-          })}
-        </div>
-      </div>
+      )}
     </section>
   );
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef } from 'react';
-import { FieldArray, Form, useFormikContext, FormikContextType } from 'formik';
+import { FieldArray, Form, Formik, FormikContextType } from 'formik';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
 import Input from '@/components/ui/Input';
 import TextArea from '@/components/ui/TextArea';
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import Image from 'next/image';
 
 interface Service {
-  service_title: string;
+  title: string;
   description: string;
   image: File | null;
 }
@@ -23,8 +23,8 @@ type ServiceItemProps = {
   index: number;
   fileInputRefs: React.MutableRefObject<
     Record<number, HTMLInputElement | null>
-  >; // ✅ fixed extra '>'
-  setFieldValue: FormikContextType<FormValues>['setFieldValue']; // ✅ no 'any'
+  >;
+  setFieldValue: FormikContextType<FormValues>['setFieldValue'];
   remove: (index: number) => void;
   canRemove: boolean;
 };
@@ -53,7 +53,7 @@ const ServiceItemComponent = ({
   return (
     <div className='flex flex-col gap-3'>
       <Input
-        name={`services[${index}].service_title`}
+        name={`services[${index}].title`}
         type='text'
         label='Title of Service'
         className='w-full'
@@ -129,9 +129,17 @@ const ServiceItem = React.memo(ServiceItemComponent);
 ServiceItem.displayName = 'ServiceItem'; // ✅ satisfies react/display-name
 
 const BusinessServicesForm = (): JSX.Element => {
-  const { values, setFieldValue } = useFormikContext<FormValues>();
+  // const { values, setFieldValue } = useFormikContext<FormValues>();
   const fileInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
-
+  const initialValues: FormValues = {
+    services: [
+      {
+        title: '',
+        description: '',
+        image: null,
+      },
+    ],
+  };
   return (
     <div className='sm:w-[400px]'>
       <BusinessIntroductionFormHeader
@@ -139,41 +147,53 @@ const BusinessServicesForm = (): JSX.Element => {
         header='Add Business Services'
         paragraph='Showcase your services to attract the right clients and boost bookings'
       />
+      <Formik
+        initialValues={initialValues}
+        onSubmit={values => {
+          console.log('Values: ', values);
+        }}
+      >
+        {({ values, setFieldValue }) => (
+          <Form className='mt-3 w-full'>
+            <FieldArray name='services'>
+              {({ push, remove }) => (
+                <div className='flex flex-col gap-4'>
+                  {values.services.map((service, index) => (
+                    <ServiceItemComponent
+                      key={index}
+                      service={service}
+                      index={index}
+                      fileInputRefs={fileInputRefs}
+                      setFieldValue={setFieldValue}
+                      remove={remove}
+                      canRemove={values.services.length > 1}
+                    />
+                  ))}
 
-      <Form className='mt-3 w-full'>
-        <FieldArray name='services'>
-          {({ push, remove }) => (
-            <div className='flex flex-col gap-6'>
-              {values.services.map((service, index) => (
-                <ServiceItem
-                  key={index}
-                  service={service}
-                  index={index}
-                  fileInputRefs={fileInputRefs}
-                  setFieldValue={setFieldValue}
-                  remove={remove}
-                  canRemove={values.services.length > 1}
-                />
-              ))}
-
-              <div className='w-[70px]'>
-                {' '}
-                <Button
-                  type='button'
-                  size='sm'
-                  variant='outline'
-                  className='border border-gray-200 bg-transparent text-primary hover:bg-transparent'
-                  onClick={() =>
-                    push({ service_title: '', description: '', image: null })
-                  }
-                >
-                  + Add
-                </Button>
-              </div>
-            </div>
-          )}
-        </FieldArray>
-      </Form>
+                  <div className='w-[70px]'>
+                    {' '}
+                    <Button
+                      type='button'
+                      size='sm'
+                      variant='outline'
+                      className='border border-gray-200 bg-transparent text-primary hover:bg-transparent'
+                      onClick={() =>
+                        push({
+                          title: '',
+                          description: '',
+                          image: null,
+                        })
+                      }
+                    >
+                      + Add
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </FieldArray>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };

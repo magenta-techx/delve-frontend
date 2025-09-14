@@ -7,8 +7,8 @@ export interface BusinessState {
   is_active: boolean | undefined;
   current_plan: string | undefined;
   is_premium_plan_active: boolean | undefined;
-  business_registrattion_step?: number;
-  business_id?: number;
+  business_registration_step?: number;
+  business_id?: number | null;
 }
 
 const initialState: BusinessState = {
@@ -17,8 +17,8 @@ const initialState: BusinessState = {
   is_active: true,
   current_plan: '',
   is_premium_plan_active: false,
-  business_registrattion_step: 0,
-  business_id: 0,
+  business_registration_step: 3,
+  business_id: 7,
 };
 
 const businessSlice = createSlice({
@@ -28,8 +28,20 @@ const businessSlice = createSlice({
     setBusinessData: (state, action: PayloadAction<BusinessState>) => {
       return { ...state, ...action.payload };
     },
-    setBusinessRegistrationStage: (state, action: PayloadAction<object>) => {
-      console.log(action.payload, state);
+    setBusinessRegistrationStage: (
+      state,
+      action: PayloadAction<{
+        business_registration_step: number;
+        business_id?: number | null;
+      }>
+    ) => {
+      console.log(action.payload);
+      //134.209.19.132:8000/api/business/{business_id}/delete/
+      http: state.business_registration_step =
+        action.payload.business_registration_step;
+      if (action.payload.business_id !== undefined) {
+        state.business_id = action.payload.business_id;
+      }
     },
     clearBusinessData: () => initialState,
   },
@@ -42,4 +54,6 @@ export const {
 } = businessSlice.actions;
 export default businessSlice.reducer;
 export const selectBusinessStep = (state: RootState): number =>
-  state.business.business_registrattion_step ?? 0;
+  state.business.business_registration_step ?? 0;
+export const selectBusinessId = (state: RootState): number | null =>
+  state.business.business_id ?? null;
