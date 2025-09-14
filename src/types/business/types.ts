@@ -4,3 +4,7 @@ export type BusinessIntroductionProps = {
   about_business?: string;
   website?: string;
 };
+export type BusinessShowCaseProps = {
+  business_id?: number | undefined;
+  images?: File | undefined;
+};

@@ -8,19 +8,36 @@ import Input from '../ui/Input';
 import { emailValidator } from '@/utils/validators';
 import ArrowRightIconGrey from '@/assets/icons/business/ArrowRightIconGrey';
 import ArrowRightIconBlack from '@/assets/icons/business/ArrowRightIconBlack';
+import { useSession } from 'next-auth/react';
 // import { Button } from '@radix-ui/themes';
 
 const BusinessCommunityForm = (): JSX.Element => {
   const navigate = useRouter();
-  const handleSendOtp = async (values: { email: string }): Promise<void> => {
-    console.warn(values);
-    navigate.push('/business/introduction');
+  const { data: session } = useSession();
+  const handleFormSubmit = async (values: { email: string }): Promise<void> => {
+    if (session?.user.email != values?.email) {
+      return alert("Current logged in user email don't match email inserted");
+    }
+
+    try {
+      const res = await fetch('/api/user/getUser', {
+        method: 'GET',
+      });
+
+      if (res.ok) {
+        navigate.push('/business/introduction');
+      } else {
+        navigate.push(`/auth/signin-signup?login=false`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <Formik
-      initialValues={{ email: '' }}
+      initialValues={{ email: session?.user.email || '' }}
       validationSchema={forgotPasswordSchema}
-      onSubmit={handleSendOtp}
+      onSubmit={handleFormSubmit}
     >
       {({ errors, values }) => (
         <Form className='flex w-full flex-col justify-center gap-3 px-5 sm:flex-row sm:px-0'>

@@ -13,7 +13,10 @@ import BusinessServicesForm from './BusinessServicesForm';
 import BusinessLocationForm from './BusinessLocationForm';
 import BusinessContactAndBusiness from './BusinessContactAndBusiness';
 import { FormikProps, FormikValues } from 'formik';
-import { BusinessIntroductionProps } from '@/types/business/types';
+import {
+  BusinessIntroductionProps,
+  BusinessShowCaseProps,
+} from '@/types/business/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectBusinessStep,
@@ -27,8 +30,9 @@ const BusinessStepForm = (): JSX.Element => {
   const formStep = useSelector(selectBusinessStep);
   const dispatch = useDispatch();
   const [pageNumber, setPageNumber] = useState(formStep);
+  const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File>();
   const [amenities, setAmeneties] = useState<string[]>([]);
-  const [businessId, setBusinessId] = useState<number | null>(null);
+  const [businessId, setBusinessId] = useState<number | undefined>(5);
 
   const formikRef = useRef<FormikProps<FormikValues>>(null);
 
@@ -51,10 +55,14 @@ const BusinessStepForm = (): JSX.Element => {
     if (pageNumber === 0) {
       return hanldeIntroductionFormsSubmittion(formikRef.current.values);
     }
+    if (pageNumber === 1) {
+      return hanldeShowCaseFormsSubmittion({
+        business_id: businessId,
+        images: businessShowCaseFile,
+      });
+    }
 
     await formikRef.current.submitForm();
-    setPageNumber(prev => prev + 1);
-    dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
   };
 
   const handleBack = async (): Promise<void> => {
@@ -62,7 +70,11 @@ const BusinessStepForm = (): JSX.Element => {
       redirect.push('/business/get-started');
     } else {
       setPageNumber(prev => prev - 1);
-      dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
+      dispatch(
+        setBusinessRegistrationStage({
+          business_registration_step: pageNumber - 1,
+        })
+      );
     }
   };
 
@@ -88,21 +100,78 @@ const BusinessStepForm = (): JSX.Element => {
       const data = await res.json();
 
       if (!res.ok) {
-        console.error('Error submitting business intro:', data);
+        alert(`Error submitting business intro: ${data}`);
         // optionally show toast or set error state
         return;
       }
 
       console.log('✅ Business intro submitted successfully:', data);
 
-      setBusinessId(data?.data?.id);
-
       // move to next step only if success
-      setPageNumber(prev => prev + 1);
-      dispatch(setBusinessRegistrationStage({ pageNumber, businessId }));
+      if (data?.data?.id) {
+        setBusinessId(data?.data?.id);
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+            business_id: data?.data?.id,
+          })
+        );
+      }
     } catch (error) {
       console.error('Request failed:', error);
     }
+  };
+  const hanldeShowCaseFormsSubmittion = async (
+    values: BusinessShowCaseProps
+  ): Promise<void> => {
+    const formData = new FormData();
+
+    Object.entries(values).forEach(([key, value]) => {
+      if (value && typeof value === 'object' && 'name' in value) {
+        formData.append(key, value as File);
+      } else if (value) {
+        formData.append(key, String(value));
+      }
+    });
+
+    try {
+      const res = await fetch('/api/business/business-showcase', {
+        method: 'POST',
+        body: formData, // ✅ automatically multipart/form-data
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(`Error submitting business intro: ${data}`);
+        // optionally show toast or set error state
+        return;
+      }
+
+      console.log('✅ Business intro submitted successfully:', data);
+
+      // move to next step only if success
+      if (data?.data?.id) {
+        setBusinessId(data?.data?.id);
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+            business_id: data?.data?.id,
+          })
+        );
+      }
+    } catch (error) {
+      console.error('Request failed:', error);
+    }
+  };
+
+  const handleBUsinessDelete = async (): Promise<void> => {
+    const res = await fetch('/api/business/business-delete', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ business_id: businessId }),
+    });
+    console.log('Deleted business: ', res);
   };
 
   // const hanldeShowcaseBusinessFormsSubmittion = async (
@@ -189,7 +258,11 @@ const BusinessStepForm = (): JSX.Element => {
     },
     {
       id: 1,
-      component: <BusinessShowCaseForm />,
+      component: (
+        <BusinessShowCaseForm
+          setBusinessShowCaseFile={File => setBusinessShowCaseFile(File)}
+        />
+      ),
     },
     {
       id: 2,
@@ -229,6 +302,8 @@ const BusinessStepForm = (): JSX.Element => {
       </div>
       <div className='flex w-full items-center justify-between'>
         <Logo icon={<DefaultLogoTextIcon />} />
+
+        {/* Desktop  */}
         <div className='hidden items-center gap-2 sm:flex'>
           {pageNumber !== 0 && (
             <Button
@@ -261,16 +336,17 @@ const BusinessStepForm = (): JSX.Element => {
         </div>
       </div>
 
+      {/* Mobile  */}
       <div className='flex flex-col gap-20 sm:hidden'>
         <div className='flex items-center gap-10'>
-          {pageNumber !== 0 && (
+          {/* {pageNumber !== 0 && (
             <Button
               onClick={() => setPageNumber(prev => prev - 1)}
               variant='black'
             >
               <ArrowLefttIconWhite /> Back
             </Button>
-          )}
+          )} */}
 
           <Button
             onClick={handleContinue}
@@ -278,6 +354,12 @@ const BusinessStepForm = (): JSX.Element => {
           >
             {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
             {pageNumber === 6 ? ' ' : <ArrowRightIconWhite />}
+          </Button>
+          <Button
+            onClick={handleBUsinessDelete}
+            isSubmitting={formikRef.current?.isSubmitting ?? false}
+          >
+            Delete business
           </Button>
 
           {}
