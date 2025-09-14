@@ -21,20 +21,6 @@ function BusinessIntroductionForm<T extends FormikValues>({
 }: FormProps<T>): JSX.Element {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  // const convertToBase64 = (
-  //   file: File
-  // ): Promise<string | ArrayBuffer | null> => {
-  //   return new Promise((resolve, reject) => {
-  //     const fileReader = new FileReader();
-  //     fileReader.readAsDataURL(file);
-  //     fileReader.onload = (): void => {
-  //       resolve(fileReader.result);
-  //     };
-  //     fileReader.onerror = (error): void => {
-  //       reject(error);
-  //     };
-  //   });
-  // };
 
   return (
     <div className='sm:w-[400px]'>

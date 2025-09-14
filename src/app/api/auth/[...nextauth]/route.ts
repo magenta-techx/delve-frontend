@@ -114,8 +114,6 @@ export const authOptions: NextAuthOptions = {
 
         const { user, tokens } = result.data;
 
-        console.log('USer response: ', user);
-
         return {
           id: user.id,
 
@@ -185,6 +183,8 @@ export const authOptions: NextAuthOptions = {
           number_of_owned_brands: token.number_of_owned_brands ?? null,
         };
       }
+      console.log('session: ', session);
+      console.log('token: ', token);
 
       return session;
     },

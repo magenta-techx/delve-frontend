@@ -19,24 +19,39 @@ import {
 } from '@/types/business/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  clearBusinessData,
+  selectBusinessId,
   selectBusinessStep,
   setBusinessRegistrationStage,
 } from '@/redux/slices/businessSlice';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 const BusinessStepForm = (): JSX.Element => {
   const redirect = useRouter();
   const formStep = useSelector(selectBusinessStep);
+  const currentBusinessId = useSelector(selectBusinessId);
   const dispatch = useDispatch();
   const [pageNumber, setPageNumber] = useState(formStep);
   const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File>();
-  const [amenities, setAmeneties] = useState<string[]>([]);
-  const [businessId, setBusinessId] = useState<number | undefined>(5);
+  const [amenities, setAmenities] = useState<string[]>([]);
+  const [amenity, setAmenity] = useState<string | File>('');
+  const [businessId, setBusinessId] = useState<number | undefined>(
+    currentBusinessId ?? undefined
+  );
 
   const formikRef = useRef<FormikProps<FormikValues>>(null);
 
   const handleContinue = async (): Promise<void> => {
+    if (pageNumber === 1) {
+      return hanldeShowCaseFormsSubmittion({
+        business_id: businessId,
+        images: businessShowCaseFile,
+      });
+    }
+
+    // For forms that require formik validations or have formik fields
     if (!formikRef.current) return;
 
     const errors = await formikRef.current.validateForm();
@@ -54,12 +69,6 @@ const BusinessStepForm = (): JSX.Element => {
 
     if (pageNumber === 0) {
       return hanldeIntroductionFormsSubmittion(formikRef.current.values);
-    }
-    if (pageNumber === 1) {
-      return hanldeShowCaseFormsSubmittion({
-        business_id: businessId,
-        images: businessShowCaseFile,
-      });
     }
 
     await formikRef.current.submitForm();
@@ -106,6 +115,7 @@ const BusinessStepForm = (): JSX.Element => {
       }
 
       console.log('✅ Business intro submitted successfully:', data);
+      console.log('data?.data?.id:', data?.data?.id);
 
       // move to next step only if success
       if (data?.data?.id) {
@@ -116,14 +126,19 @@ const BusinessStepForm = (): JSX.Element => {
             business_id: data?.data?.id,
           })
         );
+        setPageNumber(prev => prev + 1);
       }
     } catch (error) {
       console.error('Request failed:', error);
     }
   };
+
   const hanldeShowCaseFormsSubmittion = async (
     values: BusinessShowCaseProps
   ): Promise<void> => {
+    if (!values.images) {
+      return alert('Provide at least one image');
+    }
     const formData = new FormData();
 
     Object.entries(values).forEach(([key, value]) => {
@@ -143,7 +158,7 @@ const BusinessStepForm = (): JSX.Element => {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(`Error submitting business intro: ${data}`);
+        alert(`Error submitting business intro: ${res}`);
         // optionally show toast or set error state
         return;
       }
@@ -151,28 +166,28 @@ const BusinessStepForm = (): JSX.Element => {
       console.log('✅ Business intro submitted successfully:', data);
 
       // move to next step only if success
-      if (data?.data?.id) {
-        setBusinessId(data?.data?.id);
+      if (data?.status) {
         dispatch(
           setBusinessRegistrationStage({
             business_registration_step: pageNumber + 1,
             business_id: data?.data?.id,
           })
         );
+        setPageNumber(prev => prev + 1);
       }
     } catch (error) {
       console.error('Request failed:', error);
     }
   };
 
-  const handleBUsinessDelete = async (): Promise<void> => {
-    const res = await fetch('/api/business/business-delete', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ business_id: businessId }),
-    });
-    console.log('Deleted business: ', res);
-  };
+  // const handleBUsinessDelete = async (): Promise<void> => {
+  //   const res = await fetch('/api/business/business-delete', {
+  //     method: 'DELETE',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ business_id: businessId }),
+  //   });
+  //   console.log('Deleted business: ', res);
+  // };
 
   // const hanldeShowcaseBusinessFormsSubmittion = async (
   //   values: BusinessOnboardingFormProps
@@ -271,7 +286,21 @@ const BusinessStepForm = (): JSX.Element => {
     {
       id: 3,
       component: (
-        <BusinessAmeneties amenities={amenities} setAmeneties={setAmeneties} />
+        <BusinessAmeneties
+          setAmenity={setAmenity}
+          setAmenities={setAmenities}
+          amenities={amenities}
+          amenity={amenity}
+
+          // formikRef={formikRef}
+          // initialValues={{
+          //   business_name: '',
+          //   description: '',
+          //   website: '',
+          //   logo: '',
+          // }} // ✅ still works fine
+          // onSubmit={values => console.log('Form submitted:', values)}
+        />
       ),
     },
     {
@@ -287,8 +316,20 @@ const BusinessStepForm = (): JSX.Element => {
       component: <BusinessContactAndBusiness />,
     },
   ];
+
+  const handleLogOut = (): void => {
+    dispatch(clearBusinessData());
+    signOut({ redirect: true, callbackUrl: '/auth/signin-signup' });
+  };
   return (
     <section className='relative h-full w-full sm:pb-0'>
+      <Button
+        className='rounded bg-primary px-3 py-1 text-white'
+        onClick={handleLogOut}
+      >
+        Sign Out
+      </Button>
+
       <div className='-mt-4 mb-2 hidden w-full items-center gap-1 sm:flex'>
         {PAGE_CONTENTS.map((content, key) => {
           return (
@@ -355,14 +396,14 @@ const BusinessStepForm = (): JSX.Element => {
             {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
             {pageNumber === 6 ? ' ' : <ArrowRightIconWhite />}
           </Button>
-          <Button
+          {/* <Button
             onClick={handleBUsinessDelete}
             isSubmitting={formikRef.current?.isSubmitting ?? false}
           >
             Delete business
           </Button>
 
-          {}
+          {} */}
         </div>
         <div className='mb-2 flex w-full items-center gap-1'>
           {PAGE_CONTENTS.map((content, key) => {

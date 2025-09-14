@@ -14,12 +14,12 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     const body = await req.json();
     const { business_id } = body;
 
-    if (!business_id) {
-      return NextResponse.json(
-        { error: 'business_id is required' },
-        { status: 400 }
-      );
-    }
+    // if (!business_id) {
+    //   return NextResponse.json(
+    //     { error: 'business_id is required' },
+    //     { status: 400 }
+    //   );
+    // }
 
     // call your backend
     const res = await fetch(
@@ -32,29 +32,14 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
       }
     );
 
-    // backend might return no content
-    let data = null;
-    if (res.status !== 204) {
-      try {
-        data = await res.json();
-      } catch {
-        data = null;
-      }
-    }
-
     if (!res.ok) {
-      return NextResponse.json(
-        { error: data?.message || 'Failed to delete business' },
-        { status: res.status }
-      );
+      console.log('!res.o: ', res);
+      return NextResponse.json({ message: res });
     }
-
-    return NextResponse.json(
-      data || { message: 'Business deleted successfully' },
-      { status: 200 }
-    );
+    console.log('res.ok: ', res);
+    return NextResponse.json({ message: res });
   } catch (error) {
-    console.error('Delete error:', error);
+    console.log('Delete error:');
     return NextResponse.json({ error: `${error}` }, { status: 500 });
   }
 }

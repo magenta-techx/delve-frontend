@@ -17,8 +17,8 @@ const initialState: BusinessState = {
   is_active: true,
   current_plan: '',
   is_premium_plan_active: false,
-  business_registration_step: 0,
-  business_id: null,
+  business_registration_step: 3,
+  business_id: 6,
 };
 
 const businessSlice = createSlice({
@@ -55,3 +55,5 @@ export const {
 export default businessSlice.reducer;
 export const selectBusinessStep = (state: RootState): number =>
   state.business.business_registration_step ?? 0;
+export const selectBusinessId = (state: RootState): number | null =>
+  state.business.business_id ?? null;
