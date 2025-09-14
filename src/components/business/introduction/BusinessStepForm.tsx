@@ -245,7 +245,7 @@ const BusinessStepForm = (): JSX.Element => {
             description: '',
             website: '',
             logo: '',
-          }} // ✅ still works fine
+          }}
           onSubmit={values => console.log('Form submitted:', values)}
         />
       ),
@@ -266,18 +266,8 @@ const BusinessStepForm = (): JSX.Element => {
       id: 3,
       component: (
         <BusinessAmeneties
-          // setAmenity={setAmenity}
           setSelectedAmenities={setSelectedAmenities}
           selectedAmenities={selectedAmenities}
-
-          // formikRef={formikRef}
-          // initialValues={{
-          //   business_name: '',
-          //   description: '',
-          //   website: '',
-          //   logo: '',
-          // }} // ✅ still works fine
-          // onSubmit={values => console.log('Form submitted:', values)}
         />
       ),
     },

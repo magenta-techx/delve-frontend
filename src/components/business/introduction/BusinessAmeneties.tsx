@@ -4,12 +4,6 @@ import { Form, Formik } from 'formik';
 import Input from '@/components/ui/Input';
 import { amenitySchema } from '@/schemas/businessSchema';
 import { BusinessAmenitiesTypeProp } from '@/types/business/types';
-// import Input from '@/components/ui/Input';
-// import { Form } from 'formik';
-// // Formik
-// import { Button } from '@/components/ui/Button';
-// import Input from '@/components/ui/Input';
-// import { amenitySchema } from '@/schemas/businessSchema';
 
 interface amenitiesType {
   id: number | null;

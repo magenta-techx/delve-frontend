@@ -39,26 +39,31 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     const body = await req.json();
     const { business_id } = body;
 
+    console.log('Amenities body: ', body);
+
     if (!token?.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    //134.209.19.132:8000/api/business/{business_id}/set-amenities/
+
     const res = await fetch(
-      `${process.env['API_BASE_URL']}/business/${business_id}/set-amenities`,
+      `${process.env['API_BASE_URL']}/business/${business_id}/set-amenities/`,
       {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token.accessToken}`,
+          'Content-Type': 'application/json',
         },
-        body: body,
+        body: JSON.stringify(body),
       }
     );
+
     const data = await res.json();
+
     if (!res.ok) {
       return NextResponse.json({ error: data.message }, { status: res.status });
     }
 
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: `${error}` }, { status: 500 });
