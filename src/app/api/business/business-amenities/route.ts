@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const token = await getToken({ req });
 
@@ -9,26 +9,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 👇 Works only if frontend sends multipart/form-data
-    const formData = await req.formData();
-
-    console.log('formData: ', formData);
-
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(`${key}: file ->`, value.name, value.type, value.size);
-      } else {
-        console.log(`${key}:`, value);
+    const res = await fetch(
+      `${process.env['API_BASE_URL']}/business/amenities/`,
+      {
+        method: 'GET',
+        // headers: {
+        //   Authorization: `Bearer ${token.accessToken}`,
+        // },
       }
-    }
-
-    const res = await fetch(`${process.env['API_BASE_URL']}/business/create/`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token.accessToken}`,
-      },
-      body: formData, // ✅ forward the same FormData
-    });
+    );
 
     const data = await res.json();
 

@@ -14,6 +14,7 @@ import BusinessLocationForm from './BusinessLocationForm';
 import BusinessContactAndBusiness from './BusinessContactAndBusiness';
 import { FormikProps, FormikValues } from 'formik';
 import {
+  BusinessAmenitiesTypeProp,
   BusinessIntroductionProps,
   BusinessShowCaseProps,
 } from '@/types/business/types';
@@ -35,8 +36,16 @@ const BusinessStepForm = (): JSX.Element => {
   const dispatch = useDispatch();
   const [pageNumber, setPageNumber] = useState(formStep);
   const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File>();
-  const [amenities, setAmenities] = useState<string[]>([]);
-  const [amenity, setAmenity] = useState<string | File>('');
+  const [selectedAmenities, setSelectedAmenities] = useState<
+    BusinessAmenitiesTypeProp[]
+  >([
+    {
+      id: null,
+      icon_name: '',
+      name: '',
+    },
+  ]);
+  // const [amenity, setAmenity] = useState<string | File>('');
   const [businessId, setBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
   );
@@ -287,10 +296,9 @@ const BusinessStepForm = (): JSX.Element => {
       id: 3,
       component: (
         <BusinessAmeneties
-          setAmenity={setAmenity}
-          setAmenities={setAmenities}
-          amenities={amenities}
-          amenity={amenity}
+          // setAmenity={setAmenity}
+          setSelectedAmenities={setSelectedAmenities}
+          selectedAmenities={selectedAmenities}
 
           // formikRef={formikRef}
           // initialValues={{

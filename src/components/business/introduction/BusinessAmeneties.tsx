@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
 import { Form, Formik } from 'formik';
 import Input from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
 import { amenitySchema } from '@/schemas/businessSchema';
+import { BusinessAmenitiesTypeProp } from '@/types/business/types';
 // import Input from '@/components/ui/Input';
 // import { Form } from 'formik';
 // // Formik
@@ -11,17 +11,22 @@ import { amenitySchema } from '@/schemas/businessSchema';
 // import Input from '@/components/ui/Input';
 // import { amenitySchema } from '@/schemas/businessSchema';
 
-interface BusinessAmenetiesProps {
-  amenity: string | File;
-  amenities: string[];
-  setAmenities: (value: string[]) => void;
-  setAmenity: (value: string | File) => void;
+interface amenitiesType {
+  id: number | null;
+  icon_name: string;
+  name: string;
 }
+
+interface BusinessAmenetiesProps {
+  // amenity: string | File;
+  selectedAmenities: BusinessAmenitiesTypeProp[];
+  setSelectedAmenities: (value: BusinessAmenitiesTypeProp[]) => void;
+}
+
 const BusinessAmeneties = ({
-  setAmenities,
-  amenity,
-  setAmenity,
-  amenities,
+  setSelectedAmenities,
+
+  selectedAmenities,
 }: BusinessAmenetiesProps): JSX.Element => {
   // Grab Formik values
   // const { values, setFieldValue } = useFormikContext<{
@@ -32,11 +37,36 @@ const BusinessAmeneties = ({
   //     icon:<
   //   }
   // ]
-  const handleAdd = (): void => {
-    if (typeof amenity === 'string' && amenity?.length >= 4) {
-      setAmenities([...amenities, amenity]);
-    }
+
+  const [amenities, setAmenities] = useState<amenitiesType[]>([
+    {
+      id: null,
+      icon_name: '',
+      name: '',
+    },
+  ]);
+  const handleAdd = (amenity: amenitiesType): void => {
+    setSelectedAmenities([...selectedAmenities, amenity]);
   };
+
+  useEffect(() => {
+    const fetchAmenities = async (): Promise<void> => {
+      try {
+        const res = await fetch('/api/business/business-amenities', {
+          method: 'GET',
+        });
+
+        const data = await res.json();
+        console.log('amenities: ', data);
+        if (data?.status) {
+          setAmenities(data?.data);
+        }
+      } catch (error) {
+        console.log('Error amennities: ', error);
+      }
+    };
+    fetchAmenities();
+  }, []);
   return (
     <div className='sm:w-[400px]'>
       {' '}
@@ -46,20 +76,28 @@ const BusinessAmeneties = ({
         paragraph='Select the ameneties your business offers from the list of available options'
       />
       <Formik
-        initialValues={{}}
+        initialValues={{ name: '' }}
         validationSchema={amenitySchema}
         onSubmit={values => {
           console.log(values);
+          const { name } = values;
+          setSelectedAmenities([
+            ...selectedAmenities,
+            { name: name, id: 0, icon_name: '' },
+          ]);
         }}
       >
         {({ setFieldValue }) => (
           <Form className='mt-4 flex w-full flex-col gap-3'>
             <Input
-              name='amenity'
+              name='name'
               label='Amenities (Optional)'
               onChange={(e: string | File) => {
-                // setFieldValue('amenity', e);
-                setAmenity(e);
+                if (typeof e === 'string') {
+                  setFieldValue('name', e);
+                }
+                // setAmenity(e);
+                console.log(e);
               }}
             />
           </Form>
@@ -93,17 +131,19 @@ const BusinessAmeneties = ({
 
             // onChange={e => setAmenity(e.target.value)}
           /> */}
-        <div className='mb-4 grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-3'>
-          {amenities.map((amenity, key) => (
+        <div className='mb-2 grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-3'>
+          {selectedAmenities.map((amenity, key) => (
             <div
               key={key}
               className='relative rounded-lg border border-gray-200 bg-neutral-50 px-4 py-2 text-xs text-black text-primary'
             >
-              {amenity}
+              <span className='truncate text-sm'>{amenity.name}</span>
               <button
                 type='button'
                 onClick={() => {
-                  setAmenities(amenities.filter(a => a !== amenity));
+                  setSelectedAmenities(
+                    selectedAmenities.filter(a => a !== amenity)
+                  );
                 }}
                 className='absolute -left-4 top-[6px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-white'
               >
@@ -112,12 +152,29 @@ const BusinessAmeneties = ({
             </div>
           ))}
         </div>
-        <div className='w-[120px]'>
+
+        {amenities && (
+          <div className='flex flex-col justify-start gap-4 rounded-md bg-neutral py-3 shadow-md lg:w-[50%]'>
+            {amenities.map((amenity, key) => {
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleAdd(amenity)}
+                  className='flex items-center px-10 text-left text-sm capitalize focus:text-primary'
+                >
+                  <span>{amenity?.icon_name}</span>
+                  <span className='truncate'>{amenity?.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+        {/* <div className='w-[120px]'>
           <Button type='button' onClick={handleAdd}>
             {' '}
             + Add
           </Button>
-        </div>
+        </div> */}
       </>
       {/* </Form> */}
       {/* )}
