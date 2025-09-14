@@ -31,3 +31,36 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: `${error}` }, { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest): Promise<NextResponse> {
+  try {
+    const token = await getToken({ req });
+
+    const body = await req.json();
+    const { business_id } = body;
+
+    if (!token?.accessToken) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    //134.209.19.132:8000/api/business/{business_id}/set-amenities/
+    const res = await fetch(
+      `${process.env['API_BASE_URL']}/business/${business_id}/set-amenities`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token.accessToken}`,
+        },
+        body: body,
+      }
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      return NextResponse.json({ error: data.message }, { status: res.status });
+    }
+
+    return NextResponse.json(data, { status: 201 });
+  } catch (error) {
+    console.error('Upload error:', error);
+    return NextResponse.json({ error: `${error}` }, { status: 500 });
+  }
+}

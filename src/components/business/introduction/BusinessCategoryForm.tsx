@@ -29,7 +29,7 @@ const BusinessCategoryForm = ({
   });
   const [selectedSubCategories, setSelectSubCategories] = useState<
     SubCategoriesProps[]
-  >([{ id: 0, title: '' }]);
+  >([]);
   const [showSubCategories, setShowSubCategories] = useState(false);
   const BUSINESS_CATEGORIES = [
     {
@@ -243,22 +243,23 @@ const BusinessCategoryForm = ({
         />
       </div>
       <div className='mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3'>
-        {BUSINESS_CATEGORIES.map((category, key) => {
-          return (
-            <button
-              key={key}
-              className={`rounded-md border bg-white px-4 py-3 text-left text-[11px] font-semibold uppercase sm:text-xs ${selectedCategory.id === category.id ? 'border-white bg-neutral-50 text-primary sm:border-primary' : ''} ${showSubCategories && selectedCategory.id !== category.id ? 'border-white text-gray-400' : 'border-gray-400'}`}
-              onClick={() => {
-                setSelectedCategory(category);
-                setShowSubCategories(true);
-              }}
-            >
-              <small className=''>icon</small>
-              <h1 className=''>{category.title}</h1>
-            </button>
-          );
-        })}
-        {selectedCategory.id && showSubCategories && (
+        {BUSINESS_CATEGORIES?.length &&
+          BUSINESS_CATEGORIES.map((category, key) => {
+            return (
+              <button
+                key={key}
+                className={`rounded-md border bg-white px-4 py-3 text-left text-[11px] font-semibold uppercase sm:text-xs ${selectedCategory.id === category.id ? 'border-white bg-neutral-50 text-primary sm:border-primary' : ''} ${showSubCategories && selectedCategory.id !== category.id ? 'border-white text-gray-400' : 'border-gray-400'}`}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setShowSubCategories(true);
+                }}
+              >
+                <small className=''>icon</small>
+                <h1 className=''>{category.title}</h1>
+              </button>
+            );
+          })}
+        {selectedCategory.id && showSubCategories ? (
           <div className='absolute top-0 flex h-full sm:w-full sm:items-center sm:justify-center'>
             <div className='rounded-md bg-white sm:min-h-[280px] sm:w-[480px] sm:p-5 sm:shadow-2xl'>
               <button
@@ -271,12 +272,12 @@ const BusinessCategoryForm = ({
                 header={`Choose your ${selectedCategory.title} business type`}
                 paragraph={`Select the categories taht best describe your ${selectedCategory.title} business`}
               />
-              <div className='mb-8 mt-5 grid grid-cols-1 gap-x-7 gap-y-4 sm:grid-cols-2'>
+              <div className='mb-8 mt-5 grid h-[500px] grid-cols-1 gap-x-7 gap-y-4 overflow-y-scroll sm:h-auto sm:grid-cols-2 sm:overflow-y-hidden'>
                 {selectedCategory.subCategories.map((category, key) => {
                   return (
                     <button
                       key={key}
-                      className={`${selectedSubCategories.some(subCat => subCat.id === category.id) ? 'border-primary bg-neutral-50 text-primary' : 'border-gray-400'} flex w-full items-center justify-between truncate rounded-md border bg-white px-4 py-3 text-left text-xs font-semibold capitalize sm:w-[200px]`}
+                      className={`${selectedSubCategories.some(subCat => subCat.id === category.id) ? 'border-primary bg-neutral-50 text-primary' : 'border-gray-400'} flex h-[48px] w-full items-center justify-between truncate rounded-md border bg-white px-4 text-left text-xs font-semibold capitalize sm:w-[200px] sm:py-3`}
                       onClick={() => handleSubCategories(category)}
                     >
                       <p>{category.title}</p>
@@ -290,7 +291,7 @@ const BusinessCategoryForm = ({
                 })}
               </div>
               <div
-                className='w-full sm:w-[200px]'
+                className='absolute h-[100px] w-full py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] sm:relative sm:-bottom-0 sm:h-auto sm:w-[200px] sm:bg-transparent sm:shadow-[0_-2px_0_0_rgba(0,0,0,0.1)]'
                 onClick={() =>
                   hanldeSelectCategorySubmittion({
                     id: selectedCategory.id,
@@ -302,6 +303,8 @@ const BusinessCategoryForm = ({
               </div>
             </div>
           </div>
+        ) : (
+          ''
         )}
       </div>
     </div>

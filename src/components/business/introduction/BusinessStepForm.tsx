@@ -37,64 +37,14 @@ const BusinessStepForm = (): JSX.Element => {
   const [pageNumber, setPageNumber] = useState(formStep);
   const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File>();
   const [selectedAmenities, setSelectedAmenities] = useState<
-    BusinessAmenitiesTypeProp[]
-  >([
-    {
-      id: null,
-      icon_name: '',
-      name: '',
-    },
-  ]);
+    BusinessAmenitiesTypeProp[] | []
+  >([]);
   // const [amenity, setAmenity] = useState<string | File>('');
   const [businessId, setBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
   );
 
   const formikRef = useRef<FormikProps<FormikValues>>(null);
-
-  const handleContinue = async (): Promise<void> => {
-    if (pageNumber === 1) {
-      return hanldeShowCaseFormsSubmittion({
-        business_id: businessId,
-        images: businessShowCaseFile,
-      });
-    }
-
-    // For forms that require formik validations or have formik fields
-    if (!formikRef.current) return;
-
-    const errors = await formikRef.current.validateForm();
-    console.log(errors);
-
-    if (Object.keys(errors).length > 0) {
-      // prevent moving forward
-      formikRef.current.setTouched(
-        Object.keys(errors).reduce((acc, key) => ({ ...acc, [key]: true }), {})
-      );
-      return;
-    }
-
-    console.log(formikRef.current.values);
-
-    if (pageNumber === 0) {
-      return hanldeIntroductionFormsSubmittion(formikRef.current.values);
-    }
-
-    await formikRef.current.submitForm();
-  };
-
-  const handleBack = async (): Promise<void> => {
-    if (pageNumber === 0) {
-      redirect.push('/business/get-started');
-    } else {
-      setPageNumber(prev => prev - 1);
-      dispatch(
-        setBusinessRegistrationStage({
-          business_registration_step: pageNumber - 1,
-        })
-      );
-    }
-  };
 
   const hanldeIntroductionFormsSubmittion = async (
     values: BusinessIntroductionProps
@@ -189,6 +139,92 @@ const BusinessStepForm = (): JSX.Element => {
     }
   };
 
+  const hanleAmenitiesFormsSubmittion = async (): Promise<void> => {
+    try {
+      if (selectedAmenities.length === 0) {
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+          })
+        );
+        return setPageNumber(prev => prev + 1);
+      }
+
+      const res = await fetch('/api/business/business-amenities', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          business_id: businessId,
+          amenities_ids: selectedAmenities.map(amenity => amenity.id), // send only IDs
+        }),
+      });
+
+      const data = await res.json();
+      console.log('amenities data: ', data);
+
+      if (!res.ok) {
+        alert(`Error submitting business intro: ${data}`);
+        // optionally show toast or set error state
+        return;
+      }
+
+      dispatch(
+        setBusinessRegistrationStage({
+          business_registration_step: pageNumber + 1,
+        })
+      );
+      setPageNumber(prev => prev + 1);
+    } catch (error) {
+      console.error('Request failed:', error);
+    }
+  };
+
+  const handleContinue = async (): Promise<void> => {
+    if (pageNumber === 1) {
+      return hanldeShowCaseFormsSubmittion({
+        business_id: businessId,
+        images: businessShowCaseFile,
+      });
+    }
+    if (pageNumber === 3) {
+      return hanleAmenitiesFormsSubmittion();
+    }
+
+    // For forms that require formik validations or have formik fields
+    if (!formikRef.current) return;
+
+    const errors = await formikRef.current.validateForm();
+    console.log(errors);
+
+    if (Object.keys(errors).length > 0) {
+      // prevent moving forward
+      formikRef.current.setTouched(
+        Object.keys(errors).reduce((acc, key) => ({ ...acc, [key]: true }), {})
+      );
+      return;
+    }
+
+    console.log(formikRef.current.values);
+
+    if (pageNumber === 0) {
+      return hanldeIntroductionFormsSubmittion(formikRef.current.values);
+    }
+
+    await formikRef.current.submitForm();
+  };
+
+  const handleBack = async (): Promise<void> => {
+    if (pageNumber === 0) {
+      redirect.push('/business/get-started');
+    } else {
+      setPageNumber(prev => prev - 1);
+      dispatch(
+        setBusinessRegistrationStage({
+          business_registration_step: pageNumber - 1,
+        })
+      );
+    }
+  };
+
   // const handleBUsinessDelete = async (): Promise<void> => {
   //   const res = await fetch('/api/business/business-delete', {
   //     method: 'DELETE',
@@ -196,72 +232,6 @@ const BusinessStepForm = (): JSX.Element => {
   //     body: JSON.stringify({ business_id: businessId }),
   //   });
   //   console.log('Deleted business: ', res);
-  // };
-
-  // const hanldeShowcaseBusinessFormsSubmittion = async (
-  //   values: BusinessOnboardingFormProps
-  // ): Promise<void> => {
-  //   try {
-  //     const res = await fetch('/api/auth/home', {
-  //       method: 'POST',
-  //       body: JSON.stringify(values),
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
-
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const hanldeBusinessAmenetiesFormsSubmittion = async (
-  //   values: string[]
-  // ): Promise<void> => {
-  //   try {
-  //     const res = await fetch('/api/auth/amenities', {
-  //       method: 'POST',
-  //       body: JSON.stringify(values),
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
-
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const hanldeBusinessServicesFormsSubmittion = async (
-  //   values: BusinessOnboardingFormProps
-  // ): Promise<void> => {
-  //   try {
-  //     const res = await fetch('/api/auth/amenities', {
-  //       method: 'POST',
-  //       body: JSON.stringify(values),
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
-
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const hanldeBusinessContactAndBusinessFormsSubmittion = async (
-  //   values: BusinessOnboardingFormProps
-  // ): Promise<void> => {
-  //   try {
-  //     const res = await fetch('/api/auth/amenities', {
-  //       method: 'POST',
-  //       body: JSON.stringify(values),
-  //       headers: { 'Content-Type': 'application/json' },
-  //     });
-
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-
-  //   return redirect.push('/business/business-submitted');
   // };
 
   const PAGE_CONTENTS = [
@@ -386,9 +356,10 @@ const BusinessStepForm = (): JSX.Element => {
       </div>
 
       {/* Mobile  */}
-      <div className='flex flex-col gap-20 sm:hidden'>
-        <div className='flex items-center gap-10'>
-          {/* {pageNumber !== 0 && (
+      {pageNumber != 2 && (
+        <div className='flex flex-col gap-20 sm:hidden'>
+          <div className='flex items-center gap-10'>
+            {/* {pageNumber !== 0 && (
             <Button
               onClick={() => setPageNumber(prev => prev - 1)}
               variant='black'
@@ -397,14 +368,14 @@ const BusinessStepForm = (): JSX.Element => {
             </Button>
           )} */}
 
-          <Button
-            onClick={handleContinue}
-            isSubmitting={formikRef.current?.isSubmitting ?? false}
-          >
-            {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
-            {pageNumber === 6 ? ' ' : <ArrowRightIconWhite />}
-          </Button>
-          {/* <Button
+            <Button
+              onClick={handleContinue}
+              isSubmitting={formikRef.current?.isSubmitting ?? false}
+            >
+              {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
+              {pageNumber === 6 ? ' ' : <ArrowRightIconWhite />}
+            </Button>
+            {/* <Button
             onClick={handleBUsinessDelete}
             isSubmitting={formikRef.current?.isSubmitting ?? false}
           >
@@ -412,19 +383,20 @@ const BusinessStepForm = (): JSX.Element => {
           </Button>
 
           {} */}
+          </div>
+          <div className='mb-2 flex w-full items-center gap-1'>
+            {PAGE_CONTENTS.map((content, key) => {
+              return (
+                <div
+                  key={key}
+                  id={`${content.id}`}
+                  className={`${content.id === pageNumber ? 'bg-primary' : 'bg-[#F0F0F0]'} h-1 w-[33.33%] rounded-xl`}
+                ></div>
+              );
+            })}
+          </div>
         </div>
-        <div className='mb-2 flex w-full items-center gap-1'>
-          {PAGE_CONTENTS.map((content, key) => {
-            return (
-              <div
-                key={key}
-                id={`${content.id}`}
-                className={`${content.id === pageNumber ? 'bg-primary' : 'bg-[#F0F0F0]'} h-1 w-[33.33%] rounded-xl`}
-              ></div>
-            );
-          })}
-        </div>
-      </div>
+      )}
     </section>
   );
 };

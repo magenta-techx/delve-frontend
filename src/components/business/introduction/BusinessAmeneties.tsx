@@ -79,7 +79,6 @@ const BusinessAmeneties = ({
         initialValues={{ name: '' }}
         validationSchema={amenitySchema}
         onSubmit={values => {
-          console.log(values);
           const { name } = values;
           setSelectedAmenities([
             ...selectedAmenities,
@@ -87,7 +86,7 @@ const BusinessAmeneties = ({
           ]);
         }}
       >
-        {({ setFieldValue }) => (
+        {({ setFieldValue, errors }) => (
           <Form className='mt-4 flex w-full flex-col gap-3'>
             <Input
               name='name'
@@ -96,48 +95,22 @@ const BusinessAmeneties = ({
                 if (typeof e === 'string') {
                   setFieldValue('name', e);
                 }
-                // setAmenity(e);
-                console.log(e);
               }}
             />
+            {errors.name && (
+              <div className='text-sm text-red-600'>{errors.name}</div>
+            )}
           </Form>
         )}
       </Formik>
-      {/* <Formik
-        initialValues={{
-          amenity: '',
-        }}
-        validationSchema={amenitySchema}
-        onSubmit={(values, { resetForm }) => {
-          // if (pageNumber === 1) {
-          //   return handleSubmit(values);
-          // }
-          // return undefined;
-          setAmenities(prev => [...prev, values.amenity]);
-          resetForm();
-          console.log(values);
-        }}
-      >
-        {() => ( */}
-      {/* <Form className='mt-4 flex w-full flex-col gap-3'> */}
-      {/* Fields */}
-      <>
-        {/* <Input
-            name='amenity'
-            type='text'
-            label='Amenities'
-            className='w-full'
-            placeholder='Type here to add'
-
-            // onChange={e => setAmenity(e.target.value)}
-          /> */}
-        <div className='mb-2 grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-3'>
-          {selectedAmenities.map((amenity, key) => (
+      <div className='mb-2 grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-3'>
+        {selectedAmenities.length > 0 &&
+          selectedAmenities.map((amenity, key) => (
             <div
               key={key}
               className='relative rounded-lg border border-gray-200 bg-neutral-50 px-4 py-2 text-xs text-black text-primary'
             >
-              <span className='truncate text-sm'>{amenity.name}</span>
+              <span className='truncate text-sm'>{amenity.name} </span>
               <button
                 type='button'
                 onClick={() => {
@@ -151,34 +124,23 @@ const BusinessAmeneties = ({
               </button>
             </div>
           ))}
+      </div>
+      {amenities && (
+        <div className='flex flex-col justify-start gap-4 rounded-md bg-neutral py-3 shadow-md lg:w-[50%]'>
+          {amenities.map((amenity, key) => {
+            return (
+              <button
+                key={key}
+                onClick={() => handleAdd(amenity)}
+                className='flex items-center px-10 text-left text-sm capitalize focus:text-primary'
+              >
+                <span>{amenity?.icon_name}</span>
+                <span className='truncate'>{amenity?.name}</span>
+              </button>
+            );
+          })}
         </div>
-
-        {amenities && (
-          <div className='flex flex-col justify-start gap-4 rounded-md bg-neutral py-3 shadow-md lg:w-[50%]'>
-            {amenities.map((amenity, key) => {
-              return (
-                <button
-                  key={key}
-                  onClick={() => handleAdd(amenity)}
-                  className='flex items-center px-10 text-left text-sm capitalize focus:text-primary'
-                >
-                  <span>{amenity?.icon_name}</span>
-                  <span className='truncate'>{amenity?.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-        {/* <div className='w-[120px]'>
-          <Button type='button' onClick={handleAdd}>
-            {' '}
-            + Add
-          </Button>
-        </div> */}
-      </>
-      {/* </Form> */}
-      {/* )}
-      </Formik> */}
+      )}
     </div>
   );
 };
