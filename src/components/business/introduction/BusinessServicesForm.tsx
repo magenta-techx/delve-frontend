@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef } from 'react';
-import { FieldArray, Form, Formik, FormikContextType } from 'formik';
+import {
+  FieldArray,
+  Form,
+  Formik,
+  FormikContextType,
+  FormikProps,
+  FormikValues,
+} from 'formik';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
 import Input from '@/components/ui/Input';
 import TextArea from '@/components/ui/TextArea';
@@ -14,9 +21,16 @@ interface Service {
   description: string;
   image: File | null;
 }
+
 interface FormValues {
   services: Service[];
 }
+
+type FormProps<T extends FormikValues> = {
+  formikRef: React.Ref<FormikProps<T>>;
+  onSubmit: (values: T) => void;
+  initialValues: T;
+};
 
 type ServiceItemProps = {
   service: Service;
@@ -29,21 +43,19 @@ type ServiceItemProps = {
   canRemove: boolean;
 };
 
-const ServiceItemComponent = ({
+const ServiceItem = React.memo(function ServiceItem({
   service,
   index,
   fileInputRefs,
   setFieldValue,
   remove,
   canRemove,
-}: ServiceItemProps): JSX.Element => {
-  // Stable preview URL for the selected file
+}: ServiceItemProps) {
   const imageUrl = useMemo(
     () => (service.image ? URL.createObjectURL(service.image) : null),
     [service.image]
   );
 
-  // Revoke blob URL when it changes/unmounts
   useEffect(() => {
     return (): void => {
       if (imageUrl) URL.revokeObjectURL(imageUrl);
@@ -76,10 +88,8 @@ const ServiceItemComponent = ({
             height={100}
             className='h-[200px] w-full rounded-md object-cover'
             unoptimized
-            priority={false}
           />
 
-          {/* Hidden input per service to change the file */}
           <input
             ref={el => {
               fileInputRefs.current[index] = el ?? null;
@@ -123,23 +133,15 @@ const ServiceItemComponent = ({
       )}
     </div>
   );
-};
+});
 
-const ServiceItem = React.memo(ServiceItemComponent);
-ServiceItem.displayName = 'ServiceItem'; // ✅ satisfies react/display-name
-
-const BusinessServicesForm = (): JSX.Element => {
-  // const { values, setFieldValue } = useFormikContext<FormValues>();
+function BusinessServicesForm({
+  formikRef,
+  initialValues,
+  onSubmit,
+}: FormProps<FormValues>): JSX.Element {
   const fileInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
-  const initialValues: FormValues = {
-    services: [
-      {
-        title: '',
-        description: '',
-        image: null,
-      },
-    ],
-  };
+
   return (
     <div className='sm:w-[400px]'>
       <BusinessIntroductionFormHeader
@@ -147,19 +149,18 @@ const BusinessServicesForm = (): JSX.Element => {
         header='Add Business Services'
         paragraph='Showcase your services to attract the right clients and boost bookings'
       />
-      <Formik
+      <Formik<FormValues>
+        innerRef={formikRef}
         initialValues={initialValues}
-        onSubmit={values => {
-          console.log('Values: ', values);
-        }}
+        onSubmit={onSubmit}
       >
-        {({ values, setFieldValue }) => (
+        {({ setFieldValue, values }) => (
           <Form className='mt-3 w-full'>
             <FieldArray name='services'>
               {({ push, remove }) => (
                 <div className='flex flex-col gap-4'>
                   {values.services.map((service, index) => (
-                    <ServiceItemComponent
+                    <ServiceItem
                       key={index}
                       service={service}
                       index={index}
@@ -171,7 +172,6 @@ const BusinessServicesForm = (): JSX.Element => {
                   ))}
 
                   <div className='w-[70px]'>
-                    {' '}
                     <Button
                       type='button'
                       size='sm'
@@ -196,6 +196,6 @@ const BusinessServicesForm = (): JSX.Element => {
       </Formik>
     </div>
   );
-};
+}
 
 export default BusinessServicesForm;

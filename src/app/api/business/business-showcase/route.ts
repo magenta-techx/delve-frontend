@@ -41,9 +41,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }
     );
 
+    console.log('res.json(); ', res);
+
     const data = await res.json();
 
     if (!res.ok) {
+      console.log(' error: data.message: ', data.message);
+
       return NextResponse.json({ error: data.message }, { status: res.status });
     }
 

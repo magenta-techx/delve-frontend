@@ -34,6 +34,23 @@ export const servicesSchema = Yup.object({
   ),
 });
 
+export const contactInformationSchema = Yup.object({
+  phone_number: Yup.string()
+    .matches(/^(?:\+234|0(70|80|90|81|91|71))\d{8}$/, 'Invalid phone number')
+    .required('Phone number is required'),
+  registration_number: Yup.string().required(
+    'Business registration number is required'
+  ),
+  socials: Yup.array().of(
+    Yup.object().shape({
+      id: Yup.number().required(),
+      text: Yup.string().required(),
+      url_input: Yup.string()
+        .url('Must be a valid URL')
+        .required('Social media link is required'),
+    })
+  ),
+});
 // export const businessSchema = [
 //   businessIntroductionSchema,
 //   '',

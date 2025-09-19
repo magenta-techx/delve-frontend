@@ -29,10 +29,10 @@ const InstagramIconColored = (): JSX.Element => {
           y2='20'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stop-color='#CB30E0' />
-          <stop offset='0.389423' stop-color='#F0C140' />
-          <stop offset='0.634615' stop-color='#FEC601' />
-          <stop offset='1' stop-color='#BC1B06' />
+          <stop stopColor='#CB30E0' />
+          <stop offset='0.389423' stopColor='#F0C140' />
+          <stop offset='0.634615' stopColor='#FEC601' />
+          <stop offset='1' stopColor='#BC1B06' />
         </linearGradient>
         <linearGradient
           id='paint1_linear_3381_6369'
@@ -42,10 +42,10 @@ const InstagramIconColored = (): JSX.Element => {
           y2='20'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stop-color='#CB30E0' />
-          <stop offset='0.389423' stop-color='#F0C140' />
-          <stop offset='0.634615' stop-color='#FEC601' />
-          <stop offset='1' stop-color='#BC1B06' />
+          <stop stopColor='#CB30E0' />
+          <stop offset='0.389423' stopColor='#F0C140' />
+          <stop offset='0.634615' stopColor='#FEC601' />
+          <stop offset='1' stopColor='#BC1B06' />
         </linearGradient>
       </defs>
     </svg>
