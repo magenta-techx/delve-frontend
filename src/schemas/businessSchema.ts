@@ -41,15 +41,20 @@ export const contactInformationSchema = Yup.object({
   registration_number: Yup.string().required(
     'Business registration number is required'
   ),
-  socials: Yup.array().of(
-    Yup.object().shape({
-      id: Yup.number().required(),
-      text: Yup.string().required(),
-      url_input: Yup.string()
-        .url('Must be a valid URL')
-        .required('Social media link is required'),
-    })
-  ),
+  whatsapp_link: Yup.string().url('Must be a valid URL').nullable(),
+  facebook_link: Yup.string().url('Must be a valid URL').nullable(),
+  instagram_link: Yup.string().url('Must be a valid URL').nullable(),
+  twitter_link: Yup.string().url('Must be a valid URL').nullable(),
+  tiktok_link: Yup.string().url('Must be a valid URL').nullable(),
+  // socials: Yup.array().of(
+  //   Yup.object().shape({
+  //     id: Yup.number().required(),
+  //     text: Yup.string().required(),
+  //     url_input: Yup.string()
+  //       .url('Must be a valid URL')
+  //       .required('Social media link is required'),
+  //   })
+  // ),
 });
 // export const businessSchema = [
 //   businessIntroductionSchema,

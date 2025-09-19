@@ -9,13 +9,12 @@ import WhatsAppIconGreen from '@/assets/icons/business/WhatsAppIconGreen';
 import TelegramIconBlue from '@/assets/icons/business/TelegramIconBlue';
 import XIconBlack from '@/assets/icons/business/XIconBlack';
 import FacebookIconBlue from '@/assets/icons/business/FacebookIconBlue';
-import { setBusinessRegistrationStage } from '@/redux/slices/businessSlice';
-import { useDispatch } from 'react-redux';
+// import { setBusinessRegistrationStage } from '@/redux/slices/businessSlice';
 
 // interface BusinessContactAndBusinessProps {
 //   id: number;
 //   text: string;
-//   url_input: string;
+//   input_name: string;
 //   icon: React.ReactNode;
 // }
 
@@ -23,55 +22,56 @@ import { useDispatch } from 'react-redux';
 interface BusinessFormValues {
   phone_number: string;
   registration_number: string;
-  website: string;
-  socials: { id: number; url_input: string; text: string }[];
+  socials: { id: number; input_name: string; text: string }[];
 }
+
+const initialValues: BusinessFormValues = {
+  phone_number: '',
+  registration_number: '',
+  socials: [],
+};
 
 type FormProps<T extends FormikValues> = {
   formikRef: React.Ref<FormikProps<T>>;
-  initialValues: T;
   businessId: number | undefined;
 };
 
 function BusinessContactAndBusiness({
   formikRef,
-  // businessId,
-  initialValues,
+  businessId,
 }: FormProps<BusinessFormValues>): JSX.Element {
   // const [socials, setSocials] = useState<BusinessContactAndBusinessProps[]>([]);
-
-  const dispatch = useDispatch();
 
   const SOCIAL_MEDIA_TOP = [
     {
       id: 1,
       icon: <WhatsAppIconGreen />,
       text: 'WhatsApp',
-      url_input: 'whatsapp_link',
+      input_name: 'whatsapp_link',
     },
     {
       id: 2,
       icon: <InstagramIconColored />,
       text: 'Instagram',
-      url_input: 'instagram_link',
+      input_name: 'instagram_link',
     },
     {
       id: 3,
       icon: <FacebookIconBlue />,
       text: 'Facebook',
-      url_input: 'facebook_link',
+      input_name: 'facebook_link',
     },
     {
       id: 4,
       icon: <XIconBlack />,
       text: 'X/Twitter',
-      url_input: 'twitter_link',
+      input_name: 'twitter_link',
     },
     {
       id: 5,
       icon: <TelegramIconBlue />,
       text: 'Telegram',
-      url_input: 'tiktok_link',
+      input_name: 'tiktok_link',
     },
   ];
   // const handleAddSocials = (values: BusinessContactAndBusinessProps): void => {
@@ -85,48 +85,31 @@ function BusinessContactAndBusiness({
   //   }
   // };
 
-  const onSubmit = async (values: FormikValues): Promise<void> => {
-    const { socials, ...rest } = values;
+  const onSubmit = async (values: BusinessFormValues): Promise<void> => {
+    // remove socials before sending
+    const { socials, ...payload } = values;
+    console.log(socials);
 
-    // Convert socials array → flat key/value pairs
-    const socialLinks = socials.reduce(
-      (
-        acc: Record<string, string>,
-        social: { url_input: string; value: string }
-      ) => {
-        acc[social.url_input] = social.value;
-        return acc;
-      },
-      {}
-    );
-
-    const payload = {
-      ...rest,
-      ...socialLinks,
-    };
-
-    console.log('payload socialLinks', payload);
+    console.log('Contact values: ', payload);
 
     try {
       const res = await fetch('/api/business/business-contact-location', {
         method: 'PATCH',
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          business_id: businessId, // add your ID
+          ...payload,
+        }),
       });
 
-      const data = await res.json();
-      console.log('amenities data: ', data);
+      // const data = await res.json();
 
       if (!res.ok) {
-        alert(`Error submitting business intro: ${data}`);
+        alert(`Error submitting business intro: ${res}`);
         // optionally show toast or set error state
+        console.log('res data: ', res);
+
         return;
       }
-
-      dispatch(
-        setBusinessRegistrationStage({
-          business_registration_step: 7,
-        })
-      );
     } catch (error) {
       console.error('Request failed:', error);
     }
@@ -148,7 +131,7 @@ function BusinessContactAndBusiness({
           await onSubmit(values);
         }}
       >
-        {({ values }) => (
+        {({ values, setFieldValue }) => (
           <Form className='mt-3 w-full'>
             {/* Fields */}
 
@@ -168,41 +151,50 @@ function BusinessContactAndBusiness({
                 className='w-full'
               />
             </div>
-            <FieldArray name='socials'>
-              {({ push, remove }) => (
-                <div className='mb-10 flex flex-col gap-4'>
-                  {values.socials.map((social, index) => (
-                    <div
-                      key={social.id}
-                      className='rounded-md border border-gray-200 px-4 py-2'
-                    >
-                      <div className='mb-3 flex items-center justify-between'>
-                        <div className='flex items-center gap-1'>
-                          <small>
-                            {
-                              SOCIAL_MEDIA_TOP.find(s => s.id === social.id)
-                                ?.icon
-                            }
-                          </small>
-                          <p className='text-sm'>{social.text} Link</p>
+            <FieldArray
+              name='socials'
+              render={arrayHelpers => (
+                <div>
+                  {values.socials &&
+                    values.socials.length > 0 &&
+                    values.socials.map((social, index) => (
+                      <div
+                        key={social.id}
+                        className='mb-4 rounded-md border border-gray-200 px-4 py-2'
+                      >
+                        <div className='mb-3 flex items-center justify-between'>
+                          <div className='flex items-center gap-1'>
+                            <small>
+                              {
+                                SOCIAL_MEDIA_TOP.find(s => s.id === social.id)
+                                  ?.icon
+                              }
+                            </small>
+                            <p className='text-sm'>{social.text} Link</p>
+                          </div>
+
+                          {/* <button type='button'>V</button> */}
                         </div>
 
-                        {/* <button type='button'>V</button> */}
-                      </div>
+                        <Input
+                          name={social.input_name}
+                          type='text'
+                          className='w-full'
+                        />
+                        <div className='flex w-full justify-end'>
+                          <button
+                            type='button'
+                            onClick={() => {
+                              arrayHelpers.remove(index);
 
-                      <Input
-                        name={`socials[${index}].url_input`}
-                        type='text'
-                        className='w-full'
-                      />
-                      <div className='flex w-full justify-end'>
-                        <button type='button' onClick={() => remove(index)}>
-                          x
-                        </button>
+                              setFieldValue(social.input_name, '');
+                            }}
+                          >
+                            x
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-
+                    ))}
                   <div className='flex w-full justify-center'>
                     <div className='grid w-[65%] grid-cols-3 gap-y-4 sm:w-[80%] sm:grid-cols-5'>
                       {SOCIAL_MEDIA_TOP.map(social => (
@@ -211,10 +203,10 @@ function BusinessContactAndBusiness({
                           key={social.id}
                           className='flex h-[60px] w-[45px] flex-col items-center justify-center gap-1 rounded-lg border border-gray-200'
                           onClick={() =>
-                            push({
+                            arrayHelpers.push({
                               id: social.id,
                               text: social.text,
-                              url_input: '',
+                              input_name: social.input_name,
                             })
                           }
                         >
@@ -226,7 +218,7 @@ function BusinessContactAndBusiness({
                   </div>
                 </div>
               )}
-            </FieldArray>
+            />
           </Form>
         )}
       </Formik>

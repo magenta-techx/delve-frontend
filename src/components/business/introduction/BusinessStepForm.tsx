@@ -42,8 +42,7 @@ interface FormValues {
 interface BusinessFormValues {
   phone_number: string;
   registration_number: string;
-  website: string;
-  socials: { id: number; url_input: string; text: string }[];
+  socials: { id: number; input_name: string; text: string }[];
 }
 
 const BusinessStepForm = (): JSX.Element => {
@@ -322,6 +321,20 @@ const BusinessStepForm = (): JSX.Element => {
     }
     if (pageNumber === 6) {
       if (!formikValuesContactRef.current) return;
+      const errors = await formikValuesContactRef.current.validateForm();
+      console.log(errors);
+      console.log(formikValuesContactRef.current.values);
+
+      if (Object.keys(errors).length > 0) {
+        // prevent moving forward
+        formikValuesContactRef.current.setTouched(
+          Object.keys(errors).reduce(
+            (acc, key) => ({ ...acc, [key]: true }),
+            {}
+          )
+        );
+        return;
+      }
 
       if (businessId) {
         await formikValuesContactRef.current.submitForm();
@@ -330,7 +343,8 @@ const BusinessStepForm = (): JSX.Element => {
             business_registration_step: pageNumber + 1,
           })
         );
-        setPageNumber(prev => prev + 1);
+        redirect.push('/business/business-submitted');
+        // setPageNumber(prev => prev + 1);
       }
     }
 
@@ -433,12 +447,6 @@ const BusinessStepForm = (): JSX.Element => {
         <BusinessContactAndBusiness
           businessId={businessId}
           formikRef={formikValuesContactRef}
-          initialValues={{
-            phone_number: '',
-            registration_number: '',
-            website: '',
-            socials: [] as { id: number; url_input: string; text: string }[],
-          }}
         />
       ),
     },

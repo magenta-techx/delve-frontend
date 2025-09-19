@@ -37,11 +37,14 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     const token = await getToken({ req });
 
     const body = await req.json();
-    const { business_id } = body;
+    const { business_id, ...rest } = body; // 👈 take out business_id
 
     if (!token?.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    console.log('Contact rest data: ', rest);
+    console.log('business_id: ', business_id);
 
     const res = await fetch(
       `${process.env['API_BASE_URL']}/business/${business_id}/set-location-and-contact-info/`,
@@ -51,7 +54,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
           Authorization: `Bearer ${token.accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(rest),
       }
     );
 
