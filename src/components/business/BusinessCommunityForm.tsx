@@ -15,16 +15,15 @@ const BusinessCommunityForm = (): JSX.Element => {
   const navigate = useRouter();
   const { data: session } = useSession();
   const handleFormSubmit = async (values: { email: string }): Promise<void> => {
-    if (session?.user.email != values?.email) {
-      return alert("Current logged in user email don't match email inserted");
-    }
-
     try {
-      const res = await fetch('/api/user/getUser', {
+      const res = await fetch(`/api/user/getUser?email=${values.email}`, {
         method: 'GET',
       });
 
       if (res.ok) {
+        if (session?.user.email != values?.email) {
+          return navigate.push(`/auth/signin-signup`);
+        }
         navigate.push('/business/introduction');
       } else {
         navigate.push(`/auth/signin-signup?login=false`);

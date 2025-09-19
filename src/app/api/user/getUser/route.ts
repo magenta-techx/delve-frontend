@@ -9,7 +9,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const res = await fetch(`${process.env['API_BASE_URL']}/user/`, {
+    const { searchParams } = new URL(req.url);
+    const email = searchParams.get('email');
+
+    const res = await fetch(`${process.env['API_BASE_URL']}/user/${email}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +35,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json(
       { error: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      { status: 400 }
     );
   }
 }

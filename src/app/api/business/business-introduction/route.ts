@@ -12,8 +12,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // 👇 Works only if frontend sends multipart/form-data
     const formData = await req.formData();
 
-    console.log('formData: ', formData);
-
     for (const [key, value] of formData.entries()) {
       if (value instanceof File) {
         console.log(`${key}: file ->`, value.name, value.type, value.size);

@@ -17,8 +17,8 @@ const initialState: BusinessState = {
   is_active: true,
   current_plan: '',
   is_premium_plan_active: false,
-  business_registration_step: 3,
-  business_id: 7,
+  business_registration_step: 6,
+  business_id: 17,
 };
 
 const businessSlice = createSlice({

@@ -20,14 +20,31 @@ import {
 } from '@/types/business/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  clearBusinessData,
+  // clearBusinessData,
   selectBusinessId,
   selectBusinessStep,
   setBusinessRegistrationStage,
 } from '@/redux/slices/businessSlice';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
 import { useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import fileEncoder from '@/utils/fileEncoder';
+
+interface Service {
+  title: string;
+  description: string;
+  image: File | null;
+}
+
+interface FormValues {
+  services: Service[];
+}
+
+interface BusinessFormValues {
+  phone_number: string;
+  registration_number: string;
+  website: string;
+  socials: { id: number; url_input: string; text: string }[];
+}
 
 const BusinessStepForm = (): JSX.Element => {
   const redirect = useRouter();
@@ -39,12 +56,14 @@ const BusinessStepForm = (): JSX.Element => {
   const [selectedAmenities, setSelectedAmenities] = useState<
     BusinessAmenitiesTypeProp[] | []
   >([]);
-  // const [amenity, setAmenity] = useState<string | File>('');
+
   const [businessId, setBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
   );
 
   const formikRef = useRef<FormikProps<FormikValues>>(null);
+  const formikValuesRef = useRef<FormikProps<FormValues>>(null);
+  const formikValuesContactRef = useRef<FormikProps<BusinessFormValues>>(null);
 
   const hanldeIntroductionFormsSubmittion = async (
     values: BusinessIntroductionProps
@@ -178,15 +197,141 @@ const BusinessStepForm = (): JSX.Element => {
     }
   };
 
+  const handleServicesSubmission = async (
+    values: FormValues,
+    businessId: number | undefined
+  ): Promise<void> => {
+    if (!businessId) {
+      console.log('❌ No businessId provided');
+      return;
+    }
+
+    // JSON part of services (with null for files)
+    // formData.append(
+    //   'services',
+    //   JSON.stringify(
+    //     values.services.map(s => ({
+    //       title: s.title,
+    //       description: s.description,
+    //       image: s.image instanceof File ? null : s.image,
+    //     }))
+    //   )
+    // );
+
+    // // Append files separately (still under "services")
+    // values.services.forEach(s => {
+    //   if (s.image instanceof File) {
+    //     formData.append('services', s.image);
+    //   }
+    // });
+
+    try {
+      let res: Response;
+
+      if (values.services && values.services.length > 1) {
+        console.log('values.services: ', values.services);
+        // ✅ Multiple services → JSON only
+        const services = await Promise.all(
+          values.services.map(async service => ({
+            title: service.title,
+            description: service.description,
+            image: !service.image ? '' : await fileEncoder(service.image),
+          }))
+        );
+
+        const payload = {
+          business_id: businessId,
+          services,
+        };
+
+        console.log('Converted data: ', payload);
+
+        res = await fetch('/api/business/business-services', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } else if (values.services && values.services.length === 1) {
+        // ✅ Single service → FormData with optional file
+        const service = values.services[0];
+        if (!service) throw new Error('Service data is missing');
+
+        const formData = new FormData();
+        formData.append('business_id', String(businessId));
+        formData.append('title', service.title);
+        formData.append('description', service.description);
+
+        if (service.image instanceof File) {
+          formData.append('image', service.image);
+        }
+
+        res = await fetch('/api/business/business-services', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        console.warn('⚠️ No services provided');
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error('❌ Error:', data);
+        alert(`Error submitting services: ${data.message || 'Unknown error'}`);
+        return;
+      }
+      // move to next step only if success
+      if (data?.status) {
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+            business_id: data?.data?.id,
+          })
+        );
+        setPageNumber(prev => prev + 1);
+      }
+      console.log('✅ Business services submitted successfully:', data);
+    } catch (error) {
+      console.error('❌ Request failed:', error);
+    }
+  };
+
   const handleContinue = async (): Promise<void> => {
     if (pageNumber === 1) {
-      return hanldeShowCaseFormsSubmittion({
+      return await hanldeShowCaseFormsSubmittion({
         business_id: businessId,
         images: businessShowCaseFile,
       });
     }
     if (pageNumber === 3) {
-      return hanleAmenitiesFormsSubmittion();
+      return await hanleAmenitiesFormsSubmittion();
+    }
+    if (pageNumber === 4) {
+      if (!formikValuesRef.current) return;
+
+      console.log(formikValuesRef.current.values);
+      console.log(businessId);
+
+      if (businessId) {
+        return await handleServicesSubmission(
+          formikValuesRef.current.values,
+          businessId
+        );
+      }
+    }
+    if (pageNumber === 6) {
+      if (!formikValuesContactRef.current) return;
+
+      if (businessId) {
+        await formikValuesContactRef.current.submitForm();
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+          })
+        );
+        setPageNumber(prev => prev + 1);
+      }
     }
 
     // For forms that require formik validations or have formik fields
@@ -194,6 +339,7 @@ const BusinessStepForm = (): JSX.Element => {
 
     const errors = await formikRef.current.validateForm();
     console.log(errors);
+    console.log(formikRef.current.values);
 
     if (Object.keys(errors).length > 0) {
       // prevent moving forward
@@ -203,10 +349,8 @@ const BusinessStepForm = (): JSX.Element => {
       return;
     }
 
-    console.log(formikRef.current.values);
-
     if (pageNumber === 0) {
-      return hanldeIntroductionFormsSubmittion(formikRef.current.values);
+      return await hanldeIntroductionFormsSubmittion(formikRef.current.values);
     }
 
     await formikRef.current.submitForm();
@@ -224,15 +368,6 @@ const BusinessStepForm = (): JSX.Element => {
       );
     }
   };
-
-  // const handleBUsinessDelete = async (): Promise<void> => {
-  //   const res = await fetch('/api/business/business-delete', {
-  //     method: 'DELETE',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ business_id: businessId }),
-  //   });
-  //   console.log('Deleted business: ', res);
-  // };
 
   const PAGE_CONTENTS = [
     {
@@ -260,7 +395,12 @@ const BusinessStepForm = (): JSX.Element => {
     },
     {
       id: 2,
-      component: <BusinessCategoryForm setPageNumber={setPageNumber} />,
+      component: (
+        <BusinessCategoryForm
+          setPageNumber={setPageNumber}
+          businessId={businessId}
+        />
+      ),
     },
     {
       id: 3,
@@ -273,7 +413,15 @@ const BusinessStepForm = (): JSX.Element => {
     },
     {
       id: 4,
-      component: <BusinessServicesForm />,
+      component: (
+        <BusinessServicesForm
+          formikRef={formikValuesRef}
+          initialValues={{
+            services: [{ title: '', description: '', image: null }],
+          }}
+          onSubmit={values => console.log('Form submitted:', values)}
+        />
+      ),
     },
     {
       id: 5,
@@ -281,22 +429,33 @@ const BusinessStepForm = (): JSX.Element => {
     },
     {
       id: 6,
-      component: <BusinessContactAndBusiness />,
+      component: (
+        <BusinessContactAndBusiness
+          businessId={businessId}
+          formikRef={formikValuesContactRef}
+          initialValues={{
+            phone_number: '',
+            registration_number: '',
+            website: '',
+            socials: [] as { id: number; url_input: string; text: string }[],
+          }}
+        />
+      ),
     },
   ];
 
-  const handleLogOut = (): void => {
-    dispatch(clearBusinessData());
-    signOut({ redirect: true, callbackUrl: '/auth/signin-signup' });
-  };
+  // const handleLogOut = (): void => {
+  //   dispatch(clearBusinessData());
+  //   signOut({ redirect: true, callbackUrl: '/auth/signin-signup' });
+  // };
   return (
     <section className='relative h-full w-full sm:pb-0'>
-      <Button
+      {/* <Button
         className='rounded bg-primary px-3 py-1 text-white'
         onClick={handleLogOut}
       >
         Sign Out
-      </Button>
+      </Button> */}
 
       <div className='-mt-4 mb-2 hidden w-full items-center gap-1 sm:flex'>
         {PAGE_CONTENTS.map((content, key) => {
@@ -322,11 +481,24 @@ const BusinessStepForm = (): JSX.Element => {
               <ArrowLefttIconWhite /> Back
             </Button>
           )}
-          {pageNumber < PAGE_CONTENTS.length - 1 && (
-            <Button onClick={handleContinue}>
-              Continue <ArrowRightIconWhite />
-            </Button>
-          )}
+
+          <Button
+            onClick={handleContinue}
+            isSubmitting={
+              formikRef.current?.isSubmitting ??
+              (false || formikValuesRef.current?.isSubmitting) ??
+              false
+            }
+          >
+            {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
+            {formikRef.current?.isSubmitting ||
+            formikValuesRef.current?.isSubmitting ? (
+              <ArrowRightIconWhite />
+            ) : (
+              'Loading...'
+            )}
+          </Button>
+
           {}
         </div>
 
