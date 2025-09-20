@@ -56,7 +56,7 @@ const BusinessStepForm = (): JSX.Element => {
   const currentBusinessId = useSelector(selectBusinessId);
   const dispatch = useDispatch();
   const [pageNumber, setPageNumber] = useState(formStep);
-  const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File>();
+  const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<
     BusinessAmenitiesTypeProp[] | []
   >([]);
@@ -119,36 +119,38 @@ const BusinessStepForm = (): JSX.Element => {
   const hanldeShowCaseFormsSubmittion = async (
     values: BusinessShowCaseProps
   ): Promise<void> => {
-    if (!values.images) {
+    if (!values.images || values.images.length === 0) {
       return alert('Provide at least one image');
     }
+
     const formData = new FormData();
 
-    Object.entries(values).forEach(([key, value]) => {
-      if (value && typeof value === 'object' && 'name' in value) {
-        formData.append(key, value as File);
-      } else if (value) {
-        formData.append(key, String(value));
-      }
+    // Add business_id if present
+    if (values.business_id) {
+      formData.append('business_id', String(values.business_id));
+    }
+
+    // Append multiple files
+    values.images.forEach(file => {
+      formData.append('images', file);
+      // OR `formData.append(`images[${index}]`, file)` if backend expects indexed keys
     });
 
     try {
       const res = await fetch('/api/business/business-showcase', {
         method: 'POST',
-        body: formData, // ✅ automatically multipart/form-data
+        body: formData,
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        alert(`Error submitting business intro: ${res}`);
-        // optionally show toast or set error state
+        alert(`Error submitting showcase: ${data}`);
         return;
       }
 
-      console.log('✅ Business intro submitted successfully:', data);
+      console.log('✅ Business showcase submitted successfully:', data);
 
-      // move to next step only if success
       if (data?.status) {
         dispatch(
           setBusinessRegistrationStage({

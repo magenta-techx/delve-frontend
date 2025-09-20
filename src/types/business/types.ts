@@ -5,7 +5,7 @@ export interface BusinessIntroductionProps {
 }
 export interface BusinessShowCaseProps {
   business_id?: number | undefined;
-  images?: File | undefined;
+  images?: File[];
 }
 
 export interface BusinessAmenitiesTypeProp {
