@@ -29,7 +29,7 @@ export const servicesSchema = Yup.object({
     Yup.object({
       service_title: Yup.string().nullable('Title is required'),
       description: Yup.string().nullable('Description is required'),
-      image: Yup.mixed().nullable(), // optional
+      image_field: Yup.mixed().nullable(), // optional
     })
   ),
 });

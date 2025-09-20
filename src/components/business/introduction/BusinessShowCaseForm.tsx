@@ -10,7 +10,7 @@ import { EffectCoverflow } from 'swiper/modules';
 import BinIcon from '@/assets/icons/BinIcon';
 
 interface BusinessShowCaseFormProps {
-  setBusinessShowCaseFile: (files: File | undefined) => void;
+  setBusinessShowCaseFile: (files: File[]) => void;
 }
 const BusinessShowCaseForm = ({
   setBusinessShowCaseFile,
@@ -38,7 +38,7 @@ const BusinessShowCaseForm = ({
               const newIndex = swiper.activeIndex;
               setActiveIndex(newIndex);
 
-              setBusinessShowCaseFile(files[newIndex]);
+              setBusinessShowCaseFile(files);
             }}
             slideToClickedSlide
             // className='flex w-full'
@@ -95,7 +95,7 @@ const BusinessShowCaseForm = ({
           setFiles(newFiles);
           if (newFiles.length > 0) {
             setActiveIndex(0);
-            setBusinessShowCaseFile(newFiles[0]); // ✅ first file as default
+            setBusinessShowCaseFile(newFiles); // ✅ first file as default
           }
         }}
         files={files}

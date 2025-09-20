@@ -23,12 +23,22 @@ interface BusinessFormValues {
   phone_number: string;
   registration_number: string;
   socials: { id: number; input_name: string; text: string }[];
+  whatsapp_link: '';
+  instagram_link: '';
+  facebook_link: '';
+  twitter_link: '';
+  tiktok_link: '';
 }
 
 const initialValues: BusinessFormValues = {
   phone_number: '',
   registration_number: '',
   socials: [],
+  whatsapp_link: '',
+  instagram_link: '',
+  facebook_link: '',
+  twitter_link: '',
+  tiktok_link: '',
 };
 
 type FormProps<T extends FormikValues> = {
