@@ -19,7 +19,7 @@ import Image from 'next/image';
 interface Service {
   title: string;
   description: string;
-  image: File | null;
+  image_field: File | null;
 }
 
 interface FormValues {
@@ -52,9 +52,12 @@ const ServiceItem = React.memo(function ServiceItem({
   canRemove,
 }: ServiceItemProps) {
   const imageUrl = useMemo(
-    () => (service.image ? URL.createObjectURL(service.image) : null),
-    [service.image]
+    () =>
+      service.image_field ? URL.createObjectURL(service.image_field) : null,
+    [service.image_field]
   );
+
+  console.log('Business service: ', service);
 
   useEffect(() => {
     return (): void => {
@@ -70,7 +73,6 @@ const ServiceItem = React.memo(function ServiceItem({
         label='Title of Service'
         className='w-full'
       />
-
       <TextArea
         name={`services[${index}].description`}
         label='Description'
@@ -99,8 +101,10 @@ const ServiceItem = React.memo(function ServiceItem({
             accept='image/png, image/jpeg, image/jpg'
             className='hidden'
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const file = e.target.files?.[0] ?? null;
-              setFieldValue(`services[${index}].image`, file);
+              const file = e.target.files ? e.target.files[0] : null;
+              console.log('file: ', file);
+
+              setFieldValue(`services[${index}].image_field`, file);
             }}
           />
 
@@ -117,11 +121,10 @@ const ServiceItem = React.memo(function ServiceItem({
           label='Service Image'
           mutipleUploads={false}
           onFileSelect={files =>
-            setFieldValue(`services[${index}].image`, files?.[0] ?? null)
+            setFieldValue(`services[${index}].image_field`, files?.[0] ?? null)
           }
         />
       )}
-
       {canRemove && (
         <Button
           type='button'
@@ -181,7 +184,7 @@ function BusinessServicesForm({
                         push({
                           title: '',
                           description: '',
-                          image: null,
+                          image_field: null,
                         })
                       }
                     >

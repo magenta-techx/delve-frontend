@@ -18,7 +18,7 @@ const initialState: BusinessState = {
   current_plan: '',
   is_premium_plan_active: false,
   business_registration_step: 6,
-  business_id: 17,
+  business_id: 18,
 };
 
 const businessSlice = createSlice({
@@ -36,8 +36,7 @@ const businessSlice = createSlice({
       }>
     ) => {
       console.log(action.payload);
-      //134.209.19.132:8000/api/business/{business_id}/delete/
-      http: state.business_registration_step =
+      state.business_registration_step =
         action.payload.business_registration_step;
       if (action.payload.business_id !== undefined) {
         state.business_id = action.payload.business_id;
