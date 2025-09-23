@@ -16,6 +16,9 @@ import { Button } from './ui/Button';
 import MenuBarIcon from '@/assets/icons/MenuBarIcon';
 import CancleIcon from '@/assets/icons/CancelIcon';
 import MenuBarIconWhite from '@/assets/icons/MenuBarIconWhite';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+// import { selectUserIsLoggedIn } from '@/redux/slices/businessSlice';
 
 interface AuthFormButtonProps {
   text: string;
@@ -33,6 +36,12 @@ interface NavbarProps {
   authFormButtons?: boolean;
 }
 const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
+  const userIsloggedIn = useSelector(
+    (state: RootState) => state.business.userIsLoggedIn
+  );
+
+  console.log('userIsloggedIn: ', userIsloggedIn);
+
   const router = useRouter();
   const [showMobileMenuItems, setShowMobileMenuItems] = useState(false);
   const handleAuthRouter = (login: string = 'true'): void => {
@@ -149,7 +158,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
         )}
         {type && (
           <div className='hidden w-80 items-center gap-5 sm:flex'>
-            {type && (
+            {type && !userIsloggedIn && (
               <Link
                 href={'auth/signin-signup'}
                 className={`flex w-[300px] items-center gap-2 text-sm ${loginSignup}`}
@@ -165,7 +174,11 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
               </Link>
             )}
             {type && (
-              <Button asChild className='w-[200px] text-xs' variant={variant}>
+              <Button
+                asChild
+                className={`${userIsloggedIn ? 'w-[170px]' : 'w-[200px]'} text-xs`}
+                variant={variant}
+              >
                 <Link href={'/'} className={`flex gap-2 ${linkClassName}`}>
                   Market place {marketPlaceIcon}
                 </Link>

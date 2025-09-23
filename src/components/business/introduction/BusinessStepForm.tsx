@@ -27,6 +27,7 @@ import {
 } from '@/redux/slices/businessSlice';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
 import { useRouter } from 'next/navigation';
+import Spinner from '@/components/ui/spinner';
 // import fileEncoder from '@/utils/fileEncoder';
 
 interface Service {
@@ -497,13 +498,21 @@ const BusinessStepForm = (): JSX.Element => {
               (false || formikRefServices.current?.isSubmitting) ??
               false
             }
+            // disabled={
+            //   formikRefServices.current?.isSubmitting ||
+            //   formikRef.current?.isSubmitting ||
+            //   !formikRef.current?.errors ||
+            //   !formikRefServices.current?.errors
+            //     ? true
+            //     : false
+            // }
           >
             {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
-            {formikRef.current?.isSubmitting ||
-            formikRefServices.current?.isSubmitting ? (
+            {!formikRef.current?.isSubmitting ||
+            !formikRefServices.current?.isSubmitting ? (
               <ArrowRightIconWhite />
             ) : (
-              'Loading...'
+              <Spinner />
             )}
           </Button>
 

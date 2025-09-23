@@ -66,7 +66,7 @@ const ServiceItem = React.memo(function ServiceItem({
   }, [imageUrl]);
 
   return (
-    <div className='flex flex-col gap-3'>
+    <div className='flex flex-col gap-3 border-b-2 border-b-gray-100 pb-3'>
       <Input
         name={`services[${index}].title`}
         type='text'
@@ -146,7 +146,7 @@ function BusinessServicesForm({
   const fileInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
 
   return (
-    <div className='sm:w-[400px]'>
+    <div className='sm:w-[500px]'>
       <BusinessIntroductionFormHeader
         intro='Business account setup'
         header='Add Business Services'
