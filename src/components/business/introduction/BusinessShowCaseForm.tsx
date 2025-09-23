@@ -22,7 +22,7 @@ const BusinessShowCaseForm = ({
     setFiles(updatedFiles);
   };
   return (
-    <div className='flex w-full flex-col items-center gap-4 sm:-mt-0 sm:w-[400px]'>
+    <div className='flex w-full flex-col items-center gap-4 sm:-mt-0 sm:w-[480px]'>
       <BusinessIntroductionFormHeader
         intro={'Business account setup'}
         header='Showcase Your Business '

@@ -23,7 +23,7 @@ function BusinessIntroductionForm<T extends FormikValues>({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   return (
-    <div className='sm:w-[400px]'>
+    <div className='sm:w-[500px]'>
       <BusinessIntroductionFormHeader
         intro={'Business account setup'}
         header='Introduce us to your business'

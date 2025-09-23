@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Slot } from '@radix-ui/react-slot';
+import Spinner from './spinner';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
@@ -67,9 +68,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         <span className='inline-flex items-center gap-2'>
           {icon && icon}
           {children}
-          {isSubmitting && (
-            <div className='h-5 w-5 animate-spin rounded-full border-4 border-white border-t-transparent'></div>
-          )}
+          {isSubmitting && <Spinner />}
         </span>
       </Comp>
     );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
 import { Button } from '@/components/ui/Button';
+import CancleIcon from '@/assets/icons/CancelIcon';
 
 interface SubCategoriesProps {
   id: number;
@@ -130,12 +131,14 @@ const BusinessCategoryForm = ({
         {selectedCategory.id && showSubCategories ? (
           <div className='absolute top-0 flex h-full sm:w-full sm:items-center sm:justify-center'>
             <div className='rounded-md bg-white sm:min-h-[280px] sm:w-[480px] sm:p-5 sm:shadow-2xl'>
-              <button
-                className='hidden sm:flex'
-                onClick={() => setShowSubCategories(false)}
-              >
-                x
-              </button>
+              <div className='flex w-full justify-end'>
+                <button
+                  className='hidden sm:flex'
+                  onClick={() => setShowSubCategories(false)}
+                >
+                  <CancleIcon />
+                </button>
+              </div>
               <BusinessIntroductionFormHeader
                 header={`Choose your ${selectedCategory.name} business type`}
                 paragraph={`Select the categories taht best describe your ${selectedCategory.name} business`}

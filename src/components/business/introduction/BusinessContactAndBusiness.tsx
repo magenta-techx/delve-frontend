@@ -9,6 +9,7 @@ import WhatsAppIconGreen from '@/assets/icons/business/WhatsAppIconGreen';
 import TelegramIconBlue from '@/assets/icons/business/TelegramIconBlue';
 import XIconBlack from '@/assets/icons/business/XIconBlack';
 import FacebookIconBlue from '@/assets/icons/business/FacebookIconBlue';
+import ArrowDownIconBlack from '@/assets/icons/business/ArrowDownIconBlack';
 // import { setBusinessRegistrationStage } from '@/redux/slices/businessSlice';
 
 // interface BusinessContactAndBusinessProps {
@@ -126,10 +127,10 @@ function BusinessContactAndBusiness({
   };
 
   return (
-    <div className='sm:w-[400px]'>
+    <div className='sm:w-[500px]'>
       <BusinessIntroductionFormHeader
         intro={'Business account setup'}
-        header='Complete your contact and business information '
+        header='Complete your contact and business details '
         paragraph='Add your contact and registration number for trust'
       />
       <Formik<BusinessFormValues>
@@ -173,14 +174,17 @@ function BusinessContactAndBusiness({
                         className='mb-4 rounded-md border border-gray-200 px-4 py-2'
                       >
                         <div className='mb-3 flex items-center justify-between'>
-                          <div className='flex items-center gap-1'>
-                            <small>
-                              {
-                                SOCIAL_MEDIA_TOP.find(s => s.id === social.id)
-                                  ?.icon
-                              }
-                            </small>
-                            <p className='text-sm'>{social.text} Link</p>
+                          <div className='flex w-full items-center justify-between'>
+                            <div className='flex items-center gap-1'>
+                              <small>
+                                {
+                                  SOCIAL_MEDIA_TOP.find(s => s.id === social.id)
+                                    ?.icon
+                                }
+                              </small>
+                              <p className='text-sm'>{social.text} Link</p>
+                            </div>
+                            <ArrowDownIconBlack />
                           </div>
 
                           {/* <button type='button'>V</button> */}
@@ -194,13 +198,14 @@ function BusinessContactAndBusiness({
                         <div className='flex w-full justify-end'>
                           <button
                             type='button'
+                            className='rounded-md border border-red-500 p-2 text-xs font-semibold text-red-500'
                             onClick={() => {
                               arrayHelpers.remove(index);
 
                               setFieldValue(social.input_name, '');
                             }}
                           >
-                            x
+                            Remove
                           </button>
                         </div>
                       </div>

@@ -4,6 +4,8 @@ import { Form, Formik } from 'formik';
 import Input from '@/components/ui/Input';
 import { amenitySchema } from '@/schemas/businessSchema';
 import { BusinessAmenitiesTypeProp } from '@/types/business/types';
+import CancleIcon from '@/assets/icons/CancelIcon';
+import Amenity from '@/assets/icons/business/Amenity';
 
 interface amenitiesType {
   id: number | null;
@@ -62,7 +64,7 @@ const BusinessAmeneties = ({
     fetchAmenities();
   }, []);
   return (
-    <div className='sm:w-[400px]'>
+    <div className='sm:w-[500px]'>
       {' '}
       <BusinessIntroductionFormHeader
         intro={'Business account setup'}
@@ -102,8 +104,9 @@ const BusinessAmeneties = ({
           selectedAmenities.map((amenity, key) => (
             <div
               key={key}
-              className='relative rounded-lg border border-gray-200 bg-neutral-50 px-4 py-2 text-xs text-black text-primary'
+              className='relative flex items-center gap-2 rounded-lg border border-gray-200 bg-neutral-50 px-4 py-2 text-xs text-black text-primary'
             >
+              <span>{<Amenity />}</span>
               <span className='truncate text-sm'>{amenity.name} </span>
               <button
                 type='button'
@@ -114,7 +117,7 @@ const BusinessAmeneties = ({
                 }}
                 className='absolute -left-4 top-[6px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-200 bg-white'
               >
-                X
+                <CancleIcon />
               </button>
             </div>
           ))}

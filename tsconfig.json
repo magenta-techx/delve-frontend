@@ -7,8 +7,6 @@
       "dom.iterable",
       "es6"
     ],
-    "allowJs": false,
-    "checkJs": false,
     "jsx": "preserve",
     "incremental": true,
     "plugins": [

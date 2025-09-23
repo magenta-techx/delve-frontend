@@ -53,17 +53,20 @@ const LoginForm = (): JSX.Element => {
     }
   };
   useEffect(() => {
-    dispatch(
-      setBusinessData({
-        is_brand_owner: session?.user.is_brand_owner ?? undefined,
-        number_of_owned_brands:
-          session?.user.number_of_owned_brands ?? undefined,
-        is_active: session?.user.is_active ?? undefined,
-        current_plan: session?.user.current_plan ?? undefined,
-        is_premium_plan_active:
-          session?.user.is_premium_plan_active ?? undefined,
-      })
-    );
+    if (session?.user) {
+      dispatch(
+        setBusinessData({
+          is_brand_owner: session?.user.is_brand_owner ?? undefined,
+          number_of_owned_brands:
+            session?.user.number_of_owned_brands ?? undefined,
+          is_active: session?.user.is_active ?? undefined,
+          current_plan: session?.user.current_plan ?? undefined,
+          is_premium_plan_active:
+            session?.user.is_premium_plan_active ?? undefined,
+          userIsLoggedIn: true,
+        })
+      );
+    }
   }, [session, dispatch]);
   return (
     <Formik

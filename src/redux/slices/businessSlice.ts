@@ -9,6 +9,7 @@ export interface BusinessState {
   is_premium_plan_active: boolean | undefined;
   business_registration_step?: number;
   business_id?: number | null;
+  userIsLoggedIn: boolean;
 }
 
 const initialState: BusinessState = {
@@ -17,8 +18,9 @@ const initialState: BusinessState = {
   is_active: true,
   current_plan: '',
   is_premium_plan_active: false,
-  business_registration_step: 6,
+  business_registration_step: 0,
   business_id: 18,
+  userIsLoggedIn: false,
 };
 
 const businessSlice = createSlice({
@@ -35,20 +37,23 @@ const businessSlice = createSlice({
         business_id?: number | null;
       }>
     ) => {
-      console.log(action.payload);
       state.business_registration_step =
         action.payload.business_registration_step;
       if (action.payload.business_id !== undefined) {
         state.business_id = action.payload.business_id;
       }
     },
-    clearBusinessData: () => initialState,
+
+    clearBusinessData: () => {
+      return initialState;
+    },
   },
 });
 
 export const {
   setBusinessData,
   setBusinessRegistrationStage,
+  // setUserIsLoggedIn,
   clearBusinessData,
 } = businessSlice.actions;
 export default businessSlice.reducer;
@@ -56,3 +61,5 @@ export const selectBusinessStep = (state: RootState): number =>
   state.business.business_registration_step ?? 0;
 export const selectBusinessId = (state: RootState): number | null =>
   state.business.business_id ?? null;
+// export const selectUserIsLoggedIn = (state: RootState): boolean =>
+//   state.business.userIsLoggedIn;
