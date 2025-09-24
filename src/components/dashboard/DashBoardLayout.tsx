@@ -9,7 +9,7 @@ const DashBoardLayout = (): JSX.Element => {
   const { data: session } = useSession();
   const dispatch = useDispatch();
 
-  console.log('Session in Dashboard: ', session);
+  // console.log('Session in Dashboard: ', session);
 
   const handleLogOut = (): void => {
     dispatch(clearBusinessData());

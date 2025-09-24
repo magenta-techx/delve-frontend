@@ -71,7 +71,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       refreshToken: refreshedTokens?.data?.refresh ?? token.refreshToken, // fall back to old one
     };
   } catch (error) {
-    console.warn('Refresh token error:', error);
+    console.log('Refresh token error:', error);
     return { ...token, error: 'RefreshAccessTokenError' };
   }
 }
@@ -96,6 +96,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) return null;
+console.log("API_BASE_URL:", process.env['API_BASE_URL']);
 
         const res = await fetch(
           `${process.env['API_BASE_URL']}/user/auth/token/`,
