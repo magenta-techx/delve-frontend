@@ -66,7 +66,7 @@ const FileUpload = ({
       </button>  */}
       <label className='text-sm font-medium text-gray-400'>{label}</label>
       <div className='flex w-full flex-col items-center'>
-        <div className='w-full rounded-2xl border-[1px] border-dashed border-gray-300 bg-[#FBFAFF] p-4 text-center shadow-sm'>
+        <div className='w-full rounded-2xl border-[1px] border-dashed border-gray-300 bg-[#FBFAFF] px-4 py-6 text-center shadow-sm'>
           {/* <Image
             src={URL.createObjectURL(file)}
             alt={`${file}`}

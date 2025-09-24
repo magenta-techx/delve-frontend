@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
 import { Button } from '@/components/ui/Button';
 import CancleIcon from '@/assets/icons/CancelIcon';
+import {
+  BusinessCategoryIcons,
+  IconsType,
+} from '@/assets/icons/business/BusinessCategoriesIcon';
+import Loader from '@/components/ui/Loader';
+import { useDispatch } from 'react-redux';
+import { setBusinessRegistrationStage } from '@/redux/slices/businessSlice';
 
 interface SubCategoriesProps {
   id: number;
@@ -17,6 +24,7 @@ interface SubCategoriesProps {
 interface BusinessCategoryFormProps {
   setPageNumber: (value: number) => void;
   businessId: number | undefined;
+  setShowSubBusinessCategories: (value: boolean) => void;
 }
 interface Category {
   id: number | undefined;
@@ -33,7 +41,9 @@ interface SubCategory {
 const BusinessCategoryForm = ({
   setPageNumber,
   businessId,
+  setShowSubBusinessCategories,
 }: BusinessCategoryFormProps): JSX.Element => {
+  const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState<Category>({
     id: undefined,
     icon_name: '',
@@ -45,12 +55,17 @@ const BusinessCategoryForm = ({
   );
   const [showSubCategories, setShowSubCategories] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoadingcategories, setIsloadingCategories] =
+    useState<boolean>(false);
+  const [isSendingCategories, setIsSendingCategories] =
+    useState<boolean>(false);
 
   const hanldeSelectCategorySubmittion = async (values: {
     category_id: number | undefined;
     subcategory_ids: number[];
   }): Promise<void> => {
     try {
+      setIsSendingCategories(true);
       if (businessId) {
         const res = await fetch('/api/business/business-categories/', {
           method: 'PATCH',
@@ -58,12 +73,20 @@ const BusinessCategoryForm = ({
           body: JSON.stringify({ business_id: businessId, values }),
         });
         console.log(res);
+        setShowSubBusinessCategories(false);
+        setIsSendingCategories(false);
+        setPageNumber(3);
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: 3,
+            business_id: businessId,
+          })
+        );
       }
     } catch (error) {
       console.log(error);
-      setPageNumber(3);
+      setPageNumber(2);
     }
-    setPageNumber(3);
   };
 
   const handleSubCategories = ({ id }: SubCategoriesProps): void => {
@@ -80,6 +103,7 @@ const BusinessCategoryForm = ({
 
   useEffect(() => {
     const fetchCategories = async (): Promise<void> => {
+      setIsloadingCategories(true);
       try {
         const res = await fetch(`/api/business/business-categories`);
         if (!res.ok) throw new Error(`Error fetching categories`);
@@ -96,6 +120,8 @@ const BusinessCategoryForm = ({
       } catch (error) {
         console.error(error);
       }
+
+      setIsloadingCategories(false);
     };
 
     fetchCategories();
@@ -111,39 +137,54 @@ const BusinessCategoryForm = ({
         />
       </div>
       <div className='mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3'>
-        {categories.length
-          ? categories.map((category, key) => {
-              return (
-                <button
-                  key={key}
-                  className={`rounded-md border bg-white px-4 py-3 text-left text-[11px] font-semibold uppercase sm:text-xs ${selectedCategory.id === category.id ? 'border-white bg-neutral-50 text-primary sm:border-primary' : ''} ${showSubCategories && selectedCategory.id !== category.id ? 'border-white text-gray-400' : 'border-gray-400'}`}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    setShowSubCategories(true);
-                  }}
-                >
-                  <small className=''>{category.icon_name}</small>
-                  <h1 className=''>{category.name}</h1>
-                </button>
-              );
-            })
-          : ''}
+        {isLoadingcategories ? (
+          <div className='flex items-center gap-1'>
+            <Loader borderColor='border-primary' /> Loading categories...
+          </div>
+        ) : categories.length ? (
+          categories.map((category, key) => {
+            const icon = category?.name
+              ?.split(' ')[0]
+              ?.toLowerCase() as IconsType;
+
+            return (
+              <button
+                key={key}
+                className={`flex flex-col gap-1 rounded-md border bg-white px-4 py-3 text-left text-[11px] font-semibold uppercase sm:text-xs ${selectedCategory.id === category.id ? 'border-white bg-neutral-50 text-primary sm:border-primary' : ''} ${showSubCategories && selectedCategory.id !== category.id ? 'border-white text-gray-400' : 'border-gray-400'}`}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setShowSubCategories(true);
+                  setShowSubBusinessCategories(true);
+                }}
+              >
+                <BusinessCategoryIcons value={icon} />
+                <small className=''>{category.icon_name}</small>
+                <h1 className=''>{category.name}</h1>
+              </button>
+            );
+          })
+        ) : (
+          ''
+        )}
         {selectedCategory.id && showSubCategories ? (
           <div className='absolute top-0 flex h-full sm:w-full sm:items-center sm:justify-center'>
             <div className='rounded-md bg-white sm:min-h-[280px] sm:w-[480px] sm:p-5 sm:shadow-2xl'>
               <div className='flex w-full justify-end'>
                 <button
                   className='hidden sm:flex'
-                  onClick={() => setShowSubCategories(false)}
+                  onClick={() => {
+                    setShowSubCategories(false);
+                    setShowSubBusinessCategories(false);
+                  }}
                 >
                   <CancleIcon />
                 </button>
               </div>
               <BusinessIntroductionFormHeader
                 header={`Choose your ${selectedCategory.name} business type`}
-                paragraph={`Select the categories taht best describe your ${selectedCategory.name} business`}
+                paragraph={`Select the categories taht best describe your ${selectedCategory.name.toLocaleLowerCase()} business`}
               />
-              <div className='mb-8 mt-5 grid h-[500px] grid-cols-1 gap-x-7 gap-y-4 overflow-y-scroll sm:h-auto sm:grid-cols-2 sm:overflow-y-hidden'>
+              <div className='mb-8 mt-5 grid h-[500px] grid-cols-1 gap-x-7 overflow-y-scroll sm:h-auto sm:grid-cols-2 sm:gap-y-4 sm:overflow-y-hidden'>
                 {selectedCategory.subcategories.length > 1 &&
                   selectedCategory.subcategories.map((category, key) => (
                     <button
@@ -163,7 +204,7 @@ const BusinessCategoryForm = ({
                   ))}
               </div>
               <div
-                className='absolute h-[100px] w-full py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] sm:relative sm:-bottom-0 sm:h-auto sm:w-[200px] sm:bg-transparent sm:shadow-[0_-2px_0_0_rgba(0,0,0,0.1)]'
+                className='absolute h-[100px] w-full py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] sm:relative sm:-bottom-0 sm:h-auto sm:w-[200px] sm:bg-transparent sm:shadow-none'
                 onClick={() =>
                   hanldeSelectCategorySubmittion({
                     category_id: selectedCategory.id,
@@ -171,7 +212,16 @@ const BusinessCategoryForm = ({
                   })
                 }
               >
-                <Button className='text-xs'>Submit & Continue</Button>
+                <Button className='text-xs'>
+                  {isSendingCategories ? (
+                    <span className='flex items-center gap-1'>
+                      <Loader />
+                      Submitting...
+                    </span>
+                  ) : (
+                    'Submit & Continue'
+                  )}
+                </Button>
               </div>
             </div>
           </div>

@@ -15,9 +15,7 @@ export const businessIntroductionSchema = Yup.object({
 // service_title: Yup.string().required('service title is required'),
 
 export const amenitySchema = Yup.object({
-  amenity: Yup.string()
-    .nullable('Amenity can not be empty')
-    .min(4, 'Amenity too short'),
+  amenity: Yup.string().nullable().min(4, 'Amenity too short'),
 });
 export const locationSchema = Yup.object({
   state: Yup.string()

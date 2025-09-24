@@ -33,6 +33,7 @@ const AuthCarousel = (): JSX.Element => {
       showArrows={false}
       infiniteLoop
       autoPlay
+      animationHandler='fade'
       interval={8000}
       renderIndicator={(onClickHandler, isSelected, index, label) => {
         const baseStyle = {
@@ -62,7 +63,7 @@ const AuthCarousel = (): JSX.Element => {
       className='h-[100vh] rounded-xl'
     >
       {CAROUSEL_CONTENT.map((content, key) => (
-        <div key={key} className='w-[40%]'>
+        <div key={key} className='w-full'>
           <Image
             src={content.imageUrl}
             alt={`Delve ${content.header}`}

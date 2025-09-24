@@ -70,12 +70,12 @@ const ServiceItem = React.memo(function ServiceItem({
       <Input
         name={`services[${index}].title`}
         type='text'
-        label='Title of Service'
+        label='Title of Service (Optional)'
         className='w-full'
       />
       <TextArea
         name={`services[${index}].description`}
-        label='Description'
+        label='Description (Optional)'
         className='w-full'
         placeholder='Write a description'
         maxLength={250}

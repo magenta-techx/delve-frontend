@@ -157,7 +157,9 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
           </div>
         )}
         {type && (
-          <div className='hidden w-80 items-center gap-5 sm:flex'>
+          <div
+            className={`hidden ${userIsloggedIn ? 'w-[200px]' : 'w-80'} items-center justify-end gap-5 sm:flex`}
+          >
             {type && !userIsloggedIn && (
               <Link
                 href={'auth/signin-signup'}
@@ -174,12 +176,11 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
               </Link>
             )}
             {type && (
-              <Button
-                asChild
-                className={`${userIsloggedIn ? 'w-[170px]' : 'w-[200px]'} text-xs`}
-                variant={variant}
-              >
-                <Link href={'/'} className={`flex gap-2 ${linkClassName}`}>
+              <Button asChild className={`w-[200px] text-xs`} variant={variant}>
+                <Link
+                  href={'/'}
+                  className={`flex h-full items-center justify-center gap-2 ${linkClassName} `}
+                >
                   Market place {marketPlaceIcon}
                 </Link>
               </Button>
