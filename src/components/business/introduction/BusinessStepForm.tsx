@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DefaultLogoTextIcon from '@/assets/icons/logo/DefaultLogoTextIcon';
 import Logo from '@/components/ui/Logo';
 import BusinessIntroductionForm from './BusinessIntroductionForm';
@@ -27,7 +27,9 @@ import {
 } from '@/redux/slices/businessSlice';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
 import { useRouter } from 'next/navigation';
-import Spinner from '@/components/ui/spinner';
+import Loader from '@/components/ui/Loader';
+// import Loader from '@/components/ui/Loader';
+// import Spinner from '@/components/business/Spinner';
 // import fileEncoder from '@/utils/fileEncoder';
 
 interface Service {
@@ -52,6 +54,11 @@ interface BusinessFormValuesContactAndInformation {
 }
 
 const BusinessStepForm = (): JSX.Element => {
+  const formikRef = useRef<FormikProps<FormikValues>>(null);
+  const formikRefServices = useRef<FormikProps<FormValues>>(null);
+  const formikRefContactAndInformation =
+    useRef<FormikProps<BusinessFormValuesContactAndInformation>>(null);
+
   const redirect = useRouter();
   const formStep = useSelector(selectBusinessStep);
   const currentBusinessId = useSelector(selectBusinessId);
@@ -61,15 +68,12 @@ const BusinessStepForm = (): JSX.Element => {
   const [selectedAmenities, setSelectedAmenities] = useState<
     BusinessAmenitiesTypeProp[] | []
   >([]);
-
+  const [showSubBusinessCategories, setShowSubBusinessCategories] =
+    useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [businessId, setBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
   );
-
-  const formikRef = useRef<FormikProps<FormikValues>>(null);
-  const formikRefServices = useRef<FormikProps<FormValues>>(null);
-  const formikRefContactAndInformation =
-    useRef<FormikProps<BusinessFormValuesContactAndInformation>>(null);
 
   const hanldeIntroductionFormsSubmittion = async (
     values: BusinessIntroductionProps
@@ -214,6 +218,23 @@ const BusinessStepForm = (): JSX.Element => {
       return;
     }
 
+    console.log('values.services.length', values.services.values);
+
+    // Check if ALL services are empty
+    const nonEmptyServices = values.services.filter(
+      service =>
+        service.title.trim() !== '' ||
+        service.description.trim() !== '' ||
+        service.image_field !== null
+    );
+
+    console.log('nonEmptyServices:', nonEmptyServices);
+
+    if (nonEmptyServices.length === 0) {
+      // ⏩ Skip to next page
+      setPageNumber(prev => prev + 1);
+      return;
+    }
     const formData = new FormData();
 
     formData.append('business_id', businessId.toString());
@@ -294,25 +315,37 @@ const BusinessStepForm = (): JSX.Element => {
   };
 
   const handleContinue = async (): Promise<void> => {
+    setIsSubmitting(true);
     if (pageNumber === 5) {
+      setIsSubmitting(false);
       setPageNumber(6);
     }
     if (pageNumber === 1) {
+      setIsSubmitting(false);
       return await hanldeShowCaseFormsSubmittion({
         business_id: businessId,
         images: businessShowCaseFile,
       });
     }
     if (pageNumber === 3) {
+      setIsSubmitting(false);
       return await hanleAmenitiesFormsSubmittion();
     }
     if (pageNumber === 4) {
-      if (!formikRefServices.current) return;
-
-      console.log(formikRefServices.current.values);
-      console.log(businessId);
-
-      if (businessId) {
+      if (!formikRefServices.current) {
+        setIsSubmitting(false);
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: pageNumber + 1,
+            business_id: currentBusinessId,
+          })
+        );
+        return setPageNumber(prev => prev + 1);
+      } else if (
+        businessId &&
+        formikRefServices.current.values.services.length
+      ) {
+        setIsSubmitting(false);
         return await handleServicesSubmission(
           formikRefServices.current.values,
           businessId
@@ -321,6 +354,7 @@ const BusinessStepForm = (): JSX.Element => {
     }
     if (pageNumber === 6) {
       if (!formikRefContactAndInformation.current) return;
+
       const errors =
         await formikRefContactAndInformation.current.validateForm();
       console.log(errors);
@@ -338,13 +372,15 @@ const BusinessStepForm = (): JSX.Element => {
       }
 
       if (businessId) {
+        setIsSubmitting(true);
         await formikRefContactAndInformation.current.submitForm();
         dispatch(
           setBusinessRegistrationStage({
             business_registration_step: pageNumber + 1,
           })
         );
-        redirect.push('/business/business-submitted');
+        setIsSubmitting(false);
+
         // setPageNumber(prev => prev + 1);
       }
     }
@@ -414,6 +450,7 @@ const BusinessStepForm = (): JSX.Element => {
         <BusinessCategoryForm
           setPageNumber={setPageNumber}
           businessId={businessId}
+          setShowSubBusinessCategories={setShowSubBusinessCategories}
         />
       ),
     },
@@ -453,19 +490,33 @@ const BusinessStepForm = (): JSX.Element => {
     },
   ];
 
-  // const handleLogOut = (): void => {
-  //   dispatch(clearBusinessData());
-  //   signOut({ redirect: true, callbackUrl: '/auth/signin-signup' });
-  // };
+  const [formState, setFormState] = useState({
+    isValid: false,
+    isDirty: false,
+  });
+
+  // Keep watching formikRef updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (formikRef.current) {
+        setFormState({
+          isValid: formikRef.current.isValid,
+          isDirty: formikRef.current.dirty,
+        });
+      }
+      if (formikRefContactAndInformation.current) {
+        setFormState({
+          isValid: formikRefContactAndInformation.current.isValid,
+          isDirty: formikRefContactAndInformation.current.dirty,
+        });
+      }
+    }, 200); // polling (Formik doesn’t emit events)
+
+    return (): void => clearInterval(interval);
+  }, []);
+
   return (
     <section className='relative h-full w-full sm:pb-0'>
-      {/* <Button
-        className='rounded bg-primary px-3 py-1 text-white'
-        onClick={handleLogOut}
-      >
-        Sign Out
-      </Button> */}
-
       <div className='-mt-4 mb-2 hidden w-full items-center gap-1 sm:flex'>
         {PAGE_CONTENTS.map((content, key) => {
           return (
@@ -491,30 +542,31 @@ const BusinessStepForm = (): JSX.Element => {
             </Button>
           )}
 
-          <Button
-            onClick={handleContinue}
-            isSubmitting={
-              formikRef.current?.isSubmitting ??
-              (false || formikRefServices.current?.isSubmitting) ??
-              false
-            }
-            // disabled={
-            //   formikRefServices.current?.isSubmitting ||
-            //   formikRef.current?.isSubmitting ||
-            //   !formikRef.current?.errors ||
-            //   !formikRefServices.current?.errors
-            //     ? true
-            //     : false
-            // }
-          >
-            {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
-            {!formikRef.current?.isSubmitting ||
-            !formikRefServices.current?.isSubmitting ? (
-              <ArrowRightIconWhite />
-            ) : (
-              <Spinner />
-            )}
-          </Button>
+          {!showSubBusinessCategories && (
+            <Button
+              onClick={handleContinue}
+              // isSubmitting={
+              //   formikRef.current?.isSubmitting ||
+              //   formikRefServices.current?.isSubmitting ||
+              //   formikRefContactAndInformation.current?.isSubmitting ||
+              //   false
+              // }
+              disabled={
+                (pageNumber === 0 &&
+                  !(formState.isValid && formState.isDirty)) ||
+                (pageNumber === 1 && businessShowCaseFile.length < 1) ||
+                (pageNumber === 3 && false) ||
+                (pageNumber === 4 && false) ||
+                (pageNumber === 6 && !(formState.isValid && formState.isDirty))
+                // (pageNumber === 4 && !formikRefServices.current?.isValid) ||
+                // (pageNumber === 6 &&
+                //   !formikRefContactAndInformation.current?.isValid)
+              }
+            >
+              {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
+              {isSubmitting ? <Loader /> : <ArrowRightIconWhite />}
+            </Button>
+          )}
 
           {}
         </div>
@@ -549,19 +601,24 @@ const BusinessStepForm = (): JSX.Element => {
 
             <Button
               onClick={handleContinue}
-              isSubmitting={formikRef.current?.isSubmitting ?? false}
+              isSubmitting={
+                formikRef.current?.isSubmitting ??
+                formikRefServices.current?.isSubmitting ??
+                formikRefContactAndInformation.current?.isSubmitting ??
+                false
+              }
+              disabled={
+                (pageNumber === 0 &&
+                  !(formState.isValid && formState.isDirty)) ||
+                (pageNumber === 1 && businessShowCaseFile.length < 1)
+                // (pageNumber === 4 && !formikRefServices.current?.isValid) ||
+                // (pageNumber === 6 &&
+                //   !formikRefContactAndInformation.current?.isValid)
+              }
             >
               {`${pageNumber === 6 ? 'Submit' : 'Continue '} `}
-              {pageNumber === 6 ? ' ' : <ArrowRightIconWhite />}
+              {isSubmitting ? <Loader /> : <ArrowRightIconWhite />}
             </Button>
-            {/* <Button
-            onClick={handleBUsinessDelete}
-            isSubmitting={formikRef.current?.isSubmitting ?? false}
-          >
-            Delete business
-          </Button>
-
-          {} */}
           </div>
           <div className='mb-2 flex w-full items-center gap-1'>
             {PAGE_CONTENTS.map((content, key) => {

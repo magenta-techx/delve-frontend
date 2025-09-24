@@ -20,6 +20,7 @@ const BusinessShowCaseForm = ({
   const handleRemoveFile = (fileName: string): void => {
     const updatedFiles = files.filter(file => file.name !== fileName);
     setFiles(updatedFiles);
+    setBusinessShowCaseFile(updatedFiles);
   };
   return (
     <div className='flex w-full flex-col items-center gap-4 sm:-mt-0 sm:w-[480px]'>
@@ -63,7 +64,7 @@ const BusinessShowCaseForm = ({
               return (
                 <SwiperSlide
                   key={file.name}
-                  className='scale- scale flex !w-[220px] justify-center'
+                  className='flex !w-[220px] justify-center'
                 >
                   <div
                     className={`relative h-[180px] w-[220px] overflow-hidden rounded-lg duration-300 hover:cursor-pointer ${scale}`}

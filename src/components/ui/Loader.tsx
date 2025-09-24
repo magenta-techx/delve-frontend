@@ -1,11 +1,9 @@
 import React from 'react';
 
-interface SpinnerProps {
+interface LoaderProps {
   borderColor?: string;
 }
-const Spinner = ({
-  borderColor = 'border-white',
-}: SpinnerProps): JSX.Element => {
+const Loader = ({ borderColor = 'border-white' }: LoaderProps): JSX.Element => {
   return (
     <div
       className={`h-5 w-5 animate-spin rounded-full border-4 ${borderColor} border-t-transparent`}
@@ -13,4 +11,4 @@ const Spinner = ({
   );
 };
 
-export default Spinner;
+export default Loader;

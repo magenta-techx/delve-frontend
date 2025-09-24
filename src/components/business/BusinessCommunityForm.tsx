@@ -9,8 +9,7 @@ import { emailValidator } from '@/utils/validators';
 import ArrowRightIconGrey from '@/assets/icons/business/ArrowRightIconGrey';
 import ArrowRightIconBlack from '@/assets/icons/business/ArrowRightIconBlack';
 import { useSession } from 'next-auth/react';
-import Spinner from '../ui/spinner';
-// import { Button } from '@radix-ui/themes';
+import Loader from '../ui/Loader';
 
 const BusinessCommunityForm = (): JSX.Element => {
   const navigate = useRouter();
@@ -62,7 +61,7 @@ const BusinessCommunityForm = (): JSX.Element => {
             {errors?.email || values.email.length === 0 ? (
               <ArrowRightIconGrey />
             ) : isSubmitting ? (
-              <Spinner borderColor='border-gray-600' />
+              <Loader />
             ) : (
               <ArrowRightIconBlack />
             )}

@@ -2,6 +2,7 @@
 import { forwardRef } from 'react';
 import type { ReactNode } from 'react';
 import { Field, FieldProps } from 'formik';
+import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
 
 type SelectOption = {
   label: string;
@@ -63,7 +64,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
                 {/* Dropdown arrow */}
                 <span className='pointer-events-none absolute right-3 text-gray-400'>
-                  V
+                  <BusinessCategoryIcons value='arrow-down' />
                 </span>
               </div>
 

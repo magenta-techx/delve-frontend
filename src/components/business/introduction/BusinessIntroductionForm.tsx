@@ -34,6 +34,7 @@ function BusinessIntroductionForm<T extends FormikValues>({
         initialValues={initialValues}
         onSubmit={onSubmit}
         validationSchema={businessIntroductionSchema}
+        validateOnMount
       >
         {({ setFieldValue }) => (
           <Form className='mt-3 w-full'>

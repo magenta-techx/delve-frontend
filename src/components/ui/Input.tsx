@@ -13,9 +13,11 @@ type InputProps = {
   accepts?: string;
   className?: string;
   inputClass?: string;
+  disabled?: boolean;
   validate?: (value: string) => string | undefined;
   onChange?: (value: File | string) => void;
   icon?: ReactNode;
+  iconPosition?: string;
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -29,6 +31,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       inputClass = 'sm:p-3 focus:border-primary sm:text-[13px]',
       accepts = 'image/*',
       icon,
+      iconPosition = 'right',
+      disabled = false,
       validate,
       onChange,
     },
@@ -60,13 +64,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               <div className='relative flex items-center'>
                 <input
                   id={name}
+                  disabled={disabled}
                   type={inputType}
                   placeholder={placeholder}
                   accept={isFile ? accepts : undefined}
                   ref={ref}
                   // ✅ spread Formik's field props only for non-file inputs
                   {...(!isFile ? field : {})}
-                  className={`w-full rounded-md border p-2 font-inter text-[16px] focus:outline-none ${
+                  className={`w-full rounded-md border ${iconPosition === 'left' ? 'pl-8' : 'p-2'} font-inter text-[16px] focus:outline-none ${
                     meta.touched && meta.error
                       ? 'border-red-500'
                       : 'border-gray-300'
@@ -82,17 +87,25 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     }
                   }}
                 />
-
-                {/* Clear button (for text fields only) */}
-                {icon && hasValue && !isPassword && !isFile && (
-                  <button
-                    type='button'
-                    className='absolute right-3 text-gray-400 hover:text-gray-600'
-                    onClick={() => form.setFieldValue(name, '')}
-                  >
+                {icon && iconPosition === 'left' && (
+                  <span className='absolute left-3 text-gray-400 hover:text-gray-600'>
                     {icon}
-                  </button>
+                  </span>
                 )}
+                {/* Clear button (for text fields only) */}
+                {icon &&
+                  iconPosition === 'right' &&
+                  hasValue &&
+                  !isPassword &&
+                  !isFile && (
+                    <button
+                      type='button'
+                      className='absolute right-3 text-gray-400 hover:text-gray-600'
+                      onClick={() => form.setFieldValue(name, '')}
+                    >
+                      {icon}
+                    </button>
+                  )}
                 {/* Password toggle */}
                 {isPassword && (
                   <button

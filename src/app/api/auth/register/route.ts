@@ -22,7 +22,7 @@ export async function POST(req: Request): Promise<NextResponse<unknown>> {
       );
     }
 
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(res?.body, { status: 201 });
   } catch (error: unknown) {
     console.log('Server error: ', error);
 

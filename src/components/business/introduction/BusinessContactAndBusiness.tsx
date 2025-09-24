@@ -10,6 +10,11 @@ import TelegramIconBlue from '@/assets/icons/business/TelegramIconBlue';
 import XIconBlack from '@/assets/icons/business/XIconBlack';
 import FacebookIconBlue from '@/assets/icons/business/FacebookIconBlue';
 import ArrowDownIconBlack from '@/assets/icons/business/ArrowDownIconBlack';
+import KeyIcon from '@/assets/icons/auth/KeyIcon';
+import { showToastNotification } from '@/components/notifications/ToastNotification';
+import { useDispatch } from 'react-redux';
+import { setBusinessRegistrationStage } from '@/redux/slices/businessSlice';
+import { useRouter } from 'next/navigation';
 // import { setBusinessRegistrationStage } from '@/redux/slices/businessSlice';
 
 // interface BusinessContactAndBusinessProps {
@@ -52,7 +57,8 @@ function BusinessContactAndBusiness({
   businessId,
 }: FormProps<BusinessFormValues>): JSX.Element {
   // const [socials, setSocials] = useState<BusinessContactAndBusinessProps[]>([]);
-
+  const dispatch = useDispatch();
+  const redirect = useRouter();
   const SOCIAL_MEDIA_TOP = [
     {
       id: 1,
@@ -114,12 +120,33 @@ function BusinessContactAndBusiness({
 
       // const data = await res.json();
 
+      // if (res.status === 400) {
+      //   showToastNotification(
+      //     {
+      //       header: 'Error',
+      //       body: `Invalid regitration number provided`,
+      //     },
+      //     <KeyIcon />
+      //   );
+      // }
       if (!res.ok) {
-        alert(`Error submitting business intro: ${res}`);
+        showToastNotification(
+          {
+            header: 'Error',
+            body: `Invalid regitration number provided`,
+          },
+          <KeyIcon />
+        );
         // optionally show toast or set error state
         console.log('res data: ', res);
-
-        return;
+      }
+      if (res.ok) {
+        dispatch(
+          setBusinessRegistrationStage({
+            business_registration_step: 6,
+          })
+        );
+        redirect.push('/business/business-submitted');
       }
     } catch (error) {
       console.error('Request failed:', error);
