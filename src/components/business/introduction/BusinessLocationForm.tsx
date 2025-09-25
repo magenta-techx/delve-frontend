@@ -83,7 +83,7 @@ const BusinessLocationForm = (): JSX.Element => {
               )}
             </div>
           </div>
-          <div className='flex items-start gap-1 sm:items-center'>
+          <div className='flex items-start gap-1 sm:-mt-4 sm:items-center'>
             <input
               type='checkbox'
               name=''
