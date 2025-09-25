@@ -405,6 +405,7 @@ const BusinessStepForm = (): JSX.Element => {
     }
 
     await formikRef.current.submitForm();
+    setIsSubmitting(false);
   };
 
   const handleBack = async (): Promise<void> => {

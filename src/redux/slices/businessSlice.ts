@@ -18,8 +18,8 @@ const initialState: BusinessState = {
   is_active: true,
   current_plan: '',
   is_premium_plan_active: false,
-  business_registration_step: 4,
-  business_id: 20,
+  business_registration_step: 0,
+  business_id: null,
   userIsLoggedIn: false,
 };
 
