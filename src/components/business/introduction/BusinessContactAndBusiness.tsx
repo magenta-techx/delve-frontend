@@ -50,13 +50,13 @@ const initialValues: BusinessFormValues = {
 type FormProps<T extends FormikValues> = {
   formikRef: React.Ref<FormikProps<T>>;
   businessId: number | undefined;
-  setIsSubmitting?: (isSubmitting: boolean) => void
+  setIsSubmitting?: (isSubmitting: boolean) => void;
 };
 
 function BusinessContactAndBusiness({
   formikRef,
   businessId,
-  setIsSubmitting
+  setIsSubmitting,
 }: FormProps<BusinessFormValues>): JSX.Element {
   // const [socials, setSocials] = useState<BusinessContactAndBusinessProps[]>([]);
   const dispatch = useDispatch();
@@ -144,15 +144,14 @@ function BusinessContactAndBusiness({
         console.log('res data: ', res);
       }
       if (res.ok) {
-        if (setIsSubmitting) setIsSubmitting(false)
+        if (setIsSubmitting) setIsSubmitting(false);
         dispatch(
           setBusinessRegistrationStage({
             business_registration_step: 6,
           })
         );
         redirect.push('/business/business-submitted');
-        console.log("I was called here in comp");
-
+        console.log('I was called here in comp');
       }
     } catch (error) {
       console.error('Request failed:', error);

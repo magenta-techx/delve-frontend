@@ -30,7 +30,11 @@ const BusinessShowCaseForm = ({
         header='Showcase Your Business '
         paragraph='Showcase your business by uploading multiple photos but only 1 video.'
       />
-      {showErrorUpload && <span className='text-red-500 text-left'>You can not upload more than 10 media files</span>}
+      {showErrorUpload && (
+        <span className='text-left text-red-500'>
+          You can not upload more than 10 media files
+        </span>
+      )}
 
       {files.length > 0 && (
         <div className='w-[1200px]'>
@@ -96,12 +100,10 @@ const BusinessShowCaseForm = ({
 
       <FileUpload
         onFileSelect={newFiles => {
-
           if (newFiles.length + files.length > 10) {
-            return setShowErrorUpload(true)
-          }
-          else {
-            setShowErrorUpload(false)
+            return setShowErrorUpload(true);
+          } else {
+            setShowErrorUpload(false);
           }
           setFiles(newFiles);
           if (newFiles.length > 0) {

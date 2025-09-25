@@ -135,7 +135,6 @@ const BusinessPricingList = (): JSX.Element => {
                       </p>
                     );
                   })}
-
                 </div>
               </div>
             );

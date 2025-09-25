@@ -35,7 +35,7 @@ const AuthCarousel = (): JSX.Element => {
       autoPlay
       animationHandler='fade'
       interval={4000}
-      transitionTime={4000}  
+      transitionTime={4000}
       renderIndicator={(onClickHandler, isSelected, index, label) => {
         const baseStyle = {
           width: isSelected ? 46 : 3,
@@ -61,7 +61,7 @@ const AuthCarousel = (): JSX.Element => {
           />
         );
       }}
-      className='h-[100vh] rounded-xl w-full'
+      className='h-[100vh] w-full rounded-xl'
     >
       {CAROUSEL_CONTENT.map((content, key) => (
         <div key={key} className='w-full'>

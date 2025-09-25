@@ -78,7 +78,6 @@ const BusinessStepForm = (): JSX.Element => {
   const hanldeIntroductionFormsSubmittion = async (
     values: BusinessIntroductionProps
   ): Promise<void> => {
-
     const formData = new FormData();
 
     Object.entries(values).forEach(([key, value]) => {
@@ -116,7 +115,6 @@ const BusinessStepForm = (): JSX.Element => {
           })
         );
         setPageNumber(prev => prev + 1);
-
       }
     } catch (error) {
       console.log('Request failed:', error);
@@ -327,19 +325,16 @@ const BusinessStepForm = (): JSX.Element => {
       setIsSubmitting(false);
     }
     if (pageNumber === 1) {
-
       return await hanldeShowCaseFormsSubmittion({
         business_id: businessId,
         images: businessShowCaseFile,
       });
     }
     if (pageNumber === 3) {
-
       return await hanleAmenitiesFormsSubmittion();
     }
     if (pageNumber === 4) {
       if (!formikRefServices.current) {
-
         dispatch(
           setBusinessRegistrationStage({
             business_registration_step: pageNumber + 1,
@@ -351,7 +346,6 @@ const BusinessStepForm = (): JSX.Element => {
         businessId &&
         formikRefServices.current.values.services.length
       ) {
-
         return await handleServicesSubmission(
           formikRefServices.current.values,
           businessId
@@ -378,14 +372,13 @@ const BusinessStepForm = (): JSX.Element => {
       }
 
       if (businessId) {
-
         await formikRefContactAndInformation.current.submitForm();
         dispatch(
           setBusinessRegistrationStage({
             business_registration_step: 6,
           })
         );
-        console.log("I was called here in parent");
+        console.log('I was called here in parent');
         redirect.push('/business/business-submitted');
 
         // setPageNumber(prev => prev + 1);
@@ -610,7 +603,6 @@ const BusinessStepForm = (): JSX.Element => {
 
             <Button
               onClick={handleContinue}
-
               disabled={
                 (pageNumber === 0 &&
                   !(formState.isValid && formState.isDirty)) ||
