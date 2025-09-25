@@ -61,7 +61,7 @@ const AuthCarousel = (): JSX.Element => {
           />
         );
       }}
-      className='h-[90vh] rounded-xl w-full'
+      className='h-[100vh] rounded-xl w-full'
     >
       {CAROUSEL_CONTENT.map((content, key) => (
         <div key={key} className='w-full'>
