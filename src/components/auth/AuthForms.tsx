@@ -56,9 +56,9 @@ const AuthForms = (): JSX.Element => {
     }
   }, [router, redirect, session]);
   return (
-    <section className='flex w-full items-center justify-center py-10 sm:py-0'>
-      <div className='flex w-full sm:w-[1400px]'>
-        <div className='flex max-h-80 w-full flex-col items-center bg-white sm:w-[40%] sm:pl-40'>
+    <section className='flex sm:w-[50%] w-full items-center justify-center py-10 sm:py-0'>
+      <div className='flex w-full '>
+        <div className='flex max-h-80 w-full flex-col items-center'>
           <div className='mb-7'>
             <Logo icon={<DefaultLogoIcon />} link='/' />
           </div>
@@ -76,7 +76,7 @@ const AuthForms = (): JSX.Element => {
             ))}
           </div>
 
-          <div className='mb-8 flex w-full flex-col items-center sm:w-[425px]'>
+          <div className='mb-8 flex w-full  flex-col items-center sm:w-[525px]'>
             {login ? <LoginForm /> : <SignUpForm />}
           </div>
 
@@ -90,9 +90,7 @@ const AuthForms = (): JSX.Element => {
             <AuthSocialLoginButtons />
           </div>
         </div>
-        {/* <div className='fixed right-20 hidden w-[40%] bg-green-400 sm:flex'>
-          <AuthFormCarousel />
-        </div> */}
+
       </div>
     </section>
   );

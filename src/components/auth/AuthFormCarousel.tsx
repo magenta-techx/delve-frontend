@@ -34,7 +34,8 @@ const AuthCarousel = (): JSX.Element => {
       infiniteLoop
       autoPlay
       animationHandler='fade'
-      interval={8000}
+      interval={4000}
+      transitionTime={4000}  
       renderIndicator={(onClickHandler, isSelected, index, label) => {
         const baseStyle = {
           width: isSelected ? 46 : 3,
