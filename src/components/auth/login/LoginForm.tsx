@@ -48,7 +48,7 @@ const LoginForm = (): JSX.Element => {
       );
     } else {
       // router.push('/dashboard');
-      router.push('/business/get-started');
+      router.push('/');
       console.log(res);
     }
   };

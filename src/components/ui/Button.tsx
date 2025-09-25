@@ -54,9 +54,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizeClasses = {
-      default: 'h-12 px-4',
+      default: 'h-14 px-4',
       sm: 'h-9 rounded-md px-3 text-xs',
-      lg: 'h-11 rounded-md px-8',
+      lg: 'h-11 rounded-md px-4',
       icon: 'h-10 w-10',
     };
 
@@ -67,9 +67,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp className={classes} ref={ref} {...props}>
         <span className='inline-flex items-center gap-2'>
-          {icon && icon}
           {children}
-          {isSubmitting && <Loader />}
+
+          {isSubmitting ? <Loader /> : icon ? icon : ''}
         </span>
       </Comp>
     );

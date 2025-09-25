@@ -18,6 +18,8 @@ import CancleIcon from '@/assets/icons/CancelIcon';
 import MenuBarIconWhite from '@/assets/icons/MenuBarIconWhite';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { BaseIcons } from '@/assets/icons/base/Icons';
+import { useSession } from 'next-auth/react';
 // import { selectUserIsLoggedIn } from '@/redux/slices/businessSlice';
 
 interface AuthFormButtonProps {
@@ -39,11 +41,12 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
   const userIsloggedIn = useSelector(
     (state: RootState) => state.business.userIsLoggedIn
   );
-
+  const { data: session } = useSession()
   console.log('userIsloggedIn: ', userIsloggedIn);
 
   const router = useRouter();
   const [showMobileMenuItems, setShowMobileMenuItems] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const handleAuthRouter = (login: string = 'true'): void => {
     router.push(`/auth/signin-signup?login=${login}`);
   };
@@ -64,6 +67,13 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
       onClick: () => handleAuthRouter('false'),
     },
   ];
+
+  const IS_LOGGED_IN_BUTTON = [
+    { icon: <BaseIcons value='listing' />, href: '/' },
+    { icon: <BaseIcons value='saved' />, href: '/' },
+    { icon: <BaseIcons value='chat' />, href: '/' },
+    { icon: <BaseIcons value='notification' />, href: '/' },
+  ]
 
   const BUSINESS_LINKS: LinkProps[] = [
     {
@@ -99,6 +109,34 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
     },
   ];
 
+  const USER_MENU_ITEMS = [
+    {
+      text: 'Home',
+      dropDown: false,
+      href: '/'
+    },
+    {
+      text: 'listing',
+      dropDown: true,
+      href: '/'
+    },
+    {
+      text: 'cities',
+      dropDown: true,
+      href: '/'
+    },
+    {
+      text: 'blog',
+      dropDown: false,
+      href: '/'
+    },
+    {
+      text: 'FAQ',
+      dropDown: false,
+      href: '/'
+    },
+  ]
+
   const linkClassName =
     type === 'business' ? 'text-white bg-black' : 'text-black bg-white';
   const marketPlaceIcon =
@@ -110,10 +148,10 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
   const loginSignup = type === 'business' ? '' : 'text-white';
   return (
     <div
-      className={`z-50 flex h-24 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-20 ${showMobileMenuItems ? 'fixed' : ''}`}
+      className={`z-50 flex h-24 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' || type === '' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
     >
       <div
-        className={`flex w-[1280px] items-center ${showMobileMenuItems ? 'justify-end' : 'justify-between'}`}
+        className={`flex w-full items-center relative ${showMobileMenuItems ? 'justify-end' : 'justify-between'}`}
       >
         {/* logo  */}
         {showMobileMenuItems ? (
@@ -122,7 +160,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
           <div className='flex w-full items-center gap-20'>
             <Logo
               icon={
-                type === 'community' ? (
+                  type === 'community' || type === '' ? (
                   <DefaultLogoTextIconWhite />
                 ) : (
                   <DefaultLogoTextIcon />
@@ -197,6 +235,75 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
         ) : (
           ''
         )}
+
+
+        {/* Logged in user in Landing Page  */}
+        {userIsloggedIn && type === '' && <div>
+          <div className='flex items-center gap-4 text-white'>
+            <div className='flex items-center gap-4'>
+              {IS_LOGGED_IN_BUTTON.map((link, key) => {
+                return (
+                  <Link key={key} href={link.href} className='bg-[#FFFFFF4D] rounded-full p-2 h-12 w-12 flex items-center justify-center'>
+                    {link.icon}
+                  </Link>
+                )
+              })}
+            </div>
+            <BaseIcons value='vertical-line-white' />
+
+            <button className='flex items-center gap-1' onClick={() => setShowUserMenu(!showUserMenu)}>
+              <BaseIcons value='user-logged-in-white' />
+              {session?.user.name && <p className='w-[85px] font-semibold ml-1 capitalize truncate'>{session?.user.name}</p>}
+              <div>
+                <BaseIcons value='arrow-down-white' />
+              </div>
+            </button>
+          </div>
+
+          {/* user menu  */}
+
+          {!showUserMenu &&
+
+            <div className='absolute top-20 -right-20 w-[320px] bg-white z-20 flex flex-col gap-4 rounded-lg font-inter text-black shadow-md'>
+              <div className='bg-[#F8FAFC] py-6 mb-3 px-5 rounded-tl-lg rounded-tr-lg'>
+                <Link href={'/business/get-started'} className='bg-primary flex items-center gap-2 px-4 text-center text-white h-14 rounded-md w-[180px] justify-center font-medium '>
+                  <span> List business</span>
+                  <BaseIcons value='arrow-diagonal-white' />
+                </Link>
+
+              </div>
+              <div className='px-5 pb-5 flex flex-col gap-6'>
+                {USER_MENU_ITEMS.map((menu, key) => {
+                  return (
+                    menu.dropDown ? (
+                      <button key={key} className='flex items-center gap-2'><span>{menu.text} </span> {menu.dropDown && <BaseIcons value="arrow-down-black" />}</button>
+                    ) : (
+                      <Link
+                        key={key}
+                        href={menu.href}
+                        className="flex items-center gap-2"
+                      >
+                        <span className="capitalize">{menu.text}</span>
+
+                      </Link>
+                    )
+                  )
+                })}
+
+                <Link href={'/'} className='text-md py-3 -mt-4 flex items-center gap-1'>
+                  <BaseIcons value='logout-black' />
+                  <span>  Profile settings</span>
+                </Link>
+
+                <Button variant='neutral' className='text-md py-3 flex items-center gap-1'>
+                  <BaseIcons value='logout-black' />
+                  <span>  Logout</span>
+                </Button>
+              </div>
+
+            </div>}
+
+        </div>}
 
         {/* Mobile menu bar  */}
         <div className='sm:hidden'>
