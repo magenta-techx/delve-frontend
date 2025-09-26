@@ -34,11 +34,9 @@ const LoginForm = (): JSX.Element => {
       password: values.password,
     });
 
-    console.log('res: ', res);
-
     if (res?.error) {
-      console.log(res?.error);
-
+      // console.log(res?.error);
+      console.log('res: ', res?.error);
       showToastNotification(
         {
           header: 'Error',
