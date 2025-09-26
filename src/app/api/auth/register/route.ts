@@ -5,7 +5,7 @@ export async function POST(req: Request): Promise<NextResponse<unknown>> {
     const body = await req.json();
 
     const res = await fetch(
-      `${process.env['API_BASE_URL']}/user/auth/register/`,
+      `${process.env['API_BASE_URL']}/api/user/auth/register/`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
