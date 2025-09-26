@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { useSession } from 'next-auth/react';
+import ListingUserMenuExtension from './landing-page/UserMenuExtensions/ListingUserMenuExtension';
 // import { selectUserIsLoggedIn } from '@/redux/slices/businessSlice';
 
 interface AuthFormButtonProps {
@@ -37,23 +38,105 @@ interface NavbarProps {
   type?: string;
   authFormButtons?: boolean;
 }
+
+const SELECT_PLAN = '/business/select-plan';
+
+
+
+const IS_LOGGED_IN_BUTTON = [
+  { icon: <BaseIcons value='listing' />, href: '/' },
+  { icon: <BaseIcons value='saved' />, href: '/' },
+  { icon: <BaseIcons value='chat' />, href: '/' },
+  { icon: <BaseIcons value='notification' />, href: '/' },
+];
+
+const BUSINESS_LINKS: LinkProps[] = [
+  {
+    text: 'Business Type',
+    href: '/',
+  },
+  {
+    text: 'Pricing',
+    href: '/',
+  },
+];
+
+const MOBILE_MENU_ITEMS = [
+  {
+    text: 'Home',
+    href: '/',
+  },
+  {
+    text: 'Listings',
+    href: '/',
+  },
+  {
+    text: 'Cities',
+    href: '/',
+  },
+  {
+    text: 'Blog',
+    href: '/',
+  },
+  {
+    text: 'FAQ',
+    href: '/',
+  },
+];
+
+const USER_MENU_ITEMS = [
+  {
+    text: 'Home',
+    dropDown: false,
+    href: '/',
+  },
+  {
+    text: 'listing',
+    dropDown: true,
+    href: '/',
+  },
+  {
+    text: 'cities',
+    dropDown: true,
+    href: '/',
+  },
+  {
+    text: 'blog',
+    dropDown: false,
+    href: '/',
+  },
+  {
+    text: 'FAQ',
+    dropDown: false,
+    href: '/',
+  },
+];
+
+const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
+  listing: <ListingUserMenuExtension />,
+  // Add other menu extensions here
+};
 const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
   const userIsloggedIn = useSelector(
     (state: RootState) => state.business.userIsLoggedIn
   );
   const { data: session } = useSession();
+  const pathname = usePathname();
+
   console.log('userIsloggedIn: ', userIsloggedIn);
 
   const router = useRouter();
-  const [showMobileMenuItems, setShowMobileMenuItems] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMobileMenuItems, setShowMobileMenuItems] = useState<boolean>(false);
+  const [showUserMenu, setShowUserMenu] = useState<boolean>(true);
+  const [currentUserMenuExtension, setCurrentUserMenuExtension] = useState<string>('listing');
   const handleAuthRouter = (login: string = 'true'): void => {
     router.push(`/auth/signin-signup?login=${login}`);
   };
 
-  const pathname = usePathname();
-
-  const SELECT_PLAN = '/business/select-plan';
+  const handUsermMenuExtension = (menu: string): void => {
+    setCurrentUserMenuExtension(menu);
+    // setShowUserMenu(true);
+  }
 
   const AUTH_FORM_BUTTONS: AuthFormButtonProps[] = [
     {
@@ -65,75 +148,6 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
       text: 'sign up',
       icon: <SignUpIcon />,
       onClick: () => handleAuthRouter('false'),
-    },
-  ];
-
-  const IS_LOGGED_IN_BUTTON = [
-    { icon: <BaseIcons value='listing' />, href: '/' },
-    { icon: <BaseIcons value='saved' />, href: '/' },
-    { icon: <BaseIcons value='chat' />, href: '/' },
-    { icon: <BaseIcons value='notification' />, href: '/' },
-  ];
-
-  const BUSINESS_LINKS: LinkProps[] = [
-    {
-      text: 'Business Type',
-      href: '/',
-    },
-    {
-      text: 'Pricing',
-      href: '/',
-    },
-  ];
-
-  const MOBILE_MENU_ITEMS = [
-    {
-      text: 'Home',
-      href: '/',
-    },
-    {
-      text: 'Listings',
-      href: '/',
-    },
-    {
-      text: 'Cities',
-      href: '/',
-    },
-    {
-      text: 'Blog',
-      href: '/',
-    },
-    {
-      text: 'FAQ',
-      href: '/',
-    },
-  ];
-
-  const USER_MENU_ITEMS = [
-    {
-      text: 'Home',
-      dropDown: false,
-      href: '/',
-    },
-    {
-      text: 'listing',
-      dropDown: true,
-      href: '/',
-    },
-    {
-      text: 'cities',
-      dropDown: true,
-      href: '/',
-    },
-    {
-      text: 'blog',
-      dropDown: false,
-      href: '/',
-    },
-    {
-      text: 'FAQ',
-      dropDown: false,
-      href: '/',
     },
   ];
 
@@ -273,8 +287,8 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
 
             {/* user menu  */}
 
-            {!showUserMenu && (
-              <div className='absolute -right-20 top-20 z-20 flex w-[320px] flex-col gap-4 rounded-lg bg-white font-inter text-black shadow-md'>
+            {showUserMenu && (
+              <div className='absolute -right-20 top-20 z-20 flex w-[300px] flex-col gap-4 rounded-lg bg-white font-inter text-black shadow-md'>
                 <div className='mb-3 rounded-tl-lg rounded-tr-lg bg-[#F8FAFC] px-5 py-6'>
                   <Link
                     href={'/business/get-started'}
@@ -287,7 +301,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
                 <div className='flex flex-col gap-6 px-5 pb-5'>
                   {USER_MENU_ITEMS.map((menu, key) => {
                     return menu.dropDown ? (
-                      <button key={key} className='flex items-center gap-2'>
+                      <button key={key} className='flex items-center gap-2' onClick={() => handUsermMenuExtension(menu.text)}>
                         <span>{menu.text} </span>{' '}
                         {menu.dropDown && (
                           <BaseIcons value='arrow-down-black' />
@@ -314,7 +328,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
 
                   <Button
                     variant='neutral'
-                    className='text-md flex items-center gap-1 py-3'
+                    className='text-md flex items-center -mt-2 gap-1 py-3'
                   >
                     <BaseIcons value='logout-black' />
                     <span> Logout</span>
@@ -324,6 +338,14 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
             )}
           </div>
         )}
+        {USER_MENU_EXTENSIONS[currentUserMenuExtension] && showUserMenu && (
+          <div className="absolute top-14 right-[50%] z-20 bg-white py-6 px-8 shadow-lg rounded-lg">
+            <p className='mb-1'> Discover a world of businesses and services acrosslifestyle,ellness, fashion, food, tech, and more.</p>
+            <Link href={'/'} className='text-primary underline'>Explore all cities</Link>
+            {USER_MENU_EXTENSIONS[currentUserMenuExtension]}
+          </div>
+        )}
+
 
         {/* Mobile menu bar  */}
         <div className='sm:hidden'>

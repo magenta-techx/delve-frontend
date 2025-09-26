@@ -20,7 +20,7 @@ const SearchGroup = (): JSX.Element => {
         <BaseIcons value='location-primary' />
         <span className='text-lg'>Current location</span>
       </button>
-      <button className='ml-2 flex w-[200px] items-center justify-center gap-2 rounded-br-lg rounded-tr-lg bg-primary px-6 py-6 text-white'>
+          <button className='ml-2 flex w-[200px] items-center justify-center gap-5 rounded-br-lg rounded-tr-lg bg-primary px-6 py-6 text-white'>
         <BaseIcons value='search-white' />
         <span className='text-lg'>Search</span>
       </button>
