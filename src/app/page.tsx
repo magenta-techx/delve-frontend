@@ -1,24 +1,37 @@
-import { BaseIcons } from '@/assets/icons/base/Icons';
+'use client'
+import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
 import BusinessFooter from '@/components/business/BusinessFooter';
 import BlogCard from '@/components/cards/BlogCard';
+import CategoryCard from '@/components/cards/CategoryCard';
 import FeaturedListingCard from '@/components/cards/FeaturedListingCard';
 import LocationCard from '@/components/cards/LocationCard';
 import SponsoredCard from '@/components/cards/SponsoredCard';
+import Faqs from '@/components/Faqs';
 import SearchGroup from '@/components/landing-page/SearchGroup';
 import SectionHeader from '@/components/landing-page/SectionHeader';
 import ThisWeeksTrends from '@/components/landing-page/ThisWeeksTrends';
 import Navbar from '@/components/Navbar';
-import type { Metadata } from 'next';
+// import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
 
-export const metadata: Metadata = {
-  title: 'Home',
-  description: 'Delve Landing page',
-};
+// Import Swiper styles
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
+
+// export const metadata: Metadata = {
+//   title: 'Home',
+//   description: 'Delve Landing page',
+// };
 
 export default function HomePage(): JSX.Element {
-
+  const swiper = useSwiper();
   const FEATURED_LISTINGS = [
     {
       header: 'Aura Bloom Spa',
@@ -99,6 +112,16 @@ export default function HomePage(): JSX.Element {
       imageUrl: '/landingpage/sponsored-1.jpg',
       href: '/'
 
+    },
+    {
+      imageUrl: '/landingpage/sponsored-1.jpg',
+      href: '/'
+
+    },
+    {
+      imageUrl: '/landingpage/sponsored-1.jpg',
+      href: '/'
+
     }
   ]
 
@@ -116,6 +139,50 @@ export default function HomePage(): JSX.Element {
       desc: 'Business rating'
     },
   ]
+
+  const CATEGORIES: {
+    icon: IconsType,
+    title: string
+  }[] = [
+      {
+        icon: 'beauty-white',
+        title: 'beauty'
+      },
+      {
+        icon: 'beauty-white',
+        title: 'beauty'
+      },
+      {
+        icon: 'beauty-white',
+        title: 'beauty'
+      },
+      {
+        icon: 'beauty-white',
+        title: 'beauty'
+      },
+      {
+        icon: 'beauty-white',
+        title: 'beauty'
+      },
+
+      {
+        icon: 'clothing-white',
+        title: 'clothing & fashion'
+      },
+      {
+        icon: 'events-white',
+        title: 'event'
+      },
+      {
+        icon: 'food-white',
+        title: 'food & drinks'
+      },
+      {
+        icon: 'housing-white',
+        title: 'housing & Accommmodation'
+      },
+
+    ]
   return (
     <main className='relative flex flex-col items-center'>
       <div className='relative flex h-[83.6vh] w-screen flex-col items-center bg-[url("/landingpage/landing-page-hero-image.jpg")] bg-cover bg-no-repeat'>
@@ -140,17 +207,103 @@ export default function HomePage(): JSX.Element {
       </div>
 
 
-      <div className='bg-[#FFF4ED] w-full flex flex-col items-center py-20'>
+      <div className=' w-full flex flex-col items-center py-20'>
 
+        <SectionHeader iconValue='category-yellow' header='Whatever you’re looking for, find it here.' paragraph='category' />
+
+        {/* Category  */}
+        <div className='mt-10 flex items-center gap-14 mb-20 w-[1485px]'>
+
+          <Swiper
+            centerInsufficientSlides={false}
+            navigation={{
+              nextEl: ".custom-next",
+              prevEl: ".custom-prev",
+            }}
+            // install Swiper modules
+            modules={[Navigation, Pagination, Scrollbar, A11y]}
+            spaceBetween={10}
+            slidesPerView={5}
+
+
+            scrollbar={false}
+            onSwiper={(swiper) => console.log(swiper)}
+            onSlideChange={() => console.log('slide change')}
+            // className='h-[700px] bg-green-300'
+            className='h-[300px] flex items-center justify-center w-full pt-10'
+          >
+            <div className="absolute top-1/2 left-0 z-10 -translate-y-1/2">
+              <button className="custom-prev bg-black/50 text-white px-4 py-2 rounded-full">
+                Prev
+              </button>
+            </div>
+            <div className="absolute top-1/2 right-0 z-10 -translate-y-1/2">
+              <button className="custom-next bg-black/50 text-white px-4 py-2 rounded-full">
+                Next
+              </button>
+            </div>
+            {CATEGORIES.map((category, key) => {
+              return (
+                <SwiperSlide key={key} className=' flex  items-center pt-10 justify-center'>
+                  <div className='w-full flex items-center justify-center'>
+                    {/* Overlay icon */}
+                    <CategoryCard title={category.title} icon={category.icon} />
+                  </div>
+                </SwiperSlide>
+              )
+            })}
+
+
+
+          </Swiper>
+        </div>
+      </div>
+
+
+      <div className='bg-[#FFF4ED] w-full flex flex-col items-center py-20'>
         <SectionHeader iconValue='listing-yellow' header='Trusted by dozens of happy clients. ' paragraph='Featured Listing' />
 
         {/* featured listings  */}
-        <div className='mt-10 flex items-center gap-10 mb-20'>
-          {FEATURED_LISTINGS.map((listing, key) => {
-            return (
-              <FeaturedListingCard key={key} header={listing.header} desc={listing.desc} imageUrl={listing.imageUrl} logoUrl={listing.logoUrl} address={listing.address} rating={listing.rating} classStyle={'h-[548px] w-[412px]'} />
-            )
-          })}
+        <div className='mt-10 flex items-center gap-10 mb-20 w-[1485px]'>
+          <Swiper
+            centerInsufficientSlides={false}
+            navigation={{
+              nextEl: ".custom-next",
+              prevEl: ".custom-prev",
+            }}
+            // install Swiper modules
+            modules={[Navigation, Pagination, Scrollbar, A11y]}
+            spaceBetween={10}
+            slidesPerView={3}
+
+
+            scrollbar={false}
+            onSwiper={(swiper) => console.log(swiper)}
+            onSlideChange={() => console.log('slide change')}
+          // className='h-[700px] bg-green-300'
+          // className='h-[300px] flex items-center justify-center w-full bg-blue-300 pt-10'
+          >
+            <div className="absolute top-1/2 left-0 z-10 -translate-y-1/2">
+              <button className="custom-prev bg-black/50 text-white px-4 py-2 rounded-full">
+                Prev
+              </button>
+            </div>
+            <div className="absolute top-1/2 right-0 z-10 -translate-y-1/2">
+              <button className="custom-next bg-black/50 text-white px-4 py-2 rounded-full">
+                Next
+              </button>
+            </div>
+            {FEATURED_LISTINGS.map((listing, key) => {
+              return (
+                <SwiperSlide key={key} className=' flex  items-center pt-10 justify-center'>
+                  <div className='w-full flex items-center justify-center'>
+                    <FeaturedListingCard header={listing.header} desc={listing.desc} imageUrl={listing.imageUrl} logoUrl={listing.logoUrl} address={listing.address} rating={listing.rating} classStyle={'h-[548px] w-[412px]'} />
+                  </div>
+                </SwiperSlide>
+              )
+            })}
+
+          </Swiper>
         </div>
         {/* Serch By location  */}
         <div className='mb-44'>
@@ -167,11 +320,44 @@ export default function HomePage(): JSX.Element {
         <div>
           <SectionHeader iconValue='listing-yellow' header='Sponsored Picks' paragraph='Spotlight' />
 
-          <h1 className='text-2xl font-bold mb-5 mt-10'>Hot deals and events you don’t want to miss</h1>
+          <h1 className='text-2xl font-bold mt-10'>Hot deals and events you don’t want to miss</h1>
           <div className='flex items-center gap-3'>
-            {SPONSORED_LIST.map((sponsored, key) => {
-              return <SponsoredCard key={key} imageUrl={sponsored.imageUrl} href={sponsored.href} />
-            })}
+            <Swiper
+              centerInsufficientSlides={false}
+              navigation={{
+                nextEl: ".custom-next",
+                prevEl: ".custom-prev",
+              }}
+              // install Swiper modules
+              modules={[Navigation, Pagination, Scrollbar, A11y]}
+              spaceBetween={10}
+              slidesPerView={2}
+
+
+              scrollbar={false}
+              onSwiper={(swiper) => console.log(swiper)}
+              onSlideChange={() => console.log('slide change')}
+              // className='h-[700px] bg-green-300'
+              className='h-[589px] pb-20 flex items-center -mt-16 justify-center w-[1485px]'
+            >
+              <div className="absolute right-10 z-10 top-10 -translate-y-1/2">
+                <button className="custom-prev bg-black/50 text-white px-4 py-2 rounded-full">
+                  Prev
+                </button>
+              </div>
+              <div className="absolute right-0 z-10 top-10 -translate-y-1/2">
+                <button className="custom-next bg-black/50 text-white px-4 py-2 rounded-full">
+                  Next
+                </button>
+              </div>
+              {SPONSORED_LIST.map((sponsored, key) => {
+                return <SwiperSlide key={key} className='flex items-center pt-20 justify-center'>
+                  <div className='w-full flex items-center justify-center'>
+                    <SponsoredCard key={key} imageUrl={sponsored.imageUrl} href={sponsored.href} />
+                  </div>
+                </SwiperSlide>
+              })}
+            </Swiper>
           </div>
 
         </div>
@@ -224,8 +410,13 @@ export default function HomePage(): JSX.Element {
       </div>
 
       {/* This weeks trends  */}
-      <div className="mb-10 w-full">
+      <div className="mb-10 w-[2000px]">
         <ThisWeeksTrends />
+      </div>
+
+      {/* FAQS  */}
+      <div className='py-32 w-[1244px]'>
+        <Faqs />
       </div>
 
       <div className='w-full h-[543px] mt-32 mb-1'>
@@ -236,7 +427,6 @@ export default function HomePage(): JSX.Element {
       </div>
 
       <BusinessFooter />
-
 
     </main>
   );

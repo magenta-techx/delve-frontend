@@ -56,3 +56,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+.section-header-underlined{
+  position: relative; /* needed for absolute positioning of ::after */
+  display: inline-block; /* shrink to text width */
+  
+}
+
+.section-header-underlined::after {
+  content: "";
+  display: block;
+  width: 273px; /* adjust underline width */
+  height: 2px; /* thickness of the line */
+  background-color: #FFD6AE; /* underline color */
+  margin: 8px auto 0; /* spacing and centering */
+  border-radius: 2px; /* rounded edges */
+}

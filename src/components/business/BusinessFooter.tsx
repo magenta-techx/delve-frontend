@@ -106,7 +106,7 @@ const BusinessFooter = (): JSX.Element => {
     },
   ];
   return (
-    <div className='flex flex-col items-center gap-5 pb-36 font-inter sm:flex-row sm:gap-[170px] w-full px-44 sm:pt-24'>
+    <div className='flex flex-col items-center justify-center gap-5 pb-36 font-inter sm:flex-row sm:gap-[170px] w-full px-44 sm:pt-24'>
       <div className='flex flex-col gap-0 bg-neutral px-7 sm:gap-3 sm:bg-transparent sm:px-0'>
         <div className='-mb-7 sm:-mb-0'>
           <Logo icon={<DefaultLogoTextIcon />} link='/' />
@@ -128,7 +128,7 @@ const BusinessFooter = (): JSX.Element => {
       <div className='flex flex-col items-start justify-between gap-24 px-7 sm:mt-5 sm:flex-row sm:px-0'>
         {FOOTER_LINKS.map((link, key) => {
           return (
-            <div key={key}>
+            <div key={key} className='w-[200px]'>
               <h3 className='mb-3 text-[18px] font-bold'>{link.header}</h3>
               <ul
                 className={`flex ${link.id === 4 ? 'gap-5' : 'flex-col gap-3'} text-[16px]`}
