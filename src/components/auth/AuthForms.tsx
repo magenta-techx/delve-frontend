@@ -86,7 +86,7 @@ const AuthForms = (): JSX.Element => {
             <div className='h-[1px] w-full bg-gray-300 sm:w-[185px]'></div>
           </div>
 
-          <div className='w-full pb-20 sm:w-[425px]'>
+          <div className='w-full pb-20 sm:w-[525px]'>
             <AuthSocialLoginButtons />
           </div>
         </div>

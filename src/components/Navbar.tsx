@@ -127,7 +127,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
 
   const router = useRouter();
   const [showMobileMenuItems, setShowMobileMenuItems] = useState<boolean>(false);
-  const [showUserMenu, setShowUserMenu] = useState<boolean>(true);
+  const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
   const [currentUserMenuExtension, setCurrentUserMenuExtension] = useState<string>('listing');
   const handleAuthRouter = (login: string = 'true'): void => {
     router.push(`/auth/signin-signup?login=${login}`);
@@ -162,7 +162,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
   const loginSignup = type === 'business' ? '' : 'text-white';
   return (
     <div
-      className={`z-50 flex h-24 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' || type === '' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
+      className={`z-50 flex h-24 sm:h-32 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' || type === '' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
     >
       <div
         className={`relative flex w-full items-center ${showMobileMenuItems ? 'justify-end' : 'justify-between'}`}
