@@ -128,12 +128,12 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
   const router = useRouter();
   const [showMobileMenuItems, setShowMobileMenuItems] = useState<boolean>(false);
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
-  const [currentUserMenuExtension, setCurrentUserMenuExtension] = useState<string>('listing');
+  const [currentUserMenuExtension, setCurrentUserMenuExtension] = useState<string>('');
   const handleAuthRouter = (login: string = 'true'): void => {
     router.push(`/auth/signin-signup?login=${login}`);
   };
 
-  const handUsermMenuExtension = (menu: string): void => {
+  const handleUsermMenuExtension = (menu: string): void => {
     setCurrentUserMenuExtension(menu);
     // setShowUserMenu(true);
   }
@@ -301,7 +301,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
                 <div className='flex flex-col gap-6 px-5 pb-5'>
                   {USER_MENU_ITEMS.map((menu, key) => {
                     return menu.dropDown ? (
-                      <button key={key} className='flex items-center gap-2' onClick={() => handUsermMenuExtension(menu.text)}>
+                      <button key={key} className='flex items-center gap-2' onClick={() => handleUsermMenuExtension(menu.text)}>
                         <span>{menu.text} </span>{' '}
                         {menu.dropDown && (
                           <BaseIcons value='arrow-down-black' />

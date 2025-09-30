@@ -14,7 +14,7 @@ import Navbar from '@/components/Navbar';
 // import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
@@ -31,7 +31,6 @@ import 'swiper/css/scrollbar';
 // };
 
 export default function HomePage(): JSX.Element {
-  const swiper = useSwiper();
   const FEATURED_LISTINGS = [
     {
       header: 'Aura Bloom Spa',
