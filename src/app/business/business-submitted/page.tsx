@@ -3,7 +3,7 @@ import Navbar from '@/components/Navbar';
 
 export default function Page(): JSX.Element {
   return (
-    <div className='h-full w-full'>
+    <div className='h-[80vh] w-full'>
       <Navbar authFormButtons={false} />
       <div className='flex h-full w-full flex-col items-center justify-center gap-10 pt-10 sm:gap-16'>
         <BusinessSubmittedIcon />

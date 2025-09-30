@@ -29,7 +29,7 @@ const BusinessTextAndButton = ({
     <div className={`${width} font-inter text-gray-600`}>
       {header && <h3 className={`${headerClass}`}>{header}</h3>}
       <p className={` ${textClass}`}>{text}</p>
-      <div className='w-[52%] text-xs lg:w-[55%]'>
+      <div className='w-[52%] lg:w-[55%]'>
         {' '}
         <Button asChild size={buttonSize} className={btnClassName}>
           <Link href={link} className='flex h-full items-center'>

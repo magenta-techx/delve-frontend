@@ -10,6 +10,7 @@ import '@radix-ui/themes/styles.css';
 import ToastProvider from '@/components/ToastProvider';
 import SessionProviderWrapper from '@/components/providers/SessionProviderWrapper';
 
+import 'swiper/css';
 import '@radix-ui/themes/styles.css';
 import '@/styles/globals.css';
 
