@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       placeholder,
       type = 'text',
       className = '',
-      inputClass = 'sm:p-3 focus:border-primary sm:text-[13px]',
+      inputClass = 'sm:px-3 sm:py-4 focus:border-primary sm:text-[13px]',
       accepts = 'image/*',
       icon,
       iconPosition = 'right',

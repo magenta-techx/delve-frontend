@@ -35,7 +35,7 @@ const AuthCarousel = (): JSX.Element => {
       autoPlay
       animationHandler='fade'
       interval={4000}
-      transitionTime={4000}  
+      transitionTime={4000}
       renderIndicator={(onClickHandler, isSelected, index, label) => {
         const baseStyle = {
           width: isSelected ? 46 : 3,
@@ -61,7 +61,7 @@ const AuthCarousel = (): JSX.Element => {
           />
         );
       }}
-      className='h-[90vh] rounded-xl w-full'
+      className='h-[100vh] w-full rounded-xl'
     >
       {CAROUSEL_CONTENT.map((content, key) => (
         <div key={key} className='w-full'>
@@ -71,12 +71,12 @@ const AuthCarousel = (): JSX.Element => {
             width={300}
             height={200}
             priority
-            className='h-[84vh] w-full rounded-tl-xl rounded-tr-xl'
+            className='h-[80vh] w-full rounded-tl-xl rounded-tr-xl'
           />
 
-          <div className='h-[120px] w-full rounded-bl-xl rounded-br-xl bg-black pb-5 pl-4 pt-2 text-left font-karma text-white'>
-            <h1 className='text-[17px] leading-9'>{content.header}</h1>
-            <p className='w-[300px] text-[13px] leading-4'>
+          <div className='h-[180px] w-full rounded-bl-xl rounded-br-xl bg-black p-8 text-left font-karma text-white'>
+            <h1 className='text-[26px]'>{content.header}</h1>
+            <p className='w-[300px] text-[16px] leading-[20px]'>
               {content.subheader}
             </p>
           </div>

@@ -21,6 +21,7 @@
     "@radix-ui/themes": "^3.2.1",
     "@reduxjs/toolkit": "^2.9.0",
     "formik": "^2.4.6",
+    "framer-motion": "^12.23.22",
     "next": "^15.0.0",
     "next-auth": "^4.24.11",
     "radix-ui": "^1.4.3",

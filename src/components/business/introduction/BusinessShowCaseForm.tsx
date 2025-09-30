@@ -17,18 +17,25 @@ const BusinessShowCaseForm = ({
 }: BusinessShowCaseFormProps): JSX.Element => {
   const [files, setFiles] = useState<File[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [showErrorUpload, setShowErrorUpload] = useState<boolean>(false);
   const handleRemoveFile = (fileName: string): void => {
     const updatedFiles = files.filter(file => file.name !== fileName);
     setFiles(updatedFiles);
     setBusinessShowCaseFile(updatedFiles);
   };
   return (
-    <div className='flex w-full flex-col items-center gap-4 sm:-mt-0 sm:w-[480px]'>
+    <div className='flex w-full flex-col items-center gap-8 sm:-mt-0 sm:w-[480px]'>
       <BusinessIntroductionFormHeader
         intro={'Business account setup'}
         header='Showcase Your Business '
         paragraph='Showcase your business by uploading multiple photos but only 1 video.'
       />
+      {showErrorUpload && (
+        <span className='text-left text-red-500'>
+          You can not upload more than 10 media files
+        </span>
+      )}
+
       {files.length > 0 && (
         <div className='w-[1200px]'>
           <Swiper
@@ -93,6 +100,11 @@ const BusinessShowCaseForm = ({
 
       <FileUpload
         onFileSelect={newFiles => {
+          if (newFiles.length + files.length > 10) {
+            return setShowErrorUpload(true);
+          } else {
+            setShowErrorUpload(false);
+          }
           setFiles(newFiles);
           if (newFiles.length > 0) {
             setActiveIndex(0);

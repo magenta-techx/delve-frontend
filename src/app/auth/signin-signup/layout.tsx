@@ -12,10 +12,10 @@ export const metadata = {
 
 export default function AuthLayout({ children }: AuthLayoutProps): JSX.Element {
   return (
-    <section className='px-5 sm:p-10'>
+    <section className='px-5 sm:p-10 sm:pl-0'>
       {children}
 
-      <div className='fixed right-0 top-0 hidden h-[90vh] w-[50%] pt-5 pr-10 sm:flex'>
+      <div className='fixed right-0 top-0 hidden h-[95vh] w-[50%] pr-10 pt-5 sm:flex'>
         <AuthCarousel />
       </div>
     </section>
