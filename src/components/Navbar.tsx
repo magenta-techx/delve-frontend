@@ -18,7 +18,7 @@ import CancleIcon from '@/assets/icons/CancelIcon';
 import MenuBarIconWhite from '@/assets/icons/MenuBarIconWhite';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { BaseIcons } from '@/assets/icons/base/Icons';
+import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
 import { useSession } from 'next-auth/react';
 import ListingUserMenuExtension from './landing-page/UserMenuExtensions/ListingUserMenuExtension';
 // import { selectUserIsLoggedIn } from '@/redux/slices/businessSlice';
@@ -44,10 +44,16 @@ const SELECT_PLAN = '/business/select-plan';
 
 
 const IS_LOGGED_IN_BUTTON = [
-  { icon: <BaseIcons value='listing' />, href: '/' },
-  { icon: <BaseIcons value='saved' />, href: '/' },
-  { icon: <BaseIcons value='chat' />, href: '/' },
-  { icon: <BaseIcons value='notification' />, href: '/' },
+  { icon: 'listing' as IconsType, href: '/' },
+  { icon: 'saved' as IconsType, href: '/' },
+  { icon: 'chat' as IconsType, href: '/' },
+  { icon: 'notification' as IconsType, href: '/' },
+];
+const IS_LOGGED_IN_BUTTON_BLOG = [
+  { icon: 'listing-solid-black' as IconsType, href: '/' },
+  { icon: 'saved-black' as IconsType, href: '/' },
+  { icon: 'chat-solid-black' as IconsType, href: '/' },
+  { icon: 'notification-black' as IconsType, href: '/' },
 ];
 
 const BUSINESS_LINKS: LinkProps[] = [
@@ -158,11 +164,13 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
   const menuBarIcon =
     type === 'business' ? <MenuBarIcon /> : <MenuBarIconWhite />;
 
+
+
   const variant = type === 'business' ? 'black' : 'white';
   const loginSignup = type === 'business' ? '' : 'text-white';
   return (
     <div
-      className={`z-50 flex h-24 sm:h-32 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' || type === '' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
+      className={`z-50 flex h-24 sm:h-32 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' || type === 'white' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
     >
       <div
         className={`relative flex w-full items-center ${showMobileMenuItems ? 'justify-end' : 'justify-between'}`}
@@ -227,7 +235,7 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
                 Login / Sign up
               </Link>
             )}
-            {type && (
+            {type && !userIsloggedIn && (
               <Button asChild className={`w-[200px] text-xs`} variant={variant}>
                 <Link
                   href={'/'}
@@ -262,16 +270,17 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
                       href={link.href}
                       className='flex h-12 w-12 items-center justify-center rounded-full bg-[#FFFFFF4D] p-2'
                     >
-                      {link.icon}
+                      <BaseIcons value={link.icon} />
+
                     </Link>
                   );
                 })}
               </div>
               <BaseIcons value='vertical-line-white' />
 
-              <button
+              <div
                 className='flex items-center gap-1'
-                onClick={() => setShowUserMenu(!showUserMenu)}
+
               >
                 <BaseIcons value='user-logged-in-white' />
                 {session?.user.name && (
@@ -279,10 +288,106 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
                     {session?.user.name}
                   </p>
                 )}
-                <div>
+                <button onClick={() => {
+
+                  setCurrentUserMenuExtension('')
+                  setShowUserMenu(!showUserMenu)
+                }}>
                   <BaseIcons value='arrow-down-white' />
+                </button>
+              </div>
+            </div>
+
+            {/* user menu  */}
+
+            {showUserMenu && (
+              <div className='absolute -right-20 top-20 z-20 flex w-[300px] flex-col gap-4 rounded-lg bg-white font-inter text-black shadow-md'>
+                <div className='mb-3 rounded-tl-lg rounded-tr-lg bg-[#F8FAFC] px-5 py-6'>
+                  <Link
+                    href={'/business/get-started'}
+                    className='flex h-14 w-[180px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white'
+                  >
+                    <span> List business</span>
+                    <BaseIcons value='arrow-diagonal-white' />
+                  </Link>
                 </div>
-              </button>
+                <div className='flex flex-col gap-6 px-5 pb-5'>
+                  {USER_MENU_ITEMS.map((menu, key) => {
+                    return menu.dropDown ? (
+                      <button key={key} className='flex items-center gap-2' onClick={() => handleUsermMenuExtension(menu.text)}>
+                        <span>{menu.text} </span>{' '}
+                        {menu.dropDown && (
+                          <BaseIcons value='arrow-down-black' />
+                        )}
+                      </button>
+                    ) : (
+                      <Link
+                        key={key}
+                        href={menu.href}
+                        className='flex items-center gap-2'
+                      >
+                        <span className='capitalize'>{menu.text}</span>
+                      </Link>
+                    );
+                  })}
+
+                  <Link
+                    href={'/'}
+                    className='text-md -mt-4 flex items-center gap-1 py-3'
+                  >
+                    <BaseIcons value='logout-black' />
+                    <span> Profile settings</span>
+                  </Link>
+
+                  <Button
+                    variant='neutral'
+                    className='text-md flex items-center -mt-2 gap-1 py-3'
+                  >
+                    <BaseIcons value='logout-black' />
+                    <span> Logout</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        {userIsloggedIn && type === 'blog' && (
+          <div>
+            <div className='flex items-center gap-4 text-white'>
+              <div className='flex items-center gap-4'>
+                {IS_LOGGED_IN_BUTTON_BLOG.map((link, key) => {
+                  return (
+                    <Link
+                      key={key}
+                      href={link.href}
+                      className='flex h-12 w-12 items-center justify-center rounded-full bg-[#F8FAFC] p-2'
+                    >
+                      <BaseIcons value={link.icon} />
+
+                    </Link>
+                  );
+                })}
+              </div>
+              <BaseIcons value='vertical-line-white' />
+
+              <div
+                className='flex items-center gap-1'
+
+              >
+                <BaseIcons value='user-logged-in-black' />
+                {session?.user.name && (
+                  <p className='ml-1 w-[85px] truncate text-black font-semibold capitalize'>
+                    {session?.user.name}
+                  </p>
+                )}
+                <button onClick={() => {
+
+                  setCurrentUserMenuExtension('')
+                  setShowUserMenu(!showUserMenu)
+                }}>
+                  <BaseIcons value='arrow-down-black' />
+                </button>
+              </div>
             </div>
 
             {/* user menu  */}
@@ -339,9 +444,17 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
           </div>
         )}
         {USER_MENU_EXTENSIONS[currentUserMenuExtension] && showUserMenu && (
-          <div className="absolute top-14 right-[50%] z-20 bg-white py-6 px-8 shadow-lg rounded-lg">
+          <div className="absolute top-14 left-[10%] z-20 bg-white py-6 px-8 shadow-lg rounded-lg">
             <p className='mb-1'> Discover a world of businesses and services acrosslifestyle,ellness, fashion, food, tech, and more.</p>
-            <Link href={'/'} className='text-primary underline'>Explore all cities</Link>
+            <div className='border-b-primary border-b-[1px] w-[136px]'>
+              <Link href={'/explore'} className="text-primary flex items-center gap-1">
+                <p>Explore all cities</p>
+                <span className="inline-block -rotate-45">
+                  <BaseIcons value="arrow-diagonal-right-primary" />
+                </span>
+
+              </Link>
+            </div>
             {USER_MENU_EXTENSIONS[currentUserMenuExtension]}
           </div>
         )}

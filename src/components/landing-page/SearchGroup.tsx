@@ -2,9 +2,9 @@ import { BaseIcons } from '@/assets/icons/base/Icons';
 import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
 import React from 'react';
 
-const SearchGroup = (): JSX.Element => {
+const SearchGroup = ({ searchType }: { searchType: string }): JSX.Element => {
   return (
-    <div className={`flex items-center rounded-lg bg-white pl-5 font-inter`}>
+    <div className={`flex items-center rounded-lg bg-white pl-5 font-inter shadow-lg`}>
       <div className='flex items-center'>
         <BaseIcons value='stars-primary' />
         <input
@@ -13,7 +13,7 @@ const SearchGroup = (): JSX.Element => {
         />
       </div>
       <button className='flex w-[225px] items-center justify-center gap-3 border-l-2 border-r-2 border-neutral-200 px-6 py-6'>
-        <span className='text-lg'>Category</span>
+        <span className='text-lg'>{searchType}</span>
         <BusinessCategoryIcons value='arrow-down' />
       </button>
       <button className='flex w-[230px] items-center justify-center gap-2 px-6 py-6'>

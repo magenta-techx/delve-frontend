@@ -56,6 +56,30 @@ export default function HomePage(): JSX.Element {
       address: '123 Main St, Cityville',
       rating: 4.8,
     },
+    {
+      header: 'Aura Bloom Spa',
+      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
+      imageUrl: '/landingpage/feature-listing-2.jpg',
+      logoUrl: '/landingpage/logo.jpg',
+      address: '123 Main St, Cityville',
+      rating: 4.8,
+    },
+    {
+      header: 'Aura Bloom Spa',
+      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
+      imageUrl: '/landingpage/feature-listing-2.jpg',
+      logoUrl: '/landingpage/logo.jpg',
+      address: '123 Main St, Cityville',
+      rating: 4.8,
+    },
+    {
+      header: 'Aura Bloom Spa',
+      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
+      imageUrl: '/landingpage/feature-listing-2.jpg',
+      logoUrl: '/landingpage/logo.jpg',
+      address: '123 Main St, Cityville',
+      rating: 4.8,
+    },
 
   ]
   const LISTINGS_AROUND = [
@@ -142,43 +166,60 @@ export default function HomePage(): JSX.Element {
   const CATEGORIES: {
     icon: IconsType,
     title: string
+    hoverIcon: IconsType,
   }[] = [
+
+
       {
         icon: 'beauty-white',
-        title: 'beauty'
-      },
-      {
-        icon: 'beauty-white',
-        title: 'beauty'
-      },
-      {
-        icon: 'beauty-white',
-        title: 'beauty'
-      },
-      {
-        icon: 'beauty-white',
-        title: 'beauty'
-      },
-      {
-        icon: 'beauty-white',
-        title: 'beauty'
+      title: 'beauty',
+      hoverIcon: 'beauty-outlined-black'
       },
 
       {
         icon: 'clothing-white',
-        title: 'clothing & fashion'
+        title: 'clothing & fashion',
+        hoverIcon: 'clothing-outlined-black'
       },
       {
         icon: 'events-white',
-        title: 'event'
+        title: 'event',
+        hoverIcon: 'events-outlined-black'
       },
       {
         icon: 'food-white',
-        title: 'food & drinks'
+        title: 'food & drinks',
+        hoverIcon: 'food-outlined-black'
       },
       {
         icon: 'housing-white',
-        title: 'housing & Accommmodation'
+        title: 'housing & Accommmodation',
+        hoverIcon: 'housing-outlined-black'
+      },
+      {
+        icon: 'housing-white',
+        title: 'housing & Accommmodation',
+        hoverIcon: 'events-outlined-black'
+      },
+      {
+        icon: 'housing-white',
+        title: 'housing & Accommmodation',
+        hoverIcon: 'events-outlined-black'
+      },
+      {
+        icon: 'housing-white',
+        title: 'housing & Accommmodation',
+        hoverIcon: 'events-outlined-black'
+      },
+      {
+        icon: 'housing-white',
+        title: 'housing & Accommmodation',
+        hoverIcon: 'events-outlined-black'
+      },
+      {
+        icon: 'housing-white',
+        title: 'housing & Accommmodation',
+        hoverIcon: 'events-outlined-black'
       },
 
     ]
@@ -199,7 +240,7 @@ export default function HomePage(): JSX.Element {
             memories.
           </p>
           <div className='mt-16'>
-            <SearchGroup />
+            <SearchGroup searchType='Category' />
           </div>
         </div>
 
@@ -219,7 +260,6 @@ export default function HomePage(): JSX.Element {
               nextEl: ".custom-next",
               prevEl: ".custom-prev",
             }}
-            // install Swiper modules
             modules={[Navigation, Pagination, Scrollbar, A11y]}
             spaceBetween={10}
             slidesPerView={5}
@@ -232,13 +272,13 @@ export default function HomePage(): JSX.Element {
             className='h-[300px] flex items-center justify-center w-full pt-10'
           >
             <div className="absolute top-1/2 left-0 z-10 -translate-y-1/2">
-              <button className="custom-prev bg-black/50 text-white px-4 py-2 rounded-full">
-                Prev
+              <button className="custom-prev transition-transform rotate-180">
+                <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
             <div className="absolute top-1/2 right-0 z-10 -translate-y-1/2">
-              <button className="custom-next bg-black/50 text-white px-4 py-2 rounded-full">
-                Next
+              <button className="custom-next">
+                <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
             {CATEGORIES.map((category, key) => {
@@ -246,7 +286,7 @@ export default function HomePage(): JSX.Element {
                 <SwiperSlide key={key} className=' flex  items-center pt-10 justify-center'>
                   <div className='w-full flex items-center justify-center'>
                     {/* Overlay icon */}
-                    <CategoryCard title={category.title} icon={category.icon} />
+                    <CategoryCard title={category.title} icon={category.icon} hoverIcon={category.hoverIcon} />
                   </div>
                 </SwiperSlide>
               )
@@ -263,7 +303,10 @@ export default function HomePage(): JSX.Element {
         <SectionHeader iconValue='listing-yellow' header='Trusted by dozens of happy clients. ' paragraph='Featured Listing' />
 
         {/* featured listings  */}
-        <div className='mt-10 flex items-center gap-10 mb-20 w-[1485px]'>
+
+        <div className='w-full flex items-center justify-center relative'>
+
+          <div className='mt-10 flex items-center gap-10 mb-20 w-[1380px]'>
           <Swiper
             centerInsufficientSlides={false}
             navigation={{
@@ -272,29 +315,28 @@ export default function HomePage(): JSX.Element {
             }}
             // install Swiper modules
             modules={[Navigation, Pagination, Scrollbar, A11y]}
-            spaceBetween={10}
+              spaceBetween={-45}
             slidesPerView={3}
 
 
             scrollbar={false}
             onSwiper={(swiper) => console.log(swiper)}
-            onSlideChange={() => console.log('slide change')}
-          // className='h-[700px] bg-green-300'
-          // className='h-[300px] flex items-center justify-center w-full bg-blue-300 pt-10'
+              onSlideChange={() => console.log('slide change')}
+              className='relative'
           >
-            <div className="absolute top-1/2 left-0 z-10 -translate-y-1/2">
-              <button className="custom-prev bg-black/50 text-white px-4 py-2 rounded-full">
-                Prev
+              <div className="absolute top-1/2 z-50 -translate-y-1/2">
+                <button className="custom-prev transition-transform rotate-180">
+                  <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
-            <div className="absolute top-1/2 right-0 z-10 -translate-y-1/2">
-              <button className="custom-next bg-black/50 text-white px-4 py-2 rounded-full">
-                Next
+              <div className="absolute top-1/2 right-0 z-40 -translate-y-1/2">
+                <button className="custom-next">
+                  <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
             {FEATURED_LISTINGS.map((listing, key) => {
               return (
-                <SwiperSlide key={key} className=' flex  items-center pt-10 justify-center'>
+                <SwiperSlide key={key} className='flex px-10 items-center pt-10 justify-center'>
                   <div className='w-full flex items-center justify-center'>
                     <FeaturedListingCard header={listing.header} desc={listing.desc} imageUrl={listing.imageUrl} logoUrl={listing.logoUrl} address={listing.address} rating={listing.rating} classStyle={'h-[548px] w-[412px]'} />
                   </div>
@@ -304,6 +346,9 @@ export default function HomePage(): JSX.Element {
 
           </Swiper>
         </div>
+        </div>
+
+
         {/* Serch By location  */}
         <div className='mb-44'>
           <h1 className='text-2xl font-bold mb-5'>Search by location</h1>
@@ -339,14 +384,14 @@ export default function HomePage(): JSX.Element {
               // className='h-[700px] bg-green-300'
               className='h-[589px] pb-20 flex items-center -mt-16 justify-center w-[1485px]'
             >
-              <div className="absolute right-10 z-10 top-10 -translate-y-1/2">
-                <button className="custom-prev bg-black/50 text-white px-4 py-2 rounded-full">
-                  Prev
+              <div className="absolute right-16 z-10 top-14 -translate-y-1/2">
+                <button className="custom-prev transition-transform rotate-180">
+                  <BaseIcons value='arrow-right-solid-black' />
                 </button>
               </div>
-              <div className="absolute right-0 z-10 top-10 -translate-y-1/2">
-                <button className="custom-next bg-black/50 text-white px-4 py-2 rounded-full">
-                  Next
+              <div className="absolute right-0 z-10 top-14 -mt-[2px] -translate-y-1/2">
+                <button className="custom-next px-4 py-2 rounded-full">
+                  <BaseIcons value='arrow-right-solid-black' />
                 </button>
               </div>
               {SPONSORED_LIST.map((sponsored, key) => {

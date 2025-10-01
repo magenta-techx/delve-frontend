@@ -4,21 +4,25 @@ import { getToken } from 'next-auth/jwt';
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const token = await getToken({ req });
-
     if (!token?.accessToken) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const res = await fetch(
-      `${process.env['API_BASE_URL']}/business/categories/`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token.accessToken}`,
-        },
-        cache: 'force-cache',
-      }
-    );
+    // ✅ Grab search params from request
+    const { searchParams } = new URL(req.url);
+
+    // ✅ Rebuild backend URL including query params
+    const baseUrl = `${process.env['API_BASE_URL']}/business/categories`;
+    const queryString = searchParams.toString();
+    const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token.accessToken}`,
+      },
+      cache: 'force-cache',
+    });
 
     const data = await res.json();
 
@@ -32,6 +36,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: `${error}` }, { status: 500 });
   }
 }
+
 
 export async function PATCH(req: NextRequest): Promise<NextResponse> {
   try {
