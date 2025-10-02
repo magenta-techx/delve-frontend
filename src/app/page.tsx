@@ -227,7 +227,7 @@ export default function HomePage(): JSX.Element {
     <main className='relative flex flex-col items-center'>
       <div className='relative flex h-[83.6vh] w-screen flex-col items-center bg-[url("/landingpage/landing-page-hero-image.jpg")] bg-cover bg-no-repeat'>
         <div className='insert-0 absolute h-[83.6vh] w-full bg-black/70'></div>
-        <Navbar type='' authFormButtons={false} />
+        <Navbar type='' authFormButtons={false} navbarWidthDeskTop='w-full' />
 
 
         {/* Hero section  */}
@@ -306,7 +306,7 @@ export default function HomePage(): JSX.Element {
 
         <div className='w-full flex items-center justify-center relative'>
 
-          <div className='mt-10 flex items-center gap-10 mb-20 w-[1380px]'>
+          <div className='mt-10 flex items-center gap-10 mb-20 w-[1490px]'>
           <Swiper
             centerInsufficientSlides={false}
             navigation={{
@@ -315,7 +315,7 @@ export default function HomePage(): JSX.Element {
             }}
             // install Swiper modules
             modules={[Navigation, Pagination, Scrollbar, A11y]}
-              spaceBetween={-45}
+              spaceBetween={-40}
             slidesPerView={3}
 
 

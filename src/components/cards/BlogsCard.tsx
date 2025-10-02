@@ -11,9 +11,9 @@ interface BlogCardsProps{
 const BlogCards = ({ imageUrl, header, containerClassStyle, imageClassStyle }:BlogCardsProps):JSX.Element => {
 
   return (
-      <div className={`${containerClassStyle} flex flex-col items-center border-[1px] border-[#9AA4B2] h-[530px]`}>
+      <div className={`${containerClassStyle} flex flex-col items-center border-[1px] border-[#9AA4B2] h-[535px]`}>
      
-          <div className={`${imageClassStyle} mb-4`}>
+          <div className={`${imageClassStyle} mb-5`}>
               <Image src={imageUrl} alt={imageUrl} width={400} height={100} className='w-full h-[296]' />
           </div>
           <div className='mt-8 px-5 h-[150px] w-[100%]'>

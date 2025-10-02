@@ -36,6 +36,7 @@ interface LinkProps {
 
 interface NavbarProps {
   type?: string;
+  navbarWidthDeskTop?: string;
   authFormButtons?: boolean;
 }
 
@@ -122,7 +123,7 @@ const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
   listing: <ListingUserMenuExtension />,
   // Add other menu extensions here
 };
-const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
+const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProps): JSX.Element => {
   const userIsloggedIn = useSelector(
     (state: RootState) => state.business.userIsLoggedIn
   );
@@ -170,10 +171,10 @@ const Navbar = ({ type, authFormButtons = true }: NavbarProps): JSX.Element => {
   const loginSignup = type === 'business' ? '' : 'text-white';
   return (
     <div
-      className={`z-50 flex h-24 sm:h-32 w-full items-center justify-center ${type === 'business' ? 'bg-primary-50' : type === 'community' || type === 'white' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
+      className={`z-50 flex h-24 sm:h-32 w-full items-center justify-center ${type === 'business' ? 'bg-[#F8FAFC]' : type === 'community' || type === 'white' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
     >
       <div
-        className={`relative flex w-full items-center ${showMobileMenuItems ? 'justify-end' : 'justify-between'}`}
+        className={`relative flex w-full ${navbarWidthDeskTop ? navbarWidthDeskTop : 'sm:w-[1488px]'} items-center ${showMobileMenuItems ? 'justify-end' : 'justify-between'}`}
       >
         {/* logo  */}
         {showMobileMenuItems ? (
