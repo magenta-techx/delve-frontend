@@ -5,15 +5,15 @@ import React from 'react'
 
 interface CategoryCardProps{
     icon: IconsType;
-    hoverIcon?: IconsType;
+    hoverIcon: IconsType;
     title:string
 }
-const CategoryCard = ({ icon, title,  }: CategoryCardProps):JSX.Element => {
+const CategoryCard = ({ icon, title, hoverIcon }: CategoryCardProps): JSX.Element => {
   return (
       <button className='rounded-full group  w-[197px] h-[197px] relative flex items-center justify-center'>
           
-          <div className=' duration-500 absolute z-10 -top-1 hidden group-hover:flex -left-3 bg-black rounded-full h-16  items-center justify-center w-16'>
-              <BaseIcons value={icon} />
+          <div className=' duration-500 absolute z-10 -top-1 hidden group-hover:flex -left-3 bg-white border-[#FEC601] border-[1px] rounded-full h-16  items-center justify-center w-16'>
+              <BaseIcons value={hoverIcon} />
           </div>
           <Image src={'/landingpage/trendz-1.jpg'} alt='' width={200} height={200} className='absolute w-full h-full rounded-full' />
           <div className='absolute group-hover:bg-transparent transition-all duration-500 h-full w-full bg-black/50 rounded-full'></div>
