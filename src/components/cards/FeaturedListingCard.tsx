@@ -38,22 +38,22 @@ const FeaturedListingCard = ({ header, desc, imageUrl, logoUrl, address, classSt
             <Image src={imageUrl} alt={imageUrl} width={200} height={100} className='absolute w-full h-full' />
            
             {/* Content  */}
-            <div className='absolute group-hover:opacity-0 duration-300 transition-opacity h-32 w-full z-10 text-white from-black to-transparent rounded-bl-2xl bg-gradient-to-t rounded-br-2xl bottom-0 px-4 flex flex-col gap-2'>
-                <div className='border-b-[1px] border-b-white flex gap-2 h-[85px]'>
+                <div className='absolute group-hover:opacity-0 duration-300 transition-opacity sm:h-32 h-28 w-full z-10 text-white from-black to-transparent rounded-bl-2xl bg-gradient-to-t rounded-br-2xl bottom-0 px-4 flex flex-col gap-2'>
+                    <div className='border-b-[1px] border-b-white flex gap-2 sm:h-[85px] h-[70px]'>
                     <div className='h-20 w-20 rounded-full'>
                         <Image src={logoUrl} alt={logoUrl} width={200} height={100} className='h-ful w-full rounded-full' />
                     </div>
                     <div>
-                        <h3 className='text-xl font-bold'>{header}</h3>
-                        <p className='text-[13px]'>{desc}</p>
+                            <h3 className='sm:text-xl text-[16px] font-bold'>{header}</h3>
+                            <p className='sm:text-[13px] text-[10px]'>{desc}</p>
                     </div>
                 </div>
                 <div className='flex items-center text-[14px] justify-between'>
                     <div className='flex items-center gap-2'>
                         <BaseIcons value='marker-light-red' />
-                        <span className='text-[#FFE6D5]'>{address}</span>
+                            <span className='text-[#FFE6D5] text-[10px] sm:text-md'>{address}</span>
                     </div>
-                    <div className='flex items-center gap-1'>
+                        <div className='flex items-center gap-1 text-[10px] sm:text-md'>
                         <BaseIcons value='star-yellow' />
                         <p>{rating}</p>
                     </div>

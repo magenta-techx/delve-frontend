@@ -21,6 +21,7 @@ import { RootState } from '@/redux/store';
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
 import { useSession } from 'next-auth/react';
 import ListingUserMenuExtension from './landing-page/UserMenuExtensions/ListingUserMenuExtension';
+import Loader from './ui/Loader';
 // import { selectUserIsLoggedIn } from '@/redux/slices/businessSlice';
 
 interface AuthFormButtonProps {
@@ -34,11 +35,29 @@ interface LinkProps {
   href: string;
 }
 
+
+interface Category {
+  id: number;
+  icon_name: string;
+  name: string;
+  categories: SubCategory[];
+  subcategories: SubCategory[];
+}
+
+interface SubCategory {
+  id: number;
+  name: string; // backend sends plain strings
+  subcategories?: SubCategory[];
+}
 interface NavbarProps {
   type?: string;
   navbarWidthDeskTop?: string;
   authFormButtons?: boolean;
+  isLoadingcategories?: boolean;
+  categories?: Category[]
 }
+
+
 
 const SELECT_PLAN = '/business/select-plan';
 
@@ -119,11 +138,12 @@ const USER_MENU_ITEMS = [
   },
 ];
 
-const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
-  listing: <ListingUserMenuExtension />,
-  // Add other menu extensions here
-};
-const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProps): JSX.Element => {
+
+const Navbar = ({ type, navbarWidthDeskTop, categories, isLoadingcategories, authFormButtons = true }: NavbarProps): JSX.Element => {
+  const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
+    listing: <ListingUserMenuExtension categories={categories} />,
+    // Add other menu extensions here
+  };
   const userIsloggedIn = useSelector(
     (state: RootState) => state.business.userIsLoggedIn
   );
@@ -456,7 +476,7 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
 
               </Link>
             </div>
-            {USER_MENU_EXTENSIONS[currentUserMenuExtension]}
+            {isLoadingcategories ? <div className='mt-8'><Loader borderColor='border-primary' /> </div> : USER_MENU_EXTENSIONS[currentUserMenuExtension]}
           </div>
         )}
 

@@ -1,10 +1,9 @@
 'use client'
 import { BusinessCategoryIcons, IconsType } from '@/assets/icons/business/BusinessCategoriesIcon';
-import Loader from '@/components/ui/Loader';
+// import Loader from '@/components/ui/Loader';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
 
-interface Category {
+interface CategoryProps {
     id: number;
     icon_name: string;
     name: string;
@@ -18,38 +17,21 @@ interface SubCategory {
     subcategories?: SubCategory[];
 }
 
+interface listingUserMenuExtensionProps {
+    categories?: CategoryProps[] | undefined
+}
 
-const ListingUserMenuExtension = (): JSX.Element => {
-    const [isLoadingcategories, setIsloadingCategories] = useState<boolean>(false);
-    const [categories, setCategories] = useState<Category[]>([]);
-
-    useEffect(() => {
-        const fetchCategories = async (): Promise<void> => {
-            setIsloadingCategories(true);
-            try {
-                const res = await fetch(`/api/business/business-categories?is_nav=true`);
-                if (!res.ok) throw new Error(`Error fetching categories`);
-
-                const data = await res.json();
-                setCategories(data?.data ? [...data.data].reverse() : []);
-            } catch (error) {
-                console.error(error);
-            }
-
-            setIsloadingCategories(false);
-        };
-
-        fetchCategories();
-    }, []);
+const ListingUserMenuExtension = ({ categories }: listingUserMenuExtensionProps): JSX.Element => {
 
     return (
         <div className="mt-8">
             <h1 className="font-inter text-[32px] font-extrabold mb-3">Browsers Category</h1>
 
-            {isLoadingcategories ? (
-                <Loader />
-            ) : (
-                <div className="flex items-start">
+            {/* {isLoadingcategories ? (
+                <Loader borderColor="border-primary" />
+            ) : ( */}
+            {
+                categories !== undefined && <div className="flex items-start">
                     {categories.map((category, key) => {
 
                         return <div
@@ -94,7 +76,8 @@ const ListingUserMenuExtension = (): JSX.Element => {
                         </div>
                     })}
                 </div>
-            )}
+            }
+
         </div>
     );
 };

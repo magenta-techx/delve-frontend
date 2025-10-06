@@ -90,7 +90,7 @@ export default function HomePage(): JSX.Element {
     <main className='relative flex flex-col items-center'>
       <div className='relative flex h-[70vh] w-screen flex-col items-start bg-[url("/explore/explore-hero.jpg")] bg-right bg-no-repeat mb-52'>
               <div className='absolute h-[70vh] w-[100%] from-black to-transparent bg-gradient-to-r via-black/95'></div>
-        <Navbar type='' authFormButtons={false} />
+        <Navbar type='' navbarWidthDeskTop='sm:w-[1788px]' authFormButtons={false} />
 
               
               {/* Hero section  */}

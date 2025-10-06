@@ -23,6 +23,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
+import { useEffect, useState } from 'react';
+import NavbarLandingPage from '@/components/navbar/NavbarLandingPage';
 
 
 // export const metadata: Metadata = {
@@ -223,19 +225,65 @@ export default function HomePage(): JSX.Element {
       },
 
     ]
+
+  interface Category {
+    id: number;
+    icon_name: string;
+    name: string;
+    categories: SubCategory[];
+    subcategories: SubCategory[];
+  }
+
+  interface SubCategory {
+    id: number;
+    name: string; // backend sends plain strings
+    subcategories?: SubCategory[];
+  }
+
+  const [isLoadingcategories, setIsloadingCategories] = useState<boolean>(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async (): Promise<void> => {
+      setIsloadingCategories(true);
+      try {
+        const res = await fetch(`/api/business/business-categories?is_nav=true`);
+        if (!res.ok) return setIsloadingCategories(false);
+
+        const data = await res.json();
+        setCategories(data?.data ? [...data.data].reverse() : []);
+      } catch (error) {
+        console.error(error);
+      }
+
+      setIsloadingCategories(false);
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <main className='relative flex flex-col items-center'>
-      <div className='relative flex h-[83.6vh] w-screen flex-col items-center bg-[url("/landingpage/landing-page-hero-image.jpg")] bg-cover bg-no-repeat'>
-        <div className='insert-0 absolute h-[83.6vh] w-full bg-black/70'></div>
-        <Navbar type='' authFormButtons={false} navbarWidthDeskTop='w-full' />
+      <div className='relative flex h-[83.6vh] w-screen flex-col items-center sm:bg-[url("/landingpage/landing-page-hero-image.jpg")] bg-cover bg-no-repeat'>
+        {/* New Navbar component  */}
+        <NavbarLandingPage />
 
+        {/* Mobile hero  */}
+        <div className='sm:hidden flex h-[756px] rounded-2xl w-full bg-[url("/landingpage/landing-pagemobile-hero.jpg")]'>
+        </div>
+
+        {/* Desktop Hero  */}
+        <div className='insert-0 flex absolute sm:h-[83.6vh] rounded-2xl sm:rounded-none h-[75.5vh] sm:top-0 top-[80px] w-full bg-black/70'></div>
+        <div className='w-full hidden sm:flex'>
+          <Navbar type='' authFormButtons={false} navbarWidthDeskTop='w-full' categories={categories} isLoadingcategories={isLoadingcategories} />
+        </div>
 
         {/* Hero section  */}
-        <div className='absolute top-[27.8rem] flex h-full w-full flex-col items-center'>
-          <h1 className='font-karma text-[54px] font-bold text-white'>
+        <div className='absolute sm:top-[27.8rem] top-[26rem] flex h-full w-full flex-col items-center'>
+          <h1 className='font-karma sm:text-[54px] text-[26px] font-bold text-white'>
             Great experiences start here.
           </h1>
-          <p className='-mt-2 font-inter text-[19px] text-white'>
+          <p className='sm:-mt-2 font-inter sm:text-[19px] text-[14px] px-14 text-center text-white'>
             Delve helps you find reliable vendors who turn plans into beautiful
             memories.
           </p>
@@ -247,12 +295,12 @@ export default function HomePage(): JSX.Element {
       </div>
 
 
-      <div className=' w-full flex flex-col items-center py-20'>
+      <div className=' w-full flex flex-col items-center sm:py-20 pt-10'>
 
         <SectionHeader iconValue='category-yellow' header='Whatever you’re looking for, find it here.' paragraph='category' />
 
         {/* Category  */}
-        <div className='mt-10 flex items-center gap-14 mb-20 w-[1485px]'>
+        <div className='mt-10 flex items-center gap-14 mb-20 sm:w-[1485px] w-full px-2 sm:px-0'>
 
           <Swiper
             centerInsufficientSlides={false}
@@ -263,27 +311,40 @@ export default function HomePage(): JSX.Element {
             modules={[Navigation, Pagination, Scrollbar, A11y]}
             spaceBetween={10}
             slidesPerView={5}
-
+            breakpoints={{
+              300: {
+                slidesPerView: 3,
+                spaceBetween: 15,
+              },
+              768: {
+                slidesPerView: 4,
+                spaceBetween: 40,
+              },
+              1024: {
+                slidesPerView: 5,
+                spaceBetween: 50,
+              },
+            }}
 
             scrollbar={false}
             onSwiper={(swiper) => console.log(swiper)}
             onSlideChange={() => console.log('slide change')}
             // className='h-[700px] bg-green-300'
-            className='h-[300px] flex items-center justify-center w-full pt-10'
+            className='sm:h-[300px] flex items-center justify-center w-full pt-10'
           >
-            <div className="absolute top-1/2 left-0 z-10 -translate-y-1/2">
+            <div className="absolute hidden sm:flex top-36 left-0 z-10 -translate-y-1/2">
               <button className="custom-prev transition-transform rotate-180">
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
-            <div className="absolute top-1/2 right-0 z-10 -translate-y-1/2">
+            <div className="absolute top-36 hidden sm:flex right-0 z-10 -translate-y-1/2">
               <button className="custom-next">
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
             {CATEGORIES.map((category, key) => {
               return (
-                <SwiperSlide key={key} className=' flex  items-center pt-10 justify-center'>
+                <SwiperSlide key={key} className=' flex items-center sm:pt-10 pt-5 justify-center'>
                   <div className='w-full flex items-center justify-center'>
                     {/* Overlay icon */}
                     <CategoryCard title={category.title} icon={category.icon} hoverIcon={category.hoverIcon} />
@@ -299,14 +360,16 @@ export default function HomePage(): JSX.Element {
       </div>
 
 
-      <div className='bg-[#FFF4ED] w-full flex flex-col items-center py-20'>
+
+
+      {/* featured listings  */}
+      <div className='bg-[#FFF4ED] w-full flex flex-col items-center sm:py-20 py-7'>
         <SectionHeader iconValue='listing-yellow' header='Trusted by dozens of happy clients. ' paragraph='Featured Listing' />
 
-        {/* featured listings  */}
 
         <div className='w-full flex items-center justify-center relative'>
 
-          <div className='mt-10 flex items-center gap-10 mb-20 w-[1490px]'>
+          <div className='mt-10 flex items-center gap-10 mb-20 sm:w-[1490px] w-full'>
           <Swiper
             centerInsufficientSlides={false}
             navigation={{
@@ -315,21 +378,31 @@ export default function HomePage(): JSX.Element {
             }}
             // install Swiper modules
             modules={[Navigation, Pagination, Scrollbar, A11y]}
-              spaceBetween={-40}
-            slidesPerView={3}
 
+            slidesPerView={3}
+              spaceBetween={10}
 
             scrollbar={false}
             onSwiper={(swiper) => console.log(swiper)}
               onSlideChange={() => console.log('slide change')}
               className='relative'
+              breakpoints={{
+                300: {
+                  slidesPerView: 1,
+                  spaceBetween: -50,
+                },
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: -45,
+                },
+              }}
           >
-              <div className="absolute top-1/2 z-50 -translate-y-1/2">
+              <div className="absolute sm:flex hidden top-1/2 z-50 -translate-y-1/2">
                 <button className="custom-prev transition-transform rotate-180">
                   <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
-              <div className="absolute top-1/2 right-0 z-40 -translate-y-1/2">
+              <div className="absolute sm:flex hidden top-1/2 right-0 z-40 -translate-y-1/2">
                 <button className="custom-next">
                   <BaseIcons value='arrow-right-line-curve-black' />
               </button>
@@ -338,7 +411,7 @@ export default function HomePage(): JSX.Element {
               return (
                 <SwiperSlide key={key} className='flex px-10 items-center pt-10 justify-center'>
                   <div className='w-full flex items-center justify-center'>
-                    <FeaturedListingCard header={listing.header} desc={listing.desc} imageUrl={listing.imageUrl} logoUrl={listing.logoUrl} address={listing.address} rating={listing.rating} classStyle={'h-[548px] w-[412px]'} />
+                    <FeaturedListingCard header={listing.header} desc={listing.desc} imageUrl={listing.imageUrl} logoUrl={listing.logoUrl} address={listing.address} rating={listing.rating} classStyle={'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'} />
                   </div>
                 </SwiperSlide>
               )
@@ -361,10 +434,10 @@ export default function HomePage(): JSX.Element {
         </div>
 
         {/* Sponsored picks  */}
-        <div>
+        <div className='relative'>
           <SectionHeader iconValue='listing-yellow' header='Sponsored Picks' paragraph='Spotlight' />
 
-          <h1 className='text-2xl font-bold mt-10'>Hot deals and events you don’t want to miss</h1>
+          <h1 className='text-2xl font-bold mt-10 -mb-16'>Hot deals and events you don’t want to miss</h1>
           <div className='flex items-center gap-3'>
             <Swiper
               centerInsufficientSlides={false}
@@ -382,7 +455,7 @@ export default function HomePage(): JSX.Element {
               onSwiper={(swiper) => console.log(swiper)}
               onSlideChange={() => console.log('slide change')}
               // className='h-[700px] bg-green-300'
-              className='h-[589px] pb-20 flex items-center -mt-16 justify-center w-[1485px]'
+              className='h-[589px] pb-20 flex items-center justify-center w-[1485px]'
             >
               <div className="absolute right-16 z-10 top-14 -translate-y-1/2">
                 <button className="custom-prev transition-transform rotate-180">
