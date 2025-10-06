@@ -1,7 +1,4 @@
 import type { ReactNode } from 'react';
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import { authOptions } from '../api/auth/[...nextauth]/route';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -10,11 +7,6 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps): Promise<JSX.Element> {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/auth/signin-signup'); // send to login if not authenticated
-  }
 
   return (
     <div className='min-h-screen bg-background'>

@@ -50,7 +50,7 @@ const Faqs = (): JSX.Element => {
 
     return (
         <div className='flex flex-col items-center'>
-            <h1 className='font-karma text-[44px] section-header-underlined mb-16'>We are here to help with your questions</h1>
+            <h1 className='font-karma sm:text-[44px] text-[24px] section-header-underlined mb-16 text-center'>We are here to help with your questions</h1>
 
 
             <div className="flex flex-col gap-4">
@@ -59,14 +59,66 @@ const Faqs = (): JSX.Element => {
                         key={faq.id}
                         className="bg-[#F8FAFC] border-[#ECE9FE] rounded-3xl border pl-4 py-8 pr-6"
                     >
-                        <div className="w-[1180px] flex items-center justify-between">
+                        <div className="sm:w-[1180px] flex items-center justify-between">
                             {/* Icon */}
-                            <div className="w-[48px] h-full flex items-center justify-center">
+                            <div className="hidden w-[30px] h-full sm:flex items-center justify-center">
                                 <BaseIcons value={faq.icon} />
                             </div>
 
+                            {/* Mobile  */}
+
                             {/* Question + Answer */}
-                            <div className="border-l-[3px] border-[#E3E8EF] ml-3 px-4 w-[1100px] flex flex-col">
+                            <div className=" sm:hidden sm:w-[1100px] flex flex-col">
+
+                                <div className='flex'>
+                                    {/* Icon */}
+                                    <div className="flex w-[20px] h-full sm:hidden items-center justify-center">
+                                        <BaseIcons value={faq.icon} />
+                                    </div>
+                                    {/* Question */}
+                                    <p
+                                        className="inter border-l-[3px] px-4 pt-1 ml-4 text-[12px] border-[#E3E8EF] font-semibold"
+                                    >
+                                        {faq.question}
+                                    </p>
+                                    {/* Toggle Button with Rotating Arrow */}
+                                    <button
+                                        onClick={() =>
+                                            setSelectedFaq(selectedFaq === faq.id ? null : faq.id)
+                                        }
+                                        className="flex items-center justify-center"
+                                    >
+                                        <motion.div
+                                            animate={{ rotate: selectedFaq === faq.id ? 180 : 0 }}
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            <BaseIcons value="arrow-down-primary" />
+                                        </motion.div>
+                                    </button>
+                                </div>
+
+                                {/* Expanding Answer */}
+                                <AnimatePresence>
+                                    {selectedFaq === faq.id && (
+                                        <motion.div
+                                            key="content"
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: "auto", opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.4, ease: "easeInOut" }}
+                                            className="overflow-hidden"
+                                        >
+                                            <p className="text-gray-600 w-[290px] mt-3 text-[12px]">{faq.answer}</p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                            </div>
+
+
+
+                            {/* Deskstop  */}
+                            <div className="border-l-[3px] border-[#E3E8EF] ml-3 px-4 hidden sm:flex w-[1100px] flex-col">
                                 {/* Question */}
                                 <motion.p
                                     animate={{
@@ -101,7 +153,7 @@ const Faqs = (): JSX.Element => {
                                 onClick={() =>
                                     setSelectedFaq(selectedFaq === faq.id ? null : faq.id)
                                 }
-                                className="flex items-center justify-center"
+                                className="sm:flex items-center hidden justify-center"
                             >
                                 <motion.div
                                     animate={{ rotate: selectedFaq === faq.id ? 180 : 0 }}

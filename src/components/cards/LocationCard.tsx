@@ -8,7 +8,7 @@ interface LocationProps {
 
 const LocationCard = ({ name, imageUrl }: LocationProps): JSX.Element => {
   return (
-    <div className="group w-[360px] h-[210px] rounded-xl relative flex items-center justify-center overflow-hidden">
+    <div className="relative group sm:w-[360px] w-[160px] h-[175px] sm:h-[210px] rounded-xl  flex items-center justify-center overflow-hidden">
       {/* Dark overlay (fades out on hover) */}
       <div className="w-full h-full absolute rounded-xl bg-black/30 z-10 transition-opacity duration-300 group-hover:opacity-0"></div>
 
