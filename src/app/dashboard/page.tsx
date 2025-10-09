@@ -9,8 +9,6 @@ export const metadata: Metadata = {
   description: 'Your personal dashboard',
 };
 
-
-
 export default function DashboardPage(): JSX.Element {
   return (
     <div className='space-y-8'>

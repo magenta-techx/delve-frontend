@@ -31,7 +31,7 @@ export default function DashboardPage(): JSX.Element {
     },
   ];
   return (
-    <section className='overflow-y-hidden flex flex-col justify-center'>
+    <section className='flex flex-col justify-center overflow-y-hidden'>
       <div className='flex justify-center'>
         <BuinessHero />
       </div>
@@ -41,7 +41,7 @@ export default function DashboardPage(): JSX.Element {
       <div className='mb-10 flex w-full justify-start px-7 lg:hidden lg:px-20'>
         <RoadMapIconsMobile />
       </div>
-      <div className='mb-32 hidden w-full sm:flex justify-center px-5 lg:flex'>
+      <div className='mb-32 hidden w-full justify-center px-5 sm:flex lg:flex'>
         <Image
           src={'/business/business-man.jpg'}
           alt='Delveng business'
@@ -114,7 +114,7 @@ export default function DashboardPage(): JSX.Element {
           </div>
         </div>
       </div>
-      <div className='mb-20 hidden justify-center w-full lg:flex'>
+      <div className='mb-20 hidden w-full justify-center lg:flex'>
         <Image
           src={'/business/clients.png'}
           alt='Delveng business'
@@ -125,7 +125,7 @@ export default function DashboardPage(): JSX.Element {
           className='w-full'
         />
       </div>
-      <div className='flex justify-center  lg:hidden'>
+      <div className='flex justify-center lg:hidden'>
         <Image
           src={'/business/clients-mobile.png'}
           alt='Delveng business'
@@ -133,7 +133,6 @@ export default function DashboardPage(): JSX.Element {
           height={100}
           priority
           quality={100}
-
         />
       </div>
       <div className='flex w-full flex-col items-center py-10 lg:bg-[#FCFCFDCC] lg:py-24'>
@@ -152,13 +151,16 @@ export default function DashboardPage(): JSX.Element {
         <FrequentlyAskedQuestions />
       </div>
       */}
-      <div className="flex justify-center w-full">  <Image
-        src={'/business/socials.png'}
-        alt='Delve socials'
-        width={1500}
-        height={500}
-        className='hidden lg:flex w-full'
-      /></div>
+      <div className='flex w-full justify-center'>
+        {' '}
+        <Image
+          src={'/business/socials.png'}
+          alt='Delve socials'
+          width={1500}
+          height={500}
+          className='hidden w-full lg:flex'
+        />
+      </div>
       <Image
         src={'/business/socials-mobile.png'}
         alt='Delve socials'

@@ -1,130 +1,185 @@
-import { BaseIcons } from '@/assets/icons/base/Icons'
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
+import { BaseIcons } from '@/assets/icons/base/Icons';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
 const ThisWeeksTrends = (): JSX.Element => {
-    return (
-        <div className='sm:h-[553px] h-[513px] relative w-[100%] flex flex-col sm:flex-row items-center'>
-
-
-            {/* Desktop  */}
-            <div className='relative hidden sm:flex items-center sm:w-[64%] w-full h-full'>
-                <div className='w-full h-full absolute bg-black/50'></div>
-                <div className='w-[50%] h-full'>
-                    <Image src={'/landingpage/trendz-1.jpg'} alt='trendz' width={200} height={100} className='w-full h-full' />
-                </div>
-                <div className='w-[50%] bg-black h-full'>
-                    <div className='h-[50%]'>
-                        <Image src={'/landingpage/trendz-2.jpg'} alt='trendz' width={200} height={100} className='w-full h-full' />
-                    </div>
-                    <div className='h-[50%]'>
-                        <Image src={'/landingpage/trendz-3.jpg'} alt='trendz' width={200} height={100} className='w-full h-full' />
-                    </div>
-
-                </div>
-            </div>
-
-            {/* Mobile  */}
-            <div className='relative sm:hidden flex flex-col items-center w-full h-full'>
-                <div className='w-full h-full absolute bg-black/50'></div>
-                <div className='w-full h-full'>
-                    <Image src={'/landingpage/trendz-2.jpg'} alt='trendz' width={200} height={100} className='w-full h-full' />
-                </div>
-                <div className='w-full flex h-full'>
-                    <div className='h-[199.76px] w-1/2'>
-                        <Image src={'/landingpage/trendz-1.jpg'} alt='trendz' width={200} height={100} className='w-full h-full' />
-                    </div>
-                    <div className='h-[199.76px] w-1/2'>
-                        <Image src={'/landingpage/trendz-3.jpg'} alt='trendz' width={200} height={100} className='w-full object-cover h-full' />
-                    </div>
-
-                </div>
-            </div>
-            <div className='bg-[#FFF4ED] h-full sm:w-[36%] sm:pl-14 sm:pt-14 w-full px-4 pt-10 pb-3'>
-                <div className='flex items-center gap-2'>
-                    <BaseIcons value='rocket-outline-primary' />
-                    <h1 className='sm:text-[38px] text-[20px] font-karma'>This Week’s Trend</h1>
-                </div>
-                <p className='sm:w-[420px] w-full mb-5 sm:text-[20px] text-[12px]'>Every week, Delve celebrates one outstanding business that’s captured the most attention, the most views, the most saves, the most chats. It’s our way of saying “Well done!” and giving them a free spotlight so more people can discover what makes them special.
-
-                </p>
-                <div className='flex items-center justify-between sm:justify-start gap-5 mb-10'>
-
-                    <Link href={'/'} className='flex sm:h-14 sm:w-[140px] h-[46px] w-[122px] text-[12px] sm:text-lg items-center justify-center gap-2 rounded-md bg-primary text-center font-medium text-white'> View Business
-
-                    </Link>
-                    <Link href={'/'} className='flex sm:h-14  h-[42px] w-[42px] sm:w-[60px] items-center justify-center gap-2 rounded-md bg-white'>
-                        <BaseIcons value='bookmark-outline-black' />
-                    </Link>
-                </div>
-
-                <div>
-                    <BaseIcons value='trophy-outline-primary' />
-                </div>
-            </div>
-
-
-            {/* Center tinted content  */}
-            <div className='absolute bg-black/70 rounded-xl sm:left-[190px] sm:w-[503px] w-[292px] top-10 sm:h-[469px] h-[305px]'>
-                <div className='absolute h-full w-full z-10 text-white flex flex-col gap-2 sm:p-8 p-2'>
-
-                    {/* Info  */}
-                    <div className='border-b-[1px] border-b-white flex items-center gap-2 h-[85px] sm:-mt-5'>
-                        <div className='sm:h-[50px] sm:w-[50px] h-[46px] w-[46px] rounded-full shrink-0'>
-                            <Image src={'/landingpage/lagos.png'} alt={'delve'} width={200} height={100} className='h-full w-full object-cover rounded-full' />
-                        </div>
-                        <div >
-                            <h3 className='sm:text-xl text-[14px] font-bold'>Ember Lagos</h3>
-                            <p className='text-[13px] line-clamp-2 '>The Ember Table is where bold Nigerian flavors meet refined culinary flair. Our menu is rooted in tradition bu..</p>
-                        </div>
-                    </div>
-
-                    {/* Contact  */}
-                    <div className='flex items-center text-[14px] justify-between my-2'>
-                        <div className='flex items-center gap-2'>
-                            <BaseIcons value='marker-light-red' />
-                            <span className='text-[#FFE6D5] truncate text-[10px] sm:text-sm'>12 Adebayo Street, Lekki Phase 1..</span>
-                        </div>
-                        <div className='flex items-center gap-1'>
-                            <BaseIcons value='star-yellow' />
-                            <p>4.8</p>
-                        </div>
-                    </div>
-
-                    {/* Services  */}
-                    <div className='flex items-center sm:gap-3 gap-1 sm:mb-4'>
-                        <div className='bg-[#D9D9D938]/30 rounded-xl text-white flex items-center gap-2 sm:py-3 py-2 sm:px-4 px-2 text-[9px] sm:text-[14px] w-[172px]'>
-
-                            <div className='sm:w-full w-[10px] h-[10px] flex justify-center items-center'>
-                                <BaseIcons value='food-and-drinks-white' />
-                            </div>
-                            <p>Food & Drinks</p>
-                        </div>
-                        <div className='bg-[#D9D9D938]/30 rounded-xl text-white flex items-center gap-2 sm:py-3 py-2 sm:px-4 px-2 text-[8px] sm:text-[14px] w-[200px]'>
-
-                            <div className='sm:w-full w-[8px] h-[8px] flex justify-center items-center'>
-                                <BaseIcons value='calendar-white' />
-                            </div>
-                            <p>10am - 12pm, daily</p>
-                        </div>
-                        <div className='bg-[#D9D9D938]/30 rounded-xl text-white flex items-center gap-2 sm:py-3 py-2 sm:px-4 px-2 text-[9px] sm:text-[14px] w-[90px]'>
-                            <div className='sm:w-full w-[10px] h-[10px] flex justify-center items-center'>
-                                <BaseIcons value='person-white' />
-                            </div>
-                            <p>258</p>
-                        </div>
-                    </div>
-
-                    {/* images  */}
-                    <div className='sm:w-[449px] w-full rounded-xl bg-black h-[219px] sm:flex '>
-                        <Image src={'/landingpage/trendz-4.jpg'} alt='' width={300} height={100} className='w-full h-full rounded-2xl'/>
-                    </div>
-
-                </div>
-            </div>
+  return (
+    <div className='relative flex h-[513px] w-[100%] flex-col items-center sm:h-[553px] sm:flex-row'>
+      {/* Desktop  */}
+      <div className='relative hidden h-full w-full items-center sm:flex sm:w-[64%]'>
+        <div className='absolute h-full w-full bg-black/50'></div>
+        <div className='h-full w-[50%]'>
+          <Image
+            src={'/landingpage/trendz-1.jpg'}
+            alt='trendz'
+            width={200}
+            height={100}
+            className='h-full w-full'
+          />
         </div>
-    )
-}
+        <div className='h-full w-[50%] bg-black'>
+          <div className='h-[50%]'>
+            <Image
+              src={'/landingpage/trendz-2.jpg'}
+              alt='trendz'
+              width={200}
+              height={100}
+              className='h-full w-full'
+            />
+          </div>
+          <div className='h-[50%]'>
+            <Image
+              src={'/landingpage/trendz-3.jpg'}
+              alt='trendz'
+              width={200}
+              height={100}
+              className='h-full w-full'
+            />
+          </div>
+        </div>
+      </div>
 
-export default ThisWeeksTrends
+      {/* Mobile  */}
+      <div className='relative flex h-full w-full flex-col items-center sm:hidden'>
+        <div className='absolute h-full w-full bg-black/50'></div>
+        <div className='h-full w-full'>
+          <Image
+            src={'/landingpage/trendz-2.jpg'}
+            alt='trendz'
+            width={200}
+            height={100}
+            className='h-full w-full'
+          />
+        </div>
+        <div className='flex h-full w-full'>
+          <div className='h-[199.76px] w-1/2'>
+            <Image
+              src={'/landingpage/trendz-1.jpg'}
+              alt='trendz'
+              width={200}
+              height={100}
+              className='h-full w-full'
+            />
+          </div>
+          <div className='h-[199.76px] w-1/2'>
+            <Image
+              src={'/landingpage/trendz-3.jpg'}
+              alt='trendz'
+              width={200}
+              height={100}
+              className='h-full w-full object-cover'
+            />
+          </div>
+        </div>
+      </div>
+      <div className='h-full w-full bg-[#FFF4ED] px-4 pb-3 pt-10 sm:w-[36%] sm:pl-14 sm:pt-14'>
+        <div className='flex items-center gap-2'>
+          <BaseIcons value='rocket-outline-primary' />
+          <h1 className='font-karma text-[20px] sm:text-[38px]'>
+            This Week’s Trend
+          </h1>
+        </div>
+        <p className='mb-5 w-full text-[12px] sm:w-[420px] sm:text-[20px]'>
+          Every week, Delve celebrates one outstanding business that’s captured
+          the most attention, the most views, the most saves, the most chats.
+          It’s our way of saying “Well done!” and giving them a free spotlight
+          so more people can discover what makes them special.
+        </p>
+        <div className='mb-10 flex items-center justify-between gap-5 sm:justify-start'>
+          <Link
+            href={'/'}
+            className='flex h-[46px] w-[122px] items-center justify-center gap-2 rounded-md bg-primary text-center text-[12px] font-medium text-white sm:h-14 sm:w-[140px] sm:text-lg'
+          >
+            {' '}
+            View Business
+          </Link>
+          <Link
+            href={'/'}
+            className='flex h-[42px] w-[42px] items-center justify-center gap-2 rounded-md bg-white sm:h-14 sm:w-[60px]'
+          >
+            <BaseIcons value='bookmark-outline-black' />
+          </Link>
+        </div>
+
+        <div>
+          <BaseIcons value='trophy-outline-primary' />
+        </div>
+      </div>
+
+      {/* Center tinted content  */}
+      <div className='absolute top-10 h-[305px] w-[292px] rounded-xl bg-black/70 sm:left-[190px] sm:h-[469px] sm:w-[503px]'>
+        <div className='absolute z-10 flex h-full w-full flex-col gap-2 p-2 text-white sm:p-8'>
+          {/* Info  */}
+          <div className='flex h-[85px] items-center gap-2 border-b-[1px] border-b-white sm:-mt-5'>
+            <div className='h-[46px] w-[46px] shrink-0 rounded-full sm:h-[50px] sm:w-[50px]'>
+              <Image
+                src={'/landingpage/lagos.png'}
+                alt={'delve'}
+                width={200}
+                height={100}
+                className='h-full w-full rounded-full object-cover'
+              />
+            </div>
+            <div>
+              <h3 className='text-[14px] font-bold sm:text-xl'>Ember Lagos</h3>
+              <p className='line-clamp-2 text-[13px]'>
+                The Ember Table is where bold Nigerian flavors meet refined
+                culinary flair. Our menu is rooted in tradition bu..
+              </p>
+            </div>
+          </div>
+
+          {/* Contact  */}
+          <div className='my-2 flex items-center justify-between text-[14px]'>
+            <div className='flex items-center gap-2'>
+              <BaseIcons value='marker-light-red' />
+              <span className='truncate text-[10px] text-[#FFE6D5] sm:text-sm'>
+                12 Adebayo Street, Lekki Phase 1..
+              </span>
+            </div>
+            <div className='flex items-center gap-1'>
+              <BaseIcons value='star-yellow' />
+              <p>4.8</p>
+            </div>
+          </div>
+
+          {/* Services  */}
+          <div className='flex items-center gap-1 sm:mb-4 sm:gap-3'>
+            <div className='flex w-[172px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:px-4 sm:py-3 sm:text-[14px]'>
+              <div className='flex h-[10px] w-[10px] items-center justify-center sm:w-full'>
+                <BaseIcons value='food-and-drinks-white' />
+              </div>
+              <p>Food & Drinks</p>
+            </div>
+            <div className='flex w-[200px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[8px] text-white sm:px-4 sm:py-3 sm:text-[14px]'>
+              <div className='flex h-[8px] w-[8px] items-center justify-center sm:w-full'>
+                <BaseIcons value='calendar-white' />
+              </div>
+              <p>10am - 12pm, daily</p>
+            </div>
+            <div className='flex w-[90px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:px-4 sm:py-3 sm:text-[14px]'>
+              <div className='flex h-[10px] w-[10px] items-center justify-center sm:w-full'>
+                <BaseIcons value='person-white' />
+              </div>
+              <p>258</p>
+            </div>
+          </div>
+
+          {/* images  */}
+          <div className='h-[219px] w-full rounded-xl bg-black sm:flex sm:w-[449px]'>
+            <Image
+              src={'/landingpage/trendz-4.jpg'}
+              alt=''
+              width={300}
+              height={100}
+              className='h-full w-full rounded-2xl'
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ThisWeeksTrends;

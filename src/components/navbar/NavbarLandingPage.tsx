@@ -1,19 +1,18 @@
-'use client'
+'use client';
 
-import DefaultLogoTextIcon from '@/assets/icons/logo/DefaultLogoTextIcon'
-import MenuBarIcon from '@/assets/icons/MenuBarIcon'
-import { RootState } from '@/redux/store'
-import Link from 'next/link'
-import React, { ReactNode, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { Button } from '../ui/Button'
-import { useSession } from 'next-auth/react'
-import ListingUserMenuExtension from '../landing-page/UserMenuExtensions/ListingUserMenuExtension'
+import DefaultLogoTextIcon from '@/assets/icons/logo/DefaultLogoTextIcon';
+import MenuBarIcon from '@/assets/icons/MenuBarIcon';
+import { RootState } from '@/redux/store';
+import Link from 'next/link';
+import React, { ReactNode, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Button } from '../ui/Button';
+import { useSession } from 'next-auth/react';
+import ListingUserMenuExtension from '../landing-page/UserMenuExtensions/ListingUserMenuExtension';
 
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
-import Loader from '../ui/Loader'
-import DefaultLogoTextIconWhite from '@/assets/icons/logo/DefaultLogoTextIconWhite'
-
+import Loader from '../ui/Loader';
+import DefaultLogoTextIconWhite from '@/assets/icons/logo/DefaultLogoTextIconWhite';
 
 interface Category {
   id: number;
@@ -33,11 +32,13 @@ interface NavbarProps {
   navbarWidthDeskTop?: string;
   authFormButtons?: boolean;
   isLoadingcategories?: boolean;
-  categories?: Category[]
+  categories?: Category[];
 }
 
-const NavbarLandingPage = ({ categories, isLoadingcategories }: NavbarProps): JSX.Element => {
-
+const NavbarLandingPage = ({
+  categories,
+  isLoadingcategories,
+}: NavbarProps): JSX.Element => {
   const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
     listing: <ListingUserMenuExtension categories={categories} />,
     // Add other menu extensions here
@@ -48,9 +49,11 @@ const NavbarLandingPage = ({ categories, isLoadingcategories }: NavbarProps): JS
   );
 
   const { data: session } = useSession();
-  const [showMobileMenuItems, setShowMobileMenuItems] = useState<boolean>(false);
+  const [showMobileMenuItems, setShowMobileMenuItems] =
+    useState<boolean>(false);
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
-  const [currentUserMenuExtension, setCurrentUserMenuExtension] = useState<string>('');
+  const [currentUserMenuExtension, setCurrentUserMenuExtension] =
+    useState<string>('');
 
   const IS_LOGGED_IN_BUTTON = [
     { icon: 'listing' as IconsType, href: '/' },
@@ -90,25 +93,26 @@ const NavbarLandingPage = ({ categories, isLoadingcategories }: NavbarProps): JS
   const handleUsermMenuExtension = (menu: string): void => {
     setCurrentUserMenuExtension(menu);
     // setShowUserMenu(true);
-  }
+  };
   return (
-    <div className='w-full mb-5 '>
+    <div className='mb-5 w-full'>
       {/* bg-black/10 backdrop-blur-sm  */}
-      <div className='flex items-center sm:-mb-0  justify-between w-full px-5 pt-10 sm:pb-5'>
+      <div className='flex w-full items-center justify-between px-5 pt-10 sm:-mb-0 sm:pb-5'>
         <div className='h-full w-full'>
           <div className='hidden sm:flex'>
             <DefaultLogoTextIconWhite />
           </div>
-          <div className='sm:hidden flex items-center justify-center w-[80px] h-[19.22px]'>
+          <div className='flex h-[19.22px] w-[80px] items-center justify-center sm:hidden'>
             <DefaultLogoTextIcon />
           </div>
-
         </div>
-        <div className='sm:hidden flex'>
-          <MenuBarIcon showMobileMenuItems={showMobileMenuItems} setShowMobileMenuItems={setShowMobileMenuItems} />
+        <div className='flex sm:hidden'>
+          <MenuBarIcon
+            showMobileMenuItems={showMobileMenuItems}
+            setShowMobileMenuItems={setShowMobileMenuItems}
+          />
         </div>
       </div>
-
 
       <div>
         {/* Logged in user in Landing Page  */}
@@ -124,28 +128,25 @@ const NavbarLandingPage = ({ categories, isLoadingcategories }: NavbarProps): JS
                       className='flex h-12 w-12 items-center justify-center rounded-full bg-[#FFFFFF4D] p-2'
                     >
                       <BaseIcons value={link.icon} />
-
                     </Link>
                   );
                 })}
               </div>
               <BaseIcons value='vertical-line-white' />
 
-              <div
-                className='flex items-center gap-1'
-
-              >
+              <div className='flex items-center gap-1'>
                 <BaseIcons value='user-logged-in-white' />
                 {session?.user.name && (
                   <p className='ml-1 w-[85px] truncate font-semibold capitalize'>
                     {session?.user.name}
                   </p>
                 )}
-                <button onClick={() => {
-
-                  setCurrentUserMenuExtension('')
-                  setShowUserMenu(!showUserMenu)
-                }}>
+                <button
+                  onClick={() => {
+                    setCurrentUserMenuExtension('');
+                    setShowUserMenu(!showUserMenu);
+                  }}
+                >
                   <BaseIcons value='arrow-down-white' />
                 </button>
               </div>
@@ -166,7 +167,11 @@ const NavbarLandingPage = ({ categories, isLoadingcategories }: NavbarProps): JS
                 <div className='flex flex-col gap-6 px-5 pb-5'>
                   {USER_MENU_ITEMS.map((menu, key) => {
                     return menu.dropDown ? (
-                      <button key={key} className='flex items-center gap-2' onClick={() => handleUsermMenuExtension(menu.text)}>
+                      <button
+                        key={key}
+                        className='flex items-center gap-2'
+                        onClick={() => handleUsermMenuExtension(menu.text)}
+                      >
                         <span>{menu.text} </span>{' '}
                         {menu.dropDown && (
                           <BaseIcons value='arrow-down-black' />
@@ -193,7 +198,7 @@ const NavbarLandingPage = ({ categories, isLoadingcategories }: NavbarProps): JS
 
                   <Button
                     variant='neutral'
-                    className='text-md flex items-center -mt-2 gap-1 py-3'
+                    className='text-md -mt-2 flex items-center gap-1 py-3'
                   >
                     <BaseIcons value='logout-black' />
                     <span> Logout</span>
@@ -206,22 +211,34 @@ const NavbarLandingPage = ({ categories, isLoadingcategories }: NavbarProps): JS
       </div>
 
       {USER_MENU_EXTENSIONS[currentUserMenuExtension] && showUserMenu && (
-        <div className="absolute top-14 left-[10%] z-20 bg-white py-6 px-8 shadow-lg rounded-lg">
-          <p className='mb-1'> Discover a world of businesses and services acrosslifestyle,ellness, fashion, food, tech, and more.</p>
-          <div className='border-b-primary border-b-[1px] w-[136px]'>
-            <Link href={'/explore'} className="text-primary flex items-center gap-1">
+        <div className='absolute left-[10%] top-14 z-20 rounded-lg bg-white px-8 py-6 shadow-lg'>
+          <p className='mb-1'>
+            {' '}
+            Discover a world of businesses and services acrosslifestyle,ellness,
+            fashion, food, tech, and more.
+          </p>
+          <div className='w-[136px] border-b-[1px] border-b-primary'>
+            <Link
+              href={'/explore'}
+              className='flex items-center gap-1 text-primary'
+            >
               <p>Explore all cities</p>
-              <span className="inline-block -rotate-45">
-                <BaseIcons value="arrow-diagonal-right-primary" />
+              <span className='inline-block -rotate-45'>
+                <BaseIcons value='arrow-diagonal-right-primary' />
               </span>
-
             </Link>
           </div>
-          {isLoadingcategories ? <div className='mt-8'><Loader borderColor='border-primary' /> </div> : USER_MENU_EXTENSIONS[currentUserMenuExtension]}
+          {isLoadingcategories ? (
+            <div className='mt-8'>
+              <Loader borderColor='border-primary' />{' '}
+            </div>
+          ) : (
+            USER_MENU_EXTENSIONS[currentUserMenuExtension]
+          )}
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default NavbarLandingPage
+export default NavbarLandingPage;

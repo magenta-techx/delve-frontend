@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
 import BusinessFooter from '@/components/business/BusinessFooter';
 import BlogCard from '@/components/cards/BlogCard';
@@ -25,7 +25,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import { useEffect, useState } from 'react';
 import NavbarLandingPage from '@/components/navbar/NavbarLandingPage';
-
 
 // export const metadata: Metadata = {
 //   title: 'Home',
@@ -82,8 +81,7 @@ export default function HomePage(): JSX.Element {
       address: '123 Main St, Cityville',
       rating: 4.8,
     },
-
-  ]
+  ];
   const LISTINGS_AROUND = [
     {
       header: 'Aura Bloom Spa',
@@ -149,8 +147,7 @@ export default function HomePage(): JSX.Element {
       address: '123 Main St, Cityville',
       rating: 4.8,
     },
-
-  ]
+  ];
 
   // const LOACTIONS = [
   //   { name: 'Lagos', imageUrl: '/landingpage/lagos.png' },
@@ -162,101 +159,94 @@ export default function HomePage(): JSX.Element {
   const SPONSORED_LIST = [
     {
       imageUrl: '/landingpage/sponsored-2.jpg',
-      href: '/'
-
+      href: '/',
     },
     {
       imageUrl: '/landingpage/sponsored-1.jpg',
-      href: '/'
-
+      href: '/',
     },
     {
       imageUrl: '/landingpage/sponsored-2.jpg',
-      href: '/'
-
+      href: '/',
     },
     {
       imageUrl: '/landingpage/sponsored-1.jpg',
-      href: '/'
-
-    }
-  ]
+      href: '/',
+    },
+  ];
 
   const STATS = [
     {
       count: '72+',
-      desc: 'Business visits'
+      desc: 'Business visits',
     },
     {
       count: '612+',
-      desc: 'Message sent'
+      desc: 'Message sent',
     },
     {
       count: '72+',
-      desc: 'Business rating'
+      desc: 'Business rating',
     },
-  ]
+  ];
 
   const CATEGORIES: {
-    icon: IconsType,
-    title: string
-    hoverIcon: IconsType,
+    icon: IconsType;
+    title: string;
+    hoverIcon: IconsType;
   }[] = [
-
-
-      {
-        icon: 'beauty-white',
+    {
+      icon: 'beauty-white',
       title: 'beauty',
-      hoverIcon: 'beauty-outlined-black'
-      },
+      hoverIcon: 'beauty-outlined-black',
+    },
 
-      {
-        icon: 'clothing-white',
-        title: 'clothing & fashion',
-        hoverIcon: 'clothing-outlined-black'
-      },
-      {
-        icon: 'events-white',
-        title: 'event',
-        hoverIcon: 'events-outlined-black'
-      },
-      {
-        icon: 'food-white',
-        title: 'food & drinks',
-        hoverIcon: 'food-outlined-black'
-      },
-      {
-        icon: 'housing-white',
-        title: 'housing & Accommmodation',
-        hoverIcon: 'housing-outlined-black'
-      },
-      {
-        icon: 'housing-white',
-        title: 'housing & Accommmodation',
-        hoverIcon: 'events-outlined-black'
-      },
-      {
-        icon: 'housing-white',
-        title: 'housing & Accommmodation',
-        hoverIcon: 'events-outlined-black'
-      },
-      {
-        icon: 'housing-white',
-        title: 'housing & Accommmodation',
-        hoverIcon: 'events-outlined-black'
-      },
-      {
-        icon: 'housing-white',
-        title: 'housing & Accommmodation',
-        hoverIcon: 'events-outlined-black'
-      },
-      {
-        icon: 'housing-white',
-        title: 'housing & Accommmodation',
-        hoverIcon: 'events-outlined-black'
-      },
-
-    ]
+    {
+      icon: 'clothing-white',
+      title: 'clothing & fashion',
+      hoverIcon: 'clothing-outlined-black',
+    },
+    {
+      icon: 'events-white',
+      title: 'event',
+      hoverIcon: 'events-outlined-black',
+    },
+    {
+      icon: 'food-white',
+      title: 'food & drinks',
+      hoverIcon: 'food-outlined-black',
+    },
+    {
+      icon: 'housing-white',
+      title: 'housing & Accommmodation',
+      hoverIcon: 'housing-outlined-black',
+    },
+    {
+      icon: 'housing-white',
+      title: 'housing & Accommmodation',
+      hoverIcon: 'events-outlined-black',
+    },
+    {
+      icon: 'housing-white',
+      title: 'housing & Accommmodation',
+      hoverIcon: 'events-outlined-black',
+    },
+    {
+      icon: 'housing-white',
+      title: 'housing & Accommmodation',
+      hoverIcon: 'events-outlined-black',
+    },
+    {
+      icon: 'housing-white',
+      title: 'housing & Accommmodation',
+      hoverIcon: 'events-outlined-black',
+    },
+    {
+      icon: 'housing-white',
+      title: 'housing & Accommmodation',
+      hoverIcon: 'events-outlined-black',
+    },
+  ];
 
   interface Category {
     id: number;
@@ -272,14 +262,17 @@ export default function HomePage(): JSX.Element {
     subcategories?: SubCategory[];
   }
 
-  const [isLoadingcategories, setIsloadingCategories] = useState<boolean>(false);
+  const [isLoadingcategories, setIsloadingCategories] =
+    useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     const fetchCategories = async (): Promise<void> => {
       setIsloadingCategories(true);
       try {
-        const res = await fetch(`/api/business/business-categories?is_nav=true`);
+        const res = await fetch(
+          `/api/business/business-categories?is_nav=true`
+        );
         if (!res.ok) return setIsloadingCategories(false);
 
         const data = await res.json();
@@ -296,27 +289,33 @@ export default function HomePage(): JSX.Element {
 
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
-      <div className='relative flex h-[83.6vh] w-screen flex-col items-center sm:bg-[url("/landingpage/landing-page-hero-image.jpg")] bg-cover bg-no-repeat'>
+      <div className='relative flex h-[83.6vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         {/* New Navbar component  */}
         <NavbarLandingPage />
 
         {/* Mobile hero  */}
-        <div className='sm:hidden relative flex h-[756px] rounded-2xl w-full bg-[url("/landingpage/landing-pagemobile-hero.jpg")]'>
-          <div className='insert-0 flex absolute rounded-2xl sm:rounded-none h-full top-0 w-full bg-black/60'></div>
+        <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] sm:hidden'>
+          <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
         </div>
 
         {/* Desktop Hero  */}
-        <div className='insert-0 sm:flex absolute sm:h-[83.6vh] rounded-2xl sm:rounded-none  sm:top-0 hidden w-full bg-black/70'></div>
-        <div className='w-full hidden sm:flex'>
-          <Navbar type='' authFormButtons={false} navbarWidthDeskTop='w-full' categories={categories} isLoadingcategories={isLoadingcategories} />
+        <div className='insert-0 absolute hidden w-full rounded-2xl bg-black/70 sm:top-0 sm:flex sm:h-[83.6vh] sm:rounded-none'></div>
+        <div className='hidden w-full sm:flex'>
+          <Navbar
+            type=''
+            authFormButtons={false}
+            navbarWidthDeskTop='w-full'
+            categories={categories}
+            isLoadingcategories={isLoadingcategories}
+          />
         </div>
 
         {/* Hero section  */}
-        <div className='absolute sm:top-[27.8rem] top-[26rem] flex h-full w-full flex-col items-center'>
-          <h1 className='font-karma sm:text-[54px] text-[26px] font-bold text-white'>
+        <div className='absolute top-[26rem] flex h-full w-full flex-col items-center sm:top-[27.8rem]'>
+          <h1 className='font-karma text-[26px] font-bold text-white sm:text-[54px]'>
             Great experiences start here.
           </h1>
-          <p className='sm:-mt-2 font-inter sm:text-[19px] text-[14px] px-14 text-center text-white'>
+          <p className='px-14 text-center font-inter text-[14px] text-white sm:-mt-2 sm:text-[19px]'>
             Delve helps you find reliable vendors who turn plans into beautiful
             memories.
           </p>
@@ -324,22 +323,22 @@ export default function HomePage(): JSX.Element {
             <SearchGroup searchType='Category' />
           </div>
         </div>
-
       </div>
 
-
-      <div className=' w-full flex flex-col items-center sm:py-20 pt-10'>
-
-        <SectionHeader iconValue='category-yellow' header='Whatever you’re looking for, find it here.' paragraph='category' />
+      <div className='flex w-full flex-col items-center pt-10 sm:py-20'>
+        <SectionHeader
+          iconValue='category-yellow'
+          header='Whatever you’re looking for, find it here.'
+          paragraph='category'
+        />
 
         {/* Category  */}
-        <div className='mt-10 flex items-center gap-14 mb-20 sm:w-[1485px] w-full px-2 sm:px-0'>
-
+        <div className='mb-20 mt-10 flex w-full items-center gap-14 px-2 sm:w-[1485px] sm:px-0'>
           <Swiper
             centerInsufficientSlides={false}
             navigation={{
-              nextEl: ".custom-next",
-              prevEl: ".custom-prev",
+              nextEl: '.custom-next',
+              prevEl: '.custom-prev',
             }}
             modules={[Navigation, Pagination, Scrollbar, A11y]}
             spaceBetween={10}
@@ -358,65 +357,65 @@ export default function HomePage(): JSX.Element {
                 spaceBetween: 50,
               },
             }}
-
             scrollbar={false}
-            onSwiper={(swiper) => console.log(swiper)}
+            onSwiper={swiper => console.log(swiper)}
             onSlideChange={() => console.log('slide change')}
             // className='h-[700px] bg-green-300'
-            className='sm:h-[300px] flex items-center justify-center w-full pt-10'
+            className='flex w-full items-center justify-center pt-10 sm:h-[300px]'
           >
-            <div className="absolute hidden sm:flex top-36 left-0 z-10 -translate-y-1/2">
-              <button className="custom-prev transition-transform rotate-180">
+            <div className='absolute left-0 top-36 z-10 hidden -translate-y-1/2 sm:flex'>
+              <button className='custom-prev rotate-180 transition-transform'>
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
-            <div className="absolute top-36 hidden sm:flex right-0 z-10 -translate-y-1/2">
-              <button className="custom-next">
+            <div className='absolute right-0 top-36 z-10 hidden -translate-y-1/2 sm:flex'>
+              <button className='custom-next'>
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
             {CATEGORIES.map((category, key) => {
               return (
-                <SwiperSlide key={key} className=' flex items-center sm:pt-10 pt-5 justify-center'>
-                  <div className='w-full flex items-center justify-center'>
+                <SwiperSlide
+                  key={key}
+                  className='flex items-center justify-center pt-5 sm:pt-10'
+                >
+                  <div className='flex w-full items-center justify-center'>
                     {/* Overlay icon */}
-                    <CategoryCard title={category.title} icon={category.icon} hoverIcon={category.hoverIcon} />
+                    <CategoryCard
+                      title={category.title}
+                      icon={category.icon}
+                      hoverIcon={category.hoverIcon}
+                    />
                   </div>
                 </SwiperSlide>
-              )
+              );
             })}
-
-
-
           </Swiper>
         </div>
       </div>
 
-
-
-
       {/* featured listings  */}
-      <div className='bg-[#FFF4ED] w-full flex flex-col items-center sm:py-20 py-7'>
-        <SectionHeader iconValue='listing-yellow' header='Trusted by dozens of happy clients. ' paragraph='Featured Listing' />
+      <div className='flex w-full flex-col items-center bg-[#FFF4ED] py-7 sm:py-20'>
+        <SectionHeader
+          iconValue='listing-yellow'
+          header='Trusted by dozens of happy clients. '
+          paragraph='Featured Listing'
+        />
 
-
-        <div className='w-full flex items-center justify-center relative'>
-
-          <div className='mt-10 flex items-center gap-10 mb-20 sm:w-[1490px] w-full'>
-          <Swiper
-            centerInsufficientSlides={false}
-            navigation={{
-              nextEl: ".FeaturedListingCard-next",
-              prevEl: ".FeaturedListingCard-prev",
-            }}
-            // install Swiper modules
-            modules={[Navigation, Pagination, Scrollbar, A11y]}
-
-            slidesPerView={3}
+        <div className='relative flex w-full items-center justify-center'>
+          <div className='mb-20 mt-10 flex w-full items-center gap-10 sm:w-[1490px]'>
+            <Swiper
+              centerInsufficientSlides={false}
+              navigation={{
+                nextEl: '.FeaturedListingCard-next',
+                prevEl: '.FeaturedListingCard-prev',
+              }}
+              // install Swiper modules
+              modules={[Navigation, Pagination, Scrollbar, A11y]}
+              slidesPerView={3}
               spaceBetween={10}
-
-            scrollbar={false}
-            onSwiper={(swiper) => console.log(swiper)}
+              scrollbar={false}
+              onSwiper={swiper => console.log(swiper)}
               onSlideChange={() => console.log('slide change')}
               className='relative'
               breakpoints={{
@@ -429,31 +428,42 @@ export default function HomePage(): JSX.Element {
                   spaceBetween: -45,
                 },
               }}
-          >
-              <div className="absolute sm:flex hidden top-1/2 z-50 -translate-y-1/2">
-                <button className="FeaturedListingCard-prev transition-transform rotate-180">
+            >
+              <div className='absolute top-1/2 z-50 hidden -translate-y-1/2 sm:flex'>
+                <button className='FeaturedListingCard-prev rotate-180 transition-transform'>
                   <BaseIcons value='arrow-right-line-curve-black' />
-              </button>
-            </div>
-              <div className="absolute sm:flex hidden top-1/2 right-0 z-40 -translate-y-1/2">
-                <button className="FeaturedListingCard-next">
+                </button>
+              </div>
+              <div className='absolute right-0 top-1/2 z-40 hidden -translate-y-1/2 sm:flex'>
+                <button className='FeaturedListingCard-next'>
                   <BaseIcons value='arrow-right-line-curve-black' />
-              </button>
-            </div>
-            {FEATURED_LISTINGS.map((listing, key) => {
-              return (
-                <SwiperSlide key={key} className='flex px-10 items-center pt-10 justify-center'>
-                  <div className='w-full flex items-center justify-center'>
-                    <FeaturedListingCard header={listing.header} desc={listing.desc} imageUrl={listing.imageUrl} logoUrl={listing.logoUrl} address={listing.address} rating={listing.rating} classStyle={'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'} />
-                  </div>
-                </SwiperSlide>
-              )
-            })}
-
-          </Swiper>
+                </button>
+              </div>
+              {FEATURED_LISTINGS.map((listing, key) => {
+                return (
+                  <SwiperSlide
+                    key={key}
+                    className='flex items-center justify-center px-10 pt-10'
+                  >
+                    <div className='flex w-full items-center justify-center'>
+                      <FeaturedListingCard
+                        header={listing.header}
+                        desc={listing.desc}
+                        imageUrl={listing.imageUrl}
+                        logoUrl={listing.logoUrl}
+                        address={listing.address}
+                        rating={listing.rating}
+                        classStyle={
+                          'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'
+                        }
+                      />
+                    </div>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </div>
         </div>
-        </div>
-
 
         {/* Serch By location  */}
         {/* <div className='mb-10'>
@@ -501,15 +511,21 @@ export default function HomePage(): JSX.Element {
 
         {/* Sponsored picks  */}
         <div className='relative'>
-          <SectionHeader iconValue='listing-yellow' header='Sponsored Picks' paragraph='Spotlight' />
+          <SectionHeader
+            iconValue='listing-yellow'
+            header='Sponsored Picks'
+            paragraph='Spotlight'
+          />
 
-          <h1 className='text-2xl font-bold mt-10 -mb-16 hidden sm:flex'>Hot deals and events you don’t want to miss</h1>
-          <div className='flex items-center gap-3 sm:px-0 px-4'>
+          <h1 className='-mb-16 mt-10 hidden text-2xl font-bold sm:flex'>
+            Hot deals and events you don’t want to miss
+          </h1>
+          <div className='flex items-center gap-3 px-4 sm:px-0'>
             <Swiper
               centerInsufficientSlides={false}
               navigation={{
-                nextEl: ".sponsored-next",
-                prevEl: ".sponsored-prev",
+                nextEl: '.sponsored-next',
+                prevEl: '.sponsored-prev',
               }}
               // install Swiper modules
               modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -525,16 +541,14 @@ export default function HomePage(): JSX.Element {
                   spaceBetween: 10,
                 },
               }}
-
-
               scrollbar={false}
-              onSwiper={(swiper) => console.log(swiper)}
+              onSwiper={swiper => console.log(swiper)}
               onSlideChange={() => console.log('slide change')}
               // className='h-[700px] bg-green-300'
-              className='sm:h-[589px] h-full pb-20 flex items-center justify-center sm:w-[1485px] w-[354px] sm:mt-0 -mt-5'
+              className='-mt-5 flex h-full w-[354px] items-center justify-center pb-20 sm:mt-0 sm:h-[589px] sm:w-[1485px]'
             >
-              <div className="absolute z-10 sm:top-[57px] top-16 sm:right-14  -translate-y-1/2">
-                <button className="sponsored-prev transition-transform rotate-180">
+              <div className='absolute top-16 z-10 -translate-y-1/2 sm:right-14 sm:top-[57px]'>
+                <button className='sponsored-prev rotate-180 transition-transform'>
                   <BaseIcons value='arrow-right-solid-black' />
                 </button>
               </div>
@@ -543,61 +557,71 @@ export default function HomePage(): JSX.Element {
                   <BaseIcons value='arrow-right-solid-black' />
                 </button>
               </div> */}
-              <div className="absolute right-0 z-10 sm:top-14 top-16 -mt-[2px] -translate-y-1/2">
-                <button className="sponsored-next px-4 py-2 rounded-full">
+              <div className='absolute right-0 top-16 z-10 -mt-[2px] -translate-y-1/2 sm:top-14'>
+                <button className='sponsored-next rounded-full px-4 py-2'>
                   <BaseIcons value='arrow-right-solid-black' />
                 </button>
               </div>
               {SPONSORED_LIST.map((sponsored, key) => {
-                return <SwiperSlide key={key} className='flex items-center pt-20 justify-center'>
-                  <div className='w-full flex items-center justify-center'>
-                    <SponsoredCard key={key} imageUrl={sponsored.imageUrl} href={sponsored.href} />
-                  </div>
-                </SwiperSlide>
+                return (
+                  <SwiperSlide
+                    key={key}
+                    className='flex items-center justify-center pt-20'
+                  >
+                    <div className='flex w-full items-center justify-center'>
+                      <SponsoredCard
+                        key={key}
+                        imageUrl={sponsored.imageUrl}
+                        href={sponsored.href}
+                      />
+                    </div>
+                  </SwiperSlide>
+                );
               })}
             </Swiper>
           </div>
-
         </div>
       </div>
 
-
-
       {/* Stats  */}
-      <div className='py-14 flex flex-col items-center'>
-        <div className='flex items-center sm:gap-72 gap-6 sm:mb-40 mb-20'>
+      <div className='flex flex-col items-center py-14'>
+        <div className='mb-20 flex items-center gap-6 sm:mb-40 sm:gap-72'>
           {STATS.map((stat, key) => {
-            return <div key={key} className='flex flex-col items-center'>
-              <h1 className='font-karma font-semibold sm:text-[48px] text-[30px] sm:-mb-5'>{stat.count}</h1>
-              <small className='text-[#697586]'>{stat.desc}</small>
-            </div>
+            return (
+              <div key={key} className='flex flex-col items-center'>
+                <h1 className='font-karma text-[30px] font-semibold sm:-mb-5 sm:text-[48px]'>
+                  {stat.count}
+                </h1>
+                <small className='text-[#697586]'>{stat.desc}</small>
+              </div>
+            );
           })}
-
         </div>
 
-
-        <div className='w-full flex flex-col items-center justify-center relative mt:px-0 px-4'>
-          <div className='flex justify-between w-full px-4 sm:px-0'>
+        <div className='mt:px-0 relative flex w-full flex-col items-center justify-center px-4'>
+          <div className='flex w-full justify-between px-4 sm:px-0'>
             <div className='flex items-center gap-2'>
               <BaseIcons value='stars-primary' />
-              <h1 className='sm:text-2xl text-[16px] font-bold'>Listings around you</h1>
+              <h1 className='text-[16px] font-bold sm:text-2xl'>
+                Listings around you
+              </h1>
             </div>
             <div className='flex items-center gap-2 text-primary'>
               <BaseIcons value='arrows-left-primary' />
-              <Link href={'/'} className='uppercase sm:text-[16px] text-[12px]'>See all listings</Link>
+              <Link href={'/'} className='text-[12px] uppercase sm:text-[16px]'>
+                See all listings
+              </Link>
             </div>
           </div>
 
-          <div className='flex sm:-mt-0 -mt-4 items-center mb-20 sm:w-[1560px] w-[393px]'>
+          <div className='-mt-4 mb-20 flex w-[393px] items-center sm:-mt-0 sm:w-[1560px]'>
             <Swiper
               centerInsufficientSlides={false}
-
               // modules={[Navigation, Pagination, Scrollbar, A11y]}
               slidesPerView={4}
               spaceBetween={7}
-
               scrollbar={false}
-              onSwiper={(swiper) => console.log(swiper)}
+              onSwiper={swiper => console.log(swiper)}
               onSlideChange={() => console.log('slide change')}
               className='relative'
               breakpoints={{
@@ -611,55 +635,109 @@ export default function HomePage(): JSX.Element {
                 },
               }}
             >
-
               {LISTINGS_AROUND.map((listing, key) => {
                 return (
-                  <SwiperSlide key={key} className='flex px-10 items-center pt-10 justify-center'>
-                    <div className='w-full flex items-center sm:justify-center -ml-5 sm:-ml-0'>
-                      <FeaturedListingCard key={key} header={listing.header} desc={listing.desc} imageUrl={listing.imageUrl} logoUrl={listing.logoUrl} address={listing.address} rating={listing.rating} group={true} classStyle={'sm:h-[427px] sm:w-[340px] w-[252px] h-[237px]'} />
+                  <SwiperSlide
+                    key={key}
+                    className='flex items-center justify-center px-10 pt-10'
+                  >
+                    <div className='-ml-5 flex w-full items-center sm:-ml-0 sm:justify-center'>
+                      <FeaturedListingCard
+                        key={key}
+                        header={listing.header}
+                        desc={listing.desc}
+                        imageUrl={listing.imageUrl}
+                        logoUrl={listing.logoUrl}
+                        address={listing.address}
+                        rating={listing.rating}
+                        group={true}
+                        classStyle={
+                          'sm:h-[427px] sm:w-[340px] w-[252px] h-[237px]'
+                        }
+                      />
                     </div>
                   </SwiperSlide>
-                )
+                );
               })}
-
             </Swiper>
           </div>
         </div>
       </div>
 
       {/* Tips, trends, vendor stories  */}
-      <div className='sm:mb-32 mb-20 sm:px-0 px-4 -mt-20 sm:-mt-0'>
-        <h1 className='sm:text-[52px] text-[24px] font-semibold font-karma'>Tips, Trends & Vendor Stories</h1>
-        <p className='sm:text-[18px] text-[13px] font-inter mb-10'>Explore expert tips, trending event ideas, beauty routines, and vendor success stories all curated for you.</p>
+      <div className='-mt-20 mb-20 px-4 sm:-mt-0 sm:mb-32 sm:px-0'>
+        <h1 className='font-karma text-[24px] font-semibold sm:text-[52px]'>
+          Tips, Trends & Vendor Stories
+        </h1>
+        <p className='mb-10 font-inter text-[13px] sm:text-[18px]'>
+          Explore expert tips, trending event ideas, beauty routines, and vendor
+          success stories all curated for you.
+        </p>
 
         <div className='flex items-center gap-10'>
-          <BlogCard imageUrl={'/landingpage/stories-1.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='w-full h-[422px] sm:w-[816px] sm:h-[740px]' imageClassStyle='sm:w-[752px] sm:h-[440px] w-full' />
-          <BlogCard imageUrl={'/landingpage/stories-2.jpg'} header='Skipping Sunscreen' containerClassStyle='w-[647px] sm:flex hidden h-[740px]' imageClassStyle='w-[583px] h-[440px] ' />
+          <BlogCard
+            imageUrl={'/landingpage/stories-1.jpg'}
+            header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
+            containerClassStyle='w-full h-[422px] sm:w-[816px] sm:h-[740px]'
+            imageClassStyle='sm:w-[752px] sm:h-[440px] w-full'
+          />
+          <BlogCard
+            imageUrl={'/landingpage/stories-2.jpg'}
+            header='Skipping Sunscreen'
+            containerClassStyle='w-[647px] sm:flex hidden h-[740px]'
+            imageClassStyle='w-[583px] h-[440px] '
+          />
         </div>
-
       </div>
 
       {/* This weeks trends  */}
-      <div className="sm:mb-10 mb-80 py-10 sm:py-0 sm:w-[2000px] w-full">
+      <div className='mb-80 w-full py-10 sm:mb-10 sm:w-[2000px] sm:py-0'>
         <ThisWeeksTrends />
       </div>
 
       {/* FAQS  */}
-      <div className='sm:py-32 pb-20 sm:w-[1244px] w-full '>
+      <div className='w-full pb-20 sm:w-[1244px] sm:py-32'>
         <Faqs />
       </div>
 
-      <div className='w-full sm:h-[543px] sm:mt-32 mb-1'>
-        <Image src={'/landingpage/first-banner.jpg'} alt='' width={700} height={400} className='w-full sm:flex hidden h-full' quality={100} />
-        <Image src={'/landingpage/footer-image-mobile-1.jpg'} alt='' width={700} height={400} className='w-full h-full flex sm:hidden' quality={100} />
+      <div className='mb-1 w-full sm:mt-32 sm:h-[543px]'>
+        <Image
+          src={'/landingpage/first-banner.jpg'}
+          alt=''
+          width={700}
+          height={400}
+          className='hidden h-full w-full sm:flex'
+          quality={100}
+        />
+        <Image
+          src={'/landingpage/footer-image-mobile-1.jpg'}
+          alt=''
+          width={700}
+          height={400}
+          className='flex h-full w-full sm:hidden'
+          quality={100}
+        />
       </div>
-      <div className='w-full sm:h-[217px] mb-10 sm:mb-0'>
-        <Image src={'/landingpage/second-banner.jpg'} alt='' width={700} height={400} className='w-full h-full sm:flex hidden' quality={100} />
-        <Image src={'/landingpage/footer-image-mobile-2.jpg'} alt='' width={700} height={400} className='w-full h-full flex sm:hidden' quality={100} />
+      <div className='mb-10 w-full sm:mb-0 sm:h-[217px]'>
+        <Image
+          src={'/landingpage/second-banner.jpg'}
+          alt=''
+          width={700}
+          height={400}
+          className='hidden h-full w-full sm:flex'
+          quality={100}
+        />
+        <Image
+          src={'/landingpage/footer-image-mobile-2.jpg'}
+          alt=''
+          width={700}
+          height={400}
+          className='flex h-full w-full sm:hidden'
+          quality={100}
+        />
       </div>
 
       <BusinessFooter />
-
     </main>
   );
 }

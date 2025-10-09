@@ -7,7 +7,6 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps): Promise<JSX.Element> {
-
   return (
     <div className='min-h-screen bg-background'>
       <header className='border-b bg-card'>

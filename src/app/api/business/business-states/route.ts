@@ -8,8 +8,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-
-   
     const res = await fetch(`${process.env['API_BASE_URL']}/business/states/`, {
       method: 'GET',
       headers: {
@@ -30,7 +28,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: `${error}` }, { status: 500 });
   }
 }
-
 
 export async function PATCH(req: NextRequest): Promise<NextResponse> {
   try {

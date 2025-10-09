@@ -106,12 +106,12 @@ const BusinessFooter = (): JSX.Element => {
     },
   ];
   return (
-    <div className='flex flex-col items-center justify-center gap-5 sm:pb-36 pb-0 font-inter sm:flex-row sm:gap-[170px] w-full sm:px-44 sm:pt-24'>
+    <div className='flex w-full flex-col items-center justify-center gap-5 pb-0 font-inter sm:flex-row sm:gap-[170px] sm:px-44 sm:pb-36 sm:pt-24'>
       <div className='flex flex-col gap-0 bg-neutral px-4 sm:gap-3 sm:bg-transparent sm:px-0'>
         <div className='-mb-7 sm:-mb-0'>
           <Logo icon={<DefaultLogoTextIcon />} link='/' />
         </div>
-        <div className='flex flex-col gap-5 rounded-md border-gray-200 sm:w-[483px] py-8 sm:flex-row sm:items-center sm:border sm:px-4'>
+        <div className='flex flex-col gap-5 rounded-md border-gray-200 py-8 sm:w-[483px] sm:flex-row sm:items-center sm:border sm:px-4'>
           <NewProductLaunchGraphics />
           <BusinessTextAndButton
             header='Get discovered by customers.'
@@ -125,11 +125,13 @@ const BusinessFooter = (): JSX.Element => {
           />
         </div>
       </div>
-      <div className='flex mb-20 flex-col items-start justify-between sm:gap-24 gap-10 w-full px-4 sm:mt-5 sm:flex-row sm:px-0'>
+      <div className='mb-20 flex w-full flex-col items-start justify-between gap-10 px-4 sm:mt-5 sm:flex-row sm:gap-24 sm:px-0'>
         {FOOTER_LINKS.map((link, key) => {
           return (
-            <div key={key} className='sm:w-[200px] w-full'>
-              <h3 className='mb-3 sm:text-[18px] text-[16px] font-bold'>{link.header}</h3>
+            <div key={key} className='w-full sm:w-[200px]'>
+              <h3 className='mb-3 text-[16px] font-bold sm:text-[18px]'>
+                {link.header}
+              </h3>
               <ul
                 className={`flex ${link.id === 4 ? 'gap-5' : 'flex-col gap-3'} text-[16px]`}
               >
@@ -155,7 +157,7 @@ const BusinessFooter = (): JSX.Element => {
         })}
       </div>
 
-      <div className='flex sm:hidden mb-4 text-xs items-center justify-center'>
+      <div className='mb-4 flex items-center justify-center text-xs sm:hidden'>
         <p>2025 Delve.ng</p>
       </div>
     </div>

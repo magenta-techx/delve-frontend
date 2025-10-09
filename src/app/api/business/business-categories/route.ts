@@ -37,7 +37,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 }
 
-
 export async function PATCH(req: NextRequest): Promise<NextResponse> {
   try {
     const token = await getToken({ req });

@@ -1,14 +1,17 @@
 'use client';
 
-import Link from "next/link";
-import CancleIcon from "./CancelIcon";
-import { Button } from "@/components/ui/Button";
+import Link from 'next/link';
+import CancleIcon from './CancelIcon';
+import { Button } from '@/components/ui/Button';
 
 interface MenuItemsProps {
   showMobileMenuItems?: boolean;
-  setShowMobileMenuItems?: (value: boolean) => void
+  setShowMobileMenuItems?: (value: boolean) => void;
 }
-const MenuBarIcon = ({ showMobileMenuItems, setShowMobileMenuItems }: MenuItemsProps): JSX.Element => {
+const MenuBarIcon = ({
+  showMobileMenuItems,
+  setShowMobileMenuItems,
+}: MenuItemsProps): JSX.Element => {
   const MOBILE_MENU_ITEMS = [
     {
       text: 'Home',
@@ -33,7 +36,7 @@ const MenuBarIcon = ({ showMobileMenuItems, setShowMobileMenuItems }: MenuItemsP
   ];
 
   return (
-    <div className="">
+    <div className=''>
       <Button
         onClick={() => {
           console.log('Clicked');
@@ -41,27 +44,28 @@ const MenuBarIcon = ({ showMobileMenuItems, setShowMobileMenuItems }: MenuItemsP
         }}
         variant='ghost'
       >
-        {showMobileMenuItems ? <CancleIcon /> : <svg
-          width='18'
-          height='14'
-          viewBox='0 0 18 14'
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <path
-            d='M17 13H1M17 7H1M17 1H1'
-            stroke='#0F0F0F'
-            strokeWidth='2'
-            strokeLinecap='round'
-          />
-        </svg>}
+        {showMobileMenuItems ? (
+          <CancleIcon />
+        ) : (
+          <svg
+            width='18'
+            height='14'
+            viewBox='0 0 18 14'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              d='M17 13H1M17 7H1M17 1H1'
+              stroke='#0F0F0F'
+              strokeWidth='2'
+              strokeLinecap='round'
+            />
+          </svg>
+        )}
       </Button>
 
-
       {/* Mobile menu bar  */}
-      <div className='sm:hidden '>
-
-
+      <div className='sm:hidden'>
         {/* Mobile Menu items  */}
         {showMobileMenuItems && (
           <div className='absolute left-0 z-50 min-h-screen w-full bg-white px-5 pt-4 font-inter'>
