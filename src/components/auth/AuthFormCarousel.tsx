@@ -71,7 +71,7 @@ const AuthCarousel = (): JSX.Element => {
             width={300}
             height={200}
             priority
-            className='h-[80vh] w-full rounded-tl-xl rounded-tr-xl'
+            className='h-[80vh] w-full rounded-tl-xl rounded-tr-xl object-cover'
           />
 
           <div className='h-[180px] w-full rounded-bl-xl rounded-br-xl bg-black p-8 text-left font-karma text-white'>

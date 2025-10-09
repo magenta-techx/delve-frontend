@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react'
+import React from 'react';
 
 interface LocationProps {
   name: string;
@@ -8,24 +8,24 @@ interface LocationProps {
 
 const LocationCard = ({ name, imageUrl }: LocationProps): JSX.Element => {
   return (
-    <div className="group w-[360px] h-[210px] rounded-xl relative flex items-center justify-center overflow-hidden">
+    <div className='group relative flex h-[175px] w-[160px] items-center justify-center overflow-hidden rounded-xl sm:h-[210px] sm:w-[360px]'>
       {/* Dark overlay (fades out on hover) */}
-      <div className="w-full h-full absolute rounded-xl bg-black/30 z-10 transition-opacity duration-300 group-hover:opacity-0"></div>
+      <div className='absolute z-10 h-full w-full rounded-xl bg-black/30 transition-opacity duration-300 group-hover:opacity-0'></div>
 
       {/* Image (contain → cover on hover) */}
       <Image
         src={imageUrl}
         alt={name}
         fill
-        className="group-hover:scale-125 transition-all duration-500 rounded-xl"
+        className='rounded-xl transition-all duration-500 group-hover:scale-125'
       />
 
       {/* Title (fades out on hover) */}
-      <h1 className="relative z-10 text-[36px] font-bold text-white transition-opacity duration-300 group-hover:opacity-0">
+      <h1 className='relative z-10 text-[36px] font-bold text-white transition-opacity duration-300 group-hover:opacity-0'>
         {name}
       </h1>
     </div>
-  )
-}
+  );
+};
 
 export default LocationCard;

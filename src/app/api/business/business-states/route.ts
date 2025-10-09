@@ -8,15 +8,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // ✅ Grab search params from request
-    const { searchParams } = new URL(req.url);
-
-    // ✅ Rebuild backend URL including query params
-    const baseUrl = `${process.env['API_BASE_URL']}/business/categories`;
-    const queryString = searchParams.toString();
-    const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-
-    const res = await fetch(url, {
+    const res = await fetch(`${process.env['API_BASE_URL']}/business/states/`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token.accessToken}`,

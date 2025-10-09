@@ -57,18 +57,24 @@
   }
 }
 
-.section-header-underlined{
+.section-header-underlined {
   position: relative; /* needed for absolute positioning of ::after */
   display: inline-block; /* shrink to text width */
-  
 }
 
 .section-header-underlined::after {
-  content: "";
+  content: '';
   display: block;
   width: 273px; /* adjust underline width */
   height: 2px; /* thickness of the line */
-  background-color: #FFD6AE; /* underline color */
+  background-color: #ffd6ae; /* underline color */
   margin: 8px auto 0; /* spacing and centering */
   border-radius: 2px; /* rounded edges */
+}
+
+/* 👇 reduce width for small screens */
+@media (max-width: 493px) {
+  .section-header-underlined::after {
+    width: 100px; /* adjust to what looks balanced on mobile */
+  }
 }

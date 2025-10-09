@@ -21,6 +21,7 @@ import { RootState } from '@/redux/store';
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
 import { useSession } from 'next-auth/react';
 import ListingUserMenuExtension from './landing-page/UserMenuExtensions/ListingUserMenuExtension';
+import Loader from './ui/Loader';
 // import { selectUserIsLoggedIn } from '@/redux/slices/businessSlice';
 
 interface AuthFormButtonProps {
@@ -34,15 +35,28 @@ interface LinkProps {
   href: string;
 }
 
+interface Category {
+  id: number;
+  icon_name: string;
+  name: string;
+  categories: SubCategory[];
+  subcategories: SubCategory[];
+}
+
+interface SubCategory {
+  id: number;
+  name: string; // backend sends plain strings
+  subcategories?: SubCategory[];
+}
 interface NavbarProps {
   type?: string;
   navbarWidthDeskTop?: string;
   authFormButtons?: boolean;
+  isLoadingcategories?: boolean;
+  categories?: Category[];
 }
 
 const SELECT_PLAN = '/business/select-plan';
-
-
 
 const IS_LOGGED_IN_BUTTON = [
   { icon: 'listing' as IconsType, href: '/' },
@@ -119,11 +133,17 @@ const USER_MENU_ITEMS = [
   },
 ];
 
-const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
-  listing: <ListingUserMenuExtension />,
-  // Add other menu extensions here
-};
-const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProps): JSX.Element => {
+const Navbar = ({
+  type,
+  navbarWidthDeskTop,
+  categories,
+  isLoadingcategories,
+  authFormButtons = true,
+}: NavbarProps): JSX.Element => {
+  const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
+    listing: <ListingUserMenuExtension categories={categories} />,
+    // Add other menu extensions here
+  };
   const userIsloggedIn = useSelector(
     (state: RootState) => state.business.userIsLoggedIn
   );
@@ -133,9 +153,11 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
   console.log('userIsloggedIn: ', userIsloggedIn);
 
   const router = useRouter();
-  const [showMobileMenuItems, setShowMobileMenuItems] = useState<boolean>(false);
+  const [showMobileMenuItems, setShowMobileMenuItems] =
+    useState<boolean>(false);
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
-  const [currentUserMenuExtension, setCurrentUserMenuExtension] = useState<string>('');
+  const [currentUserMenuExtension, setCurrentUserMenuExtension] =
+    useState<string>('');
   const handleAuthRouter = (login: string = 'true'): void => {
     router.push(`/auth/signin-signup?login=${login}`);
   };
@@ -143,7 +165,7 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
   const handleUsermMenuExtension = (menu: string): void => {
     setCurrentUserMenuExtension(menu);
     // setShowUserMenu(true);
-  }
+  };
 
   const AUTH_FORM_BUTTONS: AuthFormButtonProps[] = [
     {
@@ -165,13 +187,11 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
   const menuBarIcon =
     type === 'business' ? <MenuBarIcon /> : <MenuBarIconWhite />;
 
-
-
   const variant = type === 'business' ? 'black' : 'white';
   const loginSignup = type === 'business' ? '' : 'text-white';
   return (
     <div
-      className={`z-50 flex h-24 sm:h-32 w-full items-center justify-center ${type === 'business' ? 'bg-[#F8FAFC]' : type === 'community' || type === 'white' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
+      className={`z-50 flex h-24 w-full items-center justify-center sm:h-32 ${type === 'business' ? 'bg-[#F8FAFC]' : type === 'community' || type === 'white' ? 'bg-black/10 backdrop-blur-sm' : ''} ${authFormButtons ? 'py-0' : 'py-4'} px-5 sm:px-28 ${showMobileMenuItems ? 'fixed' : ''}`}
     >
       <div
         className={`relative flex w-full ${navbarWidthDeskTop ? navbarWidthDeskTop : 'sm:w-[1488px]'} items-center ${showMobileMenuItems ? 'justify-end' : 'justify-between'}`}
@@ -272,28 +292,25 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
                       className='flex h-12 w-12 items-center justify-center rounded-full bg-[#FFFFFF4D] p-2'
                     >
                       <BaseIcons value={link.icon} />
-
                     </Link>
                   );
                 })}
               </div>
               <BaseIcons value='vertical-line-white' />
 
-              <div
-                className='flex items-center gap-1'
-
-              >
+              <div className='flex items-center gap-1'>
                 <BaseIcons value='user-logged-in-white' />
                 {session?.user.name && (
                   <p className='ml-1 w-[85px] truncate font-semibold capitalize'>
                     {session?.user.name}
                   </p>
                 )}
-                <button onClick={() => {
-
-                  setCurrentUserMenuExtension('')
-                  setShowUserMenu(!showUserMenu)
-                }}>
+                <button
+                  onClick={() => {
+                    setCurrentUserMenuExtension('');
+                    setShowUserMenu(!showUserMenu);
+                  }}
+                >
                   <BaseIcons value='arrow-down-white' />
                 </button>
               </div>
@@ -315,7 +332,11 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
                 <div className='flex flex-col gap-6 px-5 pb-5'>
                   {USER_MENU_ITEMS.map((menu, key) => {
                     return menu.dropDown ? (
-                      <button key={key} className='flex items-center gap-2' onClick={() => handleUsermMenuExtension(menu.text)}>
+                      <button
+                        key={key}
+                        className='flex items-center gap-2'
+                        onClick={() => handleUsermMenuExtension(menu.text)}
+                      >
                         <span>{menu.text} </span>{' '}
                         {menu.dropDown && (
                           <BaseIcons value='arrow-down-black' />
@@ -342,7 +363,7 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
 
                   <Button
                     variant='neutral'
-                    className='text-md flex items-center -mt-2 gap-1 py-3'
+                    className='text-md -mt-2 flex items-center gap-1 py-3'
                   >
                     <BaseIcons value='logout-black' />
                     <span> Logout</span>
@@ -364,28 +385,25 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
                       className='flex h-12 w-12 items-center justify-center rounded-full bg-[#F8FAFC] p-2'
                     >
                       <BaseIcons value={link.icon} />
-
                     </Link>
                   );
                 })}
               </div>
               <BaseIcons value='vertical-line-white' />
 
-              <div
-                className='flex items-center gap-1'
-
-              >
+              <div className='flex items-center gap-1'>
                 <BaseIcons value='user-logged-in-black' />
                 {session?.user.name && (
-                  <p className='ml-1 w-[85px] truncate text-black font-semibold capitalize'>
+                  <p className='ml-1 w-[85px] truncate font-semibold capitalize text-black'>
                     {session?.user.name}
                   </p>
                 )}
-                <button onClick={() => {
-
-                  setCurrentUserMenuExtension('')
-                  setShowUserMenu(!showUserMenu)
-                }}>
+                <button
+                  onClick={() => {
+                    setCurrentUserMenuExtension('');
+                    setShowUserMenu(!showUserMenu);
+                  }}
+                >
                   <BaseIcons value='arrow-down-black' />
                 </button>
               </div>
@@ -407,7 +425,11 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
                 <div className='flex flex-col gap-6 px-5 pb-5'>
                   {USER_MENU_ITEMS.map((menu, key) => {
                     return menu.dropDown ? (
-                      <button key={key} className='flex items-center gap-2' onClick={() => handleUsermMenuExtension(menu.text)}>
+                      <button
+                        key={key}
+                        className='flex items-center gap-2'
+                        onClick={() => handleUsermMenuExtension(menu.text)}
+                      >
                         <span>{menu.text} </span>{' '}
                         {menu.dropDown && (
                           <BaseIcons value='arrow-down-black' />
@@ -434,7 +456,7 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
 
                   <Button
                     variant='neutral'
-                    className='text-md flex items-center -mt-2 gap-1 py-3'
+                    className='text-md -mt-2 flex items-center gap-1 py-3'
                   >
                     <BaseIcons value='logout-black' />
                     <span> Logout</span>
@@ -445,21 +467,32 @@ const Navbar = ({ type, navbarWidthDeskTop, authFormButtons = true }: NavbarProp
           </div>
         )}
         {USER_MENU_EXTENSIONS[currentUserMenuExtension] && showUserMenu && (
-          <div className="absolute top-14 left-[10%] z-20 bg-white py-6 px-8 shadow-lg rounded-lg">
-            <p className='mb-1'> Discover a world of businesses and services acrosslifestyle,ellness, fashion, food, tech, and more.</p>
-            <div className='border-b-primary border-b-[1px] w-[136px]'>
-              <Link href={'/explore'} className="text-primary flex items-center gap-1">
+          <div className='absolute left-[10%] top-14 z-20 rounded-lg bg-white px-8 py-6 shadow-lg'>
+            <p className='mb-1'>
+              {' '}
+              Discover a world of businesses and services
+              acrosslifestyle,ellness, fashion, food, tech, and more.
+            </p>
+            <div className='w-[136px] border-b-[1px] border-b-primary'>
+              <Link
+                href={'/explore'}
+                className='flex items-center gap-1 text-primary'
+              >
                 <p>Explore all cities</p>
-                <span className="inline-block -rotate-45">
-                  <BaseIcons value="arrow-diagonal-right-primary" />
+                <span className='inline-block -rotate-45'>
+                  <BaseIcons value='arrow-diagonal-right-primary' />
                 </span>
-
               </Link>
             </div>
-            {USER_MENU_EXTENSIONS[currentUserMenuExtension]}
+            {isLoadingcategories ? (
+              <div className='mt-8'>
+                <Loader borderColor='border-primary' />{' '}
+              </div>
+            ) : (
+              USER_MENU_EXTENSIONS[currentUserMenuExtension]
+            )}
           </div>
         )}
-
 
         {/* Mobile menu bar  */}
         <div className='sm:hidden'>
