@@ -301,11 +301,12 @@ export default function HomePage(): JSX.Element {
         <NavbarLandingPage />
 
         {/* Mobile hero  */}
-        <div className='sm:hidden flex h-[756px] rounded-2xl w-full bg-[url("/landingpage/landing-pagemobile-hero.jpg")]'>
+        <div className='sm:hidden relative flex h-[756px] rounded-2xl w-full bg-[url("/landingpage/landing-pagemobile-hero.jpg")]'>
+          <div className='insert-0 flex absolute rounded-2xl sm:rounded-none h-full top-0 w-full bg-black/60'></div>
         </div>
 
         {/* Desktop Hero  */}
-        <div className='insert-0 flex absolute sm:h-[83.6vh] rounded-2xl sm:rounded-none h-[75.5vh] sm:top-0 top-[80px] w-full bg-black/70'></div>
+        <div className='insert-0 sm:flex absolute sm:h-[83.6vh] rounded-2xl sm:rounded-none  sm:top-0 hidden w-full bg-black/70'></div>
         <div className='w-full hidden sm:flex'>
           <Navbar type='' authFormButtons={false} navbarWidthDeskTop='w-full' categories={categories} isLoadingcategories={isLoadingcategories} />
         </div>
@@ -319,7 +320,7 @@ export default function HomePage(): JSX.Element {
             Delve helps you find reliable vendors who turn plans into beautiful
             memories.
           </p>
-          <div className='mt-16'>
+          <div className='mt-20'>
             <SearchGroup searchType='Category' />
           </div>
         </div>
@@ -639,7 +640,7 @@ export default function HomePage(): JSX.Element {
       </div>
 
       {/* This weeks trends  */}
-      <div className="sm:mb-10 mb-44 py-10 sm:py-0 sm:w-[2000px] w-full">
+      <div className="sm:mb-10 mb-80 py-10 sm:py-0 sm:w-[2000px] w-full">
         <ThisWeeksTrends />
       </div>
 

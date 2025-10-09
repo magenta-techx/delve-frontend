@@ -30,8 +30,8 @@ const SearchGroup = ({ searchType }: { searchType: string }): JSX.Element => {
       </div>
 
       {/* mobile search  */}
-      <div className='rounded-lg bg-white p-5 w-[353px] h-[200px] sm:hidden flex flex-col'>
-        <div className='flex items-center mb-6'>
+      <div className='rounded-lg bg-white p-5 w-[353px] h-[190px] sm:hidden flex flex-col'>
+        <div className='flex items-center mb-10'>
           <BaseIcons value='stars-primary' />
           <input
             className='w-full border-none px-2 py-2 text-[14px] focus:outline-none'

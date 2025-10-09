@@ -16,17 +16,20 @@ export default function HomePage(): JSX.Element {
      
 
       {/* Tips, trends, vendor stories  */}
-      <div className='my-32 mb-42'>
-        <h1 className='text-[52px] font-semibold font-karma'>Tips, Trends & Vendor Stories</h1>
-        <p className='text-[18px] font-inter mb-10'>Explore expert tips, trending event ideas, beauty routines, and vendor success stories all curated for you.</p>
+      <div className='sm:my-32 sm:mb-42 my-14 flex flex-col sm:items-start items-center px-4 sm;px-0'>
 
-        <div className='grid grid-cols-4 gap-10'>
-          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='w-[345px] h-[480px]' imageClassStyle='w-full h-[246px] ' />
-          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='w-[345px] h-[480px]' imageClassStyle='w-full h-[246px] ' />
-          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='w-[345px] h-[480px]' imageClassStyle='w-full h-[246px] ' />
-          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='w-[345px] h-[480px]' imageClassStyle='w-full h-[246px] ' />
-          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='w-[345px] h-[480px]' imageClassStyle='w-full h-[246px] ' />
-          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='w-[345px] h-[480px]' imageClassStyle='w-full h-[246px] ' />
+        <div>
+          <h1 className='sm:text-[52px] text-[24px] font-semibold font-karma'>Tips, Trends & Vendor Stories</h1>
+          <p className='sm:text-[18px] font-inter mb-10 text-[12px]'>Explore expert tips, trending event ideas, beauty routines, and vendor success stories all curated for you.</p>
+
+        </div>
+        <div className='grid sm:grid-cols-4 grid-cols-1 sm:gap-10 gap-4'>
+          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='sm:w-[345px] w-full sm:h-[420px]' imageClassStyle='w-full h-[246px] ' />
+          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='sm:w-[345px] w-full sm:h-[420px]' imageClassStyle='w-full h-[246px] ' />
+          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='sm:w-[345px] w-full sm:h-[420px]' imageClassStyle='w-full h-[246px] ' />
+          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='sm:w-[345px] w-full sm:h-[420px]' imageClassStyle='w-full h-[246px] ' />
+          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='sm:w-[345px] w-full sm:h-[420px]' imageClassStyle='w-full h-[246px] ' />
+          <BlogCards imageUrl={'/blog/blog-image.jpg'} header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025' containerClassStyle='sm:w-[345px] w-full sm:h-[420px]' imageClassStyle='w-full h-[246px] ' />
         </div>
 
       </div>
