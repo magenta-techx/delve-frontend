@@ -117,7 +117,7 @@ const NavbarLandingPage = ({
       <div>
         {/* Logged in user in Landing Page  */}
         {userIsloggedIn && (
-          <div>
+          <div className='hidden sm:flex'>
             <div className='flex items-center gap-4 text-white'>
               <div className='flex items-center gap-4'>
                 {IS_LOGGED_IN_BUTTON.map((link, key) => {

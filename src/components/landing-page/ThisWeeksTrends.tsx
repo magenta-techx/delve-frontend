@@ -146,20 +146,20 @@ const ThisWeeksTrends = (): JSX.Element => {
 
           {/* Services  */}
           <div className='flex items-center gap-1 sm:mb-4 sm:gap-3'>
-            <div className='flex w-[172px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:px-4 sm:py-3 sm:text-[14px]'>
-              <div className='flex h-[10px] w-[10px] items-center justify-center sm:w-full'>
+            <div className='flex w-[172px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:text-[14px]'>
+              <div className='flex h-[10px] w-[10px] items-center justify-center'>
                 <BaseIcons value='food-and-drinks-white' />
               </div>
               <p>Food & Drinks</p>
             </div>
-            <div className='flex w-[200px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[8px] text-white sm:px-4 sm:py-3 sm:text-[14px]'>
-              <div className='flex h-[8px] w-[8px] items-center justify-center sm:w-full'>
+            <div className='flex w-[200px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[8px] text-white sm:text-[14px]'>
+              <div className='flex h-[8px] w-[8px] items-center justify-center'>
                 <BaseIcons value='calendar-white' />
               </div>
               <p>10am - 12pm, daily</p>
             </div>
-            <div className='flex w-[90px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:px-4 sm:py-3 sm:text-[14px]'>
-              <div className='flex h-[10px] w-[10px] items-center justify-center sm:w-full'>
+            <div className='flex w-[90px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:text-[14px]'>
+              <div className='flex h-[10px] w-[10px] items-center justify-center'>
                 <BaseIcons value='person-white' />
               </div>
               <p>258</p>

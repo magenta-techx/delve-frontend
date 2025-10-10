@@ -19,10 +19,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
+
 import { useEffect, useState } from 'react';
 import NavbarLandingPage from '@/components/navbar/NavbarLandingPage';
 
@@ -289,12 +286,15 @@ export default function HomePage(): JSX.Element {
 
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
-      <div className='relative flex h-[83.6vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
+      <div className='relative flex sm:h-[83.5vh] h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         {/* New Navbar component  */}
+
+        <div className='sm:hidden flex'>
         <NavbarLandingPage />
+        </div>
 
         {/* Mobile hero  */}
-        <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] sm:hidden'>
+        <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] sm:hidden bg-no-repeat'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
         </div>
 
@@ -311,7 +311,7 @@ export default function HomePage(): JSX.Element {
         </div>
 
         {/* Hero section  */}
-        <div className='absolute top-[26rem] flex h-full w-full flex-col items-center sm:top-[27.8rem]'>
+        <div className='absolute top-[28.5rem] flex h-full w-full flex-col items-center sm:top-[27.8rem]'>
           <h1 className='font-karma text-[26px] font-bold text-white sm:text-[54px]'>
             Great experiences start here.
           </h1>
@@ -545,9 +545,9 @@ export default function HomePage(): JSX.Element {
               onSwiper={swiper => console.log(swiper)}
               onSlideChange={() => console.log('slide change')}
               // className='h-[700px] bg-green-300'
-              className='-mt-5 flex h-full w-[354px] items-center justify-center pb-20 sm:mt-0 sm:h-[589px] sm:w-[1485px]'
+              className='-mt-5 flex h-full w-[354px] items-center justify-center pb-20 sm:mt-3 sm:h-[589px] sm:w-[1485px]'
             >
-              <div className='absolute top-16 z-10 -translate-y-1/2 sm:right-14 sm:top-[57px]'>
+              <div className='absolute top-16 z-10 -translate-y-1/2 sm:right-14 sm:top-[37px]'>
                 <button className='sponsored-prev rotate-180 transition-transform'>
                   <BaseIcons value='arrow-right-solid-black' />
                 </button>
@@ -557,7 +557,7 @@ export default function HomePage(): JSX.Element {
                   <BaseIcons value='arrow-right-solid-black' />
                 </button>
               </div> */}
-              <div className='absolute right-0 top-16 z-10 -mt-[2px] -translate-y-1/2 sm:top-14'>
+              <div className='absolute right-0 top-16 z-10 -mt-[2px] -translate-y-1/2 sm:top-[37px]'>
                 <button className='sponsored-next rounded-full px-4 py-2'>
                   <BaseIcons value='arrow-right-solid-black' />
                 </button>
