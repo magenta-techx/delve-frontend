@@ -26,37 +26,37 @@ export default function HomePage(): JSX.Element {
           <BlogCards
             imageUrl={'/blog/blog-image.jpg'}
             header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
-            containerClassStyle='sm:w-[345px] w-full sm:h-[420px]'
+            containerClassStyle='sm:w-[345px] w-full sm:h-[417px]'
             imageClassStyle='w-full h-[246px] '
           />
           <BlogCards
             imageUrl={'/blog/blog-image.jpg'}
             header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
-            containerClassStyle='sm:w-[345px] w-full sm:h-[420px]'
+            containerClassStyle='sm:w-[345px] w-full sm:h-[417px]'
             imageClassStyle='w-full h-[246px] '
           />
           <BlogCards
             imageUrl={'/blog/blog-image.jpg'}
             header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
-            containerClassStyle='sm:w-[345px] w-full sm:h-[420px]'
+            containerClassStyle='sm:w-[345px] w-full sm:h-[417px]'
             imageClassStyle='w-full h-[246px] '
           />
           <BlogCards
             imageUrl={'/blog/blog-image.jpg'}
             header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
-            containerClassStyle='sm:w-[345px] w-full sm:h-[420px]'
+            containerClassStyle='sm:w-[345px] w-full sm:h-[417px]'
             imageClassStyle='w-full h-[246px] '
           />
           <BlogCards
             imageUrl={'/blog/blog-image.jpg'}
             header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
-            containerClassStyle='sm:w-[345px] w-full sm:h-[420px]'
+            containerClassStyle='sm:w-[345px] w-full sm:h-[417px]'
             imageClassStyle='w-full h-[246px] '
           />
           <BlogCards
             imageUrl={'/blog/blog-image.jpg'}
             header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
-            containerClassStyle='sm:w-[345px] w-full sm:h-[420px]'
+            containerClassStyle='sm:w-[345px] w-full sm:h-[417px]'
             imageClassStyle='w-full h-[246px] '
           />
         </div>
