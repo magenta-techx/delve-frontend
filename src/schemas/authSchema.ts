@@ -35,6 +35,8 @@ const confirmPasswordField = {
 
 export const baseSchema = Yup.object(emailField);
 
+export const emailSchema= Yup.object(emailField)
+
 export const loginSchema = baseSchema.shape(basicPasswordField);
 
 export const signupSchema = baseSchema.shape({

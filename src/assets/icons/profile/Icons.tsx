@@ -14,24 +14,24 @@ export const ProfileBaseIcons = ({ value }: Type): JSX.Element => {
         <path d="M6.57965 54.2261C7.99457 51.5354 12.6514 48.7123 16.9576 46.8094C19.1052 45.8604 25.5401 73.1216 25.5401 73.1216H3.98173C3.98173 73.1216 3.72199 59.6604 6.57965 54.2261Z" fill="url(#paint4_linear_5163_10923)" />
         <defs>
           <linearGradient id="paint0_linear_5163_10923" x1="27.1305" y1="1.19001" x2="25.5289" y2="46.9042" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#1D0024" />
-            <stop offset="1" stop-color="#100014" />
+            <stop stopColor="#1D0024" />
+            <stop offset="1" stopColor="#100014" />
           </linearGradient>
           <linearGradient id="paint1_linear_5163_10923" x1="32.784" y1="12.543" x2="32.784" y2="53.919" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#E6864E" />
-            <stop offset="1" stop-color="#EB965E" />
+            <stop stopColor="#E6864E" />
+            <stop offset="1" stopColor="#EB965E" />
           </linearGradient>
           <linearGradient id="paint2_linear_5163_10923" x1="30.1993" y1="35.5824" x2="31.548" y2="41.6496" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#E68349" />
-            <stop offset="1" stop-color="#F09960" />
+            <stop stopColor="#E68349" />
+            <stop offset="1" stopColor="#F09960" />
           </linearGradient>
           <linearGradient id="paint3_linear_5163_10923" x1="31.0002" y1="71.043" x2="31.0002" y2="45.043" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#FFC9B3" />
-            <stop offset="1" stop-color="#FFD2C2" />
+            <stop stopColor="#FFC9B3" />
+            <stop offset="1" stopColor="#FFD2C2" />
           </linearGradient>
           <linearGradient id="paint4_linear_5163_10923" x1="14.7579" y1="73.1216" x2="14.7579" y2="46.7852" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#FCF2EB" />
-            <stop offset="1" stop-color="#FFF9F5" />
+            <stop stopColor="#FCF2EB" />
+            <stop offset="1" stopColor="#FFF9F5" />
           </linearGradient>
         </defs>
       </svg>

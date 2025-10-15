@@ -2,7 +2,7 @@ import { BaseIcons } from '@/assets/icons/base/Icons';
 import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
 import React from 'react';
 
-const SearchGroup = ({ searchType }: { searchType: string }): JSX.Element => {
+const SearchGroup = ({ searchType }: { searchType?: string }): JSX.Element => {
   return (
     <div className={`w-full`}>
       {/* Desktop search  */}
@@ -16,10 +16,10 @@ const SearchGroup = ({ searchType }: { searchType: string }): JSX.Element => {
             placeholder='Search businesses'
           />
         </div>
-        <button className='flex w-[125px] px-4 text-[16px] items-center justify-center gap-4 border-l-2  border-neutral-200'>
+        {searchType && <button className='flex w-[125px] px-4 text-[16px] items-center justify-center gap-4 border-l-2  border-neutral-200'>
           <span className='text-[16px]'>{searchType}</span>
           <BusinessCategoryIcons value='arrow-down' />
-        </button>
+        </button>}
         <button className='flex w-[155px] items-center justify-center gap-3 border-l-2 border-neutral-200'>
           <span className='text-[16px]'>Category</span>
           <BusinessCategoryIcons value='arrow-down' />
