@@ -19,7 +19,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
-
 import { useEffect, useState } from 'react';
 import NavbarLandingPage from '@/components/navbar/NavbarLandingPage';
 
@@ -286,15 +285,15 @@ export default function HomePage(): JSX.Element {
 
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
-      <div className='relative flex sm:h-[83.5vh] h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
+      <div className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[83.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         {/* New Navbar component  */}
 
-        <div className='sm:hidden flex'>
-        <NavbarLandingPage />
+        <div className='flex sm:hidden'>
+          <NavbarLandingPage />
         </div>
 
         {/* Mobile hero  */}
-        <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] sm:hidden bg-no-repeat'>
+        <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
         </div>
 

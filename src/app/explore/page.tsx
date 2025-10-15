@@ -102,7 +102,7 @@ export default function HomePage(): JSX.Element {
         <div className='absolute top-[24rem] flex w-full flex-col pl-5 pr-12 sm:top-[20.8rem] sm:w-[1000px] sm:px-28'>
           <div className='mb-6 flex items-center gap-2 text-white'>
             <ExploreBaseIcons value='listing-white-and-gray-solid' />
-            <p className='sm:text-[16px] text-[12px] font-light'>LISTINGS</p>
+            <p className='text-[12px] font-light sm:text-[16px]'>LISTINGS</p>
           </div>
           <h1 className='mb-6 font-karma text-[26px] font-bold text-white sm:text-[54px]'>
             Discover services tailored to your needs, location, and style.

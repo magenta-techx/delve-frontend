@@ -6,25 +6,27 @@ const SearchGroup = ({ searchType }: { searchType?: string }): JSX.Element => {
   return (
     <div className={`w-full`}>
       {/* Desktop search  */}
-      <div className='hidden items-center rounded-lg bg-white font-inter border-[1px] border-[#CDD5DF] sm:flex pl-5'>
-        <div className='flex items-center py-4 gap-2'>
+      <div className='hidden items-center rounded-lg border-[1px] border-[#CDD5DF] bg-white pl-5 font-inter sm:flex'>
+        <div className='flex items-center gap-2 py-4'>
           <div className='shrink-0'>
             <BaseIcons value='search-large-outlined-black' />
-         </div>
+          </div>
           <input
-            className='border-none w-[240px] text-[16px] focus:outline-none'
+            className='w-[240px] border-none text-[16px] focus:outline-none'
             placeholder='Search businesses'
           />
         </div>
-        {searchType && <button className='flex w-[125px] px-4 text-[16px] items-center justify-center gap-4 border-l-2  border-neutral-200'>
-          <span className='text-[16px]'>{searchType}</span>
-          <BusinessCategoryIcons value='arrow-down' />
-        </button>}
+        {searchType && (
+          <button className='flex w-[125px] items-center justify-center gap-4 border-l-2 border-neutral-200 px-4 text-[16px]'>
+            <span className='text-[16px]'>{searchType}</span>
+            <BusinessCategoryIcons value='arrow-down' />
+          </button>
+        )}
         <button className='flex w-[155px] items-center justify-center gap-3 border-l-2 border-neutral-200'>
           <span className='text-[16px]'>Category</span>
           <BusinessCategoryIcons value='arrow-down' />
         </button>
-        <button className='flex items-center justify-center py-4 px-8 gap-5 rounded-br-lg rounded-tr-lg bg-primary text-white'>
+        <button className='flex items-center justify-center gap-5 rounded-br-lg rounded-tr-lg bg-primary px-8 py-4 text-white'>
           <span className='text-[16px]'>Search</span>
         </button>
       </div>

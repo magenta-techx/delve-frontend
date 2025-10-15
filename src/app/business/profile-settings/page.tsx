@@ -1,19 +1,19 @@
-'use client'
-import { BaseIcons } from "@/assets/icons/base/Icons";
-import { Button } from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+'use client';
+import { BaseIcons } from '@/assets/icons/base/Icons';
+import { Button } from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 // import { signupSchema } from "@/schemas/authSchema";
 // import { emailValidator } from "@/utils/validators";
-import { Form, Formik } from "formik";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Form, Formik } from 'formik';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Page(): JSX.Element {
   const router = useRouter();
 
-  const [passwordReset, setPasswordReset] = useState<boolean>(false)
-  const [changePassword, setChangePassword] = useState<boolean>(false)
+  const [passwordReset, setPasswordReset] = useState<boolean>(false);
+  const [changePassword, setChangePassword] = useState<boolean>(false);
   // Signup Handler
   const handleSignup = async (values: {
     first_name: string;
@@ -45,37 +45,51 @@ export default function Page(): JSX.Element {
       {/* </div>  */}
       {/* </div> */}
 
-      <div className="sm:w-[1540px]">
-
-        <div className=" mt-20 z-10">
-        <div className="flex items-center justify-between w-full mb-4">
-            <h1 className="text-[25px] font-semibold font-inter flex items-center gap-3"><BaseIcons value="user-logged-in-black" /><p>Profile Settings</p></h1>
+      <div className='sm:w-[1540px]'>
+        <div className='z-10 mt-20'>
+          <div className='mb-4 flex w-full items-center justify-between'>
+            <h1 className='flex items-center gap-3 font-inter text-[25px] font-semibold'>
+              <BaseIcons value='user-logged-in-black' />
+              <p>Profile Settings</p>
+            </h1>
           </div>
-
         </div>
 
         {/* Profile settings container  */}
-        <div className="w-full flex items-start gap-[150px]">
-
+        <div className='flex w-full items-start gap-[150px]'>
           {/* Profile form  */}
-          <div className="border-[1px] border-[#E3E8EF] sm:w-[853px] sm:h-[866px] rounded-3xl p-10 relative">
-
-            {changePassword && <div className="backdrop-blur-sm bg-[#FFFFFF14] rounded-3xl absolute h-full w-full top-0 left-0 z-20"></div>}
+          <div className='relative rounded-3xl border-[1px] border-[#E3E8EF] p-10 sm:h-[866px] sm:w-[853px]'>
+            {changePassword && (
+              <div className='absolute left-0 top-0 z-20 h-full w-full rounded-3xl bg-[#FFFFFF14] backdrop-blur-sm'></div>
+            )}
 
             {/* Profile settings header  */}
-            <div className="flex items-start justify-between mb-14">
-              <div className="flex items-end gap-3">
-                <div className="border-[2px] border-[#E3E8EF] rounded-full sm:w-[100px] sm:h-[100px] flex items-end justify-center relative">
-                  <Image src={'/profile/person-graphics.jpg'} alt="Delve user profile" width={80} height={50} className="rounded-full" />
+            <div className='mb-14 flex items-start justify-between'>
+              <div className='flex items-end gap-3'>
+                <div className='relative flex items-end justify-center rounded-full border-[2px] border-[#E3E8EF] sm:h-[100px] sm:w-[100px]'>
+                  <Image
+                    src={'/profile/person-graphics.jpg'}
+                    alt='Delve user profile'
+                    width={80}
+                    height={50}
+                    className='rounded-full'
+                  />
                 </div>
-                <button className="hover:bg-primary/40 sm:h-[40px] sm:w-[130px] border-[1px] border-[#D9D6FE] bg-primary/10 text-primary text-[14px] flex items-center justify-center rounded-md gap-2">Change profile</button>
+                <button className='flex items-center justify-center gap-2 rounded-md border-[1px] border-[#D9D6FE] bg-primary/10 text-[14px] text-primary hover:bg-primary/40 sm:h-[40px] sm:w-[130px]'>
+                  Change profile
+                </button>
               </div>
-              <div className=" sm:h-[44px] sm:w-[194px] gap-2 bg-[#FFF4ED] text-[14px] flex items-center justify-center rounded-md"><span className="text-[#9AA4B2]">Joined</span> <span>24th June, 2025</span></div>
+              <div className='flex items-center justify-center gap-2 rounded-md bg-[#FFF4ED] text-[14px] sm:h-[44px] sm:w-[194px]'>
+                <span className='text-[#9AA4B2]'>Joined</span>{' '}
+                <span>24th June, 2025</span>
+              </div>
             </div>
 
             {/* Profile form  */}
             <div>
-              <h1 className="text-[18px] font-semibold mb-10">Account Management</h1>
+              <h1 className='mb-10 text-[18px] font-semibold'>
+                Account Management
+              </h1>
 
               <Formik
                 initialValues={{
@@ -90,8 +104,6 @@ export default function Page(): JSX.Element {
               >
                 {({ isSubmitting }) => (
                   <Form className='w-full'>
-
-
                     {/* Fields */}
                     <div className='flex w-full flex-col gap-2'>
                       {/* First name and last name  */}
@@ -141,12 +153,18 @@ export default function Page(): JSX.Element {
                       /> */}
                     </div>
 
-                    <button type="button" className="bg-[#EEF2F6] mb-10 sm:w-[128px] sm:h-[38px] rounded-lg border-[1px] border-[#E3E8EF] text-[12px] font-medium" onClick={() => {
-                      setChangePassword(!changePassword)
-                    }}>Change password</button>
+                    <button
+                      type='button'
+                      className='mb-10 rounded-lg border-[1px] border-[#E3E8EF] bg-[#EEF2F6] text-[12px] font-medium sm:h-[38px] sm:w-[128px]'
+                      onClick={() => {
+                        setChangePassword(!changePassword);
+                      }}
+                    >
+                      Change password
+                    </button>
 
                     {/* Submit Button */}
-                    <div className="w-1/2">
+                    <div className='w-1/2'>
                       <Button
                         type='submit'
                         disabled={!passwordReset}
@@ -161,30 +179,31 @@ export default function Page(): JSX.Element {
             </div>
           </div>
 
-
           {/* Profile change password  */}
-          {
-            changePassword && <div className="sm:w-[515px] pt-10">
-
-              <div className="flex items-center justify-between mb-10">
-                <h3 className="text-[18px] font-semibold">Change Password</h3>
-                <button className="text-[#697586] text-[14px]" onClick={() => setChangePassword(!changePassword)}>Cancel</button>
+          {changePassword && (
+            <div className='pt-10 sm:w-[515px]'>
+              <div className='mb-10 flex items-center justify-between'>
+                <h3 className='text-[18px] font-semibold'>Change Password</h3>
+                <button
+                  className='text-[14px] text-[#697586]'
+                  onClick={() => setChangePassword(!changePassword)}
+                >
+                  Cancel
+                </button>
               </div>
               <Formik
                 initialValues={{
                   old_password: '',
                   new_password: '',
                 }}
-                // validationSchema={signupSchema} 
-                onSubmit={(values) => {
+                // validationSchema={signupSchema}
+                onSubmit={values => {
                   alert(values);
-                  setPasswordReset(!passwordReset)
+                  setPasswordReset(!passwordReset);
                 }}
               >
                 {({ errors }) => (
                   <Form className='w-full'>
-
-
                     {/* Fields */}
                     <div className='flex w-full flex-col gap-2'>
                       {/* Email Field */}
@@ -201,7 +220,6 @@ export default function Page(): JSX.Element {
                         type='password'
                         placeholder=''
                         label='New Password'
-
                       />
                       {/* Confirm Password Field */}
                       {/* <Input
@@ -213,11 +231,14 @@ export default function Page(): JSX.Element {
                     </div>
 
                     {/* Submit Button */}
-                    <div className="w-1/4">
+                    <div className='w-1/4'>
                       <Button
                         type='submit'
-                        disabled={errors?.new_password || errors?.old_password ? true
-                          : false}
+                        disabled={
+                          errors?.new_password || errors?.old_password
+                            ? true
+                            : false
+                        }
                       >
                         Changes
                       </Button>
@@ -226,14 +247,9 @@ export default function Page(): JSX.Element {
                 )}
               </Formik>
             </div>
-          }
-
+          )}
         </div>
       </div>
-
-
-
-
     </main>
   );
 }

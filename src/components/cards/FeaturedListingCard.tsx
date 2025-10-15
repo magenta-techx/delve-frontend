@@ -55,7 +55,7 @@ const FeaturedListingCard = ({
         {/* Content  */}
         <div className='absolute bottom-0 z-10 flex h-28 w-full flex-col gap-2 rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300 group-hover:opacity-0 sm:h-32'>
           <div className='flex items-center gap-2 border-b-[1px] border-b-white sm:h-[85px] sm:items-start'>
-            <div className='mt-3 h-10 w-14 shrink-0 rounded-full sm:mt-0 sm:h-full flex items-center justify-center sm:w-14'>
+            <div className='mt-3 flex h-10 w-14 shrink-0 items-center justify-center rounded-full sm:mt-0 sm:h-full sm:w-14'>
               <Image
                 src={logoUrl}
                 alt={logoUrl}
