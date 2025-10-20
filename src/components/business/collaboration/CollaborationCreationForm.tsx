@@ -250,7 +250,7 @@ const CollaborationCreationForm = (): JSX.Element => {
                         <SearchGroup />
                       </div>
                       <div className='w-[89px]'>
-                        <Button >Done</Button>
+                        <Button>Done</Button>
                       </div>
                     </div>
 

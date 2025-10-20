@@ -1,11 +1,6 @@
-
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import ProfileSettings from '@/components/business/Profile/ProfileSettings';
 export default function Page(): JSX.Element {
-
-
-
-
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden bg-[#FCFCFD]'>
       {/* <div className='relative flex sm:h-[83.5vh] h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'> */}
@@ -26,7 +21,6 @@ export default function Page(): JSX.Element {
         </div>
 
         <ProfileSettings />
-
       </div>
     </main>
   );

@@ -11,7 +11,7 @@ export default function Page(): JSX.Element {
       {/* </div>  */}
       {/* </div> */}
 
-      <div className='sm:h-[866px] sm:w-[1488px] pt-20'>
+      <div className='pt-20 sm:h-[866px] sm:w-[1488px]'>
         <CollaborationPreview
           actionBtntext='Exit Group'
           page={'preview'}
