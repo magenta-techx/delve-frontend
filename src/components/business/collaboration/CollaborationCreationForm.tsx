@@ -249,7 +249,9 @@ const CollaborationCreationForm = (): JSX.Element => {
                       <div className='w-[558px]'>
                         <SearchGroup />
                       </div>
-                      <Button className='w-[89px]'>Done</Button>
+                      <div className='w-[89px]'>
+                        <Button >Done</Button>
+                      </div>
                     </div>
 
                     {/* listings  aorund you */}
