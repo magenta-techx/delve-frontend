@@ -285,7 +285,7 @@ export default function HomePage(): JSX.Element {
 
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
-      <div className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[83.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
+      <div className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[90.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         {/* New Navbar component  */}
 
         <div className='flex sm:hidden'>
@@ -298,7 +298,7 @@ export default function HomePage(): JSX.Element {
         </div>
 
         {/* Desktop Hero  */}
-        <div className='insert-0 absolute hidden w-full rounded-2xl bg-black/70 sm:top-0 sm:flex sm:h-[83.6vh] sm:rounded-none'></div>
+        <div className='insert-0 absolute hidden w-full rounded-2xl bg-black/70 sm:top-0 sm:flex sm:h-[90.5vh] sm:rounded-none'></div>
         <div className='hidden w-full sm:flex'>
           <Navbar
             type=''
@@ -310,7 +310,7 @@ export default function HomePage(): JSX.Element {
         </div>
 
         {/* Hero section  */}
-        <div className='absolute top-[28.5rem] flex h-full w-full flex-col items-center sm:top-[27.8rem]'>
+        <div className='absolute top-[25.5rem] flex w-full flex-col items-center sm:top-[27.8rem]'>
           <h1 className='font-karma text-[26px] font-bold text-white sm:text-[54px]'>
             Great experiences start here.
           </h1>

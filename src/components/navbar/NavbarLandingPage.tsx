@@ -95,120 +95,125 @@ const NavbarLandingPage = ({
     // setShowUserMenu(true);
   };
   return (
-    <div className='mb-5 w-full'>
+    <div className='mb-5 w-full sm:bg-black/10 backdrop-blur-sm flex items-center justify-center '>
       {/* bg-black/10 backdrop-blur-sm  */}
-      <div className='flex w-full items-center justify-between px-5 pt-10 sm:-mb-0 sm:pb-5'>
-        <div className='h-full w-full'>
-          <div className='hidden sm:flex'>
-            <DefaultLogoTextIconWhite />
-          </div>
-          <div className='flex h-[19.22px] w-[80px] items-center justify-center sm:hidden'>
-            <DefaultLogoTextIcon />
-          </div>
-        </div>
-        <div className='flex sm:hidden'>
-          <MenuBarIcon
-            showMobileMenuItems={showMobileMenuItems}
-            setShowMobileMenuItems={setShowMobileMenuItems}
-          />
-        </div>
-      </div>
-
-      <div>
-        {/* Logged in user in Landing Page  */}
-        {userIsloggedIn && (
-          <div className='hidden sm:flex'>
-            <div className='flex items-center gap-4 text-white'>
-              <div className='flex items-center gap-4'>
-                {IS_LOGGED_IN_BUTTON.map((link, key) => {
-                  return (
-                    <Link
-                      key={key}
-                      href={link.href}
-                      className='flex h-12 w-12 items-center justify-center rounded-full bg-[#FFFFFF4D] p-2'
-                    >
-                      <BaseIcons value={link.icon} />
-                    </Link>
-                  );
-                })}
-              </div>
-              <BaseIcons value='vertical-line-white' />
-
-              <div className='flex items-center gap-1'>
-                <BaseIcons value='user-logged-in-white' />
-                {session?.user.name && (
-                  <p className='ml-1 w-[85px] truncate font-semibold capitalize'>
-                    {session?.user.name}
-                  </p>
-                )}
-                <button
-                  onClick={() => {
-                    setCurrentUserMenuExtension('');
-                    setShowUserMenu(!showUserMenu);
-                  }}
-                >
-                  <BaseIcons value='arrow-down-white' />
-                </button>
-              </div>
+      <div className='sm:w-[1640px] flex items-center w-full'>
+        <div className='flex w-full items-center justify-between px-5 pt-10 sm:-mb-0 sm:pb-5'>
+          <div className='h-full w-full'>
+            <div className='hidden sm:flex'>
+              <DefaultLogoTextIconWhite />
             </div>
+            <div className='flex h-[19.22px] w-[80px] items-center justify-center sm:hidden'>
+              <DefaultLogoTextIcon />
+            </div>
+          </div>
+          <div className='flex sm:hidden'>
+            <MenuBarIcon
+              showMobileMenuItems={showMobileMenuItems}
+              setShowMobileMenuItems={setShowMobileMenuItems}
+            />
+          </div>
+        </div>
 
-            {/* user menu  */}
-            {showUserMenu && (
-              <div className='absolute -right-20 top-20 z-20 flex w-[300px] flex-col gap-4 rounded-lg bg-white font-inter text-black shadow-md'>
-                <div className='mb-3 rounded-tl-lg rounded-tr-lg bg-[#F8FAFC] px-5 py-6'>
-                  <Link
-                    href={'/business/get-started'}
-                    className='flex h-14 w-[180px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white'
-                  >
-                    <span> List business</span>
-                    <BaseIcons value='arrow-diagonal-white' />
-                  </Link>
-                </div>
-                <div className='flex flex-col gap-6 px-5 pb-5'>
-                  {USER_MENU_ITEMS.map((menu, key) => {
-                    return menu.dropDown ? (
-                      <button
-                        key={key}
-                        className='flex items-center gap-2'
-                        onClick={() => handleUsermMenuExtension(menu.text)}
-                      >
-                        <span>{menu.text} </span>{' '}
-                        {menu.dropDown && (
-                          <BaseIcons value='arrow-down-black' />
-                        )}
-                      </button>
-                    ) : (
+        <div>
+          {/* Logged in user in Landing Page  */}
+          {userIsloggedIn && (
+            <div className='hidden sm:flex'>
+              <div className='flex items-center gap-4 text-white'>
+                <div className='flex items-center gap-4'>
+                  {IS_LOGGED_IN_BUTTON.map((link, key) => {
+                    return (
                       <Link
                         key={key}
-                        href={menu.href}
-                        className='flex items-center gap-2'
+                        href={link.href}
+                        className='flex h-12 w-12 items-center justify-center rounded-full bg-[#FFFFFF4D] p-2'
                       >
-                        <span className='capitalize'>{menu.text}</span>
+                        <BaseIcons value={link.icon} />
                       </Link>
                     );
                   })}
+                </div>
+                <BaseIcons value='vertical-line-white' />
 
-                  <Link
-                    href={'/'}
-                    className='text-md -mt-4 flex items-center gap-1 py-3'
+                <div className='flex items-center gap-1'>
+                  <BaseIcons value='user-logged-in-white' />
+                  {session?.user.name && (
+                    <p className='ml-1 w-[85px] truncate font-semibold capitalize'>
+                      {session?.user.name}
+                    </p>
+                  )}
+                  <button
+                    onClick={() => {
+                      setCurrentUserMenuExtension('');
+                      setShowUserMenu(!showUserMenu);
+                    }}
                   >
-                    <BaseIcons value='logout-black' />
-                    <span> Profile settings</span>
-                  </Link>
-
-                  <Button
-                    variant='neutral'
-                    className='text-md -mt-2 flex items-center gap-1 py-3'
-                  >
-                    <BaseIcons value='logout-black' />
-                    <span> Logout</span>
-                  </Button>
+                    <BaseIcons value='arrow-down-white' />
+                  </button>
                 </div>
               </div>
-            )}
+
+
+            </div>
+          )}
+        </div>
+
+
+        {/* user menu  */}
+        {showUserMenu && (
+          <div className='absolute right-20 top-20 z-20 flex w-[300px] flex-col gap-4 rounded-lg bg-white font-inter text-black shadow-md'>
+            <div className='mb-3 rounded-tl-lg rounded-tr-lg bg-[#F8FAFC] px-5 py-6'>
+              <Link
+                href={'/business/get-started'}
+                className='flex h-14 w-[180px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white'
+              >
+                <span> List business</span>
+                <BaseIcons value='arrow-diagonal-white' />
+              </Link>
+            </div>
+            <div className='flex flex-col gap-6 px-5 pb-5'>
+              {USER_MENU_ITEMS.map((menu, key) => {
+                return menu.dropDown ? (
+                  <button
+                    key={key}
+                    className='flex items-center gap-2'
+                    onClick={() => handleUsermMenuExtension(menu.text)}
+                  >
+                    <span>{menu.text} </span>{' '}
+                    {menu.dropDown && (
+                      <BaseIcons value='arrow-down-black' />
+                    )}
+                  </button>
+                ) : (
+                  <Link
+                    key={key}
+                    href={menu.href}
+                    className='flex items-center gap-2'
+                  >
+                    <span className='capitalize'>{menu.text}</span>
+                  </Link>
+                );
+              })}
+
+              <Link
+                href={'/'}
+                className='text-md -mt-4 flex items-center gap-1 py-3'
+              >
+                <BaseIcons value='logout-black' />
+                <span> Profile settings</span>
+              </Link>
+
+              <Button
+                variant='neutral'
+                className='text-md -mt-2 flex items-center gap-1 py-3'
+              >
+                <BaseIcons value='logout-black' />
+                <span> Logout</span>
+              </Button>
+            </div>
           </div>
-        )}
-      </div>
+        )} </div>
+
 
       {USER_MENU_EXTENSIONS[currentUserMenuExtension] && showUserMenu && (
         <div className='absolute left-[10%] top-14 z-20 rounded-lg bg-white px-8 py-6 shadow-lg'>

@@ -11,6 +11,7 @@ export default async function DashboardLayout({
   return (
     <section className='w-full overflow-x-hidden'>
       <Navbar type='business' authFormButtons={false} />
+      gehe
 
       <div className='flex w-full flex-col items-center'>{children}</div>
     </section>
