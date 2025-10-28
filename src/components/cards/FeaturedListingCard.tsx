@@ -54,8 +54,8 @@ const FeaturedListingCard = ({
 
         {/* Content  */}
         <div className='absolute bottom-0 z-10 flex h-28 w-full flex-col gap-2 rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300 group-hover:opacity-0 sm:h-32'>
-          <div className='flex h-[70px] items-center gap-2 border-b-[1px] border-b-white sm:h-[85px] sm:items-start'>
-            <div className='mt-3 h-10 w-14 rounded-full sm:mt-0 sm:h-20 sm:w-20'>
+          <div className='flex items-center gap-2 border-b-[1px] border-b-white sm:h-[85px] sm:items-start'>
+            <div className='mt-3 flex h-10 w-14 shrink-0 items-center justify-center rounded-full sm:mt-0 sm:h-full sm:w-14'>
               <Image
                 src={logoUrl}
                 alt={logoUrl}
@@ -66,7 +66,7 @@ const FeaturedListingCard = ({
             </div>
             <div>
               <h3 className='text-[16px] font-bold sm:text-xl'>{header}</h3>
-              <p className='line-clamp-1 text-[10px] sm:text-[13px]'>{desc}</p>
+              <p className='line-clamp-2 text-[10px] sm:text-[13px]'>{desc}</p>
             </div>
           </div>
           <div className='flex items-center justify-between text-[14px]'>

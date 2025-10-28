@@ -89,26 +89,35 @@ export default function HomePage(): JSX.Element {
   return (
     <main className='relative flex flex-col items-center'>
       <div className='relative mb-16 flex w-screen flex-col items-start bg-right bg-no-repeat sm:mb-52 sm:h-[70vh] sm:bg-[url("/explore/explore-hero.jpg")]'>
-        <div className='absolute hidden w-[100%] bg-gradient-to-t from-black via-black/95 to-transparent sm:flex sm:h-[70vh] sm:bg-gradient-to-r'></div>
+        <div className='absolute hidden w-full bg-gradient-to-t from-black via-black/95 to-transparent sm:flex sm:h-[70vh] sm:bg-gradient-to-r'></div>
         {/* New Navbar component  */}
-        <NavbarLandingPage /> {/* Mobile hero  */}
+        <div className="flex w-full justify-center">
+          <NavbarLandingPage />
+        </div>
+
+        {/* Mobile hero  */}
         <div className='relative flex h-[786px] w-full rounded-2xl bg-black bg-[url("/explore/explore-hero-image-mobile.jpg")] bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute bottom-0 flex h-[100%] w-full rounded-bl-2xl rounded-br-2xl bg-black/10 sm:rounded-none'></div>
           <div className='absolute bottom-0 flex h-[88%] w-[100%] rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black via-black/100 to-transparent sm:hidden'></div>
         </div>
+
         {/* Desktop Hero section  */}
-        <div className='absolute top-[24rem] flex w-full flex-col pl-5 pr-12 sm:top-[20.8rem] sm:w-[1000px] sm:px-28'>
-          <div className='mb-6 flex items-center gap-2 text-white'>
-            <ExploreBaseIcons value='listing-white-and-gray-solid' />
-            <p className='text-[12px] font-light'>LISTINGS</p>
+        <div className='absolute top-[24rem] flex w-full flex-col sm:top-[20.8rem] items-center'>
+          <div className='flex w-full flex-col sm:pl-0 pl-4 sm:w-[1620px]'>
+            <div className='flex w-full flex-col pr-12 sm:w-[1000px]'>
+              <div className='mb-6 flex items-center gap-2 text-white'>
+                <ExploreBaseIcons value='listing-white-and-gray-solid' />
+                <p className='text-[12px] font-light sm:text-[16px]'>LISTINGS</p>
+              </div>
+              <h1 className='mb-6 font-karma text-[26px] font-bold text-white sm:text-[54px]'>
+                Discover services tailored to your needs, location, and style.
+              </h1>
+              <p className='-mt-2 font-inter text-[14px] text-white sm:text-[19px]'>
+                From trending service providers to hidden gems, we’ve rounded up
+                some of the best businesses on Delve to make your search smoother.
+              </p>
+            </div>
           </div>
-          <h1 className='mb-6 font-karma text-[26px] font-bold text-white sm:text-[54px]'>
-            Discover services tailored to your needs, location, and style.
-          </h1>
-          <p className='-mt-2 font-inter text-[14px] text-white sm:text-[19px]'>
-            From trending service providers to hidden gems, we’ve rounded up
-            some of the best businesses on Delve to make your search smoother.
-          </p>
         </div>
         <div className='absolute bottom-16 flex w-full justify-center px-5 sm:-bottom-9 sm:px-0'>
           <div>
