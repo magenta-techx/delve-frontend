@@ -70,14 +70,14 @@ const navItems = [
   },
   {
     name: 'Review Management',
-    href: '/business/reviews',
+    href: '/business/review-management',
     icon: ReviewsIcon,
     iconSelected: ReviewsSelectedIcon,
     exact: false,
   },
   {
     name: 'Settings',
-    href: '/business/profile-settings',
+    href: '/business/settings',
     icon: SettingsIcon,
     iconSelected: SettingsSelectedIcon,
     exact: false,
@@ -94,9 +94,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className='bg-white border-r border-[#FBFAFF] flex w-72 flex-col overflow-y-auto '>
-      <div className='flex flex-col gap-8 p-6 h-48'>
-        <Logo textColor='black' />
+    <aside className='bg-white border-r border-[#FBFAFF] flex w-[19rem] flex-col overflow-y-auto '>
+      <div className='flex flex-col gap-8 p-6 h-40'>
+        <Logo className='h-[40px] ' textColor='black' />
         <BusinessSwitcher />
       </div>
 
