@@ -89,6 +89,7 @@ const supportItems = [
   { name: 'Logout', href: '/logout', icon: LogOut },
 ];
 
+
 export function Sidebar() {
   const pathname = usePathname();
 
