@@ -1,9 +1,5 @@
-"use client"
+import { redirect } from 'next/navigation';
 
-import { SettingsPage } from "../../misc/components/pages/settings-page"
-
-
-
-export default function SettingsView(): JSX.Element {
-  return <SettingsPage />
+export default function SettingsPage() {
+  redirect('/business/settings/general');
 }
