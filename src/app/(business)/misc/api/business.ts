@@ -33,10 +33,13 @@ export type CreateBusinessData = {
 };
 
 export type BusinessService = {
+  id: number;
   title: string;
   description: string;
+  price?: string;
+  duration?: string;
   image?: string | undefined; // base64 string
-};;
+};
 
 // New service creation types
 export type CreateServiceData = {
@@ -151,9 +154,7 @@ export function useCreateBusiness(): UseMutationResult<ApiEnvelope<{ business_id
       });
       const responseData = await res.json();
       if (!res.ok) throw new Error(responseData?.error || 'Failed to create business');
-      
-      // Backend returns { status, message, data: { id, ... } }
-      // Transform to match frontend expectation: { business_id }
+    
       return {
         status: responseData.status,
         message: responseData.message,
@@ -406,3 +407,91 @@ export function useDeleteBusinessImages(): UseMutationResult<ApiMessage, Error, 
 
 // Backward-compatible alias (singular name)
 export const useDeleteBusinessImage = useDeleteBusinessImages;
+
+// General business update (name, description, website, logo, thumbnail)
+export function useUpdateBusiness(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; business_name?: string; description?: string; website?: string; logo?: File; thumbnail?: File }> {
+  const qc = useQueryClient();
+  const { handleErrorObject } = useAuthErrorHandler();
+  
+  return useMutation<ApiMessage, Error, { business_id: BusinessId; business_name?: string; description?: string; website?: string; logo?: File; thumbnail?: File }>({
+    mutationFn: async ({ business_id, business_name, description, website, logo, thumbnail }) => {
+      const fd = new FormData();
+      if (business_name) fd.append('business_name', business_name);
+      if (description) fd.append('description', description);
+      if (website) fd.append('website', website);
+      if (logo) fd.append('logo', logo);
+      if (thumbnail) fd.append('thumbnail', thumbnail);
+      
+      const res = await authAwareFetch(`/api/business/${business_id}/`, {
+        method: 'PATCH',
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to update business');
+      return data;
+    },
+    onSuccess: (_data, { business_id }) => {
+      qc.invalidateQueries({ queryKey: ['business', business_id] });
+      qc.invalidateQueries({ queryKey: ['user-businesses'] });
+    },
+    onError: handleErrorObject,
+  });
+}
+
+// Fetch services for a business
+export function useBusinessServices(businessId: BusinessId): UseQueryResult<ApiEnvelope<BusinessService[]>, Error> {
+  return useQuery({
+    queryKey: ['business-services', businessId],
+    queryFn: async () => {
+      const res = await authAwareFetch(`/api/business/${businessId}/services/`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to fetch services');
+      return data;
+    },
+    enabled: Boolean(businessId),
+  });
+}
+
+// Create new services
+export function useCreateServices(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; services: Array<{ title: string; description: string; price?: string; duration?: string }> }> {
+  const qc = useQueryClient();
+  const { handleErrorObject } = useAuthErrorHandler();
+  
+  return useMutation<ApiMessage, Error, { business_id: BusinessId; services: Array<{ title: string; description: string; price?: string; duration?: string }> }>({
+    mutationFn: async ({ business_id, services }) => {
+      const res = await authAwareFetch(`/api/business/${business_id}/services/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ services }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to create services');
+      return data;
+    },
+    onSuccess: (_data, { business_id }) => {
+      qc.invalidateQueries({ queryKey: ['business-services', business_id] });
+    },
+    onError: handleErrorObject,
+  });
+}
+
+// Delete a service
+export function useDeleteService(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; service_id: number }> {
+  const qc = useQueryClient();
+  const { handleErrorObject } = useAuthErrorHandler();
+  
+  return useMutation<ApiMessage, Error, { business_id: BusinessId; service_id: number }>({
+    mutationFn: async ({ business_id, service_id }) => {
+      const res = await authAwareFetch(`/api/business/${business_id}/services/${service_id}/`, {
+        method: 'DELETE',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error((data as any)?.error || 'Failed to delete service');
+      return data;
+    },
+    onSuccess: (_data, { business_id }) => {
+      qc.invalidateQueries({ queryKey: ['business-services', business_id] });
+    },
+    onError: handleErrorObject,
+  });
+}

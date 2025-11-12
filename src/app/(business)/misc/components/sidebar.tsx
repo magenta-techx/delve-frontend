@@ -100,7 +100,7 @@ export function Sidebar() {
         <BusinessSwitcher />
       </div>
 
-      <nav className='flex-1 space-y-4 py-4'>
+      <nav className='flex-1 flex flex-col gap-y-2.5 py-4'>
         <div className='text-sidebar-foreground p-4 px-8 text-xs font-semibold uppercase opacity-50'>
           Overview
         </div>
@@ -139,7 +139,7 @@ export function Sidebar() {
         })}
 
         {/* Support section */}
-        <div className='text-sidebar-foreground mt-6 px-2 py-4 text-xs font-semibold uppercase opacity-50'>
+        <div className='mt-auto text-sidebar-foreground p-4 px-8 text-xs font-semibold uppercase opacity-50'>
           Support
         </div>
         {supportItems.map(item => {
@@ -151,7 +151,7 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                'flex items-center gap-3 rounded-lg p-4 px-8 text-sm font-medium transition-colors',
                 isActive
                   ? 'bg-sidebar-accent text-sidebar-accent-foreground'
                   : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
