@@ -1,4 +1,4 @@
-import BusinessPricingList from '@/components/business/BusinessPricingList';
+import BusinessPricingList from '@/app/(clients)/misc/components/BusinessLandingPricingList';
 import BusinessSectionHeader from '@/components/business/BusinessSectionHeader';
 
 export default function Page(): JSX.Element {

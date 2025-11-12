@@ -1,7 +1,11 @@
-import Input from '@/components/ui/Input';
-import TextArea from '@/components/ui/TextArea';
-import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import type { CreateCollaborationInput } from '@/schemas/collaborationSchema';
+import { createCollaborationSchema } from '@/schemas/collaborationSchema';
 import CollaborationContact from './CollaborationContact';
 import { CollaborationIcons } from '@/assets/icons/business/collaboration/Icons';
 import CollaborationPreview from './CollaborationPreview';
@@ -13,7 +17,7 @@ import { Button } from '@/components/ui/Button';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
-import FeaturedListingCard from '@/components/cards/FeaturedListingCard';
+import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
 
 const CollaborationCreationForm = (): JSX.Element => {
   const [addTeamMemberInput, setAddTeamMemberInput] = useState<boolean>(false);
@@ -110,40 +114,60 @@ const CollaborationCreationForm = (): JSX.Element => {
       rating: 4.8,
     },
   ];
+  const form = useForm<CreateCollaborationInput>({
+    resolver: zodResolver(createCollaborationSchema),
+    defaultValues: {
+      group_name: '',
+      description: '',
+    },
+    mode: 'onTouched',
+  });
+
+  const onSubmit = (values: CreateCollaborationInput): void => {
+    // TODO: Wire to internal API + React Query mutation when backend is ready
+    // For now, just log values to preserve behavior parity
+    console.log(values);
+  };
+
   return (
     <section className='flex w-full justify-between'>
       <div className='sm:w-[624px]'>
-        <Formik
-          initialValues={{ group_name: '', description: '' }}
-          //   validationSchema={loginSchema}
-          onSubmit={value => console.log(value)}
-        >
-          {({ errors, isSubmitting }) => (
-            <Form className='w-full'>
-              {errors.group_name} {errors.description}
-              {isSubmitting && 'Loading'}
-              {/* Fields */}
-              <div className='mb-2 flex w-full flex-col gap-3'>
-                {/* Group Field */}
-                <Input
-                  name='group_name'
-                  type='text'
-                  placeholder='Enter group name'
-                  label='Group name '
-                  //   icon={<CancleIcon />}
-                  //   validate={emailValidator}
-                />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
+            {/* Fields */}
+            <div className='mb-2 flex w-full flex-col gap-3'>
+              {/* Group Field */}
+              <FormField
+                control={form.control}
+                name='group_name'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Group name</FormLabel>
+                    <FormControl>
+                      <Input type='text' placeholder='Enter group name' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                {/* Description Field */}
-                <TextArea
-                  name='description'
-                  placeholder='Write a decription'
-                  label='Description'
-                />
-              </div>
-            </Form>
-          )}
-        </Formik>
+              {/* Description Field */}
+              <FormField
+                control={form.control}
+                name='description'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder='Write a description' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </form>
+        </Form>
 
         {/* Group members  */}
         <div className='mb-10'>

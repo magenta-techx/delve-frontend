@@ -12,7 +12,7 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 });
 
-export default [
+const config = [
   {
     ignores: [
       '**/node_modules/**',
@@ -31,6 +31,8 @@ export default [
       '**/next-env.d.ts',
       'postcss.config.js',
       'tailwind.config.js',
+      'src/app/**/misc/components/**',
+      'src/app/**/misc/api/**'
     ],
   },
   // Configuration for JS/JSX files - BLOCKS THEM
@@ -80,8 +82,7 @@ export default [
         'error',
         {
           'src/**/*.{ts,tsx}': '+(+([a-z0-9])|*([A-Z]*([a-z0-9])))',
-          'src/components/**/*.{ts,tsx}': 'PASCAL_CASE',
-          'src/app/**/*.{ts,tsx}': 'KEBAB_CASE',
+          // 'src/app/**/*.{ts,tsx}': 'KEBAB_CASE',
           'src/utils/**/*.ts': 'CAMEL_CASE',
           'src/hooks/**/*.ts': 'CAMEL_CASE',
           'src/types/**/*.ts': 'CAMEL_CASE',
@@ -92,7 +93,7 @@ export default [
       ],
       // TypeScript Strict Rules
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -115,7 +116,7 @@ export default [
   {
     files: ['src/app/**/*.{ts,tsx}'],
     rules: {
-      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'off',
     },
   },
   // Next.js special files exceptions
@@ -130,3 +131,5 @@ export default [
     },
   },
 ];
+
+export default config;

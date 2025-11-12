@@ -1,5 +1,4 @@
 import { BaseIcons } from '@/assets/icons/base/Icons';
-import ProfileSettings from '@/components/business/Profile/ProfileSettings';
 export default function Page(): JSX.Element {
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden bg-[#FCFCFD]'>
@@ -19,8 +18,9 @@ export default function Page(): JSX.Element {
             </h1>
           </div>
         </div>
-
-        <ProfileSettings />
+        <div className='rounded-md border border-dashed border-[#E3E8EF] p-6 text-sm text-[#697586]'>
+          Profile Settings is being migrated to React Hook Form + Zod. Please check back soon.
+        </div>
       </div>
     </main>
   );

@@ -2,10 +2,8 @@
 
 import DefaultLogoTextIcon from '@/assets/icons/logo/DefaultLogoTextIcon';
 import MenuBarIcon from '@/assets/icons/MenuBarIcon';
-import { RootState } from '@/redux/store';
 import Link from 'next/link';
 import React, { ReactNode, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Button } from '../ui/Button';
 import { useSession } from 'next-auth/react';
 import ListingUserMenuExtension from '../landing-page/UserMenuExtensions/ListingUserMenuExtension';
@@ -45,11 +43,8 @@ const NavbarWhiteBg = ({
         // Add other menu extensions here
     };
 
-    const userIsloggedIn = useSelector(
-        (state: RootState) => state.business.userIsLoggedIn
-    );
-
     const { data: session } = useSession();
+    const userIsloggedIn = Boolean(session?.user);
     const [showMobileMenuItems, setShowMobileMenuItems] =
         useState<boolean>(false);
     const [showUserMenu, setShowUserMenu] = useState<boolean>(false);

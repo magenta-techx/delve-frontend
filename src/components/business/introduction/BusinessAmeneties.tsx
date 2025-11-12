@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
-import { Form, Formik } from 'formik';
-import Input from '@/components/ui/Input';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Input } from '@/components/ui/Input';
 // import { amenitySchema } from '@/schemas/businessSchema';
 import { BusinessAmenitiesTypeProp } from '@/types/business/types';
 import Amenity from '@/assets/icons/business/Amenity';
 import Loader from '@/components/ui/Loader';
 import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
+import { amenityZodSchema } from '@/schemas/businessZodSchema';
+import { z } from 'zod';
 
 interface amenitiesType {
   id: number | null;
@@ -59,6 +62,16 @@ const BusinessAmeneties = ({
     };
     fetchAmenities();
   }, []);
+  type AmenityInput = z.infer<typeof amenityZodSchema>;
+  const methods = useForm<AmenityInput>({
+    resolver: zodResolver(amenityZodSchema),
+    defaultValues: { amenity: '' },
+    mode: 'onTouched',
+  });
+
+  const { setValue, watch } = methods;
+  const selectedAmenityName = watch('amenity');
+
   return (
     <div className='sm:w-[500px]'>
       {' '}
@@ -67,36 +80,18 @@ const BusinessAmeneties = ({
         header='Add your business ameneties'
         paragraph='Select the ameneties your business offers from the list of available options'
       />
-      <Formik
-        initialValues={{ name: '' }}
-        // validationSchema={amenitySchema}
-        onSubmit={values => {
-          const { name } = values;
-          setSelectedAmenities([
-            ...selectedAmenities,
-            { name: name, id: 0, icon_name: '' },
-          ]);
-        }}
-      >
-        {({ setFieldValue, errors }) => (
-          <Form className='mt-4 flex w-full flex-col gap-3'>
-            <Input
-              name='name'
-              disabled={true}
-              placeholder='click to select amenities'
-              label='Amenities (Optional)'
-              onChange={(e: string | File) => {
-                if (typeof e === 'string') {
-                  setFieldValue('name', e);
-                }
-              }}
-            />
-            {errors.name && (
-              <div className='text-sm text-red-600'>{errors.name}</div>
-            )}
-          </Form>
-        )}
-      </Formik>
+      <FormProvider {...methods}>
+        <form className='mt-4 flex w-full flex-col gap-3' onSubmit={e => e.preventDefault()}>
+          <Input
+            type='text'
+            value={selectedAmenityName ?? ''}
+            disabled={true}
+            placeholder='click to select amenities'
+            label='Amenities (Optional)'
+            readOnly
+          />
+        </form>
+      </FormProvider>
       <div className='mb-2 grid grid-cols-2 gap-x-7 gap-y-4 sm:grid-cols-3'>
         {selectedAmenities.length
           ? selectedAmenities.map((amenity, key) => (
@@ -132,7 +127,10 @@ const BusinessAmeneties = ({
               return (
                 <button
                   key={key}
-                  onClick={() => handleAdd(amenity)}
+                  onClick={() => {
+                    handleAdd(amenity);
+                    setValue('amenity', amenity.name);
+                  }}
                   className='flex items-center px-10 text-left text-sm capitalize focus:text-primary'
                 >
                   <span>{amenity?.icon_name}</span>

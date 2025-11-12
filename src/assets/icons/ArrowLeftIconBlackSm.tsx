@@ -12,7 +12,7 @@ const ArrowLeftIconBlackSm = (): JSX.Element => {
     >
       <path
         d='M5.16667 10.3751L1 6.00012M1 6.00012L5.16667 1.62512M1 6.00012H11'
-        stroke='black'
+        stroke='currentColor'
         strokeWidth='2'
         strokeLinecap='round'
         strokeLinejoin='round'

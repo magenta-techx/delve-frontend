@@ -1,63 +1,31 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef } from 'react';
-import {
-  FieldArray,
-  Form,
-  Formik,
-  FormikContextType,
-  FormikProps,
-  FormikValues,
-} from 'formik';
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
-import Input from '@/components/ui/Input';
-import TextArea from '@/components/ui/TextArea';
+import { Input } from '../../ui/Input';
 import FileUpload from '@/components/FileUpload';
 import { Button } from '@/components/ui/Button';
 import Image from 'next/image';
+import { useForm, useFieldArray, Controller, FormProvider, useFormContext, type UseFormReturn } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { servicesZodSchema } from '@/schemas/businessZodSchema';
+import type { z } from 'zod';
 
-interface Service {
-  title: string;
-  description: string;
-  image_field: File | null;
-}
+export type ServicesFormValues = z.infer<typeof servicesZodSchema>;
 
-interface FormValues {
-  services: Service[];
-}
+type ExposedSubmit = { submit: () => Promise<void> };
 
-type FormProps<T extends FormikValues> = {
-  formikRef: React.Ref<FormikProps<T>>;
-  onSubmit: (values: T) => void;
-  initialValues: T;
+type Props = {
+  onSubmit: (values: ServicesFormValues) => void;
+  setIsSubmitting?: (b: boolean) => void;
+  onFormStateChange?: (state: { isValid: boolean; isDirty: boolean }) => void;
 };
 
-type ServiceItemProps = {
-  service: Service;
-  index: number;
-  fileInputRefs: React.MutableRefObject<
-    Record<number, HTMLInputElement | null>
-  >;
-  setFieldValue: FormikContextType<FormValues>['setFieldValue'];
-  remove: (index: number) => void;
-  canRemove: boolean;
-};
-
-const ServiceItem = React.memo(function ServiceItem({
-  service,
-  index,
-  fileInputRefs,
-  setFieldValue,
-  remove,
-  canRemove,
-}: ServiceItemProps) {
-  const imageUrl = useMemo(
-    () =>
-      service.image_field ? URL.createObjectURL(service.image_field) : null,
-    [service.image_field]
-  );
-
-  console.log('Business service: ', service);
+const ServiceItem = ({ index }: { index: number }): JSX.Element => {
+  const { control, setValue, watch } = useFormContext<ServicesFormValues>() as UseFormReturn<ServicesFormValues>;
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const current = watch(`services.${index}`);
+  const imageUrl = useMemo(() => (current?.image_field ? URL.createObjectURL(current.image_field) : null), [current?.image_field]);
 
   useEffect(() => {
     return (): void => {
@@ -67,18 +35,41 @@ const ServiceItem = React.memo(function ServiceItem({
 
   return (
     <div className='flex flex-col gap-3 border-b-2 border-b-gray-100 pb-3'>
-      <Input
-        name={`services[${index}].title`}
-        type='text'
-        label='Title of Service (Optional)'
-        className='w-full'
+      <Controller
+        name={`services.${index}.title` as const}
+        control={control}
+        render={({ field, fieldState }) => (
+          <Input
+            {...field}
+            type='text'
+            label='Title of Service (Optional)'
+            className='w-full'
+            hasError={!!fieldState.error}
+            errorMessage={fieldState.error?.message}
+          />
+        )}
       />
-      <TextArea
-        name={`services[${index}].description`}
-        label='Description (Optional)'
-        className='w-full'
-        placeholder='Write a description'
-        maxLength={250}
+
+      <Controller
+        name={`services.${index}.description` as const}
+        control={control}
+        render={({ field, fieldState }) => (
+          <div className='w-full'>
+            <label className='text-sm text-[#0F172B] font-medium' htmlFor={`services-${index}-description`}>
+              Description (Optional)
+            </label>
+            <textarea
+              id={`services-${index}-description`}
+              className='w-full rounded-md border border-[#D9D9D9] p-3 text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]'
+              maxLength={250}
+              rows={4}
+              {...field}
+            />
+            {fieldState.error?.message && (
+              <p className='text-sm text-destructive'>{fieldState.error.message}</p>
+            )}
+          </div>
+        )}
       />
 
       {imageUrl ? (
@@ -93,24 +84,20 @@ const ServiceItem = React.memo(function ServiceItem({
           />
 
           <input
-            ref={el => {
-              fileInputRefs.current[index] = el ?? null;
-            }}
+            ref={fileInputRef}
             type='file'
             multiple={false}
             accept='image/png, image/jpeg, image/jpg'
             className='hidden'
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               const file = e.target.files ? e.target.files[0] : null;
-              console.log('file: ', file);
-
-              setFieldValue(`services[${index}].image_field`, file);
+              setValue(`services.${index}.image_field`, file, { shouldDirty: true, shouldValidate: true });
             }}
           />
 
           <button
             className='absolute w-[100px] rounded-full bg-white p-2 text-sm font-medium shadow-md'
-            onClick={() => fileInputRefs.current[index]?.click()}
+            onClick={() => fileInputRef.current?.click()}
             type='button'
           >
             Change
@@ -120,85 +107,84 @@ const ServiceItem = React.memo(function ServiceItem({
         <FileUpload
           label='Service Image'
           mutipleUploads={false}
-          onFileSelect={files =>
-            setFieldValue(`services[${index}].image_field`, files?.[0] ?? null)
-          }
+          onFileSelect={files => setValue(`services.${index}.image_field`, files?.[0] ?? null, { shouldDirty: true, shouldValidate: true })}
         />
       )}
-      {canRemove && (
-        <Button
-          type='button'
-          variant='destructive'
-          onClick={() => remove(index)}
-        >
-          Remove
-        </Button>
-      )}
     </div>
   );
-});
+};
 
-function BusinessServicesForm({
-  formikRef,
-  initialValues,
-  onSubmit,
-}: FormProps<FormValues>): JSX.Element {
-  const fileInputRefs = useRef<Record<number, HTMLInputElement | null>>({});
+// no-op helper removed; using useFormContext directly in ServiceItem
 
-  return (
-    <div className='sm:w-[500px]'>
-      <BusinessIntroductionFormHeader
-        intro='Business account setup'
-        header='Add Business Services'
-        paragraph='Showcase your services to attract the right clients and boost bookings'
-      />
-      <Formik<FormValues>
-        innerRef={formikRef}
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-      >
-        {({ setFieldValue, values }) => (
-          <Form className='mt-3 w-full'>
-            <FieldArray name='services'>
-              {({ push, remove }) => (
-                <div className='flex flex-col gap-4'>
-                  {values.services.map((service, index) => (
-                    <ServiceItem
-                      key={index}
-                      service={service}
-                      index={index}
-                      fileInputRefs={fileInputRefs}
-                      setFieldValue={setFieldValue}
-                      remove={remove}
-                      canRemove={values.services.length > 1}
-                    />
-                  ))}
+const BusinessServicesForm = forwardRef<ExposedSubmit, Props>(
+  ({ onSubmit, setIsSubmitting, onFormStateChange }, ref) => {
+    const methods = useForm<ServicesFormValues>({
+      resolver: zodResolver(servicesZodSchema),
+      mode: 'onChange',
+      defaultValues: { services: [{ title: '', description: '', image_field: null }] },
+    });
 
-                  <div className='w-[70px]'>
-                    <Button
-                      type='button'
-                      size='sm'
-                      variant='outline'
-                      className='border border-gray-200 bg-transparent text-primary hover:bg-transparent'
-                      onClick={() =>
-                        push({
-                          title: '',
-                          description: '',
-                          image_field: null,
-                        })
-                      }
-                    >
-                      + Add
+    const { control, handleSubmit, formState } = methods;
+    const { fields, append, remove } = useFieldArray({ control, name: 'services' });
+
+    useEffect(() => {
+      onFormStateChange?.({ isValid: formState.isValid, isDirty: formState.isDirty });
+    }, [formState.isValid, formState.isDirty, onFormStateChange]);
+
+    const internalSubmit = async (values: ServicesFormValues): Promise<void> => {
+      try {
+        setIsSubmitting?.(true);
+        onSubmit(values);
+      } finally {
+        setIsSubmitting?.(false);
+      }
+    };
+
+    useImperativeHandle(ref, () => ({
+      submit: async (): Promise<void> => {
+        await handleSubmit(internalSubmit)();
+      },
+    }));
+
+    return (
+      <div className='sm:w-[500px]'>
+        <BusinessIntroductionFormHeader
+          intro='Business account setup'
+          header='Add Business Services'
+          paragraph='Showcase your services to attract the right clients and boost bookings'
+        />
+        <FormProvider {...methods}>
+          <form className='mt-3 w-full' onSubmit={handleSubmit(internalSubmit)}>
+            <div className='flex flex-col gap-4'>
+              {fields.map((f, index) => (
+                <div key={f.id}>
+                  <ServiceItem index={index} />
+                  {fields.length > 1 && (
+                    <Button type='button' variant='destructive' onClick={() => remove(index)}>
+                      Remove
                     </Button>
-                  </div>
+                  )}
                 </div>
-              )}
-            </FieldArray>
-          </Form>
-        )}
-      </Formik>
-    </div>
-  );
-}
+              ))}
+              <div className='w-[70px]'>
+                <Button
+                  type='button'
+                  size='sm'
+                  variant='outline'
+                  className='border border-gray-200 bg-transparent text-primary hover:bg-transparent'
+                  onClick={() => append({ title: '', description: '', image_field: null })}
+                >
+                  + Add
+                </Button>
+              </div>
+            </div>
+          </form>
+        </FormProvider>
+      </div>
+    );
+  }
+);
+
+BusinessServicesForm.displayName = 'BusinessServicesForm';
 
 export default BusinessServicesForm;

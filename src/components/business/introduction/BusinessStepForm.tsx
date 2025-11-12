@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import DefaultLogoTextIcon from '@/assets/icons/logo/DefaultLogoTextIcon';
 import Logo from '@/components/ui/Logo';
 import BusinessIntroductionForm from './BusinessIntroductionForm';
@@ -12,19 +12,8 @@ import BusinessAmeneties from './BusinessAmeneties';
 import BusinessServicesForm from './BusinessServicesForm';
 import BusinessLocationForm from './BusinessLocationForm';
 import BusinessContactAndBusiness from './BusinessContactAndBusiness';
-import { FormikProps, FormikValues } from 'formik';
-import {
-  BusinessAmenitiesTypeProp,
-  BusinessIntroductionProps,
-  BusinessShowCaseProps,
-} from '@/types/business/types';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  // clearBusinessData,
-  selectBusinessId,
-  selectBusinessStep,
-  setBusinessRegistrationStage,
-} from '@/redux/slices/businessSlice';
+import { BusinessAmenitiesTypeProp, BusinessShowCaseProps } from '@/types/business/types';
+import { useBusinessRegistrationStore } from '@/stores/businessRegistrationStore';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/ui/Loader';
@@ -32,37 +21,25 @@ import Loader from '@/components/ui/Loader';
 // import Spinner from '@/components/business/Spinner';
 // import fileEncoder from '@/utils/fileEncoder';
 
-interface Service {
-  title: string;
-  description: string;
-  image_field: File | null;
-}
+// Service shape is inferred directly from child form values; local interface removed after RHF migration
 
-interface FormValues {
-  services: Service[];
-}
-
-interface BusinessFormValuesContactAndInformation {
-  phone_number: string;
-  registration_number: string;
-  socials: { id: number; input_name: string; text: string }[];
-  whatsapp_link: '';
-  instagram_link: '';
-  facebook_link: '';
-  twitter_link: '';
-  tiktok_link: '';
-}
+// Legacy FormValues no longer used after RHF migration for services
 
 const BusinessStepForm = (): JSX.Element => {
-  const formikRef = useRef<FormikProps<FormikValues>>(null);
-  const formikRefServices = useRef<FormikProps<FormValues>>(null);
-  const formikRefContactAndInformation =
-    useRef<FormikProps<BusinessFormValuesContactAndInformation>>(null);
+  type ContactFormHandle = { submit: () => Promise<void> };
+  type IntroFormHandle = { submit: () => Promise<void> };
+  type ServicesFormHandle = { submit: () => Promise<void> };
+  const contactFormRef = useRef<ContactFormHandle | null>(null);
+  const introFormRef = useRef<IntroFormHandle | null>(null);
+  const servicesFormRef = useRef<ServicesFormHandle | null>(null);
 
   const redirect = useRouter();
-  const formStep = useSelector(selectBusinessStep);
-  const currentBusinessId = useSelector(selectBusinessId);
-  const dispatch = useDispatch();
+  const {
+    business_registration_step: formStep,
+    business_id: currentBusinessId,
+    setStep,
+    setBusinessId,
+  } = useBusinessRegistrationStore();
   const [pageNumber, setPageNumber] = useState(formStep);
   const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<
@@ -71,56 +48,11 @@ const BusinessStepForm = (): JSX.Element => {
   const [showSubBusinessCategories, setShowSubBusinessCategories] =
     useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [businessId, setBusinessId] = useState<number | undefined>(
+  const [businessId, setLocalBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
   );
 
-  const hanldeIntroductionFormsSubmittion = async (
-    values: BusinessIntroductionProps
-  ): Promise<void> => {
-    const formData = new FormData();
-
-    Object.entries(values).forEach(([key, value]) => {
-      if (value && typeof value === 'object' && 'name' in value) {
-        formData.append(key, value as File);
-      } else if (value) {
-        formData.append(key, String(value));
-      }
-    });
-
-    try {
-      const res = await fetch('/api/business/business-introduction', {
-        method: 'POST',
-        body: formData, // ✅ automatically multipart/form-data
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(`Error submitting business intro: ${data}`);
-        // optionally show toast or set error state
-        return;
-      }
-
-      console.log('✅ Business intro submitted successfully:', data);
-      console.log('data?.data?.id:', data?.data?.id);
-
-      // move to next step only if success
-      if (data?.data?.id) {
-        setBusinessId(data?.data?.id);
-        dispatch(
-          setBusinessRegistrationStage({
-            business_registration_step: pageNumber + 1,
-            business_id: data?.data?.id,
-          })
-        );
-        setPageNumber(prev => prev + 1);
-      }
-    } catch (error) {
-      console.log('Request failed:', error);
-    }
-    setIsSubmitting(false);
-  };
+  // Introduction form submission is handled within the child via RHF; we trigger it via ref
 
   const hanldeShowCaseFormsSubmittion = async (
     values: BusinessShowCaseProps
@@ -158,12 +90,7 @@ const BusinessStepForm = (): JSX.Element => {
       console.log('✅ Business showcase submitted successfully:', data);
 
       if (data?.status) {
-        dispatch(
-          setBusinessRegistrationStage({
-            business_registration_step: pageNumber + 1,
-            business_id: data?.data?.id,
-          })
-        );
+        setStep(pageNumber + 1);
         setPageNumber(prev => prev + 1);
       }
     } catch (error) {
@@ -175,11 +102,7 @@ const BusinessStepForm = (): JSX.Element => {
   const hanleAmenitiesFormsSubmittion = async (): Promise<void> => {
     try {
       if (selectedAmenities.length === 0) {
-        dispatch(
-          setBusinessRegistrationStage({
-            business_registration_step: pageNumber + 1,
-          })
-        );
+        setStep(pageNumber + 1);
         return setPageNumber(prev => prev + 1);
       }
 
@@ -200,11 +123,7 @@ const BusinessStepForm = (): JSX.Element => {
         return;
       }
 
-      dispatch(
-        setBusinessRegistrationStage({
-          business_registration_step: pageNumber + 1,
-        })
-      );
+      setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
     } catch (error) {
       console.log('Request failed:', error);
@@ -213,7 +132,7 @@ const BusinessStepForm = (): JSX.Element => {
   };
 
   const handleServicesSubmission = async (
-    values: FormValues,
+    values: { services: { title?: string | undefined; description?: string | undefined; image_field?: unknown }[] },
     businessId: number | undefined
   ): Promise<void> => {
     if (!businessId) {
@@ -221,14 +140,13 @@ const BusinessStepForm = (): JSX.Element => {
       return;
     }
 
-    console.log('values.services.length', values.services.values);
+  console.log('values.services.length', values.services.length);
 
     // Check if ALL services are empty
-    const nonEmptyServices = values.services.filter(
-      service =>
-        service.title.trim() !== '' ||
-        service.description.trim() !== '' ||
-        service.image_field !== null
+    const nonEmptyServices = values.services.filter(service =>
+      (service.title ?? '').trim() !== '' ||
+      (service.description ?? '').trim() !== '' ||
+      Boolean(service.image_field)
     );
 
     console.log('nonEmptyServices:', nonEmptyServices);
@@ -258,8 +176,8 @@ const BusinessStepForm = (): JSX.Element => {
             description: string;
             image_field?: string;
           } = {
-            title: service.title,
-            description: service.description,
+            title: service.title ?? '',
+            description: service.description ?? '',
           };
 
           if (service.image_field instanceof File) {
@@ -280,8 +198,8 @@ const BusinessStepForm = (): JSX.Element => {
         if (!service) throw new Error('Service data is missing');
 
         formData.append('business_id', String(businessId));
-        formData.append('title', service.title);
-        formData.append('description', service.description);
+        formData.append('title', service.title ?? '');
+        formData.append('description', service.description ?? '');
 
         if (service.image_field instanceof File) {
           formData.append('image_field', service.image_field);
@@ -303,12 +221,7 @@ const BusinessStepForm = (): JSX.Element => {
       }
       // move to next step only if success
       if (data?.status) {
-        dispatch(
-          setBusinessRegistrationStage({
-            business_registration_step: pageNumber + 1,
-            business_id: data?.data?.id,
-          })
-        );
+        setStep(pageNumber + 1);
         setPageNumber(prev => prev + 1);
       }
       console.log('✅ Business services submitted successfully:', data);
@@ -324,6 +237,11 @@ const BusinessStepForm = (): JSX.Element => {
       setPageNumber(6);
       setIsSubmitting(false);
     }
+    if (pageNumber === 0) {
+      await introFormRef.current?.submit();
+      setIsSubmitting(false);
+      return;
+    }
     if (pageNumber === 1) {
       return await hanldeShowCaseFormsSubmittion({
         business_id: businessId,
@@ -334,77 +252,16 @@ const BusinessStepForm = (): JSX.Element => {
       return await hanleAmenitiesFormsSubmittion();
     }
     if (pageNumber === 4) {
-      if (!formikRefServices.current) {
-        dispatch(
-          setBusinessRegistrationStage({
-            business_registration_step: pageNumber + 1,
-            business_id: currentBusinessId,
-          })
-        );
-        return setPageNumber(prev => prev + 1);
-      } else if (
-        businessId &&
-        formikRefServices.current.values.services.length
-      ) {
-        return await handleServicesSubmission(
-          formikRefServices.current.values,
-          businessId
-        );
-      }
+      await servicesFormRef.current?.submit();
+      setIsSubmitting(false);
+      return;
     }
     if (pageNumber === 6) {
-      if (!formikRefContactAndInformation.current) return;
-
-      const errors =
-        await formikRefContactAndInformation.current.validateForm();
-      console.log(errors);
-      console.log(formikRefContactAndInformation.current.values);
-
-      if (Object.keys(errors).length > 0) {
-        // prevent moving forward
-        formikRefContactAndInformation.current.setTouched(
-          Object.keys(errors).reduce(
-            (acc, key) => ({ ...acc, [key]: true }),
-            {}
-          )
-        );
-        return;
-      }
-
-      if (businessId) {
-        await formikRefContactAndInformation.current.submitForm();
-        dispatch(
-          setBusinessRegistrationStage({
-            business_registration_step: 6,
-          })
-        );
-        console.log('I was called here in parent');
-        redirect.push('/business/business-submitted');
-
-        // setPageNumber(prev => prev + 1);
-      }
-    }
-
-    // For forms that require formik validations or have formik fields
-    if (!formikRef.current) return;
-
-    const errors = await formikRef.current.validateForm();
-    console.log(errors);
-    console.log(formikRef.current.values);
-
-    if (Object.keys(errors).length > 0) {
-      // prevent moving forward
-      formikRef.current.setTouched(
-        Object.keys(errors).reduce((acc, key) => ({ ...acc, [key]: true }), {})
-      );
+      await contactFormRef.current?.submit();
+      setIsSubmitting(false);
       return;
     }
 
-    if (pageNumber === 0) {
-      return await hanldeIntroductionFormsSubmittion(formikRef.current.values);
-    }
-
-    await formikRef.current.submitForm();
     setIsSubmitting(false);
   };
 
@@ -413,11 +270,7 @@ const BusinessStepForm = (): JSX.Element => {
       redirect.push('/business/get-started');
     } else {
       setPageNumber(prev => prev - 1);
-      dispatch(
-        setBusinessRegistrationStage({
-          business_registration_step: pageNumber - 1,
-        })
-      );
+      setStep(pageNumber - 1);
     }
   };
 
@@ -426,14 +279,15 @@ const BusinessStepForm = (): JSX.Element => {
       id: 0,
       component: (
         <BusinessIntroductionForm
-          formikRef={formikRef}
-          initialValues={{
-            business_name: '',
-            description: '',
-            website: '',
-            logo: '',
+          ref={introFormRef}
+          onSuccess={(newId: number) => {
+            setBusinessId(newId);
+            setLocalBusinessId(newId);
+            setStep(pageNumber + 1);
+            setPageNumber(prev => prev + 1);
           }}
-          onSubmit={values => console.log('Form submitted:', values)}
+          setIsSubmitting={setIsSubmitting}
+          onFormStateChange={state => setFormState(state)}
         />
       ),
     },
@@ -468,11 +322,18 @@ const BusinessStepForm = (): JSX.Element => {
       id: 4,
       component: (
         <BusinessServicesForm
-          formikRef={formikRefServices}
-          initialValues={{
-            services: [{ title: '', description: '', image_field: null }],
+          ref={servicesFormRef}
+          onSubmit={values => {
+            if (businessId) {
+              handleServicesSubmission(values, businessId);
+            } else {
+              // If no business id, skip to next step
+              setStep(pageNumber + 1);
+              setPageNumber(prev => prev + 1);
+            }
           }}
-          onSubmit={values => console.log('Form submitted:', values)}
+          setIsSubmitting={setIsSubmitting}
+          onFormStateChange={state => setFormState(state)}
         />
       ),
     },
@@ -484,9 +345,10 @@ const BusinessStepForm = (): JSX.Element => {
       id: 6,
       component: (
         <BusinessContactAndBusiness
+          ref={contactFormRef}
           businessId={businessId}
           setIsSubmitting={setIsSubmitting}
-          formikRef={formikRefContactAndInformation}
+          onFormStateChange={state => setFormState(state)}
         />
       ),
     },
@@ -497,25 +359,7 @@ const BusinessStepForm = (): JSX.Element => {
     isDirty: false,
   });
 
-  // Keep watching formikRef updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (formikRef.current) {
-        setFormState({
-          isValid: formikRef.current.isValid,
-          isDirty: formikRef.current.dirty,
-        });
-      }
-      if (formikRefContactAndInformation.current) {
-        setFormState({
-          isValid: formikRefContactAndInformation.current.isValid,
-          isDirty: formikRefContactAndInformation.current.dirty,
-        });
-      }
-    }, 200); // polling (Formik doesn’t emit events)
-
-    return (): void => clearInterval(interval);
-  }, []);
+  // Form validity/dirty state is provided by child forms via onFormStateChange
 
   return (
     <section className='relative h-full w-full sm:pb-0'>

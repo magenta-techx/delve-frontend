@@ -5,10 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Logo from '@/components/ui/Logo';
 
 // import AuthFormCarousel from './AuthFormCarousel';
-import LoginForm from './login/LoginForm';
-import SignUpForm from './signup/SignUpForm';
-import AuthSocialLoginButtons from './AuthFormSocialLoginButtons';
-import AuthFormButton from './AuthFormButton';
+import LoginForm from '../../app/(auth)/misc/components/LoginForm';
+import SignUpForm from '../../app/(auth)/misc/components/SignUpForm';
+import AuthSocialLoginButtons from '../../app/(auth)/misc/components/AuthFormSocialLoginButtons';
+import AuthFormButton from '../../app/(auth)/misc/components/AuthFormButton';
 import type { ButtonProps } from '../ui/Button';
 import DefaultLogoIcon from '@/assets/icons/logo/DefaultLogoIcon';
 import LoginIcon from '@/assets/icons/auth/LoginIcon';

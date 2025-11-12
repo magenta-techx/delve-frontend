@@ -3,11 +3,13 @@ import React, { useState } from 'react';
 import Modal from '@/components/ui/Modal';
 import CancleIcon from '@/assets/icons/CancelIcon';
 import { IconsType, RatingsIcons } from '@/assets/icons/business/ratings/Icons';
-import { Form, Formik } from 'formik';
 import { Button } from '@/components/ui/Button';
-import TextArea from '@/components/ui/TextArea';
-import Input from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Input } from '@/components/ui/Input';
 import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
+import { useForm, FormProvider } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface RatingProps {
   open: boolean;
@@ -63,6 +65,28 @@ const Rating = ({ open, setOpen }: RatingProps): JSX.Element => {
     'Others (type service)',
   ];
 
+  const schema = z.object({
+    service: z.string().optional(),
+    tell_us_more: z.string().optional(),
+  });
+
+  type RatingForm = z.infer<typeof schema>;
+
+  const methods = useForm<RatingForm>({
+    resolver: zodResolver(schema),
+    defaultValues: { service: '', tell_us_more: '' },
+  });
+  const { handleSubmit, setValue, formState: { isSubmitting } } = methods;
+
+  const onSubmit = (values: RatingForm): void => {
+    // TODO: wire up submission endpoint when available
+    console.log({ rating: selectedRating, ...values });
+    setOpen(false);
+    setSelectedRating(null);
+    setShowServicesOptions(false);
+    setCusomtservice(false);
+  };
+
   return (
     <div>
       <Modal isOpen={open} onClose={() => setOpen(false)} contentClassName=''>
@@ -74,6 +98,7 @@ const Rating = ({ open, setOpen }: RatingProps): JSX.Element => {
                   setOpen(false);
                   setSelectedRating(null);
                   setShowServicesOptions(false);
+                  setCusomtservice(false);
                 }}
               >
                 <CancleIcon />
@@ -92,6 +117,7 @@ const Rating = ({ open, setOpen }: RatingProps): JSX.Element => {
               </span>
             </div>
           </div>
+
           <div className='mb-5 flex items-center gap-4'>
             {RATING_DATA.map(rating => {
               return (
@@ -114,26 +140,13 @@ const Rating = ({ open, setOpen }: RatingProps): JSX.Element => {
             <RatingsIcons value={'rating-star-yellow'} />
           </div>
           <div className='mb-10'>
-            <span className='capitalize text-gray-500'>{selectedRating}</span>
+            <span className='capitalize text-gray-500'>
+              {selectedRating}
+            </span>
           </div>
 
-          {
-            <Formik
-              initialValues={{
-                first_name: '',
-                last_name: '',
-                email: '',
-                current_password: '****************',
-                // confirm_password: '',
-              }}
-              // validationSchema={signupSchema}
-              onSubmit={values => {
-                console.log(values);
-              }}
-            >
-              {({ isSubmitting }) => (
-                <Form className='w-full'>
-                  {/* Fields */}
+          <FormProvider {...methods}>
+                <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
                   {selectedRating && (
                     <div className='flex w-full flex-col gap-2'>
                       {/* selection section  */}
@@ -160,7 +173,11 @@ const Rating = ({ open, setOpen }: RatingProps): JSX.Element => {
                                     key={key}
                                     type='button'
                                     className='text-[14px]'
-                                    onClick={() => setCusomtservice(true)}
+                                    onClick={() => {
+                                      setCusomtservice(service === 'Others (type service)');
+                                      setShowServicesOptions(false);
+                                      if (service !== 'Others (type service)') setValue('service', service);
+                                    }}
                                   >
                                     {service}
                                   </button>
@@ -171,36 +188,33 @@ const Rating = ({ open, setOpen }: RatingProps): JSX.Element => {
                         </div>
                       )}
 
-                      {/* Service Field */}
+                      {/* Service Field for custom service */}
                       {customeService && (
                         <Input
-                          name='service'
                           type='text'
                           placeholder='Type the service you received'
                           label='Service'
+                          {...methods.register('service')}
                         />
                       )}
 
-                      {/* Password Field */}
-                      <TextArea name='tell_us_more' label='Tell us more' />
+                      {/* Additional comments */}
+                      <Textarea
+                        label='Tell us more'
+                        placeholder='Share details about your experience'
+                        {...methods.register('tell_us_more')}
+                      />
                     </div>
                   )}
-                  {/* Submit Button */}
-                  <Button
-                    type='submit'
-                    // disabled={!passwordReset}
-                    isSubmitting={isSubmitting}
-                  >
+                  <Button type='submit' isSubmitting={isSubmitting}>
                     Submit
                   </Button>
-                </Form>
-              )}
-            </Formik>
-          }
+                </form>
+              </FormProvider>
+            </div>
+          </Modal>
         </div>
-      </Modal>
-    </div>
-  );
-};
+      );
+    };
 
-export default Rating;
+    export default Rating;

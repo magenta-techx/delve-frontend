@@ -2,17 +2,25 @@
 
 import DefaultLogoTextIcon from '@/assets/icons/logo/DefaultLogoTextIcon';
 import MenuBarIcon from '@/assets/icons/MenuBarIcon';
-import { RootState } from '@/redux/store';
 import Link from 'next/link';
-import React, { ReactNode, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Button } from '../ui/Button';
-import { useSession } from 'next-auth/react';
-import ListingUserMenuExtension from '../landing-page/UserMenuExtensions/ListingUserMenuExtension';
+import React, { useState } from 'react';
+import { signOut, useSession } from 'next-auth/react';
+// import ListingUserMenuExtension from '../landing-page/UserMenuExtensions/ListingUserMenuExtension';
 
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
-import Loader from '../ui/Loader';
+// import Loader from '../ui/Loader';
 import DefaultLogoTextIconWhite from '@/assets/icons/logo/DefaultLogoTextIconWhite';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/components/ui/Dropdown';
 
 interface Category {
   id: number;
@@ -37,23 +45,18 @@ interface NavbarProps {
 
 const NavbarLandingPage = ({
   categories,
-  isLoadingcategories,
-}: NavbarProps): JSX.Element => {
-  const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
-    listing: <ListingUserMenuExtension categories={categories} />,
-    // Add other menu extensions here
-  };
+  // isLoadingcategories,
+}: NavbarProps) => {
+  // const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
+  //   listing: <ListingUserMenuExtension categories={categories} />,
+  // };
 
-  const userIsloggedIn = useSelector(
-    (state: RootState) => state.business.userIsLoggedIn
-  );
-
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const isLoadingSession = status === 'loading';
+  const userIsloggedIn = status === 'authenticated' && Boolean(session?.user);
   const [showMobileMenuItems, setShowMobileMenuItems] =
     useState<boolean>(false);
-  const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
-  const [currentUserMenuExtension, setCurrentUserMenuExtension] =
-    useState<string>('');
+  // Dropdown state handled by Radix primitives
 
   const IS_LOGGED_IN_BUTTON = [
     { icon: 'listing' as IconsType, href: '/' },
@@ -62,38 +65,11 @@ const NavbarLandingPage = ({
     { icon: 'notification' as IconsType, href: '/' },
   ];
 
-  const USER_MENU_ITEMS = [
-    {
-      text: 'Home',
-      dropDown: false,
-      href: '/',
-    },
-    {
-      text: 'listing',
-      dropDown: true,
-      href: '/',
-    },
-    {
-      text: 'cities',
-      dropDown: true,
-      href: '/',
-    },
-    {
-      text: 'blog',
-      dropDown: false,
-      href: '/',
-    },
-    {
-      text: 'FAQ',
-      dropDown: false,
-      href: '/',
-    },
-  ];
+  // Top-level links for the dropdown (kept simple)
+  const BLOG_LINK = '/blogs';
+  const FAQ_LINK = '/faq';
+  const PROFILE_SETTINGS_LINK = '/dashboard/settings';
 
-  const handleUsermMenuExtension = (menu: string): void => {
-    setCurrentUserMenuExtension(menu);
-    // setShowUserMenu(true);
-  };
   return (
     <div className='mb-5 w-full sm:bg-black/10 backdrop-blur-sm flex items-center justify-center '>
       {/* bg-black/10 backdrop-blur-sm  */}
@@ -117,131 +93,104 @@ const NavbarLandingPage = ({
 
         <div>
           {/* Logged in user in Landing Page  */}
-          {userIsloggedIn && (
+          {userIsloggedIn && !isLoadingSession && (
             <div className='hidden sm:flex'>
               <div className='flex items-center gap-4 text-white'>
                 <div className='flex items-center gap-4'>
-                  {IS_LOGGED_IN_BUTTON.map((link, key) => {
-                    return (
-                      <Link
-                        key={key}
-                        href={link.href}
-                        className='flex h-12 w-12 items-center justify-center rounded-full bg-[#FFFFFF4D] p-2'
-                      >
-                        <BaseIcons value={link.icon} />
-                      </Link>
-                    );
-                  })}
+                  {IS_LOGGED_IN_BUTTON.map((link, key) => (
+                    <Link
+                      key={key}
+                      href={link.href}
+                      className='flex h-12 w-12 items-center justify-center rounded-full bg-[#FFFFFF4D] p-2'
+                    >
+                      <BaseIcons value={link.icon} />
+                    </Link>
+                  ))}
                 </div>
                 <BaseIcons value='vertical-line-white' />
 
-                <div className='flex items-center gap-1'>
-                  <BaseIcons value='user-logged-in-white' />
-                  {session?.user.name && (
-                    <p className='ml-1 w-[85px] truncate font-semibold capitalize'>
-                      {session?.user.name}
-                    </p>
-                  )}
-                  <button
-                    onClick={() => {
-                      setCurrentUserMenuExtension('');
-                      setShowUserMenu(!showUserMenu);
-                    }}
-                  >
-                    <BaseIcons value='arrow-down-white' />
-                  </button>
-                </div>
-              </div>
+                {/* Dropdown trigger */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className='flex items-center gap-1 rounded-full px-2 py-1 hover:bg-white/20 !cursor-pointer'>
+                      <BaseIcons value='user-logged-in-white' />
+                      {session?.user.name && (
+                        <p className='ml-1 w-[120px] truncate text-left font-semibold capitalize'>
+                          {session?.user.name} BOLA
+                        </p>
+                      )}
+                      <BaseIcons value='arrow-down-white' />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end' className='w-72'>
+                    <DropdownMenuLabel>
+                      Signed in as
+                      <span className='block truncate font-medium text-gray-900'>
+                        {session?.user.email ?? session?.user.name}
+                      </span>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
 
-
-            </div>
-          )}
-        </div>
-
-
-        {/* user menu  */}
-        {showUserMenu && (
-          <div className='absolute right-20 top-20 z-20 flex w-[300px] flex-col gap-4 rounded-lg bg-white font-inter text-black shadow-md'>
-            <div className='mb-3 rounded-tl-lg rounded-tr-lg bg-[#F8FAFC] px-5 py-6'>
-              <Link
-                href={'/business/get-started'}
-                className='flex h-14 w-[180px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white'
-              >
-                <span> List business</span>
-                <BaseIcons value='arrow-diagonal-white' />
-              </Link>
-            </div>
-            <div className='flex flex-col gap-6 px-5 pb-5'>
-              {USER_MENU_ITEMS.map((menu, key) => {
-                return menu.dropDown ? (
-                  <button
-                    key={key}
-                    className='flex items-center gap-2'
-                    onClick={() => handleUsermMenuExtension(menu.text)}
-                  >
-                    <span>{menu.text} </span>{' '}
-                    {menu.dropDown && (
-                      <BaseIcons value='arrow-down-black' />
+                    {/* Listing submenu using categories */}
+                    {Array.isArray(categories) && categories.length > 0 && (
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                          <span className='flex items-center gap-2'>
+                            <BaseIcons value='listing' />
+                            <span>Listings</span>
+                          </span>
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent className='w-64'>
+                          {categories.slice(0, 12).map((cat) => (
+                            <DropdownMenuItem key={cat.id} asChild>
+                              <Link href={`/explore?categoryId=${cat.id}`} className='flex w-full items-center gap-2'>
+                                <span className='truncate'>{cat.name}</span>
+                              </Link>
+                            </DropdownMenuItem>
+                          ))}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild>
+                            <Link href={'/explore'} className='text-primary'>Explore all categories</Link>
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuSub>
                     )}
-                  </button>
-                ) : (
-                  <Link
-                    key={key}
-                    href={menu.href}
-                    className='flex items-center gap-2'
-                  >
-                    <span className='capitalize'>{menu.text}</span>
-                  </Link>
-                );
-              })}
 
-              <Link
-                href={'/'}
-                className='text-md -mt-4 flex items-center gap-1 py-3'
-              >
-                <BaseIcons value='logout-black' />
-                <span> Profile settings</span>
-              </Link>
+                    <DropdownMenuItem asChild>
+                      <Link href={BLOG_LINK}>
+                        <span className='flex items-center gap-2'>Blog</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href={FAQ_LINK}>
+                        <span className='flex items-center gap-2'>FAQ</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href={PROFILE_SETTINGS_LINK}>
+                        <span className='flex items-center gap-2'>Profile settings</span>
+                      </Link>
+                    </DropdownMenuItem>
 
-              <Button
-                variant='neutral'
-                className='text-md -mt-2 flex items-center gap-1 py-3'
-              >
-                <BaseIcons value='logout-black' />
-                <span> Logout</span>
-              </Button>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={(e) => { e.preventDefault(); signOut({ callbackUrl: '/' }); }}>
+                      <span className='flex w-full items-center gap-2 text-red-600'>
+                        <BaseIcons value='logout-black' /> Logout
+                      </span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
-          </div>
-        )} </div>
-
-
-      {USER_MENU_EXTENSIONS[currentUserMenuExtension] && showUserMenu && (
-        <div className='absolute left-[10%] top-14 z-20 rounded-lg bg-white px-8 py-6 shadow-lg'>
-          <p className='mb-1'>
-            {' '}
-            Discover a world of businesses and services acrosslifestyle,ellness,
-            fashion, food, tech, and more.
-          </p>
-          <div className='w-[136px] border-b-[1px] border-b-primary'>
-            <Link
-              href={'/explore'}
-              className='flex items-center gap-1 text-primary'
-            >
-              <p>Explore all cities</p>
-              <span className='inline-block -rotate-45'>
-                <BaseIcons value='arrow-diagonal-right-primary' />
-              </span>
-            </Link>
-          </div>
-          {isLoadingcategories ? (
-            <div className='mt-8'>
-              <Loader borderColor='border-primary' />{' '}
-            </div>
-          ) : (
-            USER_MENU_EXTENSIONS[currentUserMenuExtension]
           )}
         </div>
-      )}
+
+
+        {/* user menu removed in favor of DropdownMenu */}
+      </div>
+
+
+      {/* Former large user menu extension removed */}
     </div>
   );
 };

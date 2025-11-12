@@ -2,18 +2,14 @@
 
 import { signOut, useSession } from 'next-auth/react';
 import { Button } from '../ui/Button';
-import { useDispatch } from 'react-redux';
-import { clearBusinessData } from '@/redux/slices/businessSlice';
 
 const DashBoardLayout = (): JSX.Element => {
   const { data: session } = useSession();
-  const dispatch = useDispatch();
 
   // console.log('Session in Dashboard: ', session);
 
   const handleLogOut = (): void => {
-    dispatch(clearBusinessData());
-    signOut({ redirect: true, callbackUrl: '/auth/signin-signup' });
+    signOut({ redirect: true, callbackUrl: '/signin' });
   };
 
   return (

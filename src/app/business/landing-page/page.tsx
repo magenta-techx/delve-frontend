@@ -1,11 +1,9 @@
 import RoadMapIconsMobile from '@/assets/icons/business/RoadMapIconMobile';
 import RoadMapIcons from '@/assets/icons/business/RoadMapIcons';
-import BuinessHero from '@/components/business/BuinessHero';
 import BusinessFooter from '@/components/business/BusinessFooter';
-import BusinessPricingList from '@/components/business/BusinessPricingList';
+import BusinessPricingList from '@/app/(clients)/misc/components/BusinessLandingPricingList';
 import BusinessSectionHeader from '@/components/business/BusinessSectionHeader';
-import BusinessTestimonies from '@/components/business/BusinessTestimonies';
-import BusinessTextAndButton from '@/components/business/BusinessTextAndButton';
+import BusinessTestimonies from '@/app/(clients)/misc/components/BusinessLandingTestimonies';
 // import FrequentlyAskedQuestions from '@/components/FrequentlyAskedQuestions';
 import type { Metadata } from 'next';
 import Image from 'next/image';
@@ -33,7 +31,7 @@ export default function DashboardPage(): JSX.Element {
   return (
     <section className='flex flex-col justify-center overflow-y-hidden'>
       <div className='flex justify-center'>
-        <BuinessHero />
+        {/* <BuinessHero /> */}
       </div>
       <div className='mb-20 hidden w-full justify-center lg:flex'>
         <RoadMapIcons />
@@ -70,12 +68,7 @@ export default function DashboardPage(): JSX.Element {
         </h1>
         <div className='ms:px-0 flex flex-col items-center gap-10 lg:flex-row lg:pr-0'>
           <div className='flex flex-col gap-7 pl-8 pr-7 lg:gap-5'>
-            <BusinessTextAndButton
-              text='Do you operate from a physical location, work remotely, or offer mobile services, you can list your business on Delve and connect with customers who need what you offer.'
-              buttonText='Get started now'
-              width='lg:w-[300px] w-full'
-              textClass='text-xs mb-4'
-            />
+          
             <div className='lg:px-0'>
               <BusinessTestimonies testimonies={TESTIMONIES} />
             </div>

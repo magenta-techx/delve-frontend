@@ -1,16 +1,17 @@
 'use client';
 
-import { Formik, Form } from 'formik';
-
-import AuthFormheader from '../AuthFormheader';
-import Input from '@/components/ui/Input';
+import AuthFormheader from '../../../app/(auth)/misc/components/AuthFormheader';
 import { Button } from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createPasswordSchema } from '@/schemas/authSchema';
+import { createPasswordSchema, type CreatePasswordInput } from '@/schemas/authSchema';
 import LockIcon from '@/assets/icons/auth/LockIcon';
 import { useEffect, useState } from 'react';
 import { showToastNotification } from '@/components/notifications/ToastNotification';
 import KeyIcon from '@/assets/icons/auth/KeyIcon';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Input } from '@/components/ui/Input';
+import { useResetPassword } from '@/app/(auth)/misc/api';
 
 const CreateNewPassword = (): JSX.Element => {
   const navigate = useRouter();
@@ -18,28 +19,27 @@ const CreateNewPassword = (): JSX.Element => {
   const [otp, setOtp] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleNewpasswordSubmit = async (values: {
-    password: string;
-    confirm_password: string;
-  }): Promise<void> => {
-    const res = await fetch('/api/auth/reset-password', {
-      method: 'POST',
-      body: JSON.stringify({ ...values, email: email, otp: otp }),
-      headers: { 'Content-Type': 'application/json' },
-    });
+  const methods = useForm<CreatePasswordInput>({
+    resolver: zodResolver(createPasswordSchema),
+    defaultValues: { password: '', confirm_password: '' },
+    mode: 'onChange',
+  });
 
-    if (res.ok) {
+  const { handleSubmit, formState: { isSubmitting, isValid } } = methods;
+
+  const resetPasswordMutation = useResetPassword();
+
+  const handleNewpasswordSubmit = async (values: CreatePasswordInput): Promise<void> => {
+    try {
+      await resetPasswordMutation.mutateAsync({ ...values, email, otp });
       showToastNotification(
-        {
-          header: 'Successfull',
-          body: 'Password successfully changed',
-        },
+        { header: 'Successfull', body: 'Password successfully changed' },
         <KeyIcon />
       );
-      navigate.push(`/auth/signin-signup`);
-    } else {
-      const data = await res.json();
-      alert(data.error || 'Incorrect OTP');
+      navigate.push(`/signin`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Incorrect OTP';
+      alert(message);
     }
   };
 
@@ -53,13 +53,8 @@ const CreateNewPassword = (): JSX.Element => {
   }, [urlParams]);
 
   return (
-    <Formik
-      initialValues={{ password: '', confirm_password: '' }}
-      validationSchema={createPasswordSchema}
-      onSubmit={handleNewpasswordSubmit}
-    >
-      {({ errors, isSubmitting }) => (
-        <Form className='w-full'>
+    <FormProvider {...methods}>
+      <form className='w-full' onSubmit={handleSubmit(handleNewpasswordSubmit)}>
           {/* Header */}
           <AuthFormheader
             header={'Create new password'}
@@ -72,34 +67,29 @@ const CreateNewPassword = (): JSX.Element => {
           <div className='mb-10 flex w-full flex-col gap-5'>
             {/* Password Field */}
             <Input
-              name='password'
               type='password'
               placeholder='New password'
-              label=''
+              hasError={Boolean(methods.formState.errors.password)}
+              errorMessage={methods.formState.errors.password?.message as string | undefined}
+              {...methods.register('password')}
             />
             {/*Confirm Password Field */}
             <Input
-              name='confirm_password'
               type='password'
               placeholder='Confirm password'
-              label=''
+              hasError={Boolean(methods.formState.errors.confirm_password)}
+              errorMessage={methods.formState.errors.confirm_password?.message as string | undefined}
+              {...methods.register('confirm_password')}
             />
           </div>
 
           {/* Submit Button */}
 
-          <Button
-            type='submit'
-            disabled={
-              errors?.password || errors.confirm_password ? true : false
-            }
-            isSubmitting={isSubmitting}
-          >
+          <Button type='submit' disabled={!isValid || isSubmitting} isLoading={isSubmitting || resetPasswordMutation.isPending}>
             Change password
           </Button>
-        </Form>
-      )}
-    </Formik>
+      </form>
+    </FormProvider>
   );
 };
 

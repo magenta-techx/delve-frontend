@@ -1,16 +1,12 @@
 'use client';
-import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
-import BusinessFooter from '@/components/business/BusinessFooter';
+import { BaseIcons } from '@/assets/icons/base/Icons';
 import BlogCard from '@/components/cards/BlogCard';
 import CategoryCard from '@/components/cards/CategoryCard';
-import FeaturedListingCard from '@/components/cards/FeaturedListingCard';
 // import LocationCard from '@/components/cards/LocationCard';
 import SponsoredCard from '@/components/cards/SponsoredCard';
-import Faqs from '@/components/Faqs';
-import SearchGroup from '@/components/landing-page/SearchGroup';
-import SectionHeader from '@/components/landing-page/SectionHeader';
+import { BusinessLandingFAQs } from '@/app/(clients)/misc/components';
+import SectionHeader from '@/components/SectionHeader';
 import ThisWeeksTrends from '@/components/landing-page/ThisWeeksTrends';
-import Navbar from '@/components/Navbar';
 // import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -19,15 +15,23 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
-import { useEffect, useState } from 'react';
-import NavbarLandingPage from '@/components/navbar/NavbarLandingPage';
+import {
+  BusinessSearch,
+  Footer,
+  LandingPageNavbar,
+} from './(clients)/misc/components';
+import { useBusinessCategories } from '@/app/(clients)/misc/api/metadata';
+import {
+  BusinessCategoryIcons,
+  BusinessCategoriesIconsType as CategoryIconType,
+} from '@/assets/icons/business/BusinessCategoriesIcon';
 
-// export const metadata: Metadata = {
-//   title: 'Home',
-//   description: 'Delve Landing page',
-// };
 
 export default function HomePage(): JSX.Element {
+  // Fetch categories from backend
+  const { data: categoriesResp, isLoading: loadingCategories } = useBusinessCategories();
+  const categories = categoriesResp?.data ?? [];
+
   const FEATURED_LISTINGS = [
     {
       header: 'Aura Bloom Spa',
@@ -145,13 +149,6 @@ export default function HomePage(): JSX.Element {
     },
   ];
 
-  // const LOACTIONS = [
-  //   { name: 'Lagos', imageUrl: '/landingpage/lagos.png' },
-  //   { name: 'Abuja', imageUrl: '/landingpage/lagos.png' },
-  //   { name: 'Ibadan', imageUrl: '/landingpage/lagos.png' },
-  //   { name: 'Port-harcourt', imageUrl: '/landingpage/lagos.png' },
-  // ]
-
   const SPONSORED_LIST = [
     {
       imageUrl: '/landingpage/sponsored-2.jpg',
@@ -186,132 +183,22 @@ export default function HomePage(): JSX.Element {
     },
   ];
 
-  const CATEGORIES: {
-    icon: IconsType;
-    title: string;
-    hoverIcon: IconsType;
-  }[] = [
-    {
-      icon: 'beauty-white',
-      title: 'beauty',
-      hoverIcon: 'beauty-outlined-black',
-    },
-
-    {
-      icon: 'clothing-white',
-      title: 'clothing & fashion',
-      hoverIcon: 'clothing-outlined-black',
-    },
-    {
-      icon: 'events-white',
-      title: 'event',
-      hoverIcon: 'events-outlined-black',
-    },
-    {
-      icon: 'food-white',
-      title: 'food & drinks',
-      hoverIcon: 'food-outlined-black',
-    },
-    {
-      icon: 'housing-white',
-      title: 'housing & Accommmodation',
-      hoverIcon: 'housing-outlined-black',
-    },
-    {
-      icon: 'housing-white',
-      title: 'housing & Accommmodation',
-      hoverIcon: 'events-outlined-black',
-    },
-    {
-      icon: 'housing-white',
-      title: 'housing & Accommmodation',
-      hoverIcon: 'events-outlined-black',
-    },
-    {
-      icon: 'housing-white',
-      title: 'housing & Accommmodation',
-      hoverIcon: 'events-outlined-black',
-    },
-    {
-      icon: 'housing-white',
-      title: 'housing & Accommmodation',
-      hoverIcon: 'events-outlined-black',
-    },
-    {
-      icon: 'housing-white',
-      title: 'housing & Accommmodation',
-      hoverIcon: 'events-outlined-black',
-    },
-  ];
-
-  interface Category {
-    id: number;
-    icon_name: string;
-    name: string;
-    categories: SubCategory[];
-    subcategories: SubCategory[];
-  }
-
-  interface SubCategory {
-    id: number;
-    name: string; // backend sends plain strings
-    subcategories?: SubCategory[];
-  }
-
-  const [isLoadingcategories, setIsloadingCategories] =
-    useState<boolean>(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    const fetchCategories = async (): Promise<void> => {
-      setIsloadingCategories(true);
-      try {
-        const res = await fetch(
-          `/api/business/business-categories?is_nav=true`
-        );
-        if (!res.ok) return setIsloadingCategories(false);
-
-        const data = await res.json();
-        setCategories(data?.data ? [...data.data].reverse() : []);
-      } catch (error) {
-        console.error(error);
-      }
-
-      setIsloadingCategories(false);
-    };
-
-    fetchCategories();
-  }, []);
-
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
-      <div className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[90.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
-        {/* New Navbar component  */}
-
-        <div className='flex sm:hidden'>
-          <NavbarLandingPage />
-        </div>
+      <section className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[90.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
+        <LandingPageNavbar />
 
         {/* Mobile hero  */}
-        <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-no-repeat sm:hidden'>
+        <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
         </div>
 
         {/* Desktop Hero  */}
-        <div className='insert-0 absolute hidden w-full rounded-2xl bg-black/70 sm:top-0 sm:flex sm:h-[90.5vh] sm:rounded-none'></div>
-        <div className='hidden w-full sm:flex'>
-          <Navbar
-            type=''
-            authFormButtons={false}
-            navbarWidthDeskTop='w-full'
-            categories={categories}
-            isLoadingcategories={isLoadingcategories}
-          />
-        </div>
+        <div className='insert-0 absolute hidden w-full rounded-2xl bg-[#000000B8] sm:top-0 sm:flex sm:h-[90.5vh] sm:rounded-none'></div>
 
         {/* Hero section  */}
-        <div className='absolute top-[25.5rem] flex w-full flex-col items-center sm:top-[27.8rem]'>
-          <h1 className='font-karma text-[26px] font-bold text-white sm:text-[54px]'>
+        <div className='absolute top-[20.5rem] flex w-full flex-col items-center sm:top-[27.8rem]'>
+          <h1 className='text-balance text-center font-karma text-4xl font-bold text-white sm:text-5xl lg:text-6xl'>
             Great experiences start here.
           </h1>
           <p className='px-14 text-center font-inter text-[14px] text-white sm:-mt-2 sm:text-[19px]'>
@@ -319,10 +206,10 @@ export default function HomePage(): JSX.Element {
             memories.
           </p>
           <div className='mt-20'>
-            <SearchGroup searchType='Category' />
+            <BusinessSearch />
           </div>
         </div>
-      </div>
+      </section>
 
       <div className='flex w-full flex-col items-center pt-10 sm:py-20'>
         <SectionHeader
@@ -331,8 +218,7 @@ export default function HomePage(): JSX.Element {
           paragraph='category'
         />
 
-        {/* Category  */}
-        <div className='mb-20 mt-10 flex w-full items-center gap-14 px-2 sm:w-[1485px] sm:px-0'>
+        <div className='mb-20 mt-10 flex w-full items-center gap-14 px-2 sm:w-[85vw] sm:max-w-[1485px] sm:px-0'>
           <Swiper
             centerInsufficientSlides={false}
             navigation={{
@@ -344,14 +230,18 @@ export default function HomePage(): JSX.Element {
             slidesPerView={5}
             breakpoints={{
               300: {
+                slidesPerView: 2,
+                spaceBetween: 10,
+              },
+              875: {
                 slidesPerView: 3,
                 spaceBetween: 15,
               },
-              768: {
+              1360: {
                 slidesPerView: 4,
-                spaceBetween: 40,
+                spaceBetween: 30,
               },
-              1024: {
+              1560: { 
                 slidesPerView: 5,
                 spaceBetween: 50,
               },
@@ -360,35 +250,38 @@ export default function HomePage(): JSX.Element {
             onSwiper={swiper => console.log(swiper)}
             onSlideChange={() => console.log('slide change')}
             // className='h-[700px] bg-green-300'
-            className='flex w-full items-center justify-center pt-10 sm:h-[300px]'
+            className='flex w-full items-center justify-center sm:h-[300px] sm:px-[4rem]'
           >
-            <div className='absolute left-0 top-36 z-10 hidden -translate-y-1/2 sm:flex'>
-              <button className='custom-prev rotate-180 transition-transform'>
+            <div className='absolute left-0 top-36 z-10 hidden -translate-y-1/2 sm:flex bg-white h-full'>
+              <button className='custom-prev rotate-180 bg-white p-2 transition-transform'>
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
-            <div className='absolute right-0 top-36 z-10 hidden -translate-y-1/2 sm:flex'>
-              <button className='custom-next'>
+            <div className='absolute right-0 top-36 z-10 hidden -translate-y-1/2 sm:flex bg-white h-full'>
+              <button className='custom-next bg-white p-2'>
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
-            {CATEGORIES.map((category, key) => {
-              return (
-                <SwiperSlide
-                  key={key}
-                  className='flex items-center justify-center pt-5 sm:pt-10'
-                >
-                  <div className='flex w-full items-center justify-center'>
-                    {/* Overlay icon */}
-                    <CategoryCard
-                      title={category.title}
-                      icon={category.icon}
-                      hoverIcon={category.hoverIcon}
-                    />
-                  </div>
-                </SwiperSlide>
-              );
-            })}
+            {!loadingCategories &&
+              categories.map((category) => {
+                const iconName = category.name
+                  ?.split(' ')[0]
+                  ?.toLowerCase() as CategoryIconType;
+                return (
+                  <SwiperSlide
+                    key={category.id}
+                    className='flex items-center justify-center'
+                  >
+                    <div className='flex w-full items-center justify-center'>
+                      <CategoryCard
+                        title={category.name}
+                        icon={<BusinessCategoryIcons className="size-12 text-white" value={iconName} />}
+                        hoverIcon={<BusinessCategoryIcons value={iconName} />}
+                      />
+                    </div>
+                  </SwiperSlide>
+                );
+              })}
           </Swiper>
         </div>
       </div>
@@ -442,10 +335,10 @@ export default function HomePage(): JSX.Element {
                 return (
                   <SwiperSlide
                     key={key}
-                    className='flex items-center justify-center px-10 pt-10'
+                    className='flex items-center justify-center px-10'
                   >
                     <div className='flex w-full items-center justify-center'>
-                      <FeaturedListingCard
+                      {/* <FeaturedListingCard
                         header={listing.header}
                         desc={listing.desc}
                         imageUrl={listing.imageUrl}
@@ -455,7 +348,7 @@ export default function HomePage(): JSX.Element {
                         classStyle={
                           'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'
                         }
-                      />
+                      /> */}
                     </div>
                   </SwiperSlide>
                 );
@@ -641,7 +534,7 @@ export default function HomePage(): JSX.Element {
                     className='flex items-center justify-center px-10 pt-10'
                   >
                     <div className='-ml-5 flex w-full items-center sm:-ml-0 sm:justify-center'>
-                      <FeaturedListingCard
+                      {/* <FeaturedListingCard
                         key={key}
                         header={listing.header}
                         desc={listing.desc}
@@ -653,7 +546,7 @@ export default function HomePage(): JSX.Element {
                         classStyle={
                           'sm:h-[427px] sm:w-[340px] w-[252px] h-[237px]'
                         }
-                      />
+                      /> */}
                     </div>
                   </SwiperSlide>
                 );
@@ -696,7 +589,7 @@ export default function HomePage(): JSX.Element {
 
       {/* FAQS  */}
       <div className='w-full pb-20 sm:w-[1244px] sm:py-32'>
-        <Faqs />
+        <BusinessLandingFAQs />
       </div>
 
       <div className='mb-1 w-full sm:mt-32 sm:h-[543px]'>
@@ -717,7 +610,8 @@ export default function HomePage(): JSX.Element {
           quality={100}
         />
       </div>
-      <div className='mb-10 w-full sm:mb-0 sm:h-[217px]'>
+
+      <div className='w-full sm:mb-0 sm:h-[217px] md:mb-10'>
         <Image
           src={'/landingpage/second-banner.jpg'}
           alt=''
@@ -736,7 +630,7 @@ export default function HomePage(): JSX.Element {
         />
       </div>
 
-      <BusinessFooter />
+      <Footer />
     </main>
   );
 }

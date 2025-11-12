@@ -105,7 +105,7 @@ Key ESLint rules enforced:
 
 ### File Naming Conventions
 
-- **Components**: PascalCase (e.g., `Button.tsx`, `UserProfile.tsx`)
+<!-- - **Components**: PascalCase (e.g., `Button.tsx`, `UserProfile.tsx`) -->
 - **App Router Pages**: kebab-case (e.g., `page.tsx`, `layout.tsx`, `loading.tsx`)
 - **API Routes**: kebab-case (e.g., `route.ts`)
 - **Utilities**: camelCase (e.g., `formatters.ts`, `apiHelpers.ts`)

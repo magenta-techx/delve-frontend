@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import OTPInput from 'react-otp-input';
-import AuthFormheader from '../AuthFormheader';
+import AuthFormheader from '../../../app/(auth)/misc/components/AuthFormheader';
 import { Button } from '@/components/ui/Button';
 import EmailIcon from '@/assets/icons/auth/EmailIcon';
 import '@/styles/auth.css';

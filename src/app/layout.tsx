@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]/route';
 
-// import { Theme } from '@radix-ui/themes';
 import { Inter, Karma } from 'next/font/google';
 import 'swiper/css';
 
 import '@radix-ui/themes/styles.css';
 
-import ToastProvider from '@/components/ToastProvider';
 import SessionProviderWrapper from '@/components/providers/SessionProviderWrapper';
+import QueryProvider from '@/components/providers/QueryProvider';
 
 import 'swiper/css';
 import '@radix-ui/themes/styles.css';
@@ -17,6 +17,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import '@/styles/globals.css';
+import { cn } from '@/lib/utils';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,30 +34,30 @@ const karma = Karma({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Next.js 15 TypeScript Boilerplate',
-    template: '%s | Next.js 15 TypeScript Boilerplate',
+    default: 'Delve',
+    template: '%s | Delve',
   },
   description:
-    'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
+    'Discover businesses and services with Delve.ng - your gateway to trusted local enterprises.',
   keywords: ['Next.js', 'TypeScript', 'React', 'Tailwind CSS', 'App Router'],
-  authors: [{ name: 'Your Name' }],
-  creator: 'Your Name',
+  // authors: [{ name: 'Your Name' }],
+  creator: 'Oni Khalid',
   metadataBase: new URL('https://your-domain.com'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://your-domain.com',
-    title: 'Next.js 15 TypeScript Boilerplate',
+    title: 'Delve.ng',
     description:
-      'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
-    siteName: 'Next.js 15 TypeScript Boilerplate',
+      'Discover businesses and services with Delve.ng - your gateway to trusted local enterprises.',
+    siteName: 'Delve.ng',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Next.js 15 TypeScript Boilerplate',
+    title: 'Delve.ng',
     description:
-      'A strict TypeScript Next.js 15 boilerplate with App Router and best practices',
-    creator: '@yourusername',
+      'Discover businesses and services with Delve.ng - your gateway to trusted local enterprises.',
+    creator: '@onikhalidayo',
   },
   robots: {
     index: true,
@@ -77,19 +79,29 @@ interface RootLayoutProps {
 export default async function RootLayout({
   children,
 }: RootLayoutProps): Promise<JSX.Element> {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   return (
-    <html
-      lang='en'
-      className={`${inter.variable} font-inter ${karma.variable}`}
-    >
-      <body className='min-h-screen bg-background font-sans antialiased'>
-        {/* <Theme> */}
+    <html lang='en'>
+      <head>
+        <script
+          async
+          defer
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env['GOOGLE_API_KEY'] || ""}`}
+        ></script>
+      </head>
+      <body
+        className={cn(
+          'min-h-screen bg-background antialiased',
+          inter.className,
+          karma.variable
+        )}
+      >
         <SessionProviderWrapper session={session}>
-          {children}
-          <ToastProvider />
+          <QueryProvider>
+            {children}
+            <Toaster />
+          </QueryProvider>
         </SessionProviderWrapper>
-        {/* </Theme> */}
       </body>
     </html>
   );

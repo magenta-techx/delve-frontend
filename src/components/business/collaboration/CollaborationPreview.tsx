@@ -4,7 +4,7 @@ import CollaborationContact from './CollaborationContact';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
 import { BaseIcons } from '@/assets/icons/base/Icons';
-import FeaturedListingCard from '@/components/cards/FeaturedListingCard';
+import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
 
 interface CollaborationPreviewProps {
   actionBtntext?: string;

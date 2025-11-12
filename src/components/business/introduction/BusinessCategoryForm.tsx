@@ -7,8 +7,7 @@ import {
   IconsType,
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import Loader from '@/components/ui/Loader';
-import { useDispatch } from 'react-redux';
-import { setBusinessRegistrationStage } from '@/redux/slices/businessSlice';
+import { useBusinessRegistrationStore } from '@/stores/businessRegistrationStore';
 
 interface SubCategoriesProps {
   id: number;
@@ -43,7 +42,7 @@ const BusinessCategoryForm = ({
   businessId,
   setShowSubBusinessCategories,
 }: BusinessCategoryFormProps): JSX.Element => {
-  const dispatch = useDispatch();
+  const { setStep, setBusinessId } = useBusinessRegistrationStore();
   const [selectedCategory, setSelectedCategory] = useState<Category>({
     id: undefined,
     icon_name: '',
@@ -76,12 +75,8 @@ const BusinessCategoryForm = ({
         setShowSubBusinessCategories(false);
         setIsSendingCategories(false);
         setPageNumber(3);
-        dispatch(
-          setBusinessRegistrationStage({
-            business_registration_step: 3,
-            business_id: businessId,
-          })
-        );
+        setStep(3);
+        if (businessId) setBusinessId(businessId);
       }
     } catch (error) {
       console.log(error);

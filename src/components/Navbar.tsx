@@ -1,7 +1,7 @@
 'use client';
 import { ReactNode, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import AuthFormButton from './auth/AuthFormButton';
+import AuthFormButton from '../app/(auth)/misc/components/AuthFormButton';
 import Logo from './ui/Logo';
 import DefaultLogoTextIcon from '@/assets/icons/logo/DefaultLogoTextIcon';
 import LoginIcon from '@/assets/icons/auth/LoginIcon';
@@ -16,13 +16,10 @@ import { Button } from './ui/Button';
 import MenuBarIcon from '@/assets/icons/MenuBarIcon';
 import CancleIcon from '@/assets/icons/CancelIcon';
 import MenuBarIconWhite from '@/assets/icons/MenuBarIconWhite';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
 import { useSession } from 'next-auth/react';
 import ListingUserMenuExtension from './landing-page/UserMenuExtensions/ListingUserMenuExtension';
 import Loader from './ui/Loader';
-// import { selectUserIsLoggedIn } from '@/redux/slices/businessSlice';
 
 interface AuthFormButtonProps {
   text: string;
@@ -144,13 +141,11 @@ const Navbar = ({
     listing: <ListingUserMenuExtension categories={categories} />,
     // Add other menu extensions here
   };
-  const userIsloggedIn = useSelector(
-    (state: RootState) => state.business.userIsLoggedIn
-  );
   const { data: session } = useSession();
+  const userIsloggedIn = Boolean(session?.user);
   const pathname = usePathname();
 
-  console.log('userIsloggedIn: ', userIsloggedIn);
+  // console.log('userIsloggedIn: ', userIsloggedIn);
 
   const router = useRouter();
   const [showMobileMenuItems, setShowMobileMenuItems] =
@@ -159,7 +154,7 @@ const Navbar = ({
   const [currentUserMenuExtension, setCurrentUserMenuExtension] =
     useState<string>('');
   const handleAuthRouter = (login: string = 'true'): void => {
-    router.push(`/auth/signin-signup?login=${login}`);
+    router.push(login === 'false' ? '/signup' : '/signin');
   };
 
   const handleUsermMenuExtension = (menu: string): void => {
@@ -243,7 +238,7 @@ const Navbar = ({
           >
             {type && !userIsloggedIn && (
               <Link
-                href={'auth/signin-signup'}
+                href={'/signin'}
                 className={`flex w-[300px] items-center gap-2 text-sm ${loginSignup}`}
               >
                 {type === 'business' ? (
@@ -271,7 +266,7 @@ const Navbar = ({
 
         {pathname === SELECT_PLAN ? (
           <div className='w-24'>
-            <Button variant='neutral' className='text-gray-600'>
+            <Button variant='default' className='text-gray-600'>
               Cancel
             </Button>
           </div>

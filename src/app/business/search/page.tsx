@@ -8,7 +8,7 @@ import {
 import CancleIcon from '@/assets/icons/CancelIcon';
 import { TempBaseIcons } from '@/assets/icons/temporary/Icons';
 import BusinessFooter from '@/components/business/BusinessFooter';
-import FeaturedListingCard from '@/components/cards/FeaturedListingCard';
+import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
 import SponsoredCard from '@/components/cards/SponsoredCard';
 
 // import Navbar from '@/components/Navbar';

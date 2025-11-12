@@ -1,60 +1,105 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import BusinessIntroductionFormHeader from './BusinessFormHeader';
-import Input from '@/components/ui/Input';
-import { Form, Formik, FormikProps, FormikValues } from 'formik';
-import TextArea from '@/components/ui/TextArea';
-import { businessIntroductionSchema } from '@/schemas/businessSchema';
+import { Input } from '../../ui/Input';
 import Image from 'next/image';
 import ImageUploadIcon from '@/assets/icons/ImageUploadIcon';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { businessIntroductionZodSchema, type BusinessIntroductionInput } from '@/schemas/businessZodSchema';
 
-type FormProps<T extends FormikValues> = {
-  formikRef: React.Ref<FormikProps<T>>;
-  initialValues: T;
-  onSubmit: (values: T) => void;
+type ExposedSubmit = { submit: () => Promise<void> };
+
+type BusinessIntroductionFormValues = BusinessIntroductionInput & { logo?: File | null };
+
+type Props = {
+  onSuccess: (businessId: number) => void;
+  setIsSubmitting?: (b: boolean) => void;
+  onFormStateChange?: (state: { isValid: boolean; isDirty: boolean }) => void;
 };
 
-function BusinessIntroductionForm<T extends FormikValues>({
-  formikRef,
-  initialValues,
-  onSubmit,
-}: FormProps<T>): JSX.Element {
-  const [preview, setPreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+const BusinessIntroductionForm = forwardRef<ExposedSubmit, Props>(
+  ({ onSuccess, setIsSubmitting, onFormStateChange }, ref) => {
+    const [preview, setPreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  return (
-    <div className='sm:w-[500px]'>
-      <BusinessIntroductionFormHeader
-        intro={'Business account setup'}
-        header='Introduce us to your business'
-        paragraph='This is the name, website, and description customers will see.'
-      />
-      <Formik<T>
-        innerRef={formikRef}
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        validationSchema={businessIntroductionSchema}
-        validateOnMount
-      >
-        {({ setFieldValue }) => (
-          <Form className='mt-3 w-full'>
+    const methods = useForm<BusinessIntroductionFormValues>({
+      resolver: zodResolver(businessIntroductionZodSchema),
+      mode: 'onChange',
+      defaultValues: {
+        business_name: '',
+        description: '',
+        website: '',
+        logo: null,
+      },
+    });
+
+    const { handleSubmit, control, setValue, formState } = methods;
+
+    useEffect(() => {
+      onFormStateChange?.({ isValid: formState.isValid, isDirty: formState.isDirty });
+    }, [formState.isValid, formState.isDirty, onFormStateChange]);
+
+    const onSubmit = async (values: BusinessIntroductionFormValues): Promise<void> => {
+      try {
+        setIsSubmitting?.(true);
+        const formData = new FormData();
+        formData.append('business_name', values.business_name);
+        formData.append('description', values.description);
+        if (values.website) formData.append('website', values.website);
+        if (values.logo instanceof File) formData.append('logo', values.logo);
+
+        const res = await fetch('/api/business/business-introduction', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(`Error submitting business intro: ${data?.message ?? 'Unknown error'}`);
+          return;
+        }
+        const newId = data?.data?.id;
+        if (newId) onSuccess(newId);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsSubmitting?.(false);
+      }
+    };
+
+    useImperativeHandle(ref, () => ({
+      submit: async (): Promise<void> => {
+        await handleSubmit(onSubmit)();
+      },
+    }));
+
+    const errors = methods.formState.errors;
+
+    return (
+      <div className='sm:w-[500px]'>
+        <BusinessIntroductionFormHeader
+          intro={'Business account setup'}
+          header='Introduce us to your business'
+          paragraph='This is the name, website, and description customers will see.'
+        />
+        <FormProvider {...methods}>
+          <form className='mt-3 w-full' onSubmit={handleSubmit(onSubmit)}>
             <div className='flex flex-col gap-1 sm:items-center'>
               <div className='my-4 flex w-full items-end justify-start gap-3 text-xs font-medium'>
-                <Input
+                <input
                   ref={fileInputRef}
                   name='logo'
                   type='file'
-                  accepts='image/*'
+                  accept='image/*'
                   className='hidden'
-                  onChange={file => {
-                    console.log('fiel is :', typeof file);
-                    if (typeof file === 'object') {
-                      // ✅ update Formik field
-                      setFieldValue('logo', file);
-
-                      // ✅ generate preview
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    const file = e.currentTarget.files?.[0] ?? null;
+                    setValue('logo', file, { shouldDirty: true, shouldValidate: true });
+                    if (file) {
                       const previewUrl = URL.createObjectURL(file);
                       setPreview(previewUrl);
+                    } else {
+                      setPreview(null);
                     }
                   }}
                 />
@@ -93,37 +138,67 @@ function BusinessIntroductionForm<T extends FormikValues>({
                 </div>
               </div>
 
-              <Input
+              <Controller
                 name='business_name'
-                type='text'
-                label='Business name'
-                className='w-full'
+                control={control}
+                render={({ field }): JSX.Element => (
+                  <Input
+                    {...field}
+                    type='text'
+                    label='Business name'
+                    className='w-full'
+                    hasError={!!errors.business_name}
+                    errorMessage={errors.business_name?.message}
+                  />
+                )}
               />
 
-              <TextArea
+              <Controller
                 name='description'
-                label='About business'
-                className='w-full'
-                maxLength={250}
+                control={control}
+                render={({ field }): JSX.Element => (
+                  <div className='w-full'>
+                    <label className='text-sm text-[#0F172B] font-medium' htmlFor='description'>
+                      About business
+                    </label>
+                    <textarea
+                      id='description'
+                      className='w-full rounded-md border border-[#D9D9D9] p-3 text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]'
+                      maxLength={250}
+                      rows={4}
+                      {...field}
+                    />
+                    {errors.description?.message && (
+                      <p className='text-sm text-destructive'>{errors.description.message}</p>
+                    )}
+                  </div>
+                )}
               />
 
-              <Input
+              <Controller
                 name='website'
-                type='text'
-                label={
-                  <>
-                    Website <span className='text-[#6A6A6A]'>(Optional)</span>
-                  </>
-                }
-                placeholder='https://www.your_domain.com'
-                className='w-full'
+                control={control}
+                render={({ field }): JSX.Element => (
+                  <Input
+                    {...field}
+                    type='text'
+                    label='Website'
+                    placeholder='https://www.your_domain.com'
+                    className='w-full'
+                    optional
+                    hasError={!!errors.website}
+                    errorMessage={errors.website?.message}
+                  />
+                )}
               />
             </div>
-          </Form>
-        )}
-      </Formik>
-    </div>
-  );
-}
+          </form>
+        </FormProvider>
+      </div>
+    );
+  }
+);
+
+BusinessIntroductionForm.displayName = 'BusinessIntroductionForm';
 
 export default BusinessIntroductionForm;

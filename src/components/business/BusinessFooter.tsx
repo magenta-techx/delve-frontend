@@ -1,13 +1,11 @@
 'use client';
 import React from 'react';
-import DefaultLogoTextIcon from '@/assets/icons/logo/DefaultLogoTextIcon';
-import Logo from '../ui/Logo';
 import NewProductLaunchGraphics from '@/assets/graphics/NewProductLaunchGraphics';
-import BusinessTextAndButton from './BusinessTextAndButton';
 import Link from 'next/link';
 import InstagramIconBlack from '@/assets/icons/business/InstagramIconBlack';
 import XIconBlack from '@/assets/icons/business/XIconBlack';
 import { BaseIcons } from '@/assets/icons/base/Icons';
+import { Logo } from '@/assets/icons/logo';
 
 const BusinessFooter = (): JSX.Element => {
   const FOOTER_LINKS = [
@@ -84,14 +82,17 @@ const BusinessFooter = (): JSX.Element => {
         {
           icon: <BaseIcons value='facebook-black' />,
           href: '/',
+          ariaLabel: 'Visit Delve on Facebook',
         },
         {
           icon: <InstagramIconBlack />,
           href: '/',
+          ariaLabel: 'Visit Delve on Instagram',
         },
         {
           icon: <XIconBlack />,
           href: '/',
+          ariaLabel: 'Visit Delve on X',
         },
 
         // {
@@ -106,61 +107,76 @@ const BusinessFooter = (): JSX.Element => {
     },
   ];
   return (
-    <div className='flex w-full flex-col items-center justify-center gap-5 pb-0 font-inter sm:flex-row sm:gap-[170px] sm:px-44 sm:pb-36 sm:pt-24'>
-      <div className='flex flex-col gap-0 bg-neutral px-4 sm:gap-3 sm:bg-transparent sm:px-0'>
-        <div className='-mb-7 sm:-mb-0'>
-          <Logo icon={<DefaultLogoTextIcon />} link='/' />
-        </div>
-        <div className='flex flex-col gap-5 rounded-md border-gray-200 py-8 sm:w-[483px] sm:flex-row sm:items-center sm:border sm:px-4'>
-          <NewProductLaunchGraphics />
-          <BusinessTextAndButton
-            header='Get discovered by customers.'
-            text='Join hundreds of trusted vendors growing their business with delve.'
-            buttonText='List your business'
-            width='sm:w-[280px] w-full'
-            buttonSize='lg'
-            btnClassName='lg:text-xs'
-            textClass='text-[15px] text-black mb-4'
-            headerClass='text-[18px] font-semibold text-black mb-2'
-          />
-        </div>
-      </div>
-      <div className='mb-20 flex w-full flex-col items-start justify-between gap-10 px-4 sm:mt-5 sm:flex-row sm:gap-24 sm:px-0'>
-        {FOOTER_LINKS.map((link, key) => {
-          return (
-            <div key={key} className='w-full sm:w-[200px]'>
-              <h3 className='mb-3 text-[16px] font-bold sm:text-[18px]'>
-                {link.header}
-              </h3>
-              <ul
-                className={`flex ${link.id === 4 ? 'gap-5' : 'flex-col gap-3'} text-[16px]`}
-              >
-                {link.links.map((subLink, key) => {
-                  if ('text' in subLink) {
-                    return (
-                      <li key={key}>
-                        <Link href={subLink.href}>{subLink.text}</Link>
-                      </li>
-                    );
-                  } else if ('icon' in subLink) {
-                    return (
-                      <Link href={subLink.href} key={key} className=''>
-                        {subLink.icon}
-                      </Link>
-                    );
-                  }
-                  return null;
-                })}
-              </ul>
+    <footer className='w-full border-t border-[#EBEEF5] bg-white font-inter text-[#0F172B]'>
+      <div className='mx-auto w-full max-w-screen-xl px-4 pb-12 pt-10 sm:px-6 lg:px-10 lg:pb-16 lg:pt-14'>
+        <div className='grid gap-12 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:items-start'>
+          <div className='flex max-w-xl flex-col gap-8'>
+            <Link href="/">
+              <Logo />
+            </Link>
+            <div className='overflow-hidden rounded-xl border border-[#EBEEF5] bg-[#F7F7FB] p-6 sm:p-8'>
+              <div className='flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8'>
+                <div className='mx-auto w-32 sm:mx-0 sm:w-40'>
+                  <NewProductLaunchGraphics />
+                </div>
+               
+              </div>
             </div>
-          );
-        })}
+          </div>
+
+          <div className='grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4 lg:gap-12'>
+            {FOOTER_LINKS.map(section => (
+              <div key={section.id} className='min-w-[150px]'>
+                <h3 className='mb-4 text-base font-semibold text-[#0F172B] sm:text-lg'>
+                  {section.header}
+                </h3>
+                <ul
+                  className={`flex ${section.id === 4 ? 'items-center gap-4' : 'flex-col gap-3 text-sm text-[#4B5565] sm:text-base'}`}
+                >
+                  {section.links.map((entry, index) => {
+                    if ('text' in entry) {
+                      return (
+                        <li key={index}>
+                          <Link
+                            href={entry.href}
+                            className='transition-colors hover:text-[#6E44FF]'
+                          >
+                            {entry.text}
+                          </Link>
+                        </li>
+                      );
+                    }
+                    if ('icon' in entry) {
+                      return (
+                        <Link
+                          href={entry.href}
+                          key={index}
+                          className='inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#EBEEF5] text-[#0F172B] transition-colors hover:border-[#6E44FF] hover:text-[#6E44FF]'
+                          aria-label={entry.ariaLabel ?? 'Social link'}
+                        >
+                          {entry.icon}
+                        </Link>
+                      );
+                    }
+                    return null;
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className='mb-4 flex items-center justify-center text-xs sm:hidden'>
-        <p>2025 Delve.ng</p>
+      <div className='border-t border-[#EBEEF5] bg-white'>
+        <div className='mx-auto flex w-full max-w-screen-xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-[#4B5565] sm:flex-row sm:px-6 lg:px-10'>
+          <p className='order-2 sm:order-1'>2025 Delve.ng</p>
+          <div className='order-1 flex items-center gap-2 text-[#A0A8B7] sm:order-2'>
+            <span className='h-1 w-1 rounded-full bg-[#A0A8B7]' />
+            <span>Built to connect businesses and customers</span>
+          </div>
+        </div>
       </div>
-    </div>
+    </footer>
   );
 };
 
