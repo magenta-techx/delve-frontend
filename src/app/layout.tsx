@@ -19,6 +19,7 @@ import 'swiper/css/scrollbar';
 import '@/styles/globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
+import { SavedBusinessesProvider } from '@/contexts/SavedBusinessesContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -98,8 +99,11 @@ export default async function RootLayout({
       >
         <SessionProviderWrapper session={session}>
           <QueryProvider>
-            {children}
-            <Toaster />
+            <SavedBusinessesProvider>
+
+              {children}
+              <Toaster />
+            </SavedBusinessesProvider>
           </QueryProvider>
         </SessionProviderWrapper>
       </body>
