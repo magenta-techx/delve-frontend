@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import Image from 'next/image';
+import { format } from 'date-fns';
 
 export const BusinessSwitcher = () => {
-  const { businesses, currentBusiness, switchBusiness, isLoading } = useBusinessContext();
+  const { businesses, currentBusiness, switchBusiness, isLoading } =
+    useBusinessContext();
   const [isOpen, setIsOpen] = useState(false);
 
   if (isLoading) {
@@ -47,28 +49,34 @@ export const BusinessSwitcher = () => {
         </div>
 
         {/* Business Info */}
-        <div className='max-md:hidden md:flex-1 text-left'>
-          <p className='truncate text-sm font-semibold'>{currentBusiness.name}</p>
-          <p className='truncate text-xs text-gray-400'>
-            Created on {currentBusiness.created_at ? new Date(currentBusiness.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
+        <div className='text-left max-md:hidden md:flex-1'>
+          <p className='truncate font-inter font-semibold'>
+            {currentBusiness.name}
+          </p>
+          <p className='truncate text-xs text-[#CDD5DF]'>
+            Created on{' '}
+            {currentBusiness.created_at
+              ? format(new Date(currentBusiness.created_at), 'dd/MM/yyyy')
+              : 'N/A'}
           </p>
         </div>
 
         {/* Dropdown Icon */}
-        <div className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+        <div className={`transition-transform`}>
           <svg
-            width='16'
-            height='16'
-            viewBox='0 0 16 16'
+            width='8'
+            height='12'
+            viewBox='0 0 8 12'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
           >
             <path
-              d='M4 6L8 10L12 6'
-              stroke='currentColor'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'
+              d='M4.40031 0.183058C4.2831 0.0658477 4.12413 0 3.95837 0C3.79261 0 3.63364 0.0658485 3.51643 0.183059L0.183105 3.51639C-0.060972 3.76047 -0.0609714 4.1562 0.183107 4.40028C0.427184 4.64435 0.822913 4.64435 1.06699 4.40027L3.95837 1.50888L6.84977 4.40028C7.09385 4.64435 7.48958 4.64435 7.73365 4.40028C7.97773 4.1562 7.97773 3.76047 7.73365 3.51639L4.40031 0.183058Z'
+              fill='#D9D6FE'
+            />
+            <path
+              d='M1.06694 6.84985C0.822864 6.60577 0.427135 6.60577 0.183058 6.84985C-0.0610195 7.09393 -0.0610193 7.48966 0.183059 7.73374L3.5164 11.0671C3.63361 11.1843 3.79258 11.2501 3.95834 11.2501C4.1241 11.2501 4.28307 11.1843 4.40028 11.0671L7.73361 7.73374C7.97768 7.48966 7.97768 7.09393 7.73361 6.84985C7.48953 6.60577 7.0938 6.60577 6.84972 6.84985L3.95834 9.74124L1.06694 6.84985Z'
+              fill='#D9D6FE'
             />
           </svg>
         </div>
@@ -89,7 +97,7 @@ export const BusinessSwitcher = () => {
               <p className='px-3 py-2 text-xs font-semibold text-gray-500'>
                 Switch Business
               </p>
-              {businesses.map((business) => (
+              {businesses.map(business => (
                 <button
                   key={business.id}
                   onClick={() => {
@@ -120,7 +128,9 @@ export const BusinessSwitcher = () => {
 
                   {/* Business Info */}
                   <div className='flex-1 overflow-hidden'>
-                    <p className='truncate text-sm font-medium'>{business.name}</p>
+                    <p className='truncate text-sm font-medium'>
+                      {business.name}
+                    </p>
                     <p className='truncate text-xs text-gray-500'>
                       {business.category?.name || 'Uncategorized'}
                     </p>
