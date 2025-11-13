@@ -30,9 +30,9 @@ import {
   SettingsIcon,
   SettingsSelectedIcon,
 } from './icons';
-import { Logo } from '@/assets/icons/logo';
+import { Logo } from '@/assets/icons';
 
-const navItems = [
+export const navItems = [
   {
     name: 'Dashboard',
     href: '/business',
@@ -63,7 +63,7 @@ const navItems = [
   },
   {
     name: 'Payment & Subscription',
-    href: '/business/subscription',
+    href: '/business/payments',
     icon: PaymentsIcon,
     iconSelected: PaymentsSelectedIcon,
     exact: false,
@@ -84,7 +84,7 @@ const navItems = [
   },
 ];
 
-const supportItems = [
+export const supportItems = [
   { name: 'Help & Contact', href: '/business/help', icon: HelpCircle },
   { name: 'Logout', href: '/logout', icon: LogOut },
 ];
@@ -92,10 +92,9 @@ const supportItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-
   return (
     <aside className='bg-white border-r border-[#FBFAFF] flex w-[19rem] flex-col overflow-y-auto '>
-      <div className='flex flex-col gap-8 p-6 h-40'>
+      <div className='space-y-4 p-6 h-40 '>
         <Logo className='h-[40px] ' textColor='black' />
         <BusinessSwitcher />
       </div>

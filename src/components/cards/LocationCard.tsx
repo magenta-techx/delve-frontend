@@ -21,6 +21,15 @@ const LocationCard = ({ name, imageUrl }: LocationProps): JSX.Element => {
       />
 
       {/* Title (fades out on hover) */}
+
+
+
+
+
+
+
+
+      
       <h1 className='relative z-10 text-[36px] font-bold text-white transition-opacity duration-300 group-hover:opacity-0'>
         {name}
       </h1>

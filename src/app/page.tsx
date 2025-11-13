@@ -410,7 +410,7 @@ export default function HomePage(): JSX.Element {
 
               {LOCATIONS.map((location, key) => {
 
-                return (<SwiperSlide key={key} className='bg-green-300 flex items-center sm:pt-10 pt-5 justify-center'>
+                return (<SwiperSlide key={key} className=' flex items-center sm:pt-10 pt-5 justify-center'>
 
                   <LocationCard key={key} name={location.name} imageUrl={location.imageUrl} />
 

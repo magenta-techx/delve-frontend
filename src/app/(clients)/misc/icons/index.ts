@@ -5,5 +5,6 @@ export { default as NotificationsIcon } from './Notifications';
 export { default as EmptyListingIcon } from './EmptyListingIcon';
 export { default as GalleryIcon } from './Gallery';
 export { default as UploadIcon } from './Upload';
+export { default as Upload2Icon } from './Upload2';
 export { default as BookmarkIcon } from './Bookmark';
 export { default as EmptySavedBusinessesIcon } from './EmptySavedBusinesses';

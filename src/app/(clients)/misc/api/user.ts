@@ -1,6 +1,6 @@
 "use client";
 import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
-import type { ApiEnvelope, ApiMessage, BillingData, SavedBusinessItem, UserDetail } from "@/types/api";
+import type { ApiEnvelope, ApiMessage, BillingData, SavedBusinessItem, UserDetail, PlansResponse } from "@/types/api";
 
 export function useCurrentUser(): UseQueryResult<ApiEnvelope<UserDetail>, Error> {
   return useQuery({
@@ -98,6 +98,18 @@ export function useUnsaveBusiness(): UseMutationResult<ApiMessage, Error, { busi
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to remove saved business");
+      return data;
+    },
+  });
+}
+
+export function useAvailablePlans(planType: 'subscription' | 'advertisment' | 'business promotion' = 'subscription'): UseQueryResult<PlansResponse, Error> {
+  return useQuery({
+    queryKey: ["plans", planType],
+    queryFn: async () => {
+      const res = await fetch(`/api/plans?plan_type=${encodeURIComponent(planType)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to fetch plans");
       return data;
     },
   });

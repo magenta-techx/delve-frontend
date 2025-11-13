@@ -3,5 +3,5 @@ import { forward } from '../../_lib/backend';
 
 // GET /api/user/billing
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  return forward(req, 'GET', '/user/billing/', { auth: true });
+  return forward(req, 'GET', '/user/billing/data', { auth: true });
 }

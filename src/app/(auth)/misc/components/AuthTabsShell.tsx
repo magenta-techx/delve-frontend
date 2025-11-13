@@ -61,7 +61,7 @@ export default function AuthTabsShell({ active, children }: AuthTabsShellProps):
             ))}
           </div>
 
-          <div className="mb-8 flex w-full flex-col items-center sm:w-[525px]">{children}</div>
+          <div className="mb-8 flex w-[90vw] flex-col items-center sm:w-[525px]">{children}</div>
 
           <div className="mb-8 flex items-center gap-4">
             <div className="h-[1px] w-full bg-gray-300 sm:w-[185px]" />

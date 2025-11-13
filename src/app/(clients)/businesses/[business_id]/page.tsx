@@ -13,9 +13,9 @@ async function getBusinessDetails(
 ): Promise<BusinessDetail | null> {
   try {
     const apiUrl =
-      process.env['NEXT_PUBLIC_API_BASE_URL'] || 'http://localhost:8000';
+      process.env['NEXT_PUBLIC_API_BASE_URL'] || 'https://backend.delve.ng';
 
-    const res = await fetch(`${apiUrl}/api/business/${businessId}`, {
+    const res = await fetch(`${apiUrl}/api/businesses/${businessId}`, {
       next: { revalidate: 60 },
       headers: {
         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export async function generateMetadata({
 
   if (!business) {
     return {
-      title: 'Business Not Found | Delve',
+      title: 'Business Not Found',
       description: 'The requested business could not be found.',
     };
   }

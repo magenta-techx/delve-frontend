@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Input } from '@/components/ui';
+import { FacebookIcon, InstagramIcon, TikTokIcon, TwitterIcon, WhatsappIcon } from '@/assets/icons';
 
 interface CombinedContactInfo {
   phone_number: string;
@@ -19,12 +20,36 @@ interface BusinessContactAndBusinessProps {
 }
 
 const SOCIAL_PLATFORMS = [
-  { id: 'whatsapp', name: 'Whatsapp Link', icon: '💬', color: 'bg-green-500' },
-  { id: 'instagram', name: 'Instagram Link', icon: '📷', color: 'bg-pink-500' },
-  { id: 'facebook', name: 'Facebook Link', icon: '📘', color: 'bg-blue-600' },
-  { id: 'twitter', name: 'Twitter Link', icon: '🐦', color: 'bg-blue-400' },
-  { id: 'tiktok', name: 'TikTok Link', icon: '🎵', color: 'bg-black' },
-  { id: 'telegram', name: 'Telegram Link', icon: '✈️', color: 'bg-blue-500' },
+  {
+    id: 'whatsapp',
+    name: 'Whatsapp Link',
+    icon: <WhatsappIcon />,
+    color: 'bg-green-500',
+  },
+  {
+    id: 'instagram',
+    name: 'Instagram Link',
+    icon: <InstagramIcon />,
+    color: 'bg-pink-500',
+  },
+  {
+    id: 'facebook',
+    name: 'Facebook Link',
+    icon: <FacebookIcon />,
+    color: 'bg-blue-600',
+  },
+  {
+    id: 'twitter',
+    name: 'Twitter Link',
+    icon: <TwitterIcon />,
+    color: 'bg-blue-400',
+  },
+  {
+    id: 'tiktok',
+    name: 'TikTok Link',
+    icon: <TikTokIcon />,
+    color: 'bg-black',
+  },
 ];
 
 const BusinessContactAndBusiness: React.FC<BusinessContactAndBusinessProps> = ({

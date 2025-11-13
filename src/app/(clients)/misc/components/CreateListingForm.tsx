@@ -2,6 +2,7 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import ArrowRightIconWhite from '@/assets/icons/ArrowRightIconWhite';
+import { useCreateServices } from '@/app/(business)/misc/api/business';
 
 import BusinessIntroductionForm from './CreateListingFormStep1Introduction';
 import BusinessShowCaseForm from './CreateListingFormStep2Showcase';
@@ -20,11 +21,10 @@ import {
   useUploadBusinessImages,
   useUpdateBusinessAmenities,
   useCreateBusinessServices,
-  useUpdateBusinessLocation,
   useUpdateBusinessCategory,
-  type BusinessService,
+  useUpdateLocationAndContact,
 } from '@/app/(business)/misc/api/business';
-import { Logo } from '@/assets/icons/logo';
+import { Logo } from '@/assets/icons';
 import {
   businessShowcaseZodSchema,
   servicesZodSchema,
@@ -32,6 +32,7 @@ import {
 } from '@/schemas/businessZodSchema';
 import { toast } from 'sonner';
 import z from 'zod';
+import { BusinessService } from '@/types/api';
 
 export type CreateListingLocation = z.infer<typeof locationZodSchema>;
 const BusinessStepForm = (): JSX.Element => {
@@ -51,7 +52,7 @@ const BusinessStepForm = (): JSX.Element => {
   const uploadImagesMutation = useUploadBusinessImages();
   const createServicesMutation = useCreateBusinessServices();
   const updateAmenitiesMutation = useUpdateBusinessAmenities();
-  const updateLocationMutation = useUpdateBusinessLocation();
+  const updateLocationMutation = useUpdateLocationAndContact();
   const updateCategoryMutation = useUpdateBusinessCategory();
 
   const [pageNumber, setPageNumber] = useState(savedStep);
@@ -214,10 +215,16 @@ const BusinessStepForm = (): JSX.Element => {
     }
 
     try {
-      // Services already match the API format (title, description)
+      // Transform services to ensure description is always present and image is undefined instead of null
+      const servicesWithDescription = services.map(service => ({
+        ...service,
+        description: service.description || '',
+        image: service.image === null ? undefined : service.image
+      }));
+      
       await createServicesMutation.mutateAsync({
         business_id: businessId,
-        services: services,
+        services: servicesWithDescription,
       });
 
       toast.success('Step completed!', {

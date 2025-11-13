@@ -50,12 +50,13 @@ export interface CategoryMini {
   subcategories?: Array<{ id: number; name: string }>;
 }
 
-export interface ServiceMini {
-  id: number;
+export interface BusinessService {
+  id?: number;
   title: string;
-  price?: string;
-  duration?: string;
+  image:string  | null;
+  is_active?: boolean;
   description?: string;
+  uploaded_at?: string;
 }
 
 export interface BusinessOwner {
@@ -87,7 +88,7 @@ export interface BusinessDetail {
   subcategories?: Array<{ id: number; name: string }>;
   amenities?: Array<{ id: number; name: string } | string>;
   images?: Array<{ id: number; image: string } | string>;
-  services?: ServiceMini[];
+  services?: BusinessService[];
   created_at?: string;
   phone_number?: string;
   email?: string;
@@ -193,14 +194,83 @@ export interface UserDetail {
   email: string;
   first_name: string;
   last_name: string;
+  is_brand_owner: boolean;
+  number_of_owned_businesses: number;
+  is_active: boolean;
+  current_plan: string;
+  is_premium_plan_active: boolean;
+  date_joined: string;
   profile_image?: string;
-  is_verified: boolean;
+  is_verified?: boolean;
+}
+
+export interface PaymentHistory {
+  plan: {
+    name: string;
+    billing_cycle: string;
+  };
+  amount_paid: number;
+  status: string;
+  payment_card_last_4_digits: string;
+  transaction_method: string;
+  payment_reference_id: string;
+  timestamp: string;
+}
+
+export interface PaymentCard {
+  payment_card_type: string;
+  payment_card_last_4_digits: string;
+  payment_card_expiratin_month: string;
+  payment_card_expiratin_year: string;
+}
+
+export interface CurrentPlan {
+  name: string;
+  billing_cycle: string;
+  price: number;
+  days_left: number;
 }
 
 export interface BillingData {
-  plan: string;
-  next_billing_date: string;
-  invoices: Array<{ id: number; amount: number; date: string }>;
+  payment_history: PaymentHistory[];
+  card: PaymentCard;
+  plan: CurrentPlan;
+}
+
+// Plans
+export interface SubscriptionPlan {
+  plan_id: string;
+  name: string;
+  price: number;
+  billing_cycle: string;
+}
+
+export interface AdvertisementPlan {
+  duration_in_days: number;
+  price: number;
+}
+
+export interface BusinessPromotionPlan {
+  duration_in_days: number;
+  price: number;
+}
+
+export interface PlansResponse {
+  subscription?: {
+    status: boolean;
+    message: string;
+    data: SubscriptionPlan[];
+  };
+  advertisment?: {
+    status: boolean;
+    message: string;
+    data: AdvertisementPlan[];
+  };
+  "business promotion"?: {
+    status: boolean;
+    message: string;
+    data: BusinessPromotionPlan[];
+  };
 }
 
 // Saved businesses return the same structure as BusinessSummary

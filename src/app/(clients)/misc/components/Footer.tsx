@@ -5,7 +5,7 @@ import Link from 'next/link';
 import InstagramIconBlack from '@/assets/icons/business/InstagramIconBlack';
 import XIconBlack from '@/assets/icons/business/XIconBlack';
 import { BaseIcons } from '@/assets/icons/base/Icons';
-import { Logo } from '@/assets/icons/logo';
+import { Logo } from '@/assets/icons';
 import { usePathname } from 'next/navigation';
 import { LinkButton } from '@/components/ui';
 
