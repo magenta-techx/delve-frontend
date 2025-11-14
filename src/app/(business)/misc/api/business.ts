@@ -1,6 +1,6 @@
 "use client";
 import { useMutation, useQuery, useQueryClient, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
-import type { ApiEnvelope, ApiMessage, BusinessDetail, BusinessPerformanceData } from "@/types/api";
+import type { ApiEnvelope, ApiMessage, BusinessDetail, BusinessPerformanceData, BusinessService } from "@/types/api";
 import { authAwareFetch } from "@/utils/authAwareFetch";
 import { useAuthErrorHandler } from "@/hooks/useAuthErrorHandler";
 
@@ -32,20 +32,12 @@ export type CreateBusinessData = {
   logo: string | File;
 };
 
-export type BusinessService = {
-  id: number;
-  title: string;
-  description: string;
-  price?: string;
-  duration?: string;
-  image?: string | undefined; // base64 string
-};
 
 // New service creation types
 export type CreateServiceData = {
   title: string;
   description: string;
-  image?: string | undefined; // base64 string
+  image?: string | undefined;
 };
 
 export type CreateMultipleServicesData = {
@@ -70,6 +62,20 @@ export type ContactInfo = {
   tiktok_link?: string;
   business_hours?: BusinessHours[];
   special_instructions?: string;
+};
+
+export type LocationAndContactInfo = {
+  address?: string;
+  state?: string;
+  longitude?: number;
+  latitude?: number;
+  phone_number?: string;
+  registration_number?: string;
+  whatsapp_link?: string;
+  facebook_link?: string;
+  instagram_link?: string;
+  twitter_link?: string;
+  tiktok_link?: string;
 };
 
 // API hooks for categories and subcategories
@@ -131,7 +137,7 @@ export function useBusinessStates(): UseQueryResult<BusinessState[], Error> {
 export function useCreateBusiness(): UseMutationResult<ApiEnvelope<{ business_id: BusinessId }>, Error, CreateBusinessData> {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation({
     mutationFn: async (data) => {
       const formData = new FormData();
@@ -140,7 +146,7 @@ export function useCreateBusiness(): UseMutationResult<ApiEnvelope<{ business_id
       if (data.website) {
         formData.append('website', data.website);
       }
-      
+
       // Handle logo file
       if (data.logo instanceof File) {
         formData.append('logo', data.logo);
@@ -154,7 +160,7 @@ export function useCreateBusiness(): UseMutationResult<ApiEnvelope<{ business_id
       });
       const responseData = await res.json();
       if (!res.ok) throw new Error(responseData?.error || 'Failed to create business');
-    
+
       return {
         status: responseData.status,
         message: responseData.message,
@@ -203,7 +209,7 @@ export function useBusinessPerformance(businessId: BusinessId, params?: { filter
 
 export function useRequestBusinessApproval(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId }> {
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { business_id: BusinessId }>({
     mutationFn: async ({ business_id }) => {
       const res = await authAwareFetch(`/api/business/${business_id}/request-approval`, { method: "POST" });
@@ -217,7 +223,7 @@ export function useRequestBusinessApproval(): UseMutationResult<ApiMessage, Erro
 
 export function useUpdateBusinessAmenities(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; amenities_ids: number[] }> {
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { business_id: BusinessId; amenities_ids: number[] }>({
     mutationFn: async ({ business_id, amenities_ids }) => {
       const res = await authAwareFetch(`/api/business/${business_id}/update-amenities`, {
@@ -235,7 +241,7 @@ export function useUpdateBusinessAmenities(): UseMutationResult<ApiMessage, Erro
 
 export function useUpdateBusinessCategory(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; category_id: number; subcategory_ids: number[] }> {
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { business_id: BusinessId; category_id: number; subcategory_ids: number[] }>({
     mutationFn: async ({ business_id, category_id, subcategory_ids }) => {
       const res = await authAwareFetch(`/api/business/${business_id}/update-category`, {
@@ -265,10 +271,10 @@ export type LocationContact = {
   tiktok_link?: string;
 };
 
-export function useUpdateBusinessLocation(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId } & LocationContact> {
+export function useUpdateLocationAndContact(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId } & LocationAndContactInfo> {
   const { handleErrorObject } = useAuthErrorHandler();
-  
-  return useMutation<ApiMessage, Error, { business_id: BusinessId } & LocationContact>({
+
+  return useMutation<ApiMessage, Error, { business_id: BusinessId } & LocationAndContactInfo>({
     mutationFn: async ({ business_id, ...rest }) => {
       const res = await authAwareFetch(`/api/business/${business_id}/update-location`, {
         method: "PATCH",
@@ -276,7 +282,7 @@ export function useUpdateBusinessLocation(): UseMutationResult<ApiMessage, Error
         body: JSON.stringify(rest),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Update location failed");
+      if (!res.ok) throw new Error(data?.error || "Update location and contact failed");
       return data;
     },
     onError: handleErrorObject,
@@ -285,8 +291,9 @@ export function useUpdateBusinessLocation(): UseMutationResult<ApiMessage, Error
 
 export function useUpdateBusinessServices(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; services: BusinessService[] }> {
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { business_id: BusinessId; services: BusinessService[] }>({
+    
     mutationFn: async ({ business_id, services }) => {
       const res = await authAwareFetch(`/api/business/${business_id}/update-services`, {
         method: "PATCH",
@@ -303,7 +310,7 @@ export function useUpdateBusinessServices(): UseMutationResult<ApiMessage, Error
 
 export function useCreateBusinessServices(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId } & CreateMultipleServicesData> {
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { business_id: BusinessId } & CreateMultipleServicesData>({
     mutationFn: async ({ business_id, services }) => {
       const res = await authAwareFetch(`/api/business/${business_id}/create-service`, {
@@ -319,28 +326,10 @@ export function useCreateBusinessServices(): UseMutationResult<ApiMessage, Error
   });
 }
 
-export function useUpdateBusinessContact(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId } & ContactInfo> {
-  const { handleErrorObject } = useAuthErrorHandler();
-  
-  return useMutation<ApiMessage, Error, { business_id: BusinessId } & ContactInfo>({
-    mutationFn: async ({ business_id, ...contactData }) => {
-      const res = await authAwareFetch(`/api/business/${business_id}/update-contact`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(contactData),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Update contact failed");
-      return data;
-    },
-    onError: handleErrorObject,
-  });
-}
-
 export function useBusinessActivation(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; activation_status: "activate" | "deactivate"; business_name?: string; reason_for_deactivation?: string }> {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { business_id: BusinessId; activation_status: "activate" | "deactivate"; business_name?: string; reason_for_deactivation?: string }>({
     mutationFn: async (payload) => {
       const { business_id, ...body } = payload;
@@ -363,7 +352,7 @@ export function useBusinessActivation(): UseMutationResult<ApiMessage, Error, { 
 export function useUploadBusinessImages(): UseMutationResult<ApiEnvelope<string[]>, Error, { business_id: BusinessId; images: FileList | File[] }> {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiEnvelope<string[]>, Error, { business_id: BusinessId; images: FileList | File[] }>({
     mutationFn: async ({ business_id, images }) => {
       const fd = new FormData();
@@ -386,7 +375,7 @@ export function useUploadBusinessImages(): UseMutationResult<ApiEnvelope<string[
 export function useDeleteBusinessImages(): UseMutationResult<ApiMessage, Error, { image_ids: number[] }> {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { image_ids: number[] }>({
     mutationFn: async ({ image_ids }) => {
       const res = await authAwareFetch(`/api/business/image/delete`, {
@@ -405,14 +394,14 @@ export function useDeleteBusinessImages(): UseMutationResult<ApiMessage, Error, 
   });
 }
 
-// Backward-compatible alias (singular name)
+// ALLLLOW!. This is just for Backward-compatible alias (singular name)
 export const useDeleteBusinessImage = useDeleteBusinessImages;
 
 // General business update (name, description, website, logo, thumbnail)
 export function useUpdateBusiness(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; business_name?: string; description?: string; website?: string; logo?: File; thumbnail?: File }> {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { business_id: BusinessId; business_name?: string; description?: string; website?: string; logo?: File; thumbnail?: File }>({
     mutationFn: async ({ business_id, business_name, description, website, logo, thumbnail }) => {
       const fd = new FormData();
@@ -421,7 +410,7 @@ export function useUpdateBusiness(): UseMutationResult<ApiMessage, Error, { busi
       if (website) fd.append('website', website);
       if (logo) fd.append('logo', logo);
       if (thumbnail) fd.append('thumbnail', thumbnail);
-      
+
       const res = await authAwareFetch(`/api/business/${business_id}/`, {
         method: 'PATCH',
         body: fd,
@@ -453,16 +442,36 @@ export function useBusinessServices(businessId: BusinessId): UseQueryResult<ApiE
 }
 
 // Create new services
-export function useCreateServices(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; services: Array<{ title: string; description: string; price?: string; duration?: string }> }> {
+export function useCreateServices(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; services: Array<{ title: string; description: string; image?: File | null }> }> {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
-  
-  return useMutation<ApiMessage, Error, { business_id: BusinessId; services: Array<{ title: string; description: string; price?: string; duration?: string }> }>({
+
+  return useMutation<ApiMessage, Error, { business_id: BusinessId; services: Array<{ title: string; description: string; image?: File|null }> }>({
     mutationFn: async ({ business_id, services }) => {
+      const formData = new FormData();
+      if (services.length === 1) {
+        // Single service mode
+        const service = services[0];
+        if (service) {
+          formData.append('title', service.title);
+          formData.append('description', service.description);
+          if (service.image) {
+            formData.append('image_field', service.image);
+          }
+        }
+      } else {
+        // Multiple services mode
+        services.forEach((service, index) => {
+          formData.append(`services[${index}][title]`, service.title);
+          formData.append(`services[${index}][description]`, service.description);
+          if (service.image) {
+            formData.append(`services[${index}][image_field]`, service.image);
+          }
+        });
+      }
       const res = await authAwareFetch(`/api/business/${business_id}/services/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ services }),
+        body: formData,
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Failed to create services');
@@ -479,7 +488,7 @@ export function useCreateServices(): UseMutationResult<ApiMessage, Error, { busi
 export function useDeleteService(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; service_id: number }> {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
-  
+
   return useMutation<ApiMessage, Error, { business_id: BusinessId; service_id: number }>({
     mutationFn: async ({ business_id, service_id }) => {
       const res = await authAwareFetch(`/api/business/${business_id}/services/${service_id}/`, {
@@ -491,6 +500,35 @@ export function useDeleteService(): UseMutationResult<ApiMessage, Error, { busin
     },
     onSuccess: (_data, { business_id }) => {
       qc.invalidateQueries({ queryKey: ['business-services', business_id] });
+    },
+    onError: handleErrorObject,
+  });
+}
+
+// Update a service
+export function useUpdateService(): UseMutationResult<ApiMessage, Error, { business_id?: BusinessId; service_id?: number; service? :  { title?: string; description?: string; image?: File | null;} }> {
+  const qc = useQueryClient();
+  const { handleErrorObject } = useAuthErrorHandler();
+
+  return useMutation<ApiMessage, Error, { business_id?: BusinessId; service_id?: number;   service? : { title?: string; description?: string; image?: File | null;} }>({
+    mutationFn: async ({ business_id, service_id, service }) => {
+      const fd = new FormData();
+      if (service?.title) fd.append('title', service.title);
+      if (service?.description) fd.append('description', service.description);
+      if (service?.image) fd.append('image_field', service.image);
+
+      console.log(service )
+      const res = await authAwareFetch(`/api/business/${business_id}/services/${service_id}/`, {
+        method: 'PATCH',
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to update service');
+      return data;
+    },
+    onSuccess: (_data, { business_id }) => {
+      qc.invalidateQueries({ queryKey: ['business-services', business_id] });
+      qc.invalidateQueries({ queryKey: ['business', business_id] });
     },
     onError: handleErrorObject,
   });

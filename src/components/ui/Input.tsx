@@ -15,7 +15,7 @@ function formFieldVariants({ variant = "default", size = "default" }: { variant?
   };
   const sizes: Record<Size, string> = {
     sm: "h-9 px-3 py-2 text-sm",
-    default: "h-12 px-4 py-3 text-sm",
+    default: "h-12 px-3 py-3 text-sm",
     lg: "h-14 px-4 py-3 text-lg",
   };
   return [base, variants[variant], sizes[size]].join(" ");

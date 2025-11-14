@@ -2,10 +2,14 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui';
+import { Button, LinkButton } from '@/components/ui';
 import { useBusinessContext } from '@/contexts/BusinessContext';
-import { useState } from 'react';
-import { DeactivateBusinessModal } from '@/components/business/settings/DeactivateBusinessModal';
+import { DeactivateBusinessModal } from '@/app/(business)/misc/components/DeactivateBusinessModal';
+import { useBooleanStateControl } from '@/hooks';
+import { BoxedArrow, LogoIcon } from '@/assets/icons';
+import { cn } from '@/lib/utils';
+import { useRequestBusinessApproval } from '@/app/(business)/misc/api/business';
+import { toast } from 'sonner';
 
 const tabs = [
   { name: 'General', href: '/business/settings/general' },
@@ -14,76 +18,155 @@ const tabs = [
   { name: 'Contact', href: '/business/settings/contact' },
 ];
 
-export default function SettingsLayout({ children }: { children: React.ReactNode }) {
+export default function SettingsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { currentBusiness } = useBusinessContext();
-  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const { currentBusiness, isLoading, refetchBusinesses } = useBusinessContext();
+  const {
+    state: isDeactivateModalOpen,
+    setTrue: openDeactivateModal,
+    setFalse: closeDeactivateModal,
+  } = useBooleanStateControl();
+
+  const requestApprovalMutation = useRequestBusinessApproval();
+
+  const handleRequestApproval = async () => {
+    if (!currentBusiness?.id) {
+      toast.error('No business selected');
+      return;
+    }
+
+    try {
+      await requestApprovalMutation.mutateAsync({
+        business_id: currentBusiness.id,
+      });
+      toast.success('Approval request sent successfully');
+      refetchBusinesses(); // Refresh business data
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to request approval');
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className='flex h-full w-full items-center justify-center'>
+        <LogoIcon className='animate-pulse' />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex-1 overflow-auto">
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">{currentBusiness?.name || 'Business Settings'}</h1>
-            <p className="text-muted-foreground">Manage your business details and account settings</p>
-          </div>
-          <div className="flex gap-3">
-            <Button
-              onClick={() => {
-                if (currentBusiness?.id) {
-                  router.push(`/businesses/${currentBusiness.id}`);
-                }
-              }}
-              className="bg-primary text-white hover:bg-primary/90"
-            >
-              Preview Business Profile →
-            </Button>
-            <Button
-              onClick={() => setShowDeactivateModal(true)}
-              variant="outline"
-              className="border-destructive text-destructive hover:bg-destructive/10 bg-transparent"
-            >
-              Deactivate Business
-            </Button>
-          </div>
-        </div>
-
-        {/* Tabs Navigation */}
-        <div className="border-b border-border">
-          <nav className="flex gap-8">
-            {tabs.map((tab) => {
-              const isActive = pathname === tab.href;
-              return (
-                <Link
-                  key={tab.href}
-                  href={tab.href}
-                  className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
-                    isActive
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:text-foreground'
-                  }`}
+    <>
+      <div
+        className={cn(
+          'h-full w-full space-y-3 md:space-y-6 overflow-hidden',
+          pathname !== '/business/settings/gallery' &&
+            'grid grid-rows-[max-content,max-content,1fr]'
+        )}
+      >
+        {pathname !== '/business/settings/gallery' && (
+          <>
+            {' '}
+            {/* Header */}
+            <header className='flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
+              <div className='max-lg:w-full'>
+                <div className='flex items-start justify-between gap-4 md:items-center'>
+                  <h1 className='font-inter text-xl font-semibold lg:text-3xl'>
+                    {currentBusiness?.name || 'Business Settings'}
+                    <span className='text-balance text-xs text-[#4B5565] max-lg:block max-w-[30ch] font-normal lg:hidden'>
+                      Manage your business details and account settings
+                    </span>
+                  </h1>
+                  <div className='ml-auto flex flex-col gap-1.5'>
+                    <Button
+                      onClick={openDeactivateModal}
+                      variant='destructive_outline'
+                      size='sm'
+                      className='ml-auto border-destructive bg-[#FFF4ED] text-destructive hover:bg-destructive/10 lg:hidden'
+                    >
+                      Deactivate
+                    </Button>
+                    <Button
+                      onClick={handleRequestApproval}
+                      disabled={requestApprovalMutation.isPending}
+                      variant='light'
+                      className='md:hidden'
+                      size='sm'
+                    >
+                      {requestApprovalMutation.isPending ? 'Requesting...' : 'Request Approval'}
+                    </Button>
+                  </div>
+                </div>
+                <p className='hidden lg:block text-balance text-xs text-[#4B5565]  lg:text-sm'>
+                  Manage your business details and account settings
+                </p>
+              </div> 
+              {currentBusiness?.approved ? (
+                <LinkButton
+                  href={`/businesses/${currentBusiness?.id}`}
+                  className='bg-primary text-white hover:bg-primary/90 max-md:hidden'
+                  size='lg'
                 >
-                  {tab.name}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
+                  Preview Business Profile
+                  <BoxedArrow className='ml-2' />
+                </LinkButton>
+              ) : (
+                <Button
+                  onClick={handleRequestApproval}
+                  disabled={requestApprovalMutation.isPending}
+                  size='lg'
+                  variant='light'
+                  className='max-md:hidden'
+                >
+                  {requestApprovalMutation.isPending ? 'Requesting...' : 'Request Approval'}
+                </Button>
+              )}
+            </header>
+            {/* Tabs Navigation */}
+            <div className='border-border px-4 lg:px-6'>
+              <nav className='flex gap-2 lg:gap-5'>
+                {tabs.map(tab => {
+                  const isActive = pathname === tab.href;
+                  return (
+                    <Link
+                      key={tab.href}
+                      href={tab.href}
+                      className={`rounded-xl border px-3 py-1.5 font-inter text-[0.8rem] font-normal transition-colors max-lg:w-max md:px-4 md:text-sm ${
+                        isActive
+                          ? 'border-[#D9D6FE] bg-[#F5F3FF] text-primary'
+                          : 'border-[#D9D6FE] text-[#697586]'
+                      }`}
+                    >
+                      {tab.name}
+                    </Link>
+                  );
+                })}
+                <Button
+                  onClick={openDeactivateModal}
+                  variant='destructive_outline'
+                  className='ml-auto hidden rounded-lg border-destructive text-destructive hover:bg-destructive/10 lg:block'
+                >
+                  Deactivate Business
+                </Button>
+              </nav>
+            </div>
+          </>
+        )}
 
         {/* Tab Content */}
-        {children}
+        <div className='overflow-y-auto max-md:pb-12 p-4'>{children}</div>
       </div>
 
-      {/* Deactivate Modal */}
-      {showDeactivateModal && (
+      {isDeactivateModalOpen && (
         <DeactivateBusinessModal
           businessId={currentBusiness?.id || 0}
           businessName={currentBusiness?.name || ''}
-          onClose={() => setShowDeactivateModal(false)}
+          onClose={closeDeactivateModal}
         />
       )}
-    </div>
+    </>
   );
 }

@@ -8,7 +8,6 @@ type ForwardOptions = {
   auth?: boolean; // add Bearer token from next-auth
   contentType?: 'json' | 'form' | 'none';
   query?: Record<string, string | number | boolean | undefined | null>;
-  // When contentType=json, provide body object; when form, provide FormData; when none, body omitted
   body?: unknown | FormData;
   cache?: RequestCache;
 };
@@ -86,7 +85,7 @@ export async function forward(
         if (typeof msg === 'string') message = msg;
       }
       
-      console.log('Error forwarding request:', res);
+      console.log('Request Failed From Backend:', res);
       if (res.status === 401 || is401Error(res, data)) {
         return NextResponse.json({ 
           error: message, 
@@ -94,8 +93,14 @@ export async function forward(
           is401: true 
         }, { status: 401 });
       }
-      
+      console.log('Forwarded Response:', data);
+
       return NextResponse.json({ error: message, data }, { status: res.status });
+    }
+    
+    // Handle 204 No Content responses
+    if (res.status === 204) {
+      return new NextResponse(null, { status: 204 });
     }
     
     return NextResponse.json(data, { status: res.status });

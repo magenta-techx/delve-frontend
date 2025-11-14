@@ -1,43 +1,38 @@
-"use client"
+'use client';
 
-import type React from "react"
-import { useState } from "react"
-import { Sidebar } from "../misc/components/sidebar"
-import { TopNav } from "../misc/components/top-nav"
-import { Notifications } from "../misc/components/notifications"
-import { BusinessProvider } from "@/contexts/BusinessContext"
+import type React from 'react';
+import { useState } from 'react';
+import { Sidebar } from '../misc/components/sidebar';
+import { NavbarTop, NavbarBottom } from '../misc/components';
+import { BusinessProvider } from '@/contexts/BusinessContext';
+import { useIsMobile } from '@/hooks';
+import { cn } from '@/lib/utils';
 
 export default function BusinessLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }): React.ReactElement {
-  const [showNotifications, setShowNotifications] = useState(false)
+  const isMobile = useIsMobile();
 
   return (
     <BusinessProvider>
-      <div className="flex h-screen bg-background">
-        {/* Sidebar */}
-        <Sidebar />
+      <div
+        className={cn(
+          'flex h-screen bg-background',
+          isMobile && 'grid grid-rows-[auto,1fr,auto] !h-dvh'
+        )}
+      >
+        {isMobile ? <NavbarTop /> : <Sidebar />}
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-[#FCFCFD]">
-          {/* Top Navigation */}
-          <TopNav onNotificationsClick={() => setShowNotifications(!showNotifications)} />
-
-          {/* Content area with notifications */}
-          <div className="flex flex-1 overflow-hidden">
-            <div className="flex-1 overflow-auto">{children}</div>
-
-            {/* Notifications panel */}
-            {showNotifications && (
-              <div className="w-80 border-l border-border bg-background">
-                <Notifications />
-              </div>
-            )}
-          </div>
+        <div className='flex flex-1 flex-col overflow-hidden bg-[#FCFCFD]'>
+          {children}
         </div>
+
+
+        {isMobile && <NavbarBottom />}
       </div>
     </BusinessProvider>
-  )
+  );
 }

@@ -4,8 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Textarea';
-import { Upload } from 'lucide-react';
+import { Textarea } from '@/components/ui';
 import { toast } from 'sonner';
 import { GalleryIcon } from '../icons';
 import { authAwareFetch } from '@/utils/authAwareFetch';
@@ -99,7 +98,7 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
       }
 
       console.log('✅ Business created successfully:', data);
-      onSuccess(data.data.business_id);
+      onSuccess(data.data.id);
     } catch (error) {
       console.error('Error creating business:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to create business';

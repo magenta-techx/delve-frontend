@@ -9,6 +9,7 @@ interface BusinessContextType {
   businesses: BusinessDetail[];
   currentBusiness: BusinessDetail | null;
   isLoading: boolean;
+  isFetching: boolean;
   error: Error | null;
   switchBusiness: (businessId: number) => void;
   refetchBusinesses: () => void;
@@ -33,7 +34,7 @@ export const BusinessProvider = ({ children }: BusinessProviderProps) => {
   const [currentBusinessId, setCurrentBusinessId] = useState<number | null>(null);
 
   // Fetch all businesses belonging to the user
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, isFetching, error, refetch } = useQuery({
     queryKey: ['user-businesses'],
     queryFn: async () => {
       const response = await authAwareFetch('/api/business/my-businesses', {
@@ -97,11 +98,12 @@ export const BusinessProvider = ({ children }: BusinessProviderProps) => {
       businesses,
       currentBusiness,
       isLoading,
+      isFetching,
       error: error as Error | null,
       switchBusiness,
       refetchBusinesses,
     }),
-    [businesses, currentBusiness, isLoading, error, switchBusiness, refetchBusinesses]
+    [businesses, currentBusiness, isLoading, isFetching, error, switchBusiness, refetchBusinesses]
   );
 
   return (

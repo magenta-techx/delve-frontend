@@ -1,349 +1,679 @@
 'use client';
 
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Button } from '@/components/ui/Button';
+import SelectSingleSimple from '@/components/ui/SelectSingleSimple';
 import { useBusinessContext } from '@/contexts/BusinessContext';
-import { Button, Input,  } from '@/components/ui';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import { useCategories, useSubcategories, useAmenities, useUpdateBusinessCategory, useUpdateBusinessAmenities } from '@/app/(business)/misc/api/business';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { Loader2, X, Upload } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { LinkButton } from '@/components/ui';
+import { GalleryIcon } from '@/app/(clients)/misc/icons';
 import { 
-  useCategories, 
-  useSubcategories,
-  useAmenities, 
-  useUpdateBusinessCategory, 
-  useUpdateBusinessAmenities, 
-  useUploadBusinessImages,
-  useUpdateBusiness
-} from '@/app/(business)/misc/api';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
-const profileSchema = z.object({
-  thumbnail: z.any().optional(),
-  category_id: z.number().min(1, 'Please select a category'),
-  subcategory_ids: z.array(z.number()).optional(),
-  amenities_ids: z.array(z.number()).optional(),
-  gallery_images: z.any().optional(),
-});
+interface EditableField {
+  id: string;
+  value: string | string[] | number | number[];
+  displayValue?: string | undefined;
+}
 
-type ProfileFormData = z.infer<typeof profileSchema>;
+export default function ProfileSettings() {
+  const { currentBusiness, refetchBusinesses, isLoading: isLoadingBusinesses } = useBusinessContext();
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [fieldValues, setFieldValues] = useState<Record<string, EditableField>>({});
+  const [showImageSelector, setShowImageSelector] = useState(false);
+  const [showSubcategoryModal, setShowSubcategoryModal] = useState(false);
+  const [showAmenitiesModal, setShowAmenitiesModal] = useState(false);
 
-export default function ProfilePage() {
-  const { currentBusiness, refetchBusinesses } = useBusinessContext();
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
-  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
-  const [selectedSubcategories, setSelectedSubcategories] = useState<number[]>([]);
-  const [selectedAmenities, setSelectedAmenities] = useState<number[]>([]);
+  // Fetch categories, subcategories, and amenities
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories();
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const { data: subcategories = [], isLoading: subcategoriesLoading } = useSubcategories(selectedCategoryId);
+  const { data: amenities = [], isLoading: amenitiesLoading } = useAmenities();
 
-  const { control, handleSubmit, formState: { errors }, setValue } = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      category_id: currentBusiness?.category?.id || 0,
-      subcategory_ids: [],
-      amenities_ids: [],
-    },
-  });
-
-  // Fetch categories and amenities
-  const { data: categoriesData } = useCategories();
-  const { data: subcategoriesData } = useSubcategories(selectedCategoryId);
-  const { data: amenitiesData } = useAmenities();
-  
   // Mutations
-  const { mutate: updateCategory, isPending: isUpdatingCategory } = useUpdateBusinessCategory();
-  const { mutate: updateAmenities, isPending: isUpdatingAmenities } = useUpdateBusinessAmenities();
-  const { mutate: uploadImages } = useUploadBusinessImages();
-  const { mutate: updateThumbnail } = useUpdateBusiness();
+  const updateCategoryMutation = useUpdateBusinessCategory();
+  const updateAmenitiesMutation = useUpdateBusinessAmenities();
 
+  // Set the category ID when current business changes
   useEffect(() => {
-    if (currentBusiness) {
-      if (currentBusiness.thumbnail) {
-        setThumbnailPreview(currentBusiness.thumbnail);
+    if (currentBusiness?.category?.id) {
+      setSelectedCategoryId(currentBusiness.category.id);
+    }
+  }, [currentBusiness]);
+
+  const handleEdit = useCallback((field: string, currentValue: string | string[] | number | number[], displayValue?: string) => {
+    setEditingField(field);
+
+    // For category field, set the selected category for subcategories fetching
+    if (field === 'category' && typeof currentValue === 'number') {
+      setSelectedCategoryId(currentValue);
+    }
+
+    setFieldValues(prev => ({
+      ...prev,
+      [field]: { id: field, value: currentValue, displayValue: displayValue || undefined }
+    }));
+  }, []);
+
+  const handleCancel = useCallback(() => {
+    setEditingField(null);
+    setFieldValues({});
+    setShowImageSelector(false);
+    setShowSubcategoryModal(false);
+    setShowAmenitiesModal(false);
+    // Reset category selection
+    if (currentBusiness?.category?.id) {
+      setSelectedCategoryId(currentBusiness.category.id);
+    }
+  }, [currentBusiness]);
+
+  const handleFieldChange = useCallback((field: string, newValue: string | string[] | number | number[]) => {
+    setFieldValues(prev => {
+      const existingField = prev[field];
+      if (!existingField) return prev;
+
+      // If changing category, also update the selected category for subcategories
+      if (field === 'category' && typeof newValue === 'number') {
+        setSelectedCategoryId(newValue);
       }
-      if (currentBusiness.category) {
-        setSelectedCategoryId(currentBusiness.category.id);
-        setValue('category_id', currentBusiness.category.id);
-      }
-      if (currentBusiness.subcategories) {
-        const subcatIds = currentBusiness.subcategories.map(sc => sc.id);
-        setSelectedSubcategories(subcatIds);
-        setValue('subcategory_ids', subcatIds);
-      }
-      if (currentBusiness.images) {
-        const imageUrls = currentBusiness.images.map(img => 
-          typeof img === 'string' ? img : img.image
-        );
-        setGalleryPreviews(imageUrls);
-      }
-    }
-  }, [currentBusiness, setValue]);
 
-  const onSubmit = (data: ProfileFormData) => {
-    if (!currentBusiness?.id) return;
-
-    // Update category
-    if (data.category_id) {
-      updateCategory(
-        {
-          business_id: currentBusiness.id,
-          category_id: data.category_id,
-          subcategory_ids: selectedSubcategories,
-        },
-        {
-          onSuccess: () => {
-            toast.success('Category updated successfully');
-            refetchBusinesses();
-          },
+      return {
+        ...prev,
+        [field]: {
+          id: existingField.id,
+          value: newValue,
+          displayValue: existingField.displayValue
         }
-      );
-    }
-
-    // Update amenities
-    if (selectedAmenities.length > 0) {
-      updateAmenities(
-        {
-          business_id: currentBusiness.id,
-          amenities_ids: selectedAmenities,
-        },
-        {
-          onSuccess: () => {
-            toast.success('Amenities updated successfully');
-          },
-        }
-      );
-    }
-
-    // Upload thumbnail
-    if (data.thumbnail && data.thumbnail[0]) {
-      updateThumbnail(
-        {
-          business_id: currentBusiness.id,
-          thumbnail: data.thumbnail[0],
-        },
-        {
-          onSuccess: () => {
-            toast.success('Profile picture updated successfully');
-            refetchBusinesses();
-          },
-        }
-      );
-    }
-
-    // Upload gallery images
-    if (data.gallery_images && data.gallery_images.length > 0) {
-      uploadImages(
-        {
-          business_id: currentBusiness.id,
-          images: data.gallery_images,
-        },
-        {
-          onSuccess: (response) => {
-            toast.success('Images uploaded successfully');
-            if (response.data) {
-              setGalleryPreviews(prev => [...prev, ...response.data]);
-            }
-            refetchBusinesses();
-          },
-        }
-      );
-    }
-  };
-
-  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setThumbnailPreview(reader.result as string);
       };
-      reader.readAsDataURL(file);
+    });
+  }, []);
+
+  const handleSave = useCallback((field: string) => {
+    if (!currentBusiness?.id) {
+      toast.error('No business selected');
+      return;
     }
+
+    const businessId = currentBusiness.id;
+    const value = fieldValues[field]?.value;
+
+    switch (field) {
+      case 'category':
+        if (typeof value === 'number') {
+          // When saving category, also need to save subcategories if they exist
+          const subcategoryIds = currentBusiness.subcategories?.map(s => s.id) || [];
+          updateCategoryMutation.mutate(
+            {
+              business_id: businessId,
+              category_id: value,
+              subcategory_ids: subcategoryIds
+            },
+            {
+              onSuccess: () => {
+                toast.success('Category updated successfully');
+                setEditingField(null);
+                setFieldValues({});
+                refetchBusinesses();
+              },
+              onError: () => {
+                toast.error('Failed to update category');
+              }
+            }
+          );
+        }
+        break;
+      case 'subCategories':
+        if (Array.isArray(value) && currentBusiness.category?.id) {
+          updateCategoryMutation.mutate(
+            {
+              business_id: businessId,
+              category_id: currentBusiness.category.id,
+              subcategory_ids: value as number[]
+            },
+            {
+              onSuccess: () => {
+                toast.success('Subcategories updated successfully');
+                setEditingField(null);
+                setFieldValues({});
+                setShowSubcategoryModal(false);
+                refetchBusinesses();
+              },
+              onError: () => {
+                toast.error('Failed to update subcategories');
+              }
+            }
+          );
+        }
+        break;
+      case 'amenities':
+        if (Array.isArray(value)) {
+          updateAmenitiesMutation.mutate(
+            {
+              business_id: businessId,
+              amenities_ids: value as number[]
+            },
+            {
+              onSuccess: () => {
+                toast.success('Amenities updated successfully');
+                setEditingField(null);
+                setFieldValues({});
+                setShowAmenitiesModal(false);
+                refetchBusinesses();
+              },
+              onError: () => {
+                toast.error('Failed to update amenities');
+              }
+            }
+          );
+        }
+        break;
+      default:
+        console.log(`Saving ${field}:`, value);
+        setEditingField(null);
+        setFieldValues({});
+        setShowImageSelector(false);
+    }
+  }, [fieldValues, currentBusiness, updateCategoryMutation, updateAmenitiesMutation, refetchBusinesses]);
+
+  // Helper function to get category name
+  const getCategoryName = (categoryId: number | null) => {
+    if (!categoryId) return 'No category selected';
+    const category = categories?.find(c => c.id === categoryId);
+    return category?.name || 'Unknown category';
+  };
+  console.log('Current Business:', currentBusiness);
+  // Helper function to get business images for profile picture selection
+  const getBusinessImages = () => {
+    if (!currentBusiness?.images) return [];
+    return currentBusiness.images.map(img =>
+      typeof img === 'string' ? img : img.image
+    );
   };
 
-  const toggleSubcategory = (subcatId: number) => {
-    setSelectedSubcategories(prev => {
-      if (prev.includes(subcatId)) {
-        return prev.filter(id => id !== subcatId);
-      } else {
-        return [...prev, subcatId];
-      }
-    });
+  // Helper function to get current profile picture
+  const getCurrentProfilePicture = () => {
+    return currentBusiness?.thumbnail || currentBusiness?.logo || getBusinessImages()[0] || null;
   };
 
-  const toggleAmenity = (amenityId: number) => {
-    setSelectedAmenities(prev => {
-      if (prev.includes(amenityId)) {
-        return prev.filter(id => id !== amenityId);
-      } else {
-        return [...prev, amenityId];
-      }
-    });
-  };
-
+  if (isLoadingBusinesses) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full min-h-[40vh] text-center text-muted-foreground">
+        Loading business...
+      </div>
+    );
+  }
   if (!currentBusiness) {
     return <div className="py-12 text-center text-muted-foreground">No business selected</div>;
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-4xl">
-      {/* Profile Picture */}
-      <div className="space-y-2">
-        <Label>Profile Picture</Label>
-        <div className="flex items-start gap-4">
-          <div className="relative w-full max-w-2xl h-48 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-            {thumbnailPreview ? (
-              <Image src={thumbnailPreview} alt="Profile" fill className="object-cover" />
+    <div className="p-6 space-y-6">
+
+      <div className="space-y-8">
+        {/* Profile Picture */}
+        <section className="flex flex-col xl:grid grid-cols-[240px,1fr] lg:items-end xl:gap-12 border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8">
+          <div className="flex flex-col items-between">
+            <Label className="text-sm font-medium text-[#0F0F0F]">Profile Picture</Label>
+            <div className="">
+              <p className="text-xs text-gray-500 mb-1.5">
+                Select from your uploads
+              </p>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowImageSelector(true)}
+                className="max-lg:hidden text-primary border-primary bg-[#FBFAFF] hover:bg-purple-50 w-max"
+              >
+                <GalleryIcon /> Change
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="relative w-full aspect-[15/5] !max-h-[350px] rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center border">
+              {getCurrentProfilePicture() ? (
+                <Image
+                  src={getCurrentProfilePicture()!}
+                  alt="Profile Picture"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <span className="text-xl font-semibold text-gray-400">
+                  {currentBusiness.name.charAt(0)}
+                </span>
+              )}
+            </div>
+
+          </div>
+
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowImageSelector(true)}
+            className="lg:hidden text-primary border-primary bg-[#FBFAFF] hover:bg-purple-50"
+          >
+            <GalleryIcon /> Change
+          </Button>
+
+        </section>
+
+        {/* Gallery */}
+        <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] xl:items-center xl:gap-12 border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8">
+          <Label className="text-sm font-medium text-[#0F0F0F]">Gallery</Label>
+
+          <LinkButton
+            href="/business/settings/gallery"
+            size="sm"
+            variant="outline"
+            className="border-primary w-max bg-[#FBFAFF] text-primary"
+          >
+            View and upload
+          </LinkButton>
+
+
+
+        </section>
+
+        {/* Business Categories */}
+        <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] xl:items-center xl:gap-12 border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8">
+
+          <Label className="text-sm font-medium text-[#0F0F0F]">Business Category</Label>
+
+
+          {editingField === 'category' ? (
+            <div className="flex-1">
+              <SelectSingleSimple
+                name="category"
+                placeholder="Select a category"
+                value={String(fieldValues['category']?.value as number || currentBusiness.category?.id || '')}
+                onChange={(value) => handleFieldChange('category', parseInt(value))}
+                options={categories as unknown as Record<string, unknown>[]}
+                valueKey="id"
+                labelKey="name"
+                isLoadingOptions={categoriesLoading}
+                className="w-full"
+              />
+            </div>
+          ) : (
+            <div className="flex-1">
+              <div className="p-3 border rounded-xl bg-gray-50">
+                <span className="text-sm text-gray-900 ">
+                  {getCategoryName(currentBusiness.category?.id || null)}
+                </span>
+              </div>
+            </div>
+          )}
+
+          <div className='flex items-center lg:justify-end lg:self-end mt-2'>
+            {editingField === 'category' ? (
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => handleSave('category')}
+                  disabled={!fieldValues['category']?.value}
+                >
+                  Save
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+              </div>
             ) : (
-              <span className="text-4xl font-bold text-gray-400">
-                {currentBusiness.name.charAt(0)}
-              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled
+                onClick={() => handleEdit('category', currentBusiness.category?.id || 0)}
+              >
+                Edit
+              </Button>
             )}
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Label htmlFor="thumbnail" className="cursor-pointer">
-            <div className="flex items-center gap-2 px-4 py-2 border rounded-md hover:bg-gray-50">
-              <Upload className="w-4 h-4" />
-              <span className="text-sm">Change</span>
-            </div>
-          </Label>
-          <Input
-            id="thumbnail"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            {...control.register('thumbnail')}
-            onChange={(e) => {
-              control.register('thumbnail').onChange(e);
-              handleThumbnailChange(e);
-            }}
-          />
-          <p className="text-sm text-muted-foreground">Select from your uploads</p>
-        </div>
-      </div>
+        </section>
 
-      {/* Gallery */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label>Gallery</Label>
-          <Button type="button" variant="outline" size="sm" asChild>
-            <Label htmlFor="gallery_images" className="cursor-pointer">
-              View and upload
-            </Label>
-          </Button>
-        </div>
-        <Input
-          id="gallery_images"
-          type="file"
-          multiple
-          accept="image/*"
-          className="hidden"
-          {...control.register('gallery_images')}
-        />
-        <div className="grid grid-cols-4 gap-4">
-          {galleryPreviews.slice(0, 4).map((img, idx) => (
-            <div key={idx} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
-              <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover" />
-            </div>
-          ))}
-        </div>
-      </div>
+        {/* Subcategories */}
+        <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] xl:items-center xl:gap-12 border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8">
+          <Label className="text-sm font-medium text-[#0F0F0F]">Subcategories</Label>
 
-      {/* Business Categories */}
-      <div className="space-y-2">
-        <Label>Business Categories</Label>
-        <Controller
-          name="category_id"
-          control={control}
-          render={({ field }) => (
-            <select
-              {...field}
-              onChange={(e) => {
-                const value = parseInt(e.target.value);
-                field.onChange(value);
-                setSelectedCategoryId(value);
-                setSelectedSubcategories([]);
+          <div className="flex-1">
+
+            {currentBusiness.subcategories && currentBusiness.subcategories.length > 0 ? (
+              <div className="flex flex-wrap gap-2.5">
+                {currentBusiness.subcategories.map((subcategory) => (
+                  <button
+                    key={subcategory.id}
+                    type="button"
+
+                    className={cn(
+                      'rounded-lg border px-3 py-2 text-left transition-all duration-200 text-sm',
+                      'border-[#E3E8EF] bg-[#FFFFFF] text-[#697586]'
+                      
+                    )}                  >
+                    <div className="flex items-center gap-2 justify-between">
+                      <span className="font-medium">{subcategory.name}</span>
+                      <div className="size-2 rounded-full bg-[#F5F3FF]"></div>
+                    </div>
+                  </button>
+                ))}
+
+              </div>
+            ) : (<div className="p-3 border rounded-xl bg-gray-50">
+              <span className="text-sm text-gray-500">No subcategories selected</span>
+            </div>
+            )}
+          </div>
+
+          <div className='flex items-center lg:justify-end lg:self-end mt-2'>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                // Set the category for fetching subcategories if not already set
+                if (currentBusiness.category?.id) {
+                  setSelectedCategoryId(currentBusiness.category.id);
+                  setEditingField('subCategories');
+                  setFieldValues({
+                    subCategories: {
+                      id: 'subCategories',
+                      value: currentBusiness.subcategories?.map(s => s.id) || []
+                    }
+                  });
+                  setShowSubcategoryModal(true);
+                } else {
+                  toast.error('Please select a category first');
+                }
               }}
-              className="w-full border rounded-md px-3 py-2"
+              disabled={!currentBusiness.category?.id}
             >
-              <option value="">Select a category</option>
-              {categoriesData?.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
-          )}
-        />
-        {errors.category_id && (
-          <p className="text-sm text-red-500">{errors.category_id.message}</p>
-        )}
+              Edit
+            </Button>
+          </div>
+        </section>
+
+        {/* Business Amenities */}
+        <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] xl:items-center xl:gap-12 border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8">
+          <Label className="text-sm font-medium text-[#0F0F0F]">Business Amenities</Label>
+
+          <div className="flex-1">
+            {currentBusiness.amenities && currentBusiness.amenities.length > 0 ? (
+              <div className="flex flex-wrap gap-2.5">
+                {currentBusiness.amenities.map((amenity, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className={cn(
+                      'rounded-lg border px-3 py-2 text-left transition-all duration-200 text-sm',
+                      'border-[#E3E8EF] bg-[#FFFFFF] text-[#697586]'
+                    )}
+                  >
+                    <div className="flex items-center gap-2 justify-between">
+                      <span className="font-medium">
+                        {typeof amenity === 'object' ? amenity.name : amenity}
+                      </span>
+                      <div className="size-2 rounded-full bg-[#F5F3FF]"></div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="p-3 border rounded-xl bg-gray-50">
+                <span className="text-sm text-gray-500">No amenities selected</span>
+              </div>
+            )}
+          </div>
+
+          <div className='flex items-center lg:justify-end lg:self-end mt-2'>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setEditingField('amenities');
+                setFieldValues({
+                  amenities: {
+                    id: 'amenities',
+                    value: currentBusiness.amenities?.map(a => typeof a === 'object' ? a.id : parseInt(a)) || []
+                  }
+                });
+                setShowAmenitiesModal(true);
+              }}
+            >
+              Edit
+            </Button>
+          </div>
+        </section>
       </div>
 
-      {/* Subcategories */}
-      {subcategoriesData && subcategoriesData.length > 0 && (
-        <div className="space-y-2">
-          <Label>Subcategories</Label>
-          <div className="flex flex-wrap gap-2">
-            {subcategoriesData.map(subcat => (
-              <Badge
-                key={subcat.id}
-                variant={selectedSubcategories.includes(subcat.id) ? 'default' : 'outline'}
-                className="cursor-pointer"
-                onClick={() => toggleSubcategory(subcat.id)}
+      {/* Subcategory Selection Modal */}
+      <Dialog 
+        open={showSubcategoryModal && selectedCategoryId !== null} 
+        onOpenChange={(open) => {
+          setShowSubcategoryModal(open);
+          if (!open) {
+            setEditingField(null);
+            setFieldValues({});
+          }
+        }}
+      >
+        <DialogContent className="mx-4 w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="mb-2 text-2xl md:text-3xl font-semibold font-karma text-balance text-[#0F0F0F]">
+              Choose your {categories.find(c => c.id === selectedCategoryId)?.name.toLowerCase()} subcategories
+            </DialogTitle>
+            <p className="mb-8 text-gray-600">
+              Select the subcategories that best describe your business
+            </p>
+          </DialogHeader>
+
+          {subcategoriesLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent"></div>
+            </div>
+          ) : (
+            <>
+              <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {subcategories.map((subcategory) => {
+                  const currentIds = (fieldValues['subCategories']?.value as number[]) || [];
+                  const isSelected = currentIds.includes(subcategory.id);
+
+                  return (
+                    <button
+                      key={subcategory.id}
+                      type="button"
+                      onClick={() => {
+                        const currentIds = (fieldValues['subCategories']?.value as number[]) || [];
+                        const newIds = isSelected
+                          ? currentIds.filter(id => id !== subcategory.id)
+                          : [...currentIds, subcategory.id];
+                        handleFieldChange('subCategories', newIds);
+                      }}
+                      className={cn(
+                        'rounded-lg border px-4 py-3 text-left transition-all duration-200',
+                        isSelected
+                          ? 'border-[#A48AFB] bg-[#FBFAFF] text-purple-700'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300 hover:bg-purple-50'
+                      )}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">{subcategory.name}</span>
+                        {isSelected && (
+                          <div className="size-3 rounded-full bg-[#A48AFB]"></div>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowSubcategoryModal(false);
+                    setEditingField(null);
+                    setFieldValues({});
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => handleSave('subCategories')}
+                  disabled={updateCategoryMutation.isPending}
+                >
+                  {updateCategoryMutation.isPending ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Amenities Selection Modal */}
+      <Dialog 
+        open={showAmenitiesModal} 
+        onOpenChange={(open) => {
+          setShowAmenitiesModal(open);
+          if (!open) {
+            setEditingField(null);
+            setFieldValues({});
+          }
+        }}
+      >
+        <DialogContent className="mx-4 w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="mb-2 text-2xl md:text-3xl font-semibold font-karma text-balance text-[#0F0F0F]">
+              Choose your business amenities
+            </DialogTitle>
+            <p className="mb-8 text-gray-600">
+              Select the amenities that your business offers
+            </p>
+          </DialogHeader>
+
+          {amenitiesLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent"></div>
+            </div>
+          ) : (
+            <>
+              <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 max-h-60 overflow-y-auto">
+                {amenities.map((amenity) => {
+                  const currentIds = (fieldValues['amenities']?.value as number[]) || [];
+                  const isSelected = currentIds.includes(amenity.id);
+
+                  return (
+                    <button
+                      key={amenity.id}
+                      type="button"
+                      onClick={() => {
+                        const currentIds = (fieldValues['amenities']?.value as number[]) || [];
+                        const newIds = isSelected
+                          ? currentIds.filter(id => id !== amenity.id)
+                          : [...currentIds, amenity.id];
+                        handleFieldChange('amenities', newIds);
+                      }}
+                      className={cn(
+                        'rounded-lg border px-4 py-3 text-left transition-all duration-200',
+                        isSelected
+                          ? 'border-[#A48AFB] bg-[#FBFAFF] text-purple-700'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300 hover:bg-purple-50'
+                      )}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">{amenity.name}</span>
+                        {isSelected && (
+                          <div className="size-3 rounded-full bg-[#A48AFB]"></div>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowAmenitiesModal(false);
+                    setEditingField(null);
+                    setFieldValues({});
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => handleSave('amenities')}
+                  disabled={updateAmenitiesMutation.isPending}
+                >
+                  {updateAmenitiesMutation.isPending ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Profile Picture Modal */}
+      <Dialog 
+        open={showImageSelector} 
+        onOpenChange={(open) => {
+          setShowImageSelector(open);
+        }}
+      >
+        <DialogContent className="mx-4 w-full max-w-4xl rounded-2xl bg-white p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-semibold mb-6">
+              Change profile picture
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="grid grid-cols-3 gap-4">
+            {getBusinessImages().map((image, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  handleFieldChange('profilePicture', image);
+                  setShowImageSelector(false);
+                }}
+                className="relative aspect-square rounded-lg overflow-hidden border-2 hover:border-purple-500 transition-colors group"
               >
-                {subcat.name}
-                {selectedSubcategories.includes(subcat.id) && (
-                  <X className="ml-1 h-3 w-3" />
+                <Image
+                  src={image}
+                  alt={`Business image ${index + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform"
+                />
+                {index === 0 && (
+                  <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
+                    Default
+                  </div>
                 )}
-              </Badge>
+              </button>
             ))}
           </div>
-        </div>
-      )}
 
-      {/* Business Amenities */}
-      <div className="space-y-2">
-        <Label>
-          Business Amenities <span className="text-muted-foreground">(Optional)</span>
-        </Label>
-        <Input placeholder="Type here to add" className="mb-2" readOnly />
-        <div className="flex flex-wrap gap-2">
-          {amenitiesData?.map(amenity => (
-            <Badge
-              key={amenity.id}
-              variant={selectedAmenities.includes(amenity.id) ? 'default' : 'outline'}
-              className="cursor-pointer"
-              onClick={() => toggleAmenity(amenity.id)}
-            >
-              {amenity.name}
-              {selectedAmenities.includes(amenity.id) && (
-                <X className="ml-1 h-3 w-3" />
-              )}
-            </Badge>
-          ))}
-        </div>
-      </div>
-
-      {/* Submit */}
-      <div className="flex justify-end pt-4">
-        <Button
-          type="submit"
-          disabled={isUpdatingCategory || isUpdatingAmenities}
-          className="bg-primary text-white"
-        >
-          {(isUpdatingCategory || isUpdatingAmenities) ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            'Save Changes'
+          {getBusinessImages().length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 mb-4">No images available</p>
+              <p className="text-sm text-gray-400">Upload images in the Gallery section first</p>
+            </div>
           )}
-        </Button>
-      </div>
-    </form>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
-}
+} 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import Image from 'next/image';
 import { format } from 'date-fns';
+import { LinkButton } from '@/components/ui';
 
 export const BusinessSwitcher = () => {
   const { businesses, currentBusiness, switchBusiness, isLoading } =
@@ -30,10 +31,10 @@ export const BusinessSwitcher = () => {
     <div className='relative'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] px-4 py-3 text-white transition-colors hover:bg-[#2A2A2A]'
+        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] p-3 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3'
       >
         {/* Business Logo */}
-        <div className='relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full bg-white'>
+        <div className='md:-10 relative size-7 flex-shrink-0 overflow-hidden rounded-full bg-white'>
           {currentBusiness.logo ? (
             <Image
               src={currentBusiness.logo}
@@ -92,7 +93,7 @@ export const BusinessSwitcher = () => {
           />
 
           {/* Menu */}
-          <div className='absolute left-0 right-0 top-full z-50 mt-2 max-h-96 overflow-y-auto rounded-xl bg-white shadow-lg'>
+          <div className='absolute left-0 top-full z-50 mt-2 max-h-96 overflow-y-auto rounded-xl bg-white shadow-lg max-md:min-w-[220px] md:right-0'>
             <div className='p-2'>
               <p className='px-3 py-2 text-xs font-semibold text-gray-500'>
                 Switch Business
@@ -162,10 +163,9 @@ export const BusinessSwitcher = () => {
 
             {/* Create New Business */}
             <div className='border-t border-gray-200 p-2'>
-              <button
-                onClick={() => {
-                  window.location.href = '/business/get-started';
-                }}
+              <LinkButton
+                href={'/businesses/create-listing'}
+                variant="light"
                 className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10'
               >
                 <svg
@@ -182,8 +182,9 @@ export const BusinessSwitcher = () => {
                     strokeLinecap='round'
                   />
                 </svg>
-                Add New Business
-              </button>
+                <span className='md:hdden'>New</span>
+                <span className='max-md:hidden'>Add New Business</span>
+              </LinkButton>
             </div>
           </div>
         </>

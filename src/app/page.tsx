@@ -19,12 +19,14 @@ import {
   BusinessSearch,
   Footer,
   LandingPageNavbar,
+  FeaturedListingCard,
 } from './(clients)/misc/components';
 import { useBusinessCategories } from '@/app/(clients)/misc/api/metadata';
 import {
   BusinessCategoryIcons,
   BusinessCategoriesIconsType as CategoryIconType,
 } from '@/assets/icons/business/BusinessCategoriesIcon';
+import LocationCard from '@/components/cards/LocationCard';
 
 
 export default function HomePage(): JSX.Element {
@@ -149,6 +151,16 @@ export default function HomePage(): JSX.Element {
     },
   ];
 
+  // Mock locations used by the "Search by location" slider
+  const LOCATIONS = [
+    { name: 'Lagos', imageUrl: '/landingpage/feature-listing-2.jpg' },
+    { name: 'Abuja', imageUrl: '/landingpage/feature-listing-2.jpg' },
+    { name: 'Port Harcourt', imageUrl: '/landingpage/feature-listing-2.jpg' },
+    { name: 'Ibadan', imageUrl: '/landingpage/feature-listing-2.jpg' },
+    { name: 'Kano', imageUrl: '/landingpage/feature-listing-2.jpg' },
+    { name: 'Enugu', imageUrl: '/landingpage/feature-listing-2.jpg' },
+  ];
+
   const SPONSORED_LIST = [
     {
       imageUrl: '/landingpage/sponsored-2.jpg',
@@ -187,7 +199,9 @@ export default function HomePage(): JSX.Element {
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[90.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         <LandingPageNavbar />
+<section>
 
+</section>
         {/* Mobile hero  */}
         <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
@@ -295,7 +309,7 @@ export default function HomePage(): JSX.Element {
         />
 
         <div className='relative flex w-full items-center justify-center'>
-          <div className='mb-20 mt-10 flex w-full items-center gap-10 sm:w-[1490px]'>
+          <div className='mb-20 mt-10 flex w-full items-center gap-10 sm:max-w-[1490px]'>
             <Swiper
               centerInsufficientSlides={false}
               navigation={{
@@ -337,19 +351,28 @@ export default function HomePage(): JSX.Element {
                     key={key}
                     className='flex items-center justify-center px-10'
                   >
-                    <div className='flex w-full items-center justify-center'>
-                      {/* <FeaturedListingCard
-                        header={listing.header}
-                        desc={listing.desc}
-                        imageUrl={listing.imageUrl}
-                        logoUrl={listing.logoUrl}
-                        address={listing.address}
-                        rating={listing.rating}
-                        classStyle={
-                          'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'
-                        }
-                      /> */}
-                    </div>
+                      <div className='flex w-full items-center justify-center'>
+                        {/* Construct a mock BusinessSummary object from the listing data
+                            and pass it to the FeaturedListingCard as the `business` prop */}
+                        {(() => {
+                          const mockBusiness = {
+                            id: `mock-${key}`,
+                            name: listing.header,
+                            description: listing.desc,
+                            thumbnail: listing.imageUrl,
+                            logo: listing.logoUrl,
+                            address: listing.address,
+                            average_review_rating: listing.rating,
+                          } as const;
+
+                          return (
+                            <FeaturedListingCard
+                              business={mockBusiness as any}
+                              classStyle={'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'}
+                            />
+                          );
+                        })()}
+                      </div>
                   </SwiperSlide>
                 );
               })}
@@ -358,7 +381,7 @@ export default function HomePage(): JSX.Element {
         </div>
 
         {/* Serch By location  */}
-        {/* <div className='mb-10'>
+        <div className='mb-10 container'>
 
           <h1 className='text-2xl font-bold'>Search by location</h1>
 
@@ -385,9 +408,9 @@ export default function HomePage(): JSX.Element {
               }}
             >
 
-              {LOACTIONS.map((location, key) => {
+              {LOCATIONS.map((location, key) => {
 
-                return (<SwiperSlide key={key} className='bg-green-300 flex items-center sm:pt-10 pt-5 justify-center'>
+                return (<SwiperSlide key={key} className=' flex items-center sm:pt-10 pt-5 justify-center'>
 
                   <LocationCard key={key} name={location.name} imageUrl={location.imageUrl} />
 
@@ -399,7 +422,7 @@ export default function HomePage(): JSX.Element {
           </div>
 
 
-        </div> */}
+        </div>
 
         {/* Sponsored picks  */}
         <div className='relative'>
@@ -527,7 +550,7 @@ export default function HomePage(): JSX.Element {
                 },
               }}
             >
-              {LISTINGS_AROUND.map((listing, key) => {
+              {LISTINGS_AROUND.map((_, key) => {
                 return (
                   <SwiperSlide
                     key={key}

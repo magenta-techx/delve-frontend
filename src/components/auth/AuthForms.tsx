@@ -76,7 +76,7 @@ const AuthForms = (): JSX.Element => {
             ))}
           </div>
 
-          <div className='mb-8 flex w-full flex-col items-center sm:w-[525px]'>
+          <div className='mb-8 flex w-[90vw] flex-col items-center sm:w-[525px]'>
             {login ? <LoginForm /> : <SignUpForm />}
           </div>
 

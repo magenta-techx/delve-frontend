@@ -181,18 +181,10 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                           {service.description}
                         </p>
                       )}
-                      {service.duration && (
-                        <p className='text-sm text-[#64748B]'>
-                          Duration: {service.duration}
-                        </p>
-                      )}
+                    
                     </div>
                     <div className='flex items-center gap-4'>
-                      {service.price && (
-                        <span className='text-lg font-semibold text-primary'>
-                          {service.price}
-                        </span>
-                      )}
+                     
                       <button className='rounded-lg bg-primary/10 px-6 py-2 text-sm font-medium text-primary transition hover:bg-primary/20'>
                         Book service
                       </button>

@@ -13,11 +13,13 @@ const buttonVariants = cva(
           'bg-[#5F2EEA] text-primary-foreground shadow hover:bg-primary/90 disabled:!bg-[#E3E8EF] disabled:text-black/50',
         destructive:
           'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+          destructive_outline:
+          'border border-destructive text-destructive hover:bg-destructive/10 bg-[#FFF4ED]',
         outline:
-          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
+          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:text-primary',
         secondary:
           'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
-        light: 'bg-[#FBFAFF] text-black hover:bg-[#F0F0FF]',
+        light: 'bg-[#F0F0FF] text-black hover:text-primary',
         black: 'bg-black text-white',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
@@ -27,9 +29,10 @@ const buttonVariants = cva(
       size: {
         default: 'h-9 px-4 py-2',
         sm: 'h-8 rounded-lg px-3 text-xs',
-        md: 'h-10 rounded-lg px-6',
-        lg: 'h-12 rounded-lg px-8 text-[0.9rem]',
-        xl: 'h-14 rounded-xl px-8 text-[0.9rem] font-medium',
+        md: 'h-10 rounded-lg px-4',
+        lg: 'h-12 rounded-xl px-4 text-[0.9rem] font-inter',
+        dynamic_lg: 'h-9 text-xs lg:h-12 rounded-lg lg:rounded-xl px-2 lg:px-6 lg:text-[0.9rem] font-medium',
+        xl: 'h-14 rounded-xl px-6 text-[0.9rem] font-medium',
         icon: 'h-9 w-9',
       },
     },
@@ -37,6 +40,13 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
+    // compoundVariants: [
+    //   {
+    //     variant: 'destructive',
+    //     size: 'icon',
+    //     className: 'h-9 w-9 p-0',
+    //   },
+    // ],
   }
 );
 

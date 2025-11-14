@@ -1,5 +1,20 @@
 export { Button, buttonVariants } from './Button'
 export { LinkButton } from './LinkButton'
+
+
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from './dialog'
+
 export  {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,7 +28,7 @@ export  {
 export { default as EmptyState } from './EmptyState'
 export { Input } from './Input'
 // export { Label } from './Label'
-export { Textarea } from './Textarea'
+export { Textarea } from './TextArea'
 export { Card } from './Card'
 
 export {

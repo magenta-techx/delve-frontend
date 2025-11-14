@@ -1,6 +1,6 @@
 'use client';
 
-import { Logo } from '@/assets/icons/logo';
+import { Logo } from '@/assets/icons';
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
 import { signOut, useSession } from 'next-auth/react';

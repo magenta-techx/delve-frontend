@@ -9,11 +9,13 @@ import { BookmarkIcon } from '../icons';
 interface FeaturedListingCardProps {
   business: BusinessSummary;
   group?: boolean;
+  classStyle?: string;
 }
 
 const FeaturedListingCard = ({
   business,
   group = false,
+  classStyle,
 }: FeaturedListingCardProps): JSX.Element => {
   const { isSaved, toggleSave } = useSavedBusinessesContext();
   const isBusinessSaved = isSaved(business.id);
@@ -35,8 +37,12 @@ const FeaturedListingCard = ({
     }
   };
 
+  // Allow parent to pass sizing classes via `classStyle` (keeps sensible defaults)
+  const baseClasses =
+    'group relative flex flex-col items-center justify-center p-2 font-inter ring-[2px] ring-[#FEC601] ring-offset-4 !aspect-[5/6] rounded-xl overflow-hidden';
+
   return (
-    <article className='group relative flex flex-col items-center justify-center p-2 font-inter ring-[2px] ring-[#FEC601] ring-offset-4 !aspect-[5/6] rounded-xl overflow-hidden'>
+    <article className={`${baseClasses} ${classStyle ?? ''}`}>
       {/* Bookmark  */}
       <button
         onClick={handleBookmarkClick}
