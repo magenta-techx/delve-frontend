@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-import { useState } from 'react';
 import { Sidebar } from '../misc/components/sidebar';
 import { NavbarTop, NavbarBottom } from '../misc/components';
 import { BusinessProvider } from '@/contexts/BusinessContext';

@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button, LinkButton } from '@/components/ui';
 import { useBusinessContext } from '@/contexts/BusinessContext';
@@ -44,9 +44,11 @@ export default function SettingsLayout({
         business_id: currentBusiness.id,
       });
       toast.success('Approval request sent successfully');
-      refetchBusinesses(); // Refresh business data
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to request approval');
+      refetchBusinesses(); 
+    } catch (error) {
+      toast.error('Error',  {
+        description: String(error) || 'Failed to request approval'
+      });
     }
   };
 

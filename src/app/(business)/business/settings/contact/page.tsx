@@ -6,7 +6,7 @@ import { useBusinessContext } from '@/contexts/BusinessContext';
 import { Button, Input } from '@/components/ui';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { MapPin, X, Loader2 } from 'lucide-react';
+import { MapPin, Loader2 } from 'lucide-react';
 import {
   useBusinessStates,
   useUpdateLocationAndContact,
@@ -109,8 +109,6 @@ export default function ContactPage() {
   const [activeSocialPlatforms, setActiveSocialPlatforms] = useState<
     Set<string>
   >(new Set());
-  const [useLiveLocation, setUseLiveLocation] = useState(false);
-  const [operateWithoutLocation, setOperateWithoutLocation] = useState(false);
   const [selectedStateId, setSelectedStateId] = useState<string>('');
 
   // Google Maps autocomplete state
@@ -363,6 +361,7 @@ export default function ContactPage() {
     if (!currentBusiness?.id || !newValue) return;
 
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let updateData: any = {};
 
       if (field === 'state') {
@@ -401,13 +400,13 @@ export default function ContactPage() {
           },
         }
       );
-    } catch (error: any) {
-      toast.error(`Failed to update: ${error.message}`);
+    } catch (error) {
+      toast.error(`Failed to update: ${String(error)}`);
       refetchBusinesses();
     }
   };
 
-  const toggleSocialPlatform = (platformId: string) => {
+  const _toggleSocialPlatform = (platformId: string) => {
     const newActivePlatforms = new Set(activeSocialPlatforms);
     if (newActivePlatforms.has(platformId)) {
       newActivePlatforms.delete(platformId);

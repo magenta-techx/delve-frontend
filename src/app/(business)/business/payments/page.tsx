@@ -3,8 +3,14 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui';
-import { ChevronDown, Download, Settings, X } from 'lucide-react';
+import { ChevronDown, Download, Settings } from 'lucide-react';
 import { useBilling, useCurrentUser } from '@/app/(clients)/misc/api';
+import { useBooleanStateControl } from '@/hooks';
+import {
+  ReceiptModal,
+  PlanSelectionModal,
+  CancelSubscriptionModal,
+} from '@/app/(business)/misc/components';
 
 interface PaymentTransaction {
   id: number;
@@ -16,381 +22,34 @@ interface PaymentTransaction {
   card: string;
 }
 
-function ReceiptModal({
-  transaction,
-  onClose,
-  billingData,
-  userData,
-}: {
-  transaction: PaymentTransaction | null;
-  onClose: () => void;
-  billingData?: any;
-  userData?: any;
-}) {
-  if (!transaction) return null;
-
-  // Find the actual payment record
-  const paymentRecord = billingData?.payment_history?.[transaction.id - 1];
-
-  return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-      <Card className='mx-4 w-full max-w-md'>
-        <CardHeader className='border-b pb-3'>
-          <div className='flex items-center justify-between'>
-            <div className='flex-1'>
-              <p className='text-sm text-muted-foreground'>
-                {transaction.id} of {billingData?.payment_history?.length || 0}{' '}
-                receipt
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className='text-muted-foreground hover:text-foreground'
-            >
-              <X className='h-5 w-5' />
-            </button>
-          </div>
-        </CardHeader>
-        <CardContent className='space-y-6 py-6'>
-          {/* Subscription info */}
-          <div className='flex items-start gap-4 border-b pb-4'>
-            <div className='h-10 w-10 flex-shrink-0 rounded-full bg-purple-600' />
-            <div className='min-w-0 flex-1'>
-              <p className='text-sm text-muted-foreground'>Subscription type</p>
-              <p className='truncate font-semibold'>{transaction.plan}</p>
-            </div>
-            <div className='flex-shrink-0 text-right'>
-              <p className='text-sm text-muted-foreground'>Amount</p>
-              <p className='font-semibold'>
-                ₦{transaction.amount.toLocaleString()}
-              </p>
-            </div>
-          </div>
-
-          {/* Payment Details */}
-          <div>
-            <div className='mb-4 border-b border-yellow-500 pb-2'>
-              <h3 className='font-semibold'>Payment Details</h3>
-            </div>
-            <div className='space-y-3 text-sm'>
-              <div className='flex justify-between'>
-                <span className='text-muted-foreground'>Cycle</span>
-                <span className='font-medium'>{transaction.period}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-muted-foreground'>Transaction Date</span>
-                <span className='font-medium'>
-                  {paymentRecord
-                    ? new Date(paymentRecord.timestamp).toLocaleDateString(
-                        'en-GB',
-                        {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                        }
-                      )
-                    : transaction.date}
-                </span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-muted-foreground'>Reference</span>
-                <span className='font-medium'>
-                  {paymentRecord?.payment_reference_id || 'N/A'}
-                </span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-muted-foreground'>Status</span>
-                <span
-                  className={`font-medium ${transaction.status === 'Successful' ? 'text-green-600' : 'text-red-600'}`}
-                >
-                  {transaction.status}
-                </span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-muted-foreground'>
-                  Transaction Method
-                </span>
-                <span className='font-medium'>
-                  {paymentRecord?.transaction_method || 'Card payment'}
-                </span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-muted-foreground'>Card number</span>
-                <span className='font-medium'>**** {transaction.card}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-muted-foreground'>User Id</span>
-                <span className='font-medium'>{userData?.email || 'N/A'}</span>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function PlanSelectionModal({ onClose }: { onClose: () => void }) {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>(
-    'monthly'
-  );
-
-  return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-      <Card className='max-h-[90vh] w-full max-w-4xl overflow-y-auto'>
-        <CardHeader className='border-b'>
-          <div className='flex items-center justify-between'>
-            <div>
-              <CardTitle className='text-2xl font-bold'>
-                Select business plan to continue
-              </CardTitle>
-            </div>
-            <button
-              onClick={onClose}
-              className='text-muted-foreground hover:text-foreground'
-            >
-              <X className='h-5 w-5' />
-            </button>
-          </div>
-
-          {/* Billing cycle toggle */}
-          <div className='mt-4 flex items-center justify-center gap-4'>
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                billingCycle === 'monthly'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle('annually')}
-              className={`relative rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                billingCycle === 'annually'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Annually
-              <span className='ml-2 rounded-full bg-orange-500 px-2 py-1 text-xs text-white'>
-                10% off
-              </span>
-            </button>
-          </div>
-        </CardHeader>
-
-        <CardContent className='p-6'>
-          <div className='grid gap-6 md:grid-cols-2'>
-            {/* Freemium Plan */}
-            <div className='space-y-4 rounded-lg border p-6'>
-              <div>
-                <h3 className='mb-2 text-lg font-semibold'>Freemium Listing</h3>
-                <div className='space-y-3 text-sm text-gray-600'>
-                  <div className='flex justify-between'>
-                    <span>Business Profile Visibility</span>
-                    <span className='font-medium'>
-                      Limited visibility in search results
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Listing Duration</span>
-                    <span className='font-medium'>Indefinite</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Listing Features</span>
-                    <span className='font-medium'>Limited</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Photo Uploads</span>
-                    <span className='font-medium'>Limited to 1-6 images</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Verification Badge</span>
-                    <span className='font-medium'>No badge</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Analytics Dashboard</span>
-                    <span className='font-medium'>Not available</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Customer Save to Fav Access</span>
-                    <span className='font-medium'>
-                      Can be saved by up to 50 users
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Customer Review</span>
-                    <span className='font-medium'>View only</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Support and Business Cons.</span>
-                    <span className='font-medium'>Email only</span>
-                  </div>
-                </div>
-              </div>
-
-              <Button variant='outline' className='w-full' disabled>
-                Current Plan
-              </Button>
-            </div>
-
-            {/* Premium Plan */}
-            <div className='space-y-4 rounded-lg border-2 border-purple-600 bg-purple-50 p-6'>
-              <div>
-                <h3 className='mb-2 text-lg font-semibold text-purple-900'>
-                  Premium Listing (₦
-                  {billingCycle === 'monthly' ? '5,000/month' : '54,000/yearly'}
-                  )
-                </h3>
-                <div className='space-y-3 text-sm text-gray-600'>
-                  <div className='flex justify-between'>
-                    <span>Business Profile Visibility</span>
-                    <span className='font-medium'>
-                      Priority Placement in search
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Listing Duration</span>
-                    <span className='font-medium'>Indefinite</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Listing Features</span>
-                    <span className='font-medium'>Available</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Photo Uploads</span>
-                    <span className='font-medium'>Up to 20 uploads</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Verification Badge</span>
-                    <span className='font-medium'>Verification Badge</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Analytics Dashboard</span>
-                    <span className='font-medium'>
-                      Access all insights on visits, clicks etc
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Customer Save to Fav Access</span>
-                    <span className='font-medium'>No save limit</span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Customer Review</span>
-                    <span className='font-medium'>
-                      Actively collect and respond to reviews
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span>Support and Business Cons.</span>
-                    <span className='font-medium'>
-                      24/7 Priority Chat Support
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <Button
-                className='w-full bg-purple-600 hover:bg-purple-700'
-                onClick={() => {
-                  // Handle subscription logic here
-                  onClose();
-                }}
-              >
-                Subscribe to Premium
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function CancelSubscriptionModal({
-  variant = 'confirm',
-  onClose,
-  onConfirm,
-}: {
-  variant?: 'confirm' | 'info';
-  onClose: () => void;
-  onConfirm?: () => void;
-}) {
-  return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-      <Card className='w-full max-w-sm'>
-        <CardHeader className='pb-4'>
-          <div className='flex items-start gap-3'>
-            {variant === 'info' ? (
-              <div className='mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-red-100'>
-                <span className='text-sm font-bold text-red-600'>!</span>
-              </div>
-            ) : null}
-            <div className='flex-1'>
-              <div className='flex items-center justify-between gap-2'>
-                <CardTitle>
-                  {variant === 'info'
-                    ? 'Important Information'
-                    : 'Cancel Subscription'}
-                </CardTitle>
-                <button
-                  onClick={onClose}
-                  className='text-muted-foreground hover:text-foreground'
-                >
-                  <X className='h-5 w-5' />
-                </button>
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className='space-y-6'>
-          {variant === 'info' ? (
-            <>
-              <div className='space-y-3 text-sm'>
-                <p>
-                  • Your subscription will remain active until the end of the
-                  current billing period.
-                </p>
-                <p>
-                  • Canceling your subscription will remove access to Delve
-                  Premium features, including priority visibility, advanced
-                  insights, and the verified badge.
-                </p>
-              </div>
-              <Button
-                className='w-full bg-red-600 text-white hover:bg-red-700'
-                onClick={onConfirm}
-              >
-                Yes, Cancel Subscription
-              </Button>
-            </>
-          ) : (
-            <>
-              <p className='text-sm'>
-                Are you sure you want to end your business subscription?
-              </p>
-              <Button
-                className='w-full bg-red-600 text-white hover:bg-red-700'
-                onClick={onConfirm}
-              >
-                Yes, Continue
-              </Button>
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
 export default function PaymentPage() {
   const [selectedTransaction, setSelectedTransaction] =
     useState<PaymentTransaction | null>(null);
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showCancelInfo, setShowCancelInfo] = useState(false);
-  const [showPlanSelection, setShowPlanSelection] = useState(false);
+  
+  // Modal state management with useBooleanStateControl
+  const {
+    setTrue: openReceiptModal,
+    setFalse: closeReceiptModal,
+  } = useBooleanStateControl(false);
+
+  const {
+    state: isPlanSelectionOpen,
+    setTrue: openPlanSelection,
+    setFalse: closePlanSelection,
+  } = useBooleanStateControl(false);
+
+  const {
+    state: isCancelConfirmOpen,
+    setTrue: openCancelConfirm,
+    setFalse: closeCancelConfirm,
+  } = useBooleanStateControl(false);
+
+  const {
+    state: isCancelInfoOpen,
+    setTrue: openCancelInfo,
+    setFalse: closeCancelInfo,
+  } = useBooleanStateControl(false);
+
   const [filterPeriod, setFilterPeriod] = useState('All time');
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
@@ -439,8 +98,18 @@ export default function PaymentPage() {
   console.log(billingData);
 
   const handleCancelClick = () => {
-    setShowCancelModal(false);
-    setShowCancelInfo(true);
+    closeCancelConfirm();
+    openCancelInfo();
+  };
+
+  const handleSelectTransaction = (transaction: PaymentTransaction) => {
+    setSelectedTransaction(transaction);
+    openReceiptModal();
+  };
+
+  const handleCloseReceipt = () => {
+    closeReceiptModal();
+    setSelectedTransaction(null);
   };
 
   // Show loading state
@@ -556,7 +225,7 @@ export default function PaymentPage() {
                     </h3>
                     <Button
                       className='w-full border border-white/30 bg-white/20 text-white hover:bg-white/30'
-                      onClick={() => setShowPlanSelection(true)}
+                      onClick={openPlanSelection}
                     >
                       Upgrade to Premium →
                     </Button>
@@ -566,14 +235,14 @@ export default function PaymentPage() {
                 <Card className='border-0 bg-gradient-to-br from-purple-600 to-purple-700 text-white'>
                   <CardContent className='pt-6'>
                     <h3 className='mb-3 text-lg font-bold'>
-                      You've cancelled your subscription. You still have{' '}
+                      You&apos;ve cancelled your subscription. You still have{' '}
                       {currentPlan.daysLeft} days of access left before your
                       current plan expires. Resubscribe now to keep enjoying
                       Delve Premium without interruption.
                     </h3>
                     <Button
                       className='w-full border border-white/30 bg-white/20 text-white hover:bg-white/30'
-                      onClick={() => setShowPlanSelection(true)}
+                      onClick={openPlanSelection}
                     >
                       Resubscribe to Premium →
                     </Button>
@@ -641,7 +310,7 @@ export default function PaymentPage() {
                       <Button
                         variant='outline'
                         className='w-full border-red-200 text-red-600 hover:bg-red-50'
-                        onClick={() => setShowCancelModal(true)}
+                        onClick={openCancelConfirm}
                       >
                         Cancel subscription
                       </Button>
@@ -691,7 +360,7 @@ export default function PaymentPage() {
                     <span className='text-2xl'>🎉</span>
                   </div>
                   <p className='text-muted-foreground'>
-                    You don't have any history yet.
+                    You don&apos;t have any history yet.
                   </p>
                 </div>
               ) : (
@@ -746,9 +415,7 @@ export default function PaymentPage() {
                           <td className='px-2 py-3'>**** {transaction.card}</td>
                           <td className='px-2 py-3'>
                             <button
-                              onClick={() =>
-                                setSelectedTransaction(transaction)
-                              }
+                              onClick={() => handleSelectTransaction(transaction)}
                               className='text-blue-600 hover:underline'
                             >
                               <Download className='h-4 w-4' />
@@ -768,30 +435,29 @@ export default function PaymentPage() {
       {/* Modals */}
       <ReceiptModal
         transaction={selectedTransaction}
-        onClose={() => setSelectedTransaction(null)}
+        onClose={handleCloseReceipt}
         billingData={billingData}
         userData={userData}
       />
 
-      {showPlanSelection && (
-        <PlanSelectionModal onClose={() => setShowPlanSelection(false)} />
-      )}
+      <PlanSelectionModal 
+        isOpen={isPlanSelectionOpen}
+        onClose={closePlanSelection}
+      />
 
-      {showCancelModal && (
-        <CancelSubscriptionModal
-          variant='confirm'
-          onClose={() => setShowCancelModal(false)}
-          onConfirm={handleCancelClick}
-        />
-      )}
+      <CancelSubscriptionModal
+        variant='confirm'
+        isOpen={isCancelConfirmOpen}
+        onClose={closeCancelConfirm}
+        onConfirm={handleCancelClick}
+      />
 
-      {showCancelInfo && (
-        <CancelSubscriptionModal
-          variant='info'
-          onClose={() => setShowCancelInfo(false)}
-          onConfirm={() => setShowCancelInfo(false)}
-        />
-      )}
+      <CancelSubscriptionModal
+        variant='info'
+        isOpen={isCancelInfoOpen}
+        onClose={closeCancelInfo}
+        onConfirm={closeCancelInfo}
+      />
     </div>
   );
 }

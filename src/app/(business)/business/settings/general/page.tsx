@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { Loader2, Edit, X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import { useUpdateBusiness } from '@/app/(business)/misc/api';
 import { GalleryIcon } from '@/app/(clients)/misc/icons';
 

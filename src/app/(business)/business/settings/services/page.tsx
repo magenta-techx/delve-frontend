@@ -88,8 +88,8 @@ export default function ServicesPage() {
       setEditingField(null);
       setFieldValues({});
       refetchBusinesses();
-    } catch (error: any) {
-      toast.error(`Failed to update service: ${error.message}`);
+    } catch (error) {
+      toast.error(`Failed to update service: ${error}`);
     }
   };
 
@@ -105,8 +105,8 @@ export default function ServicesPage() {
       toast.success('Service deleted successfully');
       refetchBusinesses();
       deleteConfirmation.closeConfirmation();
-    } catch (error: any) {
-      toast.error(`Failed to delete service: ${error.message}`);
+    } catch (error) {
+      toast.error(`Failed to delete service: ${error}`);
     }
   };
 
@@ -358,7 +358,7 @@ export default function ServicesPage() {
         <ServiceImageUploadDialog
           isOpen={imageUploadDialog.state}
           onClose={handleImageDialogClose}
-          serviceId={selectedServiceForImage.id}
+          serviceId={selectedServiceForImage.id!}
           serviceName={selectedServiceForImage.title}
           currentImage={selectedServiceForImage.image}
         />
