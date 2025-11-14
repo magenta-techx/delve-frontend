@@ -189,7 +189,7 @@ const LandingPageNavbar = () => {
                         <div className='flex w-full items-center justify-center bg-[#F8FAFC] px-8 py-5'>
                           {session.user.is_brand_owner ? (
                             <LinkButton
-                              href='/business/dashboard'
+                              href='/business'
                               className='w-full'
                               size={'lg'}
                             >
