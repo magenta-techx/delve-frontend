@@ -36,10 +36,6 @@ export default function PromotionsPage() {
     'promotion'
   );
 
-  //   this_month: Returns payments from the start of the current month to now
-  // last_6_months: Returns payments from the last 180 days (6 * 30)
-  // last_12_months: Returns payments from the last 360 days (12 * 30)
-  // all_time (default): Returns all payment history without date filtering
   const [selectedPeriod, setSelectedPeriod] = useState<
     'all_time' | 'this_month' | 'last_6_months' | 'last_12_months'
   >('this_month');
