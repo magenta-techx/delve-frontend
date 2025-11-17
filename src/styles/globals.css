@@ -78,16 +78,18 @@
 @layer base {
   * {
     @apply border-border;
-    scrollbar-width: thin !important;
   }
   body {
     @apply bg-background text-foreground;
-  }
-  html {
-    /* Prevent layout shift when scrollbar appears/disappears */
     scrollbar-gutter: stable;
     overflow-y: scroll;
+    * {
+      scrollbar-width: thin !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
   }
+
 }
 
 .section-header-underlined {

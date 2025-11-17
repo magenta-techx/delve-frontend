@@ -398,18 +398,18 @@ export function useDeleteBusinessImages(): UseMutationResult<ApiMessage, Error, 
 export const useDeleteBusinessImage = useDeleteBusinessImages;
 
 // General business update (name, description, website, logo, thumbnail)
-export function useUpdateBusiness(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; business_name?: string; description?: string; website?: string; logo?: File; thumbnail?: File }> {
+export function useUpdateBusiness(): UseMutationResult<ApiMessage, Error, { business_id: BusinessId; business_name?: string; description?: string; website?: string; logo?: File; thumbnail_image_id?: string }> {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
 
-  return useMutation<ApiMessage, Error, { business_id: BusinessId; business_name?: string; description?: string; website?: string; logo?: File; thumbnail?: File }>({
-    mutationFn: async ({ business_id, business_name, description, website, logo, thumbnail }) => {
+  return useMutation<ApiMessage, Error, { business_id: BusinessId; business_name?: string; description?: string; website?: string; logo?: File; thumbnail_image_id?: string }>({
+    mutationFn: async ({ business_id, business_name, description, website, logo, thumbnail_image_id }) => {
       const fd = new FormData();
       if (business_name) fd.append('business_name', business_name);
       if (description) fd.append('description', description);
       if (website) fd.append('website', website);
       if (logo) fd.append('logo', logo);
-      if (thumbnail) fd.append('thumbnail', thumbnail);
+      if (thumbnail_image_id) fd.append('thumbnail_image_id', thumbnail_image_id);
 
       const res = await authAwareFetch(`/api/business/${business_id}/`, {
         method: 'PATCH',

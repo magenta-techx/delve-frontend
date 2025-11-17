@@ -1,15 +1,15 @@
 "use client"
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
+import { Button } from "@/components/ui"
 import { AlertCircle } from "lucide-react"
 
 interface PerformanceMetricsProps {
-  analyticsType?: "all" | "conversations" | "reviews" | "profile-views" | "saved"
+  analyticsType?:"conversations" | "reviews" | "profile_visits" | "saved_by_users"
 }
 
-export function PerformanceMetrics({ analyticsType = "all" }: PerformanceMetricsProps) {
+export function PerformanceMetrics({ analyticsType = "conversations" }: PerformanceMetricsProps) {
   const metricsConfig = {
     all: {
       cards: [

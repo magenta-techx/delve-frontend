@@ -181,20 +181,15 @@ const GalleryPage = () => {
         setSelectedImages(new Set());
     };
 
-    if (isLoadingBusinesses) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full min-h-[40vh] text-center text-muted-foreground">
-                Loading business...
-            </div>
-        );
-    }
+
+   const businessImages = getBusinessImages();
+
 
     if (!currentBusiness) {
         return <div className="py-12 text-center text-muted-foreground">No business selected</div>;
     }
 
-    const businessImages = getBusinessImages();
-
+ 
     return (
         <div className="lg:p-6 space-y-6">
             {/* Header */}

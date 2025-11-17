@@ -36,7 +36,7 @@ export function FullScreenModal({
   return (
     <div
       className={cn(
-        'fixed inset-0 z-50 bg-white overflow-y-auto',
+        'fixed inset-0 z-[500] bg-white overflow-y-auto !m-0 !p-0',
         className
       )}
     >

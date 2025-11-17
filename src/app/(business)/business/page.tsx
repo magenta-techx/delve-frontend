@@ -2,7 +2,6 @@
 
 import { useBusinessContext } from "@/contexts/BusinessContext"
 import { ConversationsSection } from "../misc/components/sections/conversations-section"
-import { GalleryWidget } from "../misc/components/sections/gallery-widget"
 import { PerformanceMetrics } from "../misc/components/sections/performance-metrics"
 import { ReviewsSection } from "../misc/components/sections/reviews-section"
 import { StatCard } from "../misc/components/stat-card"
@@ -86,7 +85,6 @@ export default function DashboardPage(): JSX.Element {
           />
         </div>
 
-        <GalleryWidget />
 
         {/* Main content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

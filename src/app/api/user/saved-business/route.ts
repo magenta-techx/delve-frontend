@@ -8,5 +8,5 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
 // POST /api/user/saved-business  Body: { business_id }
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  return forward(req, 'POST', '/user/business/saved', { auth: true, contentType: 'json' });
+  return forward(req, 'POST', '/user/business/saved/', { auth: true, contentType: 'json' });
 }

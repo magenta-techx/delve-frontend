@@ -28,10 +28,10 @@ import {
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import LocationCard from '@/components/cards/LocationCard';
 
-
 export default function HomePage(): JSX.Element {
   // Fetch categories from backend
-  const { data: categoriesResp, isLoading: loadingCategories } = useBusinessCategories();
+  const { data: categoriesResp, isLoading: loadingCategories } =
+    useBusinessCategories();
   const categories = categoriesResp?.data ?? [];
 
   const FEATURED_LISTINGS = [
@@ -199,9 +199,7 @@ export default function HomePage(): JSX.Element {
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[90.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         <LandingPageNavbar />
-<section>
-
-</section>
+        <section></section>
         {/* Mobile hero  */}
         <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
@@ -255,7 +253,7 @@ export default function HomePage(): JSX.Element {
                 slidesPerView: 4,
                 spaceBetween: 30,
               },
-              1560: { 
+              1560: {
                 slidesPerView: 5,
                 spaceBetween: 50,
               },
@@ -266,18 +264,18 @@ export default function HomePage(): JSX.Element {
             // className='h-[700px] bg-green-300'
             className='flex w-full items-center justify-center sm:h-[300px] sm:px-[4rem]'
           >
-            <div className='absolute left-0 top-36 z-10 hidden -translate-y-1/2 sm:flex bg-white h-full'>
+            <div className='absolute left-0 top-36 z-10 hidden h-full -translate-y-1/2 bg-white sm:flex'>
               <button className='custom-prev rotate-180 bg-white p-2 transition-transform'>
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
-            <div className='absolute right-0 top-36 z-10 hidden -translate-y-1/2 sm:flex bg-white h-full'>
+            <div className='absolute right-0 top-36 z-10 hidden h-full -translate-y-1/2 bg-white sm:flex'>
               <button className='custom-next bg-white p-2'>
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
             {!loadingCategories &&
-              categories.map((category) => {
+              categories.map(category => {
                 const iconName = category.name
                   ?.split(' ')[0]
                   ?.toLowerCase() as CategoryIconType;
@@ -289,7 +287,12 @@ export default function HomePage(): JSX.Element {
                     <div className='flex w-full items-center justify-center'>
                       <CategoryCard
                         title={category.name}
-                        icon={<BusinessCategoryIcons className="size-12 text-white" value={iconName} />}
+                        icon={
+                          <BusinessCategoryIcons
+                            className='size-12 text-white'
+                            value={iconName}
+                          />
+                        }
                         hoverIcon={<BusinessCategoryIcons value={iconName} />}
                       />
                     </div>
@@ -351,28 +354,30 @@ export default function HomePage(): JSX.Element {
                     key={key}
                     className='flex items-center justify-center px-10'
                   >
-                      <div className='flex w-full items-center justify-center'>
-                        {/* Construct a mock BusinessSummary object from the listing data
+                    <div className='flex w-full items-center justify-center'>
+                      {/* Construct a mock BusinessSummary object from the listing data
                             and pass it to the FeaturedListingCard as the `business` prop */}
-                        {(() => {
-                          const mockBusiness = {
-                            id: `mock-${key}`,
-                            name: listing.header,
-                            description: listing.desc,
-                            thumbnail: listing.imageUrl,
-                            logo: listing.logoUrl,
-                            address: listing.address,
-                            average_review_rating: listing.rating,
-                          } as const;
+                      {(() => {
+                        const mockBusiness = {
+                          id: `mock-${key}`,
+                          name: listing.header,
+                          description: listing.desc,
+                          thumbnail: listing.imageUrl,
+                          logo: listing.logoUrl,
+                          address: listing.address,
+                          average_review_rating: listing.rating,
+                        } as const;
 
-                          return (
-                            <FeaturedListingCard
-                              business={mockBusiness as any}
-                              classStyle={'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'}
-                            />
-                          );
-                        })()}
-                      </div>
+                        return (
+                          <FeaturedListingCard
+                            business={mockBusiness as any}
+                            classStyle={
+                              'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'
+                            }
+                          />
+                        );
+                      })()}
+                    </div>
                   </SwiperSlide>
                 );
               })}
@@ -381,19 +386,16 @@ export default function HomePage(): JSX.Element {
         </div>
 
         {/* Serch By location  */}
-        <div className='mb-10 container'>
-
+        <div className='container mb-10'>
           <h1 className='text-2xl font-bold'>Search by location</h1>
 
-          <div className=' flex items-center gap-10 mb-20 sm:w-[1490px] w-full'>
+          <div className='mb-20 flex w-full items-center gap-10 sm:w-[1490px]'>
             <Swiper
               centerInsufficientSlides={false}
-
               slidesPerView={4}
               spaceBetween={10}
-
               scrollbar={false}
-              onSwiper={(swiper) => console.log(swiper)}
+              onSwiper={swiper => console.log(swiper)}
               onSlideChange={() => console.log('slide change')}
               className='relative'
               breakpoints={{
@@ -407,21 +409,22 @@ export default function HomePage(): JSX.Element {
                 },
               }}
             >
-
               {LOCATIONS.map((location, key) => {
-
-                return (<SwiperSlide key={key} className=' flex items-center sm:pt-10 pt-5 justify-center'>
-
-                  <LocationCard key={key} name={location.name} imageUrl={location.imageUrl} />
-
-                </SwiperSlide>)
-            })}
-
+                return (
+                  <SwiperSlide
+                    key={key}
+                    className='flex items-center justify-center pt-5 sm:pt-10'
+                  >
+                    <LocationCard
+                      key={key}
+                      name={location.name}
+                      imageUrl={location.imageUrl}
+                    />
+                  </SwiperSlide>
+                );
+              })}
             </Swiper>
-
           </div>
-
-
         </div>
 
         {/* Sponsored picks  */}

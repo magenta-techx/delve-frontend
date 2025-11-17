@@ -488,21 +488,8 @@ export default function ContactPage() {
     );
   };
 
-  if (isLoadingBusinesses) {
-    return (
-      <div className='flex h-full min-h-[40vh] flex-col items-center justify-center text-center text-muted-foreground'>
-        Loading business...
-      </div>
-    );
-  }
 
-  if (!currentBusiness) {
-    return (
-      <div className='py-12 text-center text-muted-foreground'>
-        No business selected
-      </div>
-    );
-  }
+
 
   return (
     <div className='lg:p-6'>

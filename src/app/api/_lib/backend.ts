@@ -45,7 +45,9 @@ export async function forward(
     switch (opts.contentType) {
       case 'json': {
         headers['Content-Type'] = 'application/json';
-        body = JSON.stringify(opts.body ?? (await req.json().catch(() => ({}))));
+        body = JSON.stringify(
+          opts.body ?? (await req.json().catch(() => ({})))
+        );
         break;
       }
       case 'form': {
@@ -75,8 +77,12 @@ export async function forward(
 
     const res = await fetch(url, fetchOptions);
 
-    const isJson = res.headers.get('content-type')?.includes('application/json');
-    const data: unknown = isJson ? await res.json().catch(() => ({})) : await res.text();
+    const isJson = res.headers
+      .get('content-type')
+      ?.includes('application/json');
+    const data: unknown = isJson
+      ? await res.json().catch(() => ({}))
+      : await res.text();
 
     if (!res.ok) {
       let message = 'Request failed';
@@ -84,29 +90,37 @@ export async function forward(
         const msg = (data as Record<string, unknown>)['message'];
         if (typeof msg === 'string') message = msg;
       }
-      
+
       console.log('Request Failed From Backend:', res);
       if (res.status === 401 || is401Error(res, data)) {
-        return NextResponse.json({ 
-          error: message, 
-          data,
-          is401: true 
-        }, { status: 401 });
+        return NextResponse.json(
+          {
+            error: message,
+            data,
+            is401: true,
+          },
+          { status: 401 }
+        );
       }
-      console.log('Forwarded Response:', data);
+      console.log('Forwarded Error Response:', data);
 
-      return NextResponse.json({ error: message, data }, { status: res.status });
+      return NextResponse.json(
+        { error: message, data },
+        { status: res.status }
+      );
     }
-    
+
     // Handle 204 No Content responses
     if (res.status === 204) {
       return new NextResponse(null, { status: 204 });
     }
-    
+    console.log('URL:', url);
+    console.log('Forwarded Success Response:', data);
+
     return NextResponse.json(data, { status: res.status });
   } catch (err) {
     console.log('Error forwarding request:', err);
-    
+
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }

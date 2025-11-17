@@ -63,19 +63,16 @@ export default function GeneralPage() {
       description?: string;
       website?: string;
       logo?: File;
+      thumbnail_image_id?: string;
     } = {
       business_id: currentBusiness.id,
     };
 
-    // Add the specific field being updated along with current values for other fields
     if (field === 'name') updateData.business_name = value as string;
-    else updateData.business_name = currentBusiness.name;
 
     if (field === 'description') updateData.description = value as string;
-    else if (currentBusiness.description) updateData.description = currentBusiness.description;
 
     if (field === 'website') updateData.website = value as string;
-    else if (currentBusiness.website) updateData.website = currentBusiness.website;
 
     if (field === 'logo' && value instanceof File) {
       updateData.logo = value;

@@ -5,7 +5,7 @@ import { Button, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } fr
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useState } from "react"
 import { BusinessSwitcher } from "./BusinessSwitcher"
-import { navItems, supportItems } from "./sidebar"
+import { navItems, supportItems } from "./layout/Sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -19,7 +19,7 @@ export function TopNav({  }: TopNavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
   const { data: userResponse, isLoading } = useCurrentUser()
-  const user = userResponse?.data
+  const user = userResponse?.user
 
   const getUserInitials = (firstName?: string, lastName?: string) => {
     if (!firstName && !lastName) return 'U'

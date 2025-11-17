@@ -188,6 +188,12 @@ export interface ActiveAd {
   business: string;
 }
 
+// User Response (doesn't follow ApiEnvelope pattern)
+export interface UserResponse {
+  status: boolean;
+  user: UserDetail;
+}
+
 // User
 export interface UserDetail {
   id: number;
@@ -248,29 +254,19 @@ export interface SubscriptionPlan {
 export interface AdvertisementPlan {
   duration_in_days: number;
   price: number;
+  plan_id: string;
 }
 
 export interface BusinessPromotionPlan {
   duration_in_days: number;
   price: number;
+  plan_id: string;
 }
 
 export interface PlansResponse {
-  subscription?: {
-    status: boolean;
-    message: string;
-    data: SubscriptionPlan[];
-  };
-  advertisment?: {
-    status: boolean;
-    message: string;
-    data: AdvertisementPlan[];
-  };
-  "business promotion"?: {
-    status: boolean;
-    message: string;
-    data: BusinessPromotionPlan[];
-  };
+  status: boolean;
+  message: string;
+  data: SubscriptionPlan[] | AdvertisementPlan[] | BusinessPromotionPlan[];
 }
 
 // Saved businesses return the same structure as BusinessSummary

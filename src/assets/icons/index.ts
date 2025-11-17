@@ -8,3 +8,8 @@ export { default as FacebookIcon } from './Facebook';
 export { default as TwitterIcon } from './Twitter';
 export { default as Logo } from './Logo';
 export { default as LogoIcon } from './LogoIcon';
+export { default as LogoLoadingIcon } from './LogoLoading';
+export { default as MasterCardIcon } from './MasterCard';
+export { default as VisaIcon } from './Visa';
+export { default as ReceiptIcon } from './Receipt';
+export { default as TagIcon } from './Tag';

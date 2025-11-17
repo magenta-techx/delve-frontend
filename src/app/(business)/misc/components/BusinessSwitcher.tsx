@@ -93,7 +93,7 @@ export const BusinessSwitcher = () => {
           />
 
           {/* Menu */}
-          <div className='absolute left-0 top-full z-50 mt-2 max-h-96 overflow-y-auto rounded-xl bg-white shadow-lg max-md:min-w-[220px] md:right-0'>
+          <div className='absolute left-0 top-full z-[100] mt-2 max-h-96 overflow-y-auto rounded-xl bg-white shadow-lg max-md:min-w-[220px] md:right-0'>
             <div className='p-2'>
               <p className='px-3 py-2 text-xs font-semibold text-gray-500'>
                 Switch Business

@@ -27,5 +27,5 @@ export async function PATCH(
   { params }: { params: Promise<{ business_id: string }> }
 ): Promise<NextResponse> {
   const { business_id } = await params;
-  return forward(req, 'PATCH', `/businesses/${business_id}/edit`, { auth: true, contentType: 'json' });
+  return forward(req, 'PATCH', `/businesses/${business_id}/edit/`, { auth: true, contentType: 'form' });
 }

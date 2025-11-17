@@ -108,7 +108,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) return null;
-        console.log('API_BASE_URL:', process.env['API_BASE_URL']);
 
         const res = await fetch(
           `${process.env['API_BASE_URL']}/user/auth/token/`,
@@ -186,7 +185,6 @@ export const authOptions: NextAuthOptions = {
       token: JWT;
     }): Promise<Session | DefaultSession> {
       if (token) {
-        console.log(token)
         session.user = {
           ...session.user,
           // Basic identity

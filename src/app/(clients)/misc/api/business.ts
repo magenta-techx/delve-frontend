@@ -2,6 +2,42 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import type { ApiEnvelope, PaginatedResponse, BusinessSummary, BusinessDetail } from "@/types/api";
 
+export interface CampaignAnalyticsResponse {
+  total_spending: number;
+  payment_history: Array<{ amount_paid: number; timestamp: string }>;
+  active_campaign: Record<string, any>;
+  performance_metrics: {
+    summary_metrics?: {
+      image?: string;
+      total_impressions?: number;
+      total_clicks?: number;
+      days_left?: number | null;
+    };
+    daily_metrics?: Array<{
+      date: string;
+      daily_views: number;
+      daily_clicks: number;
+    }>;
+  };
+}
+export function useBusinessCampaignAnalytics(params: { businessId?: string | number | undefined; requested_metric: 'promotion' | 'advert'; filter_method?: 'all_time' | 'this_month' | 'last_6_months' | 'last_12_months' }) {
+  const qs = new URLSearchParams();
+  qs.set('requested_metric', params.requested_metric);
+  if (params.filter_method) qs.set('filter_method', params.filter_method);
+  return useQuery<ApiEnvelope<CampaignAnalyticsResponse>, Error>({
+    queryKey: ['business-campaign-analytics', params],
+    queryFn: async () => {
+      const res = await fetch(`/api/business/${params.businessId}/analytics/campaigns?${qs.toString()}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || data?.error || 'Failed to fetch campaign analytics');
+      return data;
+    },
+    enabled: Boolean(params.businessId && params.requested_metric),
+    staleTime: 2 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
+  });
+}
+
 export function useApprovedBusinesses(): UseQueryResult<ApiEnvelope<BusinessSummary[]>, Error> {
   return useQuery({
     queryKey: ["approved-businesses"],

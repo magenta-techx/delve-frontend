@@ -7,8 +7,8 @@ import { Button, Sheet,
   SheetTitle,
   SheetTrigger, } from "@/components/ui"
 import { useState } from "react"
-import { BusinessSwitcher } from "./BusinessSwitcher"
-import { navItems, supportItems } from "./sidebar"
+import { BusinessSwitcher } from "../BusinessSwitcher"
+import { navItems, supportItems } from "./Sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"

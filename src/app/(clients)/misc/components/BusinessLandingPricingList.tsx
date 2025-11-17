@@ -2,6 +2,10 @@
 
 import React, { useMemo, useState } from 'react';
 import ReactSwitch from 'react-switch';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useSubscriptionPlans, useCurrentUser, useCreateSubscriptionCheckout } from '@/app/(clients)/misc/api';
+import { Button } from '@/components/ui';
 
 const FEATURES = [
   {
@@ -53,11 +57,91 @@ const FEATURES = [
 
 const BusinessLandingPricingList = () => {
   const [isAnnual, setIsAnnual] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  
+  // API hooks
+  const { data: plansResponse, isLoading: plansLoading } = useSubscriptionPlans();
+  const { data: userResponse, isLoading: userLoading } = useCurrentUser();
+  const createCheckoutMutation = useCreateSubscriptionCheckout();
+  
+  const plans = plansResponse?.data || [];
+  const user = userResponse?.user;
+  
+  // Find the appropriate plan based on billing cycle
+  const selectedPlan = useMemo(() => {
+    if (!plans.length) return null;
+    return plans.find(plan => 
+      isAnnual ? plan.billing_cycle === 'yearly' : plan.billing_cycle === 'monthly'
+    ) || plans[0];
+  }, [plans, isAnnual]);
 
+  const premiumPrice = selectedPlan?.price || (isAnnual ? 54000 : 5000);
   const premiumTitle = useMemo(
-    () => (isAnnual ? 'Premium Listing (54,000/yearly)' : 'Premium Listing (5,000/month)'),
-    [isAnnual],
+    () => `Premium Listing (₦${premiumPrice.toLocaleString()}/${isAnnual ? 'yearly' : 'monthly'})`,
+    [premiumPrice, isAnnual],
   );
+
+  const handleProceed = async () => {
+    console.log(userResponse)
+    if (!user && !userLoading) {
+      toast.error('Please log in to subscribe to a plan');
+      return;
+    }
+
+    // Check if user is a business owner
+    if (!user?.is_brand_owner || user?.number_of_owned_businesses === 0) {
+      toast.error(
+        <div className="flex flex-col gap-2">
+          <span>You need to be a business owner to subscribe to a plan.</span>
+          <Button
+            size="sm"
+            onClick={() => router.push('/businesses/create-listing')}
+            className="w-fit bg-purple-600 hover:bg-purple-700 text-white"
+          >
+            Create Business
+          </Button>
+        </div>,
+        {
+          duration: 5000,
+        }
+      );
+      return;
+    }
+
+    // Check if plan is available
+    if (!selectedPlan) {
+      toast.error('Please select a valid plan');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      const response = await createCheckoutMutation.mutateAsync({
+        plan_id: selectedPlan.plan_id,
+      });
+      
+      if (response.checkout_url) {
+        // Redirect to Paystack checkout
+        window.location.href = response.checkout_url;
+      } else {
+        toast.success('Checkout session created successfully');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to create checkout session');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (plansLoading) {
+    return (
+      <section className='w-full font-inter text-[#0F172B] flex items-center justify-center py-20'>
+        <div className="animate-pulse">Loading plans...</div>
+      </section>
+    );
+  }
 
   return (
     <section className='w-full font-inter text-[#0F172B]'>
@@ -101,6 +185,7 @@ const BusinessLandingPricingList = () => {
             })),
             headerStyles: 'bg-[#6E44FF] text-white',
             bodyStyles: 'bg-[#F7F8FD]',
+            showButton: true,
           },
           {
             key: 'freemium',
@@ -112,6 +197,7 @@ const BusinessLandingPricingList = () => {
             })),
             headerStyles: 'bg-[#F8FAFC] text-[#0F172B]',
             bodyStyles: 'bg-white',
+            showButton: false,
           }].map(plan => (
             <div
               key={plan.key}
@@ -131,6 +217,17 @@ const BusinessLandingPricingList = () => {
                       <p className='text-sm text-[#0F172B]'>{entry.value}</p>
                     </div>
                   ))}
+                  {plan.showButton && (
+                    <div className='px-6 py-4 border-t border-[#E2E8F0]'>
+                      <Button
+                        onClick={handleProceed}
+                        disabled={isLoading || !selectedPlan}
+                        className='w-full bg-[#6E44FF] hover:bg-[#5A37D8] text-white'
+                      >
+                        {isLoading ? 'Processing...' : 'Subscribe Now'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -194,6 +291,23 @@ const BusinessLandingPricingList = () => {
                 </div>
               </div>
             ))}
+            
+            {/* Subscribe button row */}
+            <div className='grid grid-cols-[1fr,1.5fr,1.75fr] text-sm font-inter'>
+              <div className='border-r border-[#E2E8F0] bg-white px-6 py-4'></div>
+              <div className='border-r border-[#E2E8F0] bg-white px-6 py-4'>
+                <span className='text-sm text-gray-500'>Current Plan</span>
+              </div>
+              <div className='bg-[#F5F3FF80] border-x-[#D9D6FE] px-6 py-4'>
+                <Button
+                  onClick={handleProceed}
+                  disabled={isLoading || !selectedPlan}
+                  className='w-full bg-[#551FB9] hover:bg-[#4A1A9E] text-white'
+                >
+                  {isLoading ? 'Processing...' : 'Subscribe Now'}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

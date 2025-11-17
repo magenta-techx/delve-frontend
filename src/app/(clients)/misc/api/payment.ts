@@ -2,11 +2,11 @@
 import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
 import type { ApiEnvelope, ApiMessage, PremiumPlan, ChangeCardData } from "@/types/api";
 
-export function usePremiumPlans(): UseQueryResult<ApiEnvelope<PremiumPlan[]>, Error> {
+export function usePlans(): UseQueryResult<ApiEnvelope<PremiumPlan[]>, Error> {
   return useQuery({
-    queryKey: ["premium-plans"],
+    queryKey: ["plans"],
     queryFn: async () => {
-      const res = await fetch(`/api/payment/premium-plans`);
+      const res = await fetch(`/api/payment/plans`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch premium plans");
       return data;
@@ -79,14 +79,16 @@ export function useRetrySubscription(): UseMutationResult<ApiMessage, Error, voi
   });
 }
 
-export function useChangeCard(): UseQueryResult<ApiEnvelope<ChangeCardData>, Error> {
-  return useQuery({
-    queryKey: ["change-card"],
-    queryFn: async () => {
-      const res = await fetch(`/api/payment/subscription/change-card`);
+export function useChangeCard(): UseMutationResult<{ card_update_link: string; message: string }, Error, void> {
+  return useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/payment/subscription/change-card`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to get change card url");
-      return data;
+      if (!res.ok || !data?.card_update_link) throw new Error(data?.message || data?.error || "Failed to get change card url");
+      return { card_update_link: data.card_update_link, message: data.message };
     },
   });
 }
