@@ -32,7 +32,7 @@ export function useAdvertCheckout() {
       formData.append("business_id", String(payload.business_id));
       formData.append("plan_id", String(payload.plan_id));
       if (payload.advertisment_image) formData.append("advertisment_image", payload.advertisment_image);
-      if (payload.campaign_extension !== undefined) formData.append("campaign_extension", String(payload.campaign_extension));
+      if (payload.campaign_extension !== undefined) formData.append("campaign_extension", payload.campaign_extension ? "true" : "false");
       const res = await fetch(`/api/payment/plans/checkout/advertisment`, {
         method: "POST",
         body: formData,

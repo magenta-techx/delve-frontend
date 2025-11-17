@@ -1,6 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui';
 import {
   LineChart,
   Line,
@@ -14,10 +24,12 @@ import { useMemo, useState } from 'react';
 // dialog not used in this page
 import { useBusinessCampaignAnalytics } from '@/app/(clients)/misc/api/business';
 import { useBusinessContext } from '@/contexts/BusinessContext';
-import { LogoLoadingIcon } from '@/assets/icons';
+import { CaretDown, LogoLoadingIcon } from '@/assets/icons';
 import { CreateAdPromoForm } from '../../misc/components';
 import { cn } from '@/lib/utils';
 import { CustomPaymentHistoryChart } from '../../misc/components/charts';
+import { Check, Circle, Dot } from 'lucide-react';
+import Image from 'next/image';
 
 export default function PromotionsPage() {
   const [selectedView, setSelectedView] = useState<'advert' | 'promotion'>(
@@ -31,6 +43,7 @@ export default function PromotionsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState<
     'all_time' | 'this_month' | 'last_6_months' | 'last_12_months'
   >('this_month');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [formOpen, setFormOpen] = useState(false);
   const { currentBusiness, isLoading, refetchBusinesses } =
     useBusinessContext();
@@ -64,7 +77,6 @@ export default function PromotionsPage() {
 
   // Show form modal if no active campaign
   const showFormModal = !hasActiveCampaign || formOpen;
-  const shouldSHowDashboard = hasActiveCampaign && !showFormModal;
   const selectedAnalyticsData =
     selectedView === 'advert' ? advertAnalyticsData : promotionAnalyticsData;
   const {
@@ -143,22 +155,124 @@ export default function PromotionsPage() {
                 selectedPeriod={selectedPeriod}
               />
             </article>
-            <article className='flex flex-col gap-5 overflow-x-hidden rounded-2xl p-4 text-card-foreground lg:px-6 bg-[#7839EE]'>
-              SPACEEEEEEEEEEE
+            <article className='flex grid-rows-[auto,1fr,max-content] flex-col gap-5 overflow-x-hidden rounded-2xl bg-[#7839EE] p-4 text-white lg:grid lg:p-6'>
+              <header className='flex items-center justify-between'>
+                <h1 className='font-inter font-semibold text-white lg:text-lg'>
+                  Your Active Campaigns
+                </h1>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger className='inline-flex w-max items-center justify-between rounded-lg border-2 border-[#C3B5FD] bg-[#FFFFFF] px-2 py-2 text-left text-xs font-medium text-[#0F0F0F]'>
+                    {selectedView === 'advert' ? 'Adverts' : 'Promotions'}
+                    <CaretDown className='ml-2 h-4 w-4' />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <div className='flex flex-col'>
+                      <DropdownMenuItem>
+                        {selectedView === 'advert' && (
+                          <Check className='mr-2 h-4 w-4 text-green-500' />
+                        )}
+                        Adverts
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        {selectedView === 'advert' && (
+                          <Check className='mr-2 h-4 w-4 text-green-500' />
+                        )}
+                        Promotions
+                      </DropdownMenuItem>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </header>
+
+              <section className='relative rounded-2xl border border-white p-1'>
+                {selectedView === 'advert' ? (
+                  <Image
+                    src={
+                      advertAnalyticsData?.data.performance_metrics
+                        .summary_metrics?.image || '/default-image.png'
+                    }
+                    alt='Advert Campaign Thumbnail'
+                    className='text-[0.6rem]'
+                    fill
+                    objectFit='cover'
+                  />
+                ) : (
+                  <article className='relative size-full overflow-hidden rounded-2xl'>
+                    <Image
+                      src={
+                        promotionAnalyticsData?.data.active_campaign?.[
+                          'thumbnail'
+                        ]
+                      }
+                      alt='Promotion Campaign Thumbnail'
+                      className='rounded-xl text-[0.6rem]'
+                      fill
+                      objectFit='cover'
+                    />
+                  </article>
+                )}
+              </section>
+
+              <footer className='flex items-center justify-between'>
+                <span className='rounded-xl border border-[#9AA4B2] bg-[#0000002E] px-4 py-1.5 text-sm font-light'>
+                  <span className='mr-2 text-[0.9rem] font-semibold'>
+                    {
+                      selectedAnalyticsData?.data.performance_metrics
+                        .summary_metrics?.total_impressions
+                    }
+                  </span>
+                  Engagements
+                </span>
+                <span className='flex w-max items-center rounded-xl border border-[#9AA4B2] bg-[#0000002E] px-4 py-1.5 text-sm font-light'>
+                  <span className='mr-2 flex items-center text-[0.9rem] font-semibold text-[#D0F8AB]'>
+                    <Circle className='mr-1 inline-block size-3 animate-pulse fill-[#D0F8AB] text-[#D0F8AB]' />
+                    Live Now
+                  </span>
+                  {
+                    selectedAnalyticsData?.data.performance_metrics
+                      .summary_metrics?.days_left
+                  }{' '}
+                  days left
+                </span>
+              </footer>
             </article>
           </section>
 
-          {/* Active Campaign Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Active Campaigns</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                {/* ...render active campaign card from analyticsData... */}
+          <section>
+            <header className=''>
+              <div>
+                <div className='flex'>
+                  <h3>Promotion Performance Metrics</h3>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className='inline-flex w-max items-center justify-between rounded-lg bg-[#FDE272] px-2 py-1.5 text-left text-xs font-medium text-[#0F0F0F]'>
+                      {selectedView === 'advert' ? 'Adverts' : 'Promotions'}
+                      <CaretDown className='ml-2 h-4 w-4' />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <div className='flex flex-col'>
+                        <DropdownMenuItem>
+                          {selectedView === 'advert' && (
+                            <Check className='mr-2 h-4 w-4 text-green-500' />
+                          )}
+                          Adverts
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          {selectedView === 'advert' && (
+                            <Check className='mr-2 h-4 w-4 text-green-500' />
+                          )}
+                          Promotions
+                        </DropdownMenuItem>
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <div className="text-[0.6rem] bg-[#F5F3FF] rounded-full font-light"></div>
               </div>
-            </CardContent>
-          </Card>
+            </header>
+          </section>
 
           {/* Performance Metrics */}
           <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>

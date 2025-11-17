@@ -20,7 +20,6 @@ import {
 } from '@/app/(business)/misc/components';
 import { cn } from '@/lib/utils';
 import {
-  LogoIcon,
   LogoLoadingIcon,
   MasterCardIcon,
   ReceiptIcon,
@@ -30,6 +29,7 @@ import { EmptySavedBusinessesIcon } from '@/app/(clients)/misc/icons';
 import { PaymentHistory } from '@/types/api';
 import { format } from 'date-fns';
 import { PaymentsIcon } from '../../misc/components/icons';
+import { toast } from 'sonner';
 
 export default function PaymentsPage() {
   const changeCardMutation = useChangeCard();
@@ -257,8 +257,8 @@ export default function PaymentsPage() {
                                     '_blank'
                                   );
                                 }
-                              } catch (err: any) {
-                                // Optionally show error toast
+                              } catch(err){
+                                toast.error('Failed to initiate card change process.', {description:err as string});
                               }
                             }}
                           >

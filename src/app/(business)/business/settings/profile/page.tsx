@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { LogoLoadingIcon } from '@/assets/icons';
 
 interface EditableField {
   id: string;
@@ -251,7 +252,7 @@ export default function ProfileSettings() {
   if (isLoadingBusinesses) {
     return (
       <div className='flex h-full min-h-[40vh] flex-col items-center justify-center text-center text-muted-foreground'>
-        Loading business...
+        <LogoLoadingIcon/>
       </div>
     );
   }
@@ -279,6 +280,7 @@ export default function ProfileSettings() {
 
               <Button
                 size='sm'
+                isLoading={isUpdating}
                 variant='outline'
                 onClick={() => setShowImageSelector(true)}
                 className='w-max border-primary bg-[#FBFAFF] text-primary hover:bg-purple-50 max-lg:hidden'

@@ -50,7 +50,7 @@ function formatChartData(
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       let key = d.toLocaleDateString('en-GB', {
         month: 'short',
-        year:  '2-digit',
+        year: '2-digit',
       });
       months.push(key);
     }
@@ -90,6 +90,7 @@ export const CustomPaymentHistoryChart: React.FC<
     date: string;
   }>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);
 
@@ -132,7 +133,7 @@ export const CustomPaymentHistoryChart: React.FC<
             ₦{totalSpending.toLocaleString()}
           </p>
         </header>
-        <section className='relative flex-1 overflow-hidden'>
+        <section ref={sectionRef} className='relative flex-1 overflow-hidden'>
           {/* Vanishing effect overlays + scroll arrows */}
           <div
             className={`pointer-events-none absolute left-0 top-0 z-20 h-full w-12 transition-opacity duration-200 ${
@@ -190,11 +191,8 @@ export const CustomPaymentHistoryChart: React.FC<
             className='relative flex h-full flex-1 items-end gap-2 overflow-x-auto overflow-y-hidden pr-2 [scrollbar-width:none_!important]'
           >
             {/* Y Axis */}
-            <div
-              className='absolute left-0 top-0 flex h-full flex-col justify-between text-xs font-medium text-[#697586]'
-              style={{ height: 220 }}
-            >
-              {[1, 0.75, 0].map((v, i) => (
+            <div className='absolute left-0 top-0 flex h-[300px] flex-col justify-between text-xs font-medium text-[#697586]'>
+              {[1.2, 1, 0.75, 0.5, 0.25, 0].map((v, i) => (
                 <span key={i} style={{ height: 1 }}>
                   ₦{formatAmount(Math.round(maxAmount * v))}
                 </span>
@@ -202,77 +200,83 @@ export const CustomPaymentHistoryChart: React.FC<
             </div>
             {/* Bars */}
             <div
-              className={cn('ml-10 flex flex-row items-end gap-2 lg:gap-4 min-w-[calc(100%_-_2.5rem)]', selectedPeriod === 'last_6_months' && "lg:justify-between")}
-              style={{ height: 220 }}
+              className={cn(
+                'ml-10 flex min-w-[calc(100%_-_2.5rem)] flex-row items-end gap-2 lg:gap-4',
+                selectedPeriod === 'last_6_months' && 'lg:justify-between'
+              )}
+              style={{ height: 320 }}
             >
               {chartData.map((d, idx) => {
+                // Calculate bar height based on tick values
+                // The chart height is 320px, and ticks go from 1.2 to 0
+                // So max bar height should be 320 * (d.amount / (maxAmount * 1.2))
                 const barHeight =
                   d.amount === 0
-                    ? 8
-                    : Math.max(24, (d.amount / maxAmount) * 180);
+                  ? 8
+                  : Math.max(
+                    24,
+                    (d.amount / (maxAmount * 1.2)) * 320
+                    );
                 return (
                   <div
                     key={d.date}
                     className='flex flex-col items-center justify-end'
-                    style={{ width: 32 }}
-                  >
-                    <div
-                      className={`w-5 rounded-full transition-all duration-200 md:w-6 ${activeIndex === idx ? 'bg-[#5F2EEA]' : 'bg-[#A78BFA]'} ${d.amount === 0 ? 'opacity-30' : ''}`}
-                      style={{
-                        height: barHeight,
-                        cursor: d.amount > 0 ? 'pointer' : 'default',
-                      }}
-                      onMouseEnter={e => {
-                        setActiveIndex(idx);
-                        if (containerRef.current) {
-                          const containerRect =
-                            containerRef.current.getBoundingClientRect();
-                          const barRect = (
-                            e.currentTarget as HTMLDivElement
-                          ).getBoundingClientRect();
-                          const left =
-                            barRect.left -
-                            containerRect.left +
-                            barRect.width / 2;
-                          const top = barRect.top - containerRect.top - 8;
-                          setTooltip({
-                            left,
-                            top,
-                            value: d.amount,
-                            date: d.date,
-                          });
-                        }
-                      }}
-                      onMouseLeave={() => {
+                    style={{ width: 32, height: '100%', cursor: 'pointer' }}
+                    onMouseEnter={e => {
+                      setActiveIndex(idx);
+                      if (sectionRef.current) {
+                        const sectionRect =
+                          sectionRef.current.getBoundingClientRect();
+                        const barElement = e.currentTarget
+                          .children[0] as HTMLDivElement;
+                        const barRect = barElement.getBoundingClientRect();
+                        const left =
+                          barRect.left - sectionRect.left + barRect.width / 2;
+                        const top = barRect.top - sectionRect.top - 8;
+                        setTooltip({
+                          left,
+                          top,
+                          value: d.amount,
+                          date: d.date,
+                        });
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      setActiveIndex(null);
+                      setTooltip(null);
+                    }}
+                    onTouchStart={e => {
+                      setActiveIndex(idx);
+                      if (sectionRef.current) {
+                        const sectionRect =
+                          sectionRef.current.getBoundingClientRect();
+                        const touch = (e as React.TouchEvent).touches?.[0];
+                        if (!touch) return;
+                        const left = touch.clientX - sectionRect.left;
+                        const barElement = e.currentTarget
+                          .children[0] as HTMLDivElement;
+                        const barRect = barElement.getBoundingClientRect();
+                        const top = barRect.top - sectionRect.top - 8;
+                        setTooltip({
+                          left,
+                          top,
+                          value: d.amount,
+                          date: d.date,
+                        });
+                      }
+                      e.stopPropagation();
+                    }}
+                    onTouchEnd={() => {
+                      setTimeout(() => {
                         setActiveIndex(null);
                         setTooltip(null);
-                      }}
-                      onTouchStart={e => {
-                        setActiveIndex(idx);
-                        if (containerRef.current) {
-                          const containerRect =
-                            containerRef.current.getBoundingClientRect();
-                          const touch = (e as React.TouchEvent).touches?.[0];
-                          if (!touch) return;
-                          const left = touch.clientX - containerRect.left;
-                          const barRect = (
-                            e.currentTarget as HTMLDivElement
-                          ).getBoundingClientRect();
-                          const top = barRect.top - containerRect.top - 8;
-                          setTooltip({
-                            left,
-                            top,
-                            value: d.amount,
-                            date: d.date,
-                          });
-                        }
-                        e.stopPropagation();
-                      }}
-                      onTouchEnd={() => {
-                        setTimeout(() => {
-                          setActiveIndex(null);
-                          setTooltip(null);
-                        }, 2000);
+                      }, 2000);
+                    }}
+                  >
+                    <div
+                      className={`w-5 rounded-full transition-all duration-200 ${activeIndex === idx ? 'bg-[#7839EE]' : 'bg-[#D9D6FE]'} ${d.amount === 0 ? 'opacity-30' : ''}`}
+                      style={{
+                        height: barHeight,
                       }}
                     />
                     <span className='mt-2 whitespace-nowrap text-[0.6rem] font-medium text-[#697586] sm:text-[0.65rem]'>
@@ -282,20 +286,20 @@ export const CustomPaymentHistoryChart: React.FC<
                 );
               })}
             </div>
-            {tooltip && (
-              <div
-                className='pointer-events-none absolute z-20 -translate-x-1/2 transform'
-                style={{ left: tooltip.left + 8, top: tooltip.top }}
-              >
-                <div className='rounded-md bg-white px-3 py-1 text-sm text-gray-800 shadow-md'>
-                  <div className='font-medium'>
-                    ₦{tooltip.value.toLocaleString()}
-                  </div>
-                  <div className='text-xs text-gray-500'>{tooltip.date}</div>
-                </div>
-              </div>
-            )}
           </div>
+          {tooltip && (
+            <div
+              className='pointer-events-none absolute z-30 -translate-x-1/2 transform'
+              style={{ left: tooltip.left + 8, top: tooltip.top }}
+            >
+              <div className='rounded-md bg-white px-3 py-1 text-sm text-gray-800 shadow-md'>
+                <div className='font-medium'>
+                  ₦{tooltip.value.toLocaleString()}
+                </div>
+                <div className='text-xs text-gray-500'>{tooltip.date}</div>
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>

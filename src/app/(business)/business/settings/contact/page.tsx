@@ -18,6 +18,7 @@ import {
   WhatsappIcon,
   TikTokIcon,
   TwitterIcon,
+  LogoLoadingIcon,
 } from '@/assets/icons';
 
 interface LocationInfo {
@@ -489,7 +490,13 @@ export default function ContactPage() {
   };
 
 
-
+  if (isLoadingBusinesses) {
+    return (
+      <div className='flex h-full min-h-[40vh] flex-col items-center justify-center text-center text-muted-foreground'>
+        <LogoLoadingIcon/>
+      </div>
+    );
+  }
 
   return (
     <div className='lg:p-6'>
