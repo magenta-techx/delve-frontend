@@ -261,7 +261,7 @@ export default function HomePage(): JSX.Element {
             scrollbar={false}
             onSwiper={swiper => console.log(swiper)}
             onSlideChange={() => console.log('slide change')}
-            // className='h-[700px] bg-green-300'
+      
             className='flex w-full items-center justify-center sm:h-[300px] sm:px-[4rem]'
           >
             <div className='absolute left-0 top-36 z-10 hidden h-full -translate-y-1/2 bg-white sm:flex'>
