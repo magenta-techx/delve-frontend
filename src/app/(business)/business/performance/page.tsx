@@ -7,22 +7,29 @@ import {
   CardHeader,
   CardTitle,
   Button,
+  Select,
+  SelectTrigger,
+  SelectItem,
+  SelectContent,
 } from '@/components/ui';
 import {
   StatCard,
   PerformanceMetrics,
   // PerformanceAreaChart,
 } from '@/app/(business)/misc/components';
+import PerformanceAreaChart from '@/app/(business)/misc/components/charts/PerformanceAreaChart';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { useBusinessPerformance } from '@/app/(clients)/misc/api';
 import { cn } from '@/lib/utils';
 import { ChatsIcon } from '@/app/(clients)/misc/icons';
+import {
+  BookmarkSelectedIcon,
+  MessagesSelectedIcon,
+  ReviewsSelectedIcon,
+  SolidEyeIcon,
+} from '../../misc/components/icons';
+import { LogoLoadingIcon } from '@/assets/icons';
 
-type TimePeriod =
-  | 'this_month'
-  | 'last_6_months'
-  | 'last_12_months'
-  | 'all_time';
 type MetricType =
   | 'conversations'
   | 'reviews'
@@ -32,7 +39,6 @@ type MetricType =
 export default function PerformancePage() {
   const { currentBusiness } = useBusinessContext();
   const business_id = currentBusiness?.id ? String(currentBusiness.id) : '';
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>('this_month');
   const [analyticsType, setAnalyticsType] =
     useState<MetricType>('conversations');
 
@@ -41,57 +47,58 @@ export default function PerformancePage() {
   >('this_month');
 
   // Fetch performance data using hook
-  const fetchOptions = {
+  const {
+    data: businessPerformanceData,
+    isLoading,
+    isFetching,
+  } = useBusinessPerformance({
     business_id,
-    filter: timePeriod,
+    filter: selectedPeriod,
     metric: analyticsType,
-  };
-  const { data:businessPerformanceData } = useBusinessPerformance(fetchOptions);
-
-  // Map analyticsType to card colors
-  const analyticsMeta = {
-    conversations: {
-      color: 'text-purple-500',
-      fillColor: '#a855f7',
-      label: 'Conversations',
-      subtitle: 'Total Message request',
-      actionLabel: '12 Unanswered request',
-    },
-    reviews: {
-      color: 'text-orange-500',
-      fillColor: '#f97316',
-      label: 'Feedback',
-      subtitle: 'Total Client Reviews',
-      actionLabel: '6 New reviews',
-    },
-    profile_visits: {
-      color: 'text-yellow-500',
-      fillColor: '#eab308',
-      label: 'Potential clients',
-      subtitle: 'Total Business Profile Views',
-      actionLabel: '29 New Profile view',
-    },
-    saved_by_users: {
-      color: 'text-green-500',
-      fillColor: '#22c55e',
-      label: 'Saved by Users',
-      subtitle: 'Total Business Profile Saved',
-      actionLabel: '14 New profile save',
-    },
-  };
-
-  // Get totals and currents from API
-  const totals = businessPerformanceData?.totals || {};
-  const currents = businessPerformanceData?.currents || {};
+  });
 
   const cardsData = [
     {
-      title: "Conversations",
-      title_count: totals.conversations,
-      title_desc: "Total Message request",
-      // icon: <MessagesSe,
-    }
-  ]
+      title: 'Conversations',
+      title_count: businessPerformanceData?.data.totals.total_conversations,
+      title_desc: 'Total Message request',
+      icon: <MessagesSelectedIcon className='text-[#7839EE]' />,
+      icon_bg: 'bg-[#F5F3FF]',
+      subtitle: 'unanswered request',
+      subtitle_count: businessPerformanceData?.data.currents.conversations,
+      text_class: 'text-[#551FB9]',
+    },
+    {
+      title: 'Feedback',
+      title_count: businessPerformanceData?.data.totals.total_reviews,
+      title_desc: 'Total Client Reviews',
+      icon: <ReviewsSelectedIcon className='text-[#FF4405]' />,
+      icon_bg: 'bg-[#FFF4ED]',
+      subtitle: 'New reviews',
+      subtitle_count: businessPerformanceData?.data.currents.reviews,
+      text_class: 'text-[#FF4405]',
+    },
+    {
+      title: 'Potential clients',
+      title_count: businessPerformanceData?.data.totals.total_profile_visits,
+      title_desc: 'Total Business Profile Views',
+      icon: <SolidEyeIcon className='text-[#FEC601]' />,
+      icon_bg: 'bg-[#FEFDF0]',
+      subtitle: 'New Profile view',
+      subtitle_count: businessPerformanceData?.data.currents.profile_visits,
+      text_class: 'text-[#E2B104]',
+    },
+    {
+      title: 'Saved by Users',
+      title_count: businessPerformanceData?.data.totals.total_business_saves,
+      title_desc: 'Total Business Profile Saved',
+      icon: <BookmarkSelectedIcon className='text-[#4CA30D]' />,
+      icon_bg: 'bg-[#F3FEE7]',
+      subtitle: 'New profile save',
+      subtitle_count: businessPerformanceData?.data.currents.saved_by_users,
+      text_class: 'text-[#4CA30D]',
+    },
+  ];
 
   return (
     <div className={cn('h-full w-full overflow-y-scroll md:space-y-8')}>
@@ -131,146 +138,119 @@ export default function PerformancePage() {
         </nav>
       </header>
 
-      <section className='container grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-
+      <section className='container grid gap-4 px-4 md:grid-cols-2 lg:grid-cols-2 lg:px-6 xl:grid-cols-4'>
+        {cardsData.map((card, index) => (
+          <article
+            key={index}
+            className='flex flex-col gap-3 overflow-x-hidden rounded-2xl border border-[#CDD5DF] bg-card p-4 text-card-foreground lg:px-6'
+          >
+            <section className='flex items-center gap-2'>
+              <div
+                className={cn(
+                  'flex items-center justify-center',
+                  card.icon_bg,
+                  'h-10 w-10 rounded-full'
+                )}
+              >
+                {card.icon}
+              </div>
+              <div>
+                <h3 className='text-2xl font-semibold text-[#0F0F0F] lg:text-3xl'>
+                  {card.title_count ?? 0}{' '}
+                  <span className='ml-1.5 text-xs font-normal text-[#697586] md:text-[0.825rem]'>
+                    {card.title}
+                    {}
+                  </span>
+                </h3>
+                <p className='text-xs text-[#0F0F0F]'>{card.title_desc}</p>
+              </div>
+            </section>
+            <section className={card.text_class}>
+              <span className='mr-1 text-sm font-bold'>
+                {card.subtitle_count ?? 0}{' '}
+              </span>
+              <span className='text-sm'>{card.subtitle}</span>
+            </section>
+          </article>
+        ))}
       </section>
 
-      <div>
-        <h1 className='mb-2 text-3xl font-bold'>Performance Analytics</h1>
-        <p className='mb-4 text-muted-foreground'>
-          Track your business performance metrics in real time
-        </p>
-
-        {/* Stat cards row */}
-        <div className='mb-6 grid grid-cols-4 gap-4'>
-          <StatCard
-            icon='💬'
-            value={totals.conversations}
-            label={analyticsMeta.conversations.label}
-            subtitle={analyticsMeta.conversations.subtitle}
-            actionLabel={analyticsMeta.conversations.actionLabel}
-            color='purple'
-          />
-          <StatCard
-            icon='🔥'
-            value={totals.reviews}
-            label={analyticsMeta.reviews.label}
-            subtitle={analyticsMeta.reviews.subtitle}
-            actionLabel={analyticsMeta.reviews.actionLabel}
-            color='orange'
-          />
-          <StatCard
-            icon='⭐'
-            value={totals.profile_visits}
-            label={analyticsMeta.profile_visits.label}
-            subtitle={analyticsMeta.profile_visits.subtitle}
-            actionLabel={analyticsMeta.profile_visits.actionLabel}
-            color='yellow'
-          />
-          <StatCard
-            icon='🔖'
-            value={totals.saved_by_users}
-            label={analyticsMeta.saved_by_users.label}
-            subtitle={analyticsMeta.saved_by_users.subtitle}
-            actionLabel={analyticsMeta.saved_by_users.actionLabel}
-            color='green'
-          />
-        </div>
-      </div>
-
-      {/* Time period filters */}
-      <div className='flex gap-2'>
-        <Button
-          variant={timePeriod === 'this_month' ? 'default' : 'outline'}
-          onClick={() => setTimePeriod('this_month')}
-          className='rounded-full'
-        >
-          This Month
-        </Button>
-        <Button
-          variant={timePeriod === 'last_6_months' ? 'default' : 'outline'}
-          onClick={() => setTimePeriod('last_6_months')}
-          className='rounded-full'
-        >
-          Last 6 Months
-        </Button>
-        <Button
-          variant={timePeriod === 'last_12_months' ? 'default' : 'outline'}
-          onClick={() => setTimePeriod('last_12_months')}
-          className='rounded-full'
-        >
-          Last 12 Months
-        </Button>
-        <Button
-          variant={timePeriod === 'all_time' ? 'default' : 'outline'}
-          onClick={() => setTimePeriod('all_time')}
-          className='rounded-full'
-        >
-          All Time
-        </Button>
-      </div>
-
-      {/* Analytics type selector */}
-      <div className='flex flex-wrap gap-2'>
-        {(
-          [
-            'conversations',
-            'reviews',
-            'profile_visits',
-            'saved_by_users',
-          ] as const
-        ).map(type => (
-          <Button
-            key={type}
-            variant={analyticsType === type ? 'default' : 'outline'}
-            onClick={() => setAnalyticsType(type)}
-            size='sm'
-          >
-            {analyticsMeta[type].label}
-          </Button>
-        ))}
-      </div>
-
-      {/* Main analytics card */}
-      <Card>
-        <CardHeader>
-          <div className='flex items-end justify-between'>
-            <div>
-              <div className='flex items-baseline gap-2'>
-                <span
-                  className={`text-4xl font-bold ${analyticsMeta[analyticsType].color}`}
-                >
-                  {totals[analyticsType]}
-                </span>
-                <span className='text-sm font-medium text-green-600'>
-                  {timePeriod === 'this_month'
-                    ? 'This month'
-                    : timePeriod
-                        .replace(/_/g, ' ')
-                        .replace(/\b\w/g, l => l.toUpperCase())}
-                </span>
-              </div>
-              <CardTitle className='mt-2'>
-                {analyticsMeta[analyticsType].label} Analytics
+      {/* Performance Trends Chart Section */}
+      <section className='mt-8 px-4 lg:px-6'>
+        <Card className='rounded-2xl border border-[#CDD5DF] bg-card'>
+          <CardHeader className='!pb-3'>
+            <div className='flex items-center justify-between'>
+              <CardTitle className='text-sm font-normal text-[#697586]'>
+                Performance Trends Over Time
               </CardTitle>
-            </div>
-            <div className='text-right'>
-              <div className='text-sm text-muted-foreground'>Recent</div>
-              <div
-                className={`text-xl font-semibold ${analyticsMeta[analyticsType].color}`}
+              <Select
+                value={analyticsType}
+                onValueChange={e => setAnalyticsType(e as MetricType)}
               >
-                {currents[analyticsType]} New
-              </div>
+                <SelectTrigger className='!h-10 border border-[#EEF2F6] bg-[#F8FAFC] !p-1.5 !py-1.5 text-xs md:w-[150px]'>
+                  <span className='capitalize text-black'>
+                    {analyticsType.replace(/_/g, ' ')}
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem className='text-xs' value='profile_visits'>
+                    Profile Visits
+                  </SelectItem>
+                  <SelectItem className='text-xs' value='conversations'>
+                    Conversations
+                  </SelectItem>
+                  <SelectItem className='text-xs' value='reviews'>
+                    Reviews
+                  </SelectItem>
+                  <SelectItem className='text-xs' value='saved_by_users'>
+                    Saved by Users
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {/* <PerformanceAreaChart data={chartData} metric={selected} /> */}
-        </CardContent>
-      </Card>
+          </CardHeader>
 
-      {/* Performance metrics cards */}
-      <PerformanceMetrics analyticsType={analyticsType} />
+          <CardContent className='relative'>
+            {isLoading || isFetching ? (
+              <div className='z-3 absolute left-0 top-0 flex min-h-[40vh] w-full items-center justify-center bg-white/30 backdrop-blur-lg'>
+                <LogoLoadingIcon />
+              </div>
+            ) : (
+              <>
+                <div className='mb-8 lg:mb-10'>
+                  <p className='text-sm font-medium'>
+                    Total number of {analyticsType.replace(/_/g, ' ')}
+                  </p>
+
+                  <p className='mb-3 mt-1 text-xs text-green-600'>
+                    <span className='text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
+                      {analyticsType === 'conversations'
+                        ? businessPerformanceData?.data.totals
+                            .total_conversations
+                        : analyticsType === 'reviews'
+                          ? businessPerformanceData?.data.totals.total_reviews
+                          : analyticsType === 'profile_visits'
+                            ? businessPerformanceData?.data.totals
+                                .total_profile_visits
+                            : analyticsType === 'saved_by_users'
+                              ? businessPerformanceData?.data.totals
+                                  .total_business_saves
+                              : 0}
+                    </span>{' '}
+                    This month
+                  </p>
+                </div>
+                {businessPerformanceData?.data?.graph && (
+                  <PerformanceAreaChart
+                    data={businessPerformanceData.data.graph || []}
+                    metric={analyticsType}
+                  />
+                )}
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </section>
     </div>
   );
 }
