@@ -16,9 +16,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '@/components/ui';
-import PerformanceAreaChart from '../../misc/components/charts/CampaignAreaChart';
-import { useMemo, useState } from 'react';
+} from '@/components/ui';import { useMemo, useState } from 'react';
 // dialog not used in this page
 import { useBusinessCampaignAnalytics } from '@/app/(clients)/misc/api/business';
 import { useBusinessContext } from '@/contexts/BusinessContext';
@@ -167,7 +165,7 @@ export default function PromotionsPage() {
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(p)}
-                  className={`rounded-xl border px-3 py-2 font-inter text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-4 md:text-sm ${
+                  className={`rounded-xl border px-3 py-2 font-inter text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm ${
                     isActive
                       ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
                       : 'border-[#D9D6FE] text-[#697586]'

@@ -20,7 +20,7 @@ function formatChartData(
   selectedPeriod: CustomPaymentHistoryChartProps['selectedPeriod']
 ) {
   if (selectedPeriod === 'this_month') {
-    // Group by day
+    // Group by day and sum payments
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
@@ -31,19 +31,27 @@ function formatChartData(
         month: 'short',
       });
     });
-    const dataMap = Object.fromEntries(
-      paymentHistory.map(p => [
-        new Date(p.timestamp).toLocaleDateString('en-GB', {
-          day: 'numeric',
-          month: 'short',
-        }),
-        p.amount_paid,
-      ])
-    );
-    return allDays.map(date => ({ date, amount: dataMap[date] || 0 }));
+    // Group and sum payments by day
+    const grouped: Record<string, number> = {};
+    paymentHistory.forEach(p => {
+      const key = new Date(p.timestamp).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+      });
+      if (grouped[key]) {
+        grouped[key] += p.amount_paid;
+      } else {
+        grouped[key] = p.amount_paid;
+      }
+    });
+    return allDays.map(date => ({ date, amount: grouped[date] || 0 }));
   } else {
-    const monthsValue = selectedPeriod === 'last_6_months' ? 6 : 10;
-    // For months, get last 10 months
+    const monthsValue =
+      selectedPeriod === 'last_6_months'
+        ? 6
+        : selectedPeriod === 'last_12_months'
+          ? 12
+          : 18;
     const now = new Date();
     let months: string[] = [];
     for (let i = monthsValue; i >= 0; i--) {
@@ -54,22 +62,20 @@ function formatChartData(
       });
       months.push(key);
     }
-    const dataMap = Object.fromEntries(
-      paymentHistory.map(p => {
-        let key = new Date(p.timestamp).toLocaleDateString('en-GB', {
-          month: 'short',
-          year: '2-digit',
-        });
-        // if (selectedPeriod === 'all_time') {
-        //   key = new Date(p.timestamp).toLocaleDateString('en-GB', {
-        //     month: 'short',
-        //     year: 'numeric',
-        //   });
-        // }
-        return [key, p.amount_paid];
-      })
-    );
-    return months.map(date => ({ date, amount: dataMap[date] || 0 }));
+    // Group and sum payments by month
+    const grouped: Record<string, number> = {};
+    paymentHistory.forEach(p => {
+      let key = new Date(p.timestamp).toLocaleDateString('en-GB', {
+        month: 'short',
+        year: '2-digit',
+      });
+      if (grouped[key]) {
+        grouped[key] += p.amount_paid;
+      } else {
+        grouped[key] = p.amount_paid;
+      }
+    });
+    return months.map(date => ({ date, amount: grouped[date] || 0 }));
   }
 }
 

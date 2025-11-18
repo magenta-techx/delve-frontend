@@ -108,15 +108,15 @@ export default function PaymentsPage() {
   // Show loading state
   if (billingLoading || userLoading) {
     return (
-       <div className='flex h-full w-full items-center justify-center'>
+      <div className='flex h-full w-full items-center justify-center'>
         <LogoLoadingIcon />
       </div>
     );
   }
 
   return (
-    <div className='h-full w-full space-y-3 overflow-hidden md:space-y-6 lg:space-y-12'>
-      <header className='flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
+    <div className='relative h-full w-full space-y-3 overflow-hidden overflow-y-scroll md:space-y-6 lg:space-y-10'>
+      <header className='sticky top-0 flex items-center bg-[#FCFCFD] p-4 !pb-1 lg:justify-between lg:p-6 lg:pb-2'>
         <div>
           <h1 className='font-inter text-xl font-semibold lg:text-3xl'>
             Payment & Subscription
@@ -127,7 +127,7 @@ export default function PaymentsPage() {
         </div>
       </header>
 
-      <div className='container grid gap-6 px-4 lg:px-6'>
+      <div className='container grid gap-6 px-4 pb-6 lg:px-6'>
         {/* Current Plan Summary */}
         <section className='grid gap-5 lg:grid-cols-[1fr,minmax(auto,350px)] lg:items-stretch lg:gap-6 xl:grid-cols-[1fr,minmax(auto,470px)]'>
           <article className='flex flex-col gap-5 rounded-2xl border border-[#CDD5DF] bg-card p-4 px-6 text-card-foreground'>
@@ -257,8 +257,11 @@ export default function PaymentsPage() {
                                     '_blank'
                                   );
                                 }
-                              } catch(err){
-                                toast.error('Failed to initiate card change process.', {description:err as string});
+                              } catch (err) {
+                                toast.error(
+                                  'Failed to initiate card change process.',
+                                  { description: err as string }
+                                );
                               }
                             }}
                           >

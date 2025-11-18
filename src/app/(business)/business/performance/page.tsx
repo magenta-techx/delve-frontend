@@ -15,6 +15,8 @@ import {
 } from '@/app/(business)/misc/components';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { useBusinessPerformance } from '@/app/(clients)/misc/api';
+import { cn } from '@/lib/utils';
+import { ChatsIcon } from '@/app/(clients)/misc/icons';
 
 type TimePeriod =
   | 'this_month'
@@ -34,13 +36,17 @@ export default function PerformancePage() {
   const [analyticsType, setAnalyticsType] =
     useState<MetricType>('conversations');
 
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    'all_time' | 'this_month' | 'last_6_months' | 'last_12_months'
+  >('this_month');
+
   // Fetch performance data using hook
   const fetchOptions = {
     business_id,
     filter: timePeriod,
     metric: analyticsType,
   };
-  const { data } = useBusinessPerformance(fetchOptions);
+  const { data:businessPerformanceData } = useBusinessPerformance(fetchOptions);
 
   // Map analyticsType to card colors
   const analyticsMeta = {
@@ -75,21 +81,60 @@ export default function PerformancePage() {
   };
 
   // Get totals and currents from API
-  const totals = data?.totals || {};
-  const currents = data?.currents || {};
+  const totals = businessPerformanceData?.totals || {};
+  const currents = businessPerformanceData?.currents || {};
 
-  const chartData = useMemo(() => {
-    const graph = data?.graph || [];
-    if (graph.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return graph.map((point: any) => ({ date: point.x, value: point.y }));
+  const cardsData = [
+    {
+      title: "Conversations",
+      title_count: totals.conversations,
+      title_desc: "Total Message request",
+      // icon: <MessagesSe,
     }
-    return [];
-  }, [data?.graph]);
+  ]
 
   return (
-    <div className='space-y-6 p-6'>
-      {/* Header with title and stat cards */}
+    <div className={cn('h-full w-full overflow-y-scroll md:space-y-8')}>
+      <header>
+        <div className='mb-3 flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
+          <h1 className='font-inter text-xl font-semibold lg:text-3xl'>
+            Performance
+            <span className='max-w-[30ch] text-balance text-xs font-normal text-[#4B5565] max-lg:block lg:hidden'>
+              Effortlessly track your business performance metrics right here.
+            </span>
+          </h1>
+        </div>
+        <nav className='flex items-center gap-2 px-4 lg:gap-3 lg:px-6'>
+          {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
+            period => {
+              const p = period as
+                | 'all_time'
+                | 'this_month'
+                | 'last_6_months'
+                | 'last_12_months';
+              const isActive = selectedPeriod === p;
+              return (
+                <button
+                  key={period}
+                  onClick={() => setSelectedPeriod(p)}
+                  className={`rounded-xl border px-3 py-2 font-inter text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm ${
+                    isActive
+                      ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
+                      : 'border-[#D9D6FE] text-[#697586]'
+                  }`}
+                >
+                  {period.replace(/_/g, ' ')}
+                </button>
+              );
+            }
+          )}
+        </nav>
+      </header>
+
+      <section className='container grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+
+      </section>
+
       <div>
         <h1 className='mb-2 text-3xl font-bold'>Performance Analytics</h1>
         <p className='mb-4 text-muted-foreground'>
