@@ -4,7 +4,6 @@ import { forward } from '../_lib/backend';
 
 // GET /api/events?state=Lagos
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const { searchParams } = new URL(req.url);
-  const state = searchParams.get('state') ?? undefined;
-  return forward(req, 'GET', '/event/upcoming/', { query: { state } });
+
+  return forward(req, 'GET', '/sponsored-add/');
 }

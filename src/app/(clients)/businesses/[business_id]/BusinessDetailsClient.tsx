@@ -1,10 +1,11 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
 import type { BusinessDetail } from '@/types/api';
+import { useBusinessDetails } from '@/app/(business)/misc/api';
 
 interface BusinessDetailsClientProps {
   business: BusinessDetail;
@@ -15,6 +16,9 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
   const { isSaved, toggleSave } = useSavedBusinessesContext();
   const [_selectedImage, setSelectedImage] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const params = useSearchParams()
+  const ref = params.get('ref');
+  const {} = useBusinessDetails(business.id, ref as string | undefined, '');
 
   const isBusinessSaved = isSaved(business.id);
 
