@@ -6,5 +6,7 @@ export { ReceiptModal, type ReceiptModalProps } from './ReceiptModal';
 export { PlanSelectionModal } from './PlanSelectionModal';
 export { CancelSubscriptionModal } from './CancelSubscriptionModal';
 export { StatCard } from './stat-card';
-export { PerformanceChart } from './charts/performance-chart';
 export { PerformanceMetrics } from './sections/performance-metrics';
+
+export { default as PaymentHistoryChart } from './charts/PaymentHistoryChart';
+export { default as CampaignAreaChart } from './charts/CampaignAreaChart';

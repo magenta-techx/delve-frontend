@@ -114,8 +114,6 @@ export async function forward(
     if (res.status === 204) {
       return new NextResponse(null, { status: 204 });
     }
-    console.log('URL:', url);
-    console.log('Forwarded Success Response:', data);
 
     return NextResponse.json(data, { status: res.status });
   } catch (err) {

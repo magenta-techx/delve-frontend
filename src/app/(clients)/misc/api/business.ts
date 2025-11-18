@@ -25,7 +25,7 @@ export function useBusinessCampaignAnalytics(params: { businessId?: string | num
   qs.set('requested_metric', params.requested_metric);
   if (params.filter_method) qs.set('filter_method', params.filter_method);
   return useQuery<ApiEnvelope<CampaignAnalyticsResponse>, Error>({
-    queryKey: ['business-campaign-analytics', params],
+    queryKey: ['business-campaign-analytics', params.businessId, params.requested_metric, params.filter_method],
     queryFn: async () => {
       const res = await fetch(`/api/business/${params.businessId}/analytics/campaigns?${qs.toString()}`);
       const data = await res.json();
@@ -34,7 +34,14 @@ export function useBusinessCampaignAnalytics(params: { businessId?: string | num
     },
     enabled: Boolean(params.businessId && params.requested_metric),
     staleTime: 2 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
+    placeholderData: (previousData, previousQuery) => {
+      if (
+        previousQuery?.queryKey?.[1] === params.businessId
+      ) {
+        return previousData;
+      }
+      return undefined;
+    },
   });
 }
 

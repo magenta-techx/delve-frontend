@@ -11,22 +11,27 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  EmptyState,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
 } from '@/components/ui';
-import PerformanceAreaChart from '../../misc/components/charts/PerformanceAreaChart';
+import PerformanceAreaChart from '../../misc/components/charts/CampaignAreaChart';
 import { useMemo, useState } from 'react';
 // dialog not used in this page
 import { useBusinessCampaignAnalytics } from '@/app/(clients)/misc/api/business';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { CaretDown, LogoLoadingIcon } from '@/assets/icons';
-import { CreateAdPromoForm } from '../../misc/components';
+import {
+  CampaignAreaChart,
+  CreateAdPromoForm,
+  PaymentHistoryChart,
+} from '../../misc/components';
 import { cn } from '@/lib/utils';
-import { CustomPaymentHistoryChart } from '../../misc/components/charts';
 import { Check, Circle } from 'lucide-react';
 import Image from 'next/image';
+import { EmptySavedBusinessesIcon } from '@/app/(clients)/misc/icons';
 
 export default function PromotionsPage() {
   const [selectedView, setSelectedView] = useState<'advert' | 'promotion'>(
@@ -138,48 +143,50 @@ export default function PromotionsPage() {
   }
 
   return (
-    <div className={cn('h-full w-full overflow-y-scroll md:space-y-6')}>
+    <div className={cn('h-full w-full overflow-y-scroll md:space-y-8')}>
       {/* Header */}
-      <header className='mb-3 flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
-        <h1 className='font-inter text-xl font-semibold lg:text-3xl'>
-          Promotions and Adverts
-          <span className='max-w-[30ch] text-balance text-xs font-normal text-[#4B5565] max-lg:block lg:hidden'>
-            Effortlessly handle your promotions and adverts right here.
-          </span>
-        </h1>
+      <header>
+        <div className='mb-3 flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
+          <h1 className='font-inter text-xl font-semibold lg:text-3xl'>
+            Promotions and Adverts
+            <span className='max-w-[30ch] text-balance text-xs font-normal text-[#4B5565] max-lg:block lg:hidden'>
+              Effortlessly handle your promotions and adverts right here.
+            </span>
+          </h1>
+        </div>
+        <nav className='flex items-center gap-2 px-4 lg:gap-3 lg:px-6'>
+          {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
+            period => {
+              const p = period as
+                | 'all_time'
+                | 'this_month'
+                | 'last_6_months'
+                | 'last_12_months';
+              const isActive = selectedPeriod === p;
+              return (
+                <button
+                  key={period}
+                  onClick={() => setSelectedPeriod(p)}
+                  className={`rounded-xl border px-3 py-2 font-inter text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-4 md:text-sm ${
+                    isActive
+                      ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
+                      : 'border-[#D9D6FE] text-[#697586]'
+                  }`}
+                >
+                  {period.replace(/_/g, ' ')}
+                </button>
+              );
+            }
+          )}
+        </nav>
       </header>
 
       {hasActiveCampaign && (
         <>
-          <nav className='flex items-center gap-2 px-4 lg:gap-3 lg:px-6'>
-            {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
-              period => {
-                const p = period as
-                  | 'all_time'
-                  | 'this_month'
-                  | 'last_6_months'
-                  | 'last_12_months';
-                const isActive = selectedPeriod === p;
-                return (
-                  <button
-                    key={period}
-                    onClick={() => setSelectedPeriod(p)}
-                    className={`rounded-xl border px-3 py-2 font-inter text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-4 md:text-sm ${
-                      isActive
-                        ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
-                        : 'border-[#D9D6FE] text-[#697586]'
-                    }`}
-                  >
-                    {period.replace(/_/g, ' ')}
-                  </button>
-                );
-              }
-            )}
-          </nav>
           <section className='grid gap-5 px-4 lg:grid-cols-[1fr,minmax(auto,300px)] lg:items-stretch lg:gap-6 lg:px-8 xl:grid-cols-[1fr,minmax(auto,470px)]'>
             <article className='flex flex-col gap-5 overflow-x-hidden rounded-2xl border border-[#CDD5DF] bg-card p-4 text-card-foreground lg:px-6'>
               {/* Payment History Chart */}
-              <CustomPaymentHistoryChart
+              <PaymentHistoryChart
                 paymentHistory={paymentHistory}
                 totalSpending={totalSpending}
                 selectedPeriod={selectedPeriod}
@@ -221,31 +228,86 @@ export default function PromotionsPage() {
                 </DropdownMenu>
               </header>
 
+              {}
               <section className='relative rounded-2xl border border-white p-1'>
                 {selectedView === 'advert' ? (
-                  <Image
-                    src={
-                      advertAnalyticsData?.data.performance_metrics
-                        .summary_metrics?.image || '/default-image.png'
-                    }
-                    alt='Advert Campaign Thumbnail'
-                    className='text-[0.6rem]'
-                    fill
-                    objectFit='cover'
-                  />
+                  <>
+                    {hasActiveAdvertCampaign ? (
+                      <Image
+                        src={
+                          advertAnalyticsData?.data.performance_metrics
+                            .summary_metrics?.image || '/default-image.png'
+                        }
+                        alt='Advert Campaign Thumbnail'
+                        className='text-[0.6rem]'
+                        fill
+                        objectFit='cover'
+                      />
+                    ) : (
+                      <div>
+                        <EmptyState
+                          title='No Active Advert Campaign'
+                          description='You currently have no active advert campaigns. Create one to start reaching a wider audience and boosting your business visibility.'
+                          className='h-48'
+                          titleClassName='text-white text-lg font-semibold'
+                          descriptionClassName='!text-white'
+                          actions={
+                            <Button
+                              onClick={() =>
+                                setCreateCampaignFormState({
+                                  ...createCampaignFormState,
+                                  isOpen: true,
+                                  isCloseable: true,
+                                  isExtension: false,
+                                })
+                              }
+                            >
+                              Create Advert Campaign
+                            </Button>
+                          }
+                        />
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <article className='relative size-full overflow-hidden rounded-2xl'>
-                    <Image
-                      src={
-                        promotionAnalyticsData?.data.active_campaign?.[
-                          'thumbnail'
-                        ]
-                      }
-                      alt='Promotion Campaign Thumbnail'
-                      className='rounded-xl text-[0.6rem]'
-                      fill
-                      objectFit='cover'
-                    />
+                    {hasActivePromoCampaign ? (
+                      <Image
+                        src={
+                          promotionAnalyticsData?.data.active_campaign?.[
+                            'thumbnail'
+                          ]
+                        }
+                        alt='Promotion Campaign Thumbnail'
+                        className='rounded-xl text-[0.6rem]'
+                        fill
+                        objectFit='cover'
+                      />
+                    ) : (
+                      <div className='flex flex-col items-center'>
+                        <EmptyState
+                          title='No Active Promotion Campaign'
+                          description='You currently have no active promotion campaigns. Create one to start reaching a wider audience and boosting your business visibility.'
+                          className='h-48'
+                          titleClassName='text-white text-lg font-semibold'
+                          descriptionClassName='!text-white'
+                          actions={
+                            <Button
+                              onClick={() =>
+                                setCreateCampaignFormState({
+                                  ...createCampaignFormState,
+                                  isOpen: true,
+                                  isCloseable: true,
+                                  isExtension: false,
+                                })
+                              }
+                            >
+                              Create Promotion Campaign
+                            </Button>
+                          }
+                        />
+                      </div>
+                    )}
                   </article>
                 )}
               </section>
@@ -258,18 +320,38 @@ export default function PromotionsPage() {
                         .summary_metrics?.total_impressions
                     }
                   </span>
-                  Engagements
+                  {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
+                  (selectedView === 'promotion' && hasActivePromoCampaign)
+                    ? 'Engagements'
+                    : 'No Active Campaign'}
                 </span>
                 <span className='flex w-max items-center rounded-xl border border-[#9AA4B2] bg-[#0000002E] px-4 py-1.5 text-sm font-light'>
-                  <span className='mr-2 flex items-center text-[0.9rem] font-semibold text-[#D0F8AB]'>
-                    <Circle className='mr-1 inline-block size-3 animate-pulse fill-[#D0F8AB] text-[#D0F8AB]' />
-                    Live Now
+                  <span className='mr-2 flex items-center text-[0.9rem] font-semibold'>
+                    <Circle
+                      className={cn(
+                        'mr-1 inline-block size-3',
+                        (selectedView === 'advert' &&
+                          hasActiveAdvertCampaign) ||
+                          (selectedView === 'promotion' &&
+                            hasActivePromoCampaign)
+                          ? 'animate-pulse fill-[#D0F8AB] text-[#D0F8AB]'
+                          : 'fill-[#ee2e2e] text-[#e42222]'
+                      )}
+                    />
+
+                    {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
+                    (selectedView === 'promotion' && hasActivePromoCampaign)
+                      ? ' Live Now'
+                      : 'Inactive'}
                   </span>
                   {
                     selectedAnalyticsData?.data.performance_metrics
                       .summary_metrics?.days_left
                   }{' '}
-                  days left
+                  {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
+                    (selectedView === 'promotion' &&
+                      hasActivePromoCampaign &&
+                      'days left')}
                 </span>
               </footer>
             </article>
@@ -468,7 +550,7 @@ export default function PromotionsPage() {
                       setSelectedGraphView(e as 'views' | 'clicks')
                     }
                   >
-                    <SelectTrigger className='!h-10 w-[150px] border border-[#EEF2F6] bg-[#F8FAFC] !py-1.5 text-sm'>
+                    <SelectTrigger className='!h-10 w-[100px] border border-[#EEF2F6] bg-[#F8FAFC] !py-1.5 text-sm'>
                       <span className='text-black'>
                         {selectedGraphView === 'views' ? 'Views' : 'Clicks'}
                       </span>
@@ -482,22 +564,31 @@ export default function PromotionsPage() {
               </CardHeader>
               <CardContent>
                 <div className='mb-4'>
-                  <p className='text-base font-bold'>Total number of views</p>
-                  <p className='mt-1 text-sm font-medium text-green-600'>
-                    {totalViews.toLocaleString()} This month
+                  <p className='text-sm font-medium'>
+                    Total number of {selectedGraphView}
+                  </p>
+                  <p className='mb-3 mt-1 text-xs text-green-600'>
+                    <span className='font-bold text-2xl text-[#0D0D0D] lg:text-4xl'>
+                      {totalViews.toLocaleString()}
+                    </span>{' '}
+                    This month
                   </p>
                 </div>
 
                 {!hasActiveCampaign ||
                 (selectedView === 'promotion' && !hasActivePromoCampaign) ||
                 (selectedView === 'advert' && !hasActiveAdvertCampaign) ? (
-                  <p className='text-center text-sm text-gray-500'>
-                    No active{' '}
-                    {selectedView === 'advert' ? 'advert' : 'promotion'}{' '}
-                    campaigns to display performance trends.
-                  </p>
+                  <div className='py-10'>
+                    <EmptyState
+                      description={`No active ${selectedView === 'advert' ? 'advert' : 'promotion'} campaigns to display performance trends.`}
+                      className='h-48'
+                      titleClassName='text-black text-xl font-semibold'
+                      descriptionClassName='!text-gray-500'
+                      media={<EmptySavedBusinessesIcon />}
+                    />
+                  </div>
                 ) : (
-                  <PerformanceAreaChart
+                  <CampaignAreaChart
                     data={dailyMetrics.map(m => ({
                       date: m.date,
                       views: m.daily_views,
