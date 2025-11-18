@@ -1,5 +1,4 @@
 import ArrowLeftIcon from '@/assets/icons/ArrowLeftIcon';
-import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
 export const metadata = {
@@ -15,7 +14,7 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
   return (
     <section className='h-screen w-screen overflow-x-hidden overflow-y-hidden bg-cover bg-center px-5 pt-10 sm:bg-[url("/reset-Password-bg.png")] sm:px-20'>
       <div className='hidden sm:block'>
-        <Navbar />
+        {/* <Navbar /> */}
       </div>
       <div className='sm:hidden'>
         <Link href={'/signin'} className='flex items-center gap-3'>

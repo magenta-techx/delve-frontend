@@ -5,7 +5,6 @@ import MenuBarIcon from '@/assets/icons/MenuBarIcon';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
-// import ListingUserMenuExtension from '../landing-page/UserMenuExtensions/ListingUserMenuExtension';
 
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
 // import Loader from '../ui/Loader';
@@ -47,9 +46,6 @@ const NavbarLandingPage = ({
   categories,
   // isLoadingcategories,
 }: NavbarProps) => {
-  // const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
-  //   listing: <ListingUserMenuExtension categories={categories} />,
-  // };
 
   const { data: session, status } = useSession();
   const isLoadingSession = status === 'loading';
@@ -184,13 +180,7 @@ const NavbarLandingPage = ({
             </div>
           )}
         </div>
-
-
-        {/* user menu removed in favor of DropdownMenu */}
       </div>
-
-
-      {/* Former large user menu extension removed */}
     </div>
   );
 };
