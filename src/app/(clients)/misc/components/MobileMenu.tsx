@@ -3,7 +3,7 @@ import React from 'react';
 interface MobileMenuProps {
   userIsloggedIn: boolean;
 }
-const MobileMenu = ({ userIsloggedIn }: MobileMenuProps) => {
+const MobileMenu = ({}: MobileMenuProps) => {
   return <DropdownMenu></DropdownMenu>;
 };
 

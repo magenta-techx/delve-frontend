@@ -3,7 +3,6 @@ import { ExploreBaseIcons } from '@/assets/icons/explore/Icons';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 // import BusinessFooter from '@/components/business/BusinessFooter';
 import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
-import SearchGroup from '@/components/landing-page/SearchGroup';
 // import Navbar from '@/components/Navbar';
 // import type { Metadata } from 'next';
 // import Image from 'next/image';
@@ -22,6 +21,7 @@ import ListingCardSkeleton from '@/app/(clients)/misc/components/ListingCardSkel
 import { EmptyState } from '@/components/ui';
 import { EmptyListingIcon } from '../../misc/icons';
 import { cn } from '@/lib/utils';
+import { BusinessSearch } from '../../misc/components';
 
 export default function HomePage(): JSX.Element {
   const { data: approvedResp, isLoading: loadingApproved } =
@@ -61,7 +61,7 @@ export default function HomePage(): JSX.Element {
         </div>
 
         <section className='absolute bottom-16 mx-auto flex max-w-max justify-center px-5 sm:-bottom-9 sm:px-0 md:left-1/2 md:-translate-x-1/2'>
-          <SearchGroup searchType='All' />
+          <BusinessSearch />
         </section>
       </div>
 

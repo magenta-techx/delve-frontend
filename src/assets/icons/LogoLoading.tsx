@@ -20,7 +20,7 @@ const AnimatedSquares = () => {
 
   return (
     <div className='relative grid grid-cols-2 items-center justify-center gap-0.5'>
-      {Array.from({ length: 4 }).map((pos, i) => {
+      {Array.from({ length: 4 }).map((_pos, i) => {
         const isBig = i === bigIndex;
         return (
             <div

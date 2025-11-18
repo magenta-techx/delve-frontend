@@ -26,7 +26,6 @@ import { CaretDown } from '@/assets/icons';
 
 const LandingPageNavbar = () => {
   const { data: session, status } = useSession();
-  const isLoadingSession = status === 'loading';
   const userIsloggedIn = status === 'authenticated' && Boolean(session?.user);
 
   const pathname = usePathname();

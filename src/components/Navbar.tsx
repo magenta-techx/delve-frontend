@@ -18,7 +18,6 @@ import CancleIcon from '@/assets/icons/CancelIcon';
 import MenuBarIconWhite from '@/assets/icons/MenuBarIconWhite';
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
 import { useSession } from 'next-auth/react';
-import ListingUserMenuExtension from './landing-page/UserMenuExtensions/ListingUserMenuExtension';
 import Loader from './ui/Loader';
 
 interface AuthFormButtonProps {
@@ -133,12 +132,11 @@ const USER_MENU_ITEMS = [
 const Navbar = ({
   type,
   navbarWidthDeskTop,
-  categories,
   isLoadingcategories,
   authFormButtons = true,
 }: NavbarProps): JSX.Element => {
   const USER_MENU_EXTENSIONS: { [key: string]: ReactNode } = {
-    listing: <ListingUserMenuExtension categories={categories} />,
+    listing: <></>,
     // Add other menu extensions here
   };
   const { data: session } = useSession();
@@ -252,7 +250,7 @@ const Navbar = ({
               </Link>
             )}
             {type && !userIsloggedIn && (
-              <Button asChild className={`w-[200px] text-xs`} variant={variant}>
+              <Button asChild className={`w-[200px] text-xs`}>
                 <Link
                   href={'/'}
                   className={`flex h-full items-center justify-center gap-2 ${linkClassName} `}

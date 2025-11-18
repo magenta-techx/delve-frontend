@@ -19,9 +19,9 @@ import Loader from '@/components/ui/Loader';
 import {
   useUploadBusinessImages,
   useUpdateBusinessAmenities,
-  useCreateBusinessServices,
   useUpdateBusinessCategory,
   useUpdateLocationAndContact,
+  useCreateServices,
 } from '@/app/(business)/misc/api/business';
 import { Logo } from '@/assets/icons';
 import {
@@ -31,7 +31,6 @@ import {
 } from '@/schemas/businessZodSchema';
 import { toast } from 'sonner';
 import z from 'zod';
-import { BusinessService } from '@/types/api';
 
 export type CreateListingLocation = z.infer<typeof locationZodSchema>;
 const BusinessStepForm = (): JSX.Element => {
@@ -49,7 +48,7 @@ const BusinessStepForm = (): JSX.Element => {
 
   // API hooks
   const uploadImagesMutation = useUploadBusinessImages();
-  const createServicesMutation = useCreateBusinessServices();
+  const createServicesMutation = useCreateServices();
   const updateAmenitiesMutation = useUpdateBusinessAmenities();
   const updateLocationMutation = useUpdateLocationAndContact();
   const updateCategoryMutation = useUpdateBusinessCategory();
@@ -75,7 +74,13 @@ const BusinessStepForm = (): JSX.Element => {
     number[]
   >([]);
   const [subcategoryCount, setSubcategoryCount] = useState<number>(0);
-  const [services, setServices] = useState<BusinessService[]>([]);
+  const [services, setServices] = useState<
+    {
+      title: string;
+      description?: string;
+      image?: File | null;
+    }[]
+  >([]);
   const [location, setLocation] = useState<CreateListingLocation | null>(null);
   const [contactInfo, setContactInfo] = useState<CombinedContactInfo | null>(
     null
@@ -218,9 +223,9 @@ const BusinessStepForm = (): JSX.Element => {
       const servicesWithDescription = services.map(service => ({
         ...service,
         description: service.description || '',
-        image: service.image === null ? undefined : service.image
+        image: !!service.image ? service.image : null,
       }));
-      
+
       await createServicesMutation.mutateAsync({
         business_id: businessId,
         services: servicesWithDescription,
@@ -563,7 +568,9 @@ const BusinessStepForm = (): JSX.Element => {
       title: 'Add business services',
       subtitle:
         'Showcase your services to attract the right clients and boost bookings.',
-      component: <BusinessServicesForm onServicesChange={(e)=>setServices(e)} />,
+      component: (
+        <BusinessServicesForm onServicesChange={e => setServices(e)} />
+      ),
     },
     {
       id: 5,

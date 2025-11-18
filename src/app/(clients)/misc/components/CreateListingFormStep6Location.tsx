@@ -381,7 +381,7 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
                 </div>
               ) : predictions.length > 0 ? (
                 <ul className='max-h-60 overflow-auto'>
-                  {predictions.map((prediction, index) => (
+                  {predictions.map((prediction) => (
                     <li
                       key={prediction.place_id}
                       onClick={() => selectPrediction(prediction)}
