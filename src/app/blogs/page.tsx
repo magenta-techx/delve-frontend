@@ -1,10 +1,10 @@
-import BusinessFooter from '@/components/business/BusinessFooter';
 import BlogCards from '@/components/cards/BlogsCard';
 
 import Navbar from '@/components/Navbar';
 import UpComingEvents from '@/components/UpComingEvents';
 // import type { Metadata } from 'next';
 import Image from 'next/image';
+import { Footer } from '../(clients)/misc/components';
 
 export default function HomePage(): JSX.Element {
   return (
@@ -74,7 +74,7 @@ export default function HomePage(): JSX.Element {
         />
       </div>
 
-      <BusinessFooter />
+      <Footer />
     </main>
   );
 }

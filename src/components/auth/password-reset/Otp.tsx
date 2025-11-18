@@ -7,8 +7,8 @@ import AuthFormheader from '../../../app/(auth)/misc/components/AuthFormheader';
 import { Button } from '@/components/ui/Button';
 import EmailIcon from '@/assets/icons/auth/EmailIcon';
 import '@/styles/auth.css';
-import { showToastNotification } from '@/components/notifications/ToastNotification';
 import KeyIcon from '@/assets/icons/auth/KeyIcon';
+import { toast } from 'sonner';
 
 const Otp = (): JSX.Element => {
   const urlParams = useSearchParams();
@@ -31,25 +31,22 @@ const Otp = (): JSX.Element => {
 
     if (res.ok) {
       const message = await res.json();
-      showToastNotification(
-        {
-          header: 'Successfull',
-          body: `${message?.message}` || 'Reset code is valid.',
-        },
-        <KeyIcon />
-      );
+      toast.success('Reset code is valid.', {
+        icon: <KeyIcon />,
+        description: message.message,
+      });
+      //
+    
       navigate.push(
         `/auth/password-reset/create-new-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
       );
     } else {
       const data = await res.json();
-      showToastNotification(
-        {
-          header: 'Successfull',
-          body: `${data.error}` || 'Reset code is valid.',
-        },
-        <KeyIcon />
-      );
+      toast.error('Invalid reset code.', {
+        icon: <KeyIcon />,
+        description: data.error,
+      });
+    
     }
     setIsSubmitting(false);
   };
@@ -103,7 +100,7 @@ const Otp = (): JSX.Element => {
       <Button
         disabled={otp.length !== 6}
         onClick={handleOtpSubmit}
-        isSubmitting={isSubmitting}
+        isLoading={isSubmitting}
       >
         Confirm
       </Button>

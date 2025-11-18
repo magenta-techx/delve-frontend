@@ -95,7 +95,7 @@ export const PaymentHistoryChart: React.FC<PaymentHistoryChartProps> = ({ paymen
               onMouseOut={() => setActiveIndex(null)}
               {
                 ...{
-                  shape: (props) => {
+                  shape: (props:any) => {
                     const { x, y, width, height, index } = props;
                     const isActive = index === activeIndex;
                     return (

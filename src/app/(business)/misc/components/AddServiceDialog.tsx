@@ -18,7 +18,6 @@ import { Button, Input, Textarea } from '@/components/ui';
 import { Label } from '@/components/ui/label';
 import { useCreateServices } from '@/app/(business)/misc/api/business';
 import { useBusinessContext } from '@/contexts/BusinessContext';
-import { useBooleanStateControl } from '@/hooks/useBooleanStateControl';
 
 // Schema for form validation
 const serviceSchema = z.object({
@@ -45,8 +44,6 @@ export default function AddServiceDialog({ isOpen, onClose }: AddServiceDialogPr
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
-    watch,
   } = useForm<ServiceFormData>({
     resolver: zodResolver(serviceSchema),
     defaultValues: {

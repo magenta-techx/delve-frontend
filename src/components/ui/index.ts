@@ -30,7 +30,9 @@ export  {
 export { default as EmptyState } from './EmptyState'
 export { Input } from './Input'
 // export { Label } from './Label'
-export { Textarea } from './TextArea'
+export { Textarea } from './Textarea'
+
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './Tabs'
 
 export {
   Sheet,

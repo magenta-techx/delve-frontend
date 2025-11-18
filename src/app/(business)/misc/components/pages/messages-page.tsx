@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui"
+import { Button } from "@/components/ui"
 import { Search, Send, Trash2 } from "lucide-react"
 
 export function MessagesPage() {

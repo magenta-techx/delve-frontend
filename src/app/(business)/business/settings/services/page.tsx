@@ -13,7 +13,7 @@ import { useBooleanStateControl } from '@/hooks/useBooleanStateControl';
 import { AddServiceDialog } from '@/app/(business)/misc/components';
 import ServiceImageUploadDialog from '@/app/(business)/misc/components/ServiceImageUploadDialog';
 import { BusinessService } from '@/types/api';
-import ConfirmationModal, { useConfirmationModal } from '@/components/ui/confirmation-modal';
+import ConfirmationModal, { useConfirmationModal } from '@/components/ui/ConfirmationModal';
 
 
 

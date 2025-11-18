@@ -1,4 +1,4 @@
-import { useMutation, type UseMutationResult } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 export function usePromotionCheckout() {
   return useMutation({
@@ -6,7 +6,7 @@ export function usePromotionCheckout() {
       business_id: number | string;
       plan_id: number | string;
       custom_number_of_days?: number;
-      campaign_extension?: boolean;
+      campaign_extension?: string;
     }) => {
       const res = await fetch(`/api/payment/plans/checkout/business-promotion`, {
         method: "POST",

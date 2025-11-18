@@ -2,7 +2,6 @@ import React from 'react';
 import {
   useAdvertisementPlans,
   useBusinessPromotionPlans,
-  usePlans,
 } from '@/app/(clients)/misc/api';
 import { cn } from '@/lib/utils';
 import { LogoLoadingIcon, TagIcon } from '@/assets/icons';
@@ -14,14 +13,23 @@ import {
 } from '@/app/(clients)/misc/api/promotionCheckout';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui';
+import { MoveLeft } from 'lucide-react';
 
 interface CreateAdPromoFormProps {
   initialTab?: 'advert' | 'promotion';
-  isExtension?: boolean;
+  isOpen: boolean;
+  isExtension: boolean;
+  isCloseable: boolean;
+  showTabs: boolean;
+  closeForm?: () => void;
 }
 const CreateAdPromoForm = ({
   initialTab,
   isExtension,
+  showTabs,
+  closeForm,
+  isCloseable,
 }: CreateAdPromoFormProps) => {
   const router = useRouter();
 
@@ -46,8 +54,12 @@ const CreateAdPromoForm = ({
     selectedTab === 'promotion' ? promotionPlansLoading : advertPlansLoading;
 
   // Duration options: promo has 1,7,14,30; advert has 7,14,30
-  let durationOptions: { label: string; value: number; cost: number; plan_id: string
-   }[] = [];
+  let durationOptions: {
+    label: string;
+    value: number;
+    cost: number;
+    plan_id: string;
+  }[] = [];
   if (plans?.data && Array.isArray(plans.data)) {
     if (selectedTab === 'promotion') {
       durationOptions = [1, 7, 14, 30]
@@ -104,14 +116,16 @@ const CreateAdPromoForm = ({
         {
           business_id,
           plan_id: selectedPlan.plan_id,
-          campaign_extension: !!isExtension,
+          campaign_extension: String(!!isExtension),
         },
         {
           onSuccess: (data: any) => {
             if (data?.checkout_url) router.push(data.checkout_url);
           },
           onError: (err: any) => {
-            alert(err?.message || 'Failed to create checkout session');
+            toast.error('Failed to create checkout session', {
+              description: err.error,
+            });
           },
         }
       );
@@ -134,7 +148,9 @@ const CreateAdPromoForm = ({
             if (data?.checkout_url) router.push(data.checkout_url);
           },
           onError: (err: any) => {
-            alert(err?.message || 'Failed to create checkout session');
+            toast.error('Failed to create checkout session', {
+              description: err,
+            });
           },
         }
       );
@@ -146,6 +162,18 @@ const CreateAdPromoForm = ({
       <header className='h-16'></header>
 
       <div className='mx-auto flex max-w-xl flex-1 flex-col items-center max-lg:px-4 md:max-lg:px-6'>
+        {isCloseable && (
+          <Button
+            size='xl'
+            variant='light'
+            className='mr-2 mt-4 mb-9 self-end text-gray-500 hover:text-gray-700'
+            onClick={() => {
+              if (closeForm) closeForm();
+            }}
+          >
+            <MoveLeft /> Back to Dashboard
+          </Button>
+        )}
         <header className='text-center'>
           <h1 className='mb-3 text-2xl font-semibold text-[#18181C] sm:text-3xl lg:text-4xl'>
             Promotions and Adverts
@@ -169,8 +197,9 @@ const CreateAdPromoForm = ({
             ].map(tab => (
               <button
                 key={tab.key}
+                disabled={plansLoading || !showTabs}
                 className={cn(
-                  'relative rounded-lg border border-[#F8FAFC] bg-[#F8FAFC] px-2.5 py-3 text-xs font-medium text-[#4B5565] !outline-none sm:px-4 sm:py-3.5 sm:text-sm',
+                  'relative rounded-lg border border-[#F8FAFC] bg-[#F8FAFC] px-2.5 py-3 text-xs font-medium text-[#4B5565] !outline-none sm:px-4 sm:py-3.5 sm:text-sm disabled:cursor-not-allowed disabled:opacity-50',
                   selectedTab === tab.key &&
                     'border-primary bg-white text-[#7839EE] shadow-md'
                 )}
@@ -212,6 +241,7 @@ const CreateAdPromoForm = ({
               <h3 className='mb-4 text-sm font-semibold text-black'>
                 Set{' '}
                 {selectedTab === 'promotion' ? 'Promotion' : 'Advertisement'}{' '}
+                {isExtension && 'Extension'}{' '}
                 Period
               </h3>
               <div className='ap-1.5 mb-6 grid grid-cols-4 sm:gap-3'>

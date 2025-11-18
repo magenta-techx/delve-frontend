@@ -32,7 +32,6 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
 >(({ onSuccess }, ref) => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -71,7 +70,6 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
       return;
     }
 
-    setIsSubmitting(true);
 
     try {
       const formData = new FormData();
@@ -106,7 +104,6 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
         description: errorMessage,
       });
     } finally {
-      setIsSubmitting(false);
     }
   };
 

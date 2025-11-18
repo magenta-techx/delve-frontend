@@ -5,7 +5,6 @@ import { useBusinessContext } from '@/contexts/BusinessContext';
 import { useUploadBusinessImages, useDeleteBusinessImages } from '@/app/(business)/misc/api/business';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import {
@@ -16,12 +15,11 @@ import {
 } from '@/components/ui/dialog';
 import { Upload2Icon, UploadIcon } from '@/app/(clients)/misc/icons';
 import { TrashIcon } from '@/assets/icons';
-import Link from 'next/link';
 import { ArrowLeft, Check } from 'lucide-react';
 import { LinkButton } from '@/components/ui';
 
 const GalleryPage = () => {
-    const { currentBusiness, refetchBusinesses, isLoading: isLoadingBusinesses } = useBusinessContext();
+    const { currentBusiness, refetchBusinesses } = useBusinessContext();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dropzoneRef = useRef<HTMLInputElement>(null);
     const [selectedImages, setSelectedImages] = useState<Set<number>>(new Set());

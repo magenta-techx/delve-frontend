@@ -11,7 +11,7 @@ type MetricType = "conversations" | "reviews" | "profile_visits" | "saved_by_use
 
 export default function PerformancePage() {
   const { currentBusiness } = useBusinessContext();
-  const business_id = currentBusiness?.id;
+  const business_id = currentBusiness?.id ? String(currentBusiness.id) : '';
   const [timePeriod, setTimePeriod] = useState<TimePeriod>("this_month");
   const [analyticsType, setAnalyticsType] = useState<MetricType>("conversations");
 
@@ -21,7 +21,7 @@ export default function PerformancePage() {
     filter: timePeriod,
     metric: analyticsType,
   };
-  const { data, isLoading } = useBusinessPerformance(fetchOptions);
+  const { data } = useBusinessPerformance(fetchOptions);
 
   // Map analyticsType to card colors
   const analyticsMeta = {
@@ -34,15 +34,15 @@ export default function PerformancePage() {
   // Get totals and currents from API
   const totals = data?.totals || {};
   const currents = data?.currents || {};
-  const graph = data?.graph || [];
 
-  // Chart data for selected metric
   const chartData = useMemo(() => {
+    const graph = data?.graph || [];
     if (graph.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return graph.map((point: any) => ({ date: point.x, value: point.y }));
     }
     return [];
-  }, [graph]);
+  }, [data?.graph]);
 
   return (
     <div className="p-6 space-y-6">

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui"
 import { AlertCircle } from "lucide-react"
 
 interface PerformanceMetricsProps {
-  analyticsType?:"conversations" | "reviews" | "profile_visits" | "saved_by_users"
+  analyticsType?: "conversations" | "reviews" | "profile_visits" | "saved_by_users"
 }
 
 export function PerformanceMetrics({ analyticsType = "conversations" }: PerformanceMetricsProps) {
@@ -50,7 +50,7 @@ export function PerformanceMetrics({ analyticsType = "conversations" }: Performa
         { title: "Response Rate", value: "95%", subtitle: "to reviews", bgColor: "bg-purple-50", icon: "✓" },
       ],
     },
-    "profile-views": {
+    profile_visits: {
       cards: [
         {
           title: "Avg. Session Duration",
@@ -63,7 +63,7 @@ export function PerformanceMetrics({ analyticsType = "conversations" }: Performa
         { title: "Return Visits", value: "42%", subtitle: "This month", bgColor: "bg-blue-50", icon: "🔄" },
       ],
     },
-    saved: {
+    saved_by_users: {
       cards: [
         { title: "Save Rate", value: "15%", subtitle: "of views", bgColor: "bg-green-50", icon: "🔖" },
         { title: "Resave Rate", value: "28%", subtitle: "of saved items", bgColor: "bg-blue-50", icon: "🔄" },
@@ -72,7 +72,7 @@ export function PerformanceMetrics({ analyticsType = "conversations" }: Performa
     },
   }
 
-  const metrics = metricsConfig[analyticsType] || metricsConfig.all
+  const metrics = metricsConfig[analyticsType as keyof typeof metricsConfig] || metricsConfig.all
   const barData = [
     { day: "Mon", value: 40 },
     { day: "Tue", value: 30 },

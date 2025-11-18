@@ -2,7 +2,6 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import ArrowRightIconWhite from '@/assets/icons/ArrowRightIconWhite';
-import { useCreateServices } from '@/app/(business)/misc/api/business';
 
 import BusinessIntroductionForm from './CreateListingFormStep1Introduction';
 import BusinessShowCaseForm from './CreateListingFormStep2Showcase';
@@ -564,7 +563,7 @@ const BusinessStepForm = (): JSX.Element => {
       title: 'Add business services',
       subtitle:
         'Showcase your services to attract the right clients and boost bookings.',
-      component: <BusinessServicesForm setServices={setServices} />,
+      component: <BusinessServicesForm onServicesChange={(e)=>setServices(e)} />,
     },
     {
       id: 5,

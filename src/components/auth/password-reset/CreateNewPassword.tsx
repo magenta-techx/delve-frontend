@@ -6,12 +6,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createPasswordSchema, type CreatePasswordInput } from '@/schemas/authSchema';
 import LockIcon from '@/assets/icons/auth/LockIcon';
 import { useEffect, useState } from 'react';
-import { showToastNotification } from '@/components/notifications/ToastNotification';
 import KeyIcon from '@/assets/icons/auth/KeyIcon';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/Input';
 import { useResetPassword } from '@/app/(auth)/misc/api';
+import { toast } from 'sonner';
 
 const CreateNewPassword = (): JSX.Element => {
   const navigate = useRouter();
@@ -32,10 +32,9 @@ const CreateNewPassword = (): JSX.Element => {
   const handleNewpasswordSubmit = async (values: CreatePasswordInput): Promise<void> => {
     try {
       await resetPasswordMutation.mutateAsync({ ...values, email, otp });
-      showToastNotification(
-        { header: 'Successfull', body: 'Password successfully changed' },
-        <KeyIcon />
-      );
+      toast.success('Password successfully changed', {
+        icon: <KeyIcon />
+      });
       navigate.push(`/signin`);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Incorrect OTP';

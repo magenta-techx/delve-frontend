@@ -4,13 +4,11 @@ import Link from 'next/link';
 
 import AuthFormheader from './AuthFormheader';
 import { loginSchema, type LoginInput } from '@/schemas/authSchema';
-import { Button } from '@/components/ui/Button';
+import { Button, Input } from '@/components/ui';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import KeyIcon from '@/assets/icons/auth/KeyIcon';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@/components/ui/Input';
 import { useLogin } from '@/app/(auth)/misc/api';
 import { toast } from 'sonner';
 

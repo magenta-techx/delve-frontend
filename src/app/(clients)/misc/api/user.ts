@@ -1,6 +1,6 @@
 "use client";
 import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
-import type { ApiEnvelope, ApiMessage, BillingData, SavedBusinessItem, UserDetail, UserResponse, PlansResponse, SubscriptionPlan, AdvertisementPlan, BusinessPromotionPlan } from "@/types/api";
+import type { ApiEnvelope, ApiMessage, BillingData, SavedBusinessItem, UserResponse, PlansResponse, SubscriptionPlan, AdvertisementPlan, BusinessPromotionPlan } from "@/types/api";
 
 export function useCurrentUser(): UseQueryResult<UserResponse, Error> {
   return useQuery({

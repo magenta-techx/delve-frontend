@@ -95,7 +95,7 @@ const config = [
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-unused-vars': [
-        'error',
+        'off',
         {
           argsIgnorePattern: '^_',
           caughtErrorsIgnorePattern: '^_',

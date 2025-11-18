@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { LandingPageNavbar, Footer } from './misc/components';
-import { SavedBusinessesProvider } from '@/contexts/SavedBusinessesContext';
 
 interface UserLayoutProps {
   children: ReactNode;

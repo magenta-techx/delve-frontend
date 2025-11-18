@@ -1,8 +1,8 @@
 "use client"
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
+import { Button } from "@/components/ui"
 import { ChevronDown } from "lucide-react"
 
 interface PerformanceChartProps {

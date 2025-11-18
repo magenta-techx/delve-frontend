@@ -1,5 +1,5 @@
+import { Footer } from '@/app/(clients)/misc/components';
 import { BaseIcons } from '@/assets/icons/base/Icons';
-import BusinessFooter from '@/components/business/BusinessFooter';
 import BlogCards from '@/components/cards/BlogsCard';
 
 import Navbar from '@/components/Navbar';
@@ -201,7 +201,7 @@ export default function HomePage(): JSX.Element {
         />
       </div>
 
-      <BusinessFooter />
+      <Footer />
     </main>
   );
 }

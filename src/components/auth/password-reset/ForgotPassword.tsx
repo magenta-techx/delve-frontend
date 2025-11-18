@@ -6,12 +6,12 @@ import CancleIcon from '@/assets/icons/CancelIcon';
 import { useRouter } from 'next/navigation';
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/schemas/authSchema';
 import FingerPrintIcon from '@/assets/icons/auth/FingerPrintIcon';
-import { showToastNotification } from '@/components/notifications/ToastNotification';
 import KeyIcon from '@/assets/icons/auth/KeyIcon';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/Input';
 import { useForgotPassword } from '@/app/(auth)/misc/api';
+import { toast } from 'sonner';
 
 const ForgotPassword = (): JSX.Element => {
   const navigate = useRouter();
@@ -28,23 +28,19 @@ const ForgotPassword = (): JSX.Element => {
   const handleSendOtp = async (values: ForgotPasswordInput): Promise<void> => {
     try {
       const result = await forgotPasswordMutation.mutateAsync(values);
-      showToastNotification(
-        {
-          header: 'Successfull',
-          body:
-            `${result.message ?? 'Reset code sent to your email'} - ${values.email}`,
-        },
-        <KeyIcon />
-      );
+      toast.success(`${result.message ?? 'Reset code sent to your email'} - ${values.email}`, {
+        icon: <KeyIcon />,
+      });
+    
       navigate.push(
         `/auth/password-reset/otp?email=${encodeURIComponent(values.email)}`
       );
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Forgot password failed';
-      showToastNotification(
-        { header: 'Error', body: message },
-        <KeyIcon />
-      );
+      toast.error('Failed to send reset code.', {
+        icon: <KeyIcon />,
+        description: message,
+      });
     }
   };
   return (
@@ -73,7 +69,7 @@ const ForgotPassword = (): JSX.Element => {
 
           {/* Submit Button */}
 
-          <Button type='submit' disabled={!isValid || isSubmitting} isSubmitting={isSubmitting || forgotPasswordMutation.isPending}>
+          <Button type='submit' disabled={!isValid || isSubmitting} isLoading={isSubmitting || forgotPasswordMutation.isPending}>
             Send 4-digit code
           </Button>
       </form>

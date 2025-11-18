@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import BusinessSectionHeader from '../../../../components/business/BusinessSectionHeader';
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
+import BusinessSectionHeader from './BusinessSectionHeader';
 
 type FaqItem = {
   id: number;

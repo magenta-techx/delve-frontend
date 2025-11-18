@@ -107,9 +107,7 @@ export default function ContactPage() {
     tiktok_link: '',
   });
 
-  const [activeSocialPlatforms, setActiveSocialPlatforms] = useState<
-    Set<string>
-  >(new Set());
+ 
   const [selectedStateId, setSelectedStateId] = useState<string>('');
 
   // Google Maps autocomplete state
@@ -170,14 +168,6 @@ export default function ContactPage() {
         tiktok_link: currentBusiness.tiktok_link || '',
       });
 
-      // Set active social platforms
-      const activePlatforms = new Set<string>();
-      if (currentBusiness.whatsapp_link) activePlatforms.add('whatsapp');
-      if (currentBusiness.facebook_link) activePlatforms.add('facebook');
-      if (currentBusiness.instagram_link) activePlatforms.add('instagram');
-      if (currentBusiness.twitter_link) activePlatforms.add('twitter');
-      if (currentBusiness.tiktok_link) activePlatforms.add('tiktok');
-      setActiveSocialPlatforms(activePlatforms);
 
       // Set selected state
       if (currentBusiness.state && states.length > 0) {
@@ -407,15 +397,7 @@ export default function ContactPage() {
     }
   };
 
-  const _toggleSocialPlatform = (platformId: string) => {
-    const newActivePlatforms = new Set(activeSocialPlatforms);
-    if (newActivePlatforms.has(platformId)) {
-      newActivePlatforms.delete(platformId);
-    } else {
-      newActivePlatforms.add(platformId);
-    }
-    setActiveSocialPlatforms(newActivePlatforms);
-  };
+  
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-export function useBusinessPerformance({ business_id, filter = 'last_12_months', metric = 'conversations' } = {}) {
+export function useBusinessPerformance({ business_id, filter = 'last_12_months', metric = 'conversations' }: { business_id?: string; filter?: string; metric?: string } = {}) {
   return useQuery({
     queryKey: ['business_performance', business_id, filter, metric],
     queryFn: async () => {

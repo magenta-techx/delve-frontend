@@ -1,6 +1,6 @@
 "use client";
 import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
-import type { ApiEnvelope, ApiMessage, PremiumPlan, ChangeCardData } from "@/types/api";
+import type { ApiEnvelope, ApiMessage, PremiumPlan } from "@/types/api";
 
 export function usePlans(): UseQueryResult<ApiEnvelope<PremiumPlan[]>, Error> {
   return useQuery({

@@ -44,11 +44,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-const confirmationVariants = cva('', {
+const _confirmationVariants = cva('', {
   variants: {
     variant: {
       default: '',
@@ -85,7 +85,7 @@ const variantConfig = {
   },
 };
 
-interface ConfirmationModalProps extends VariantProps<typeof confirmationVariants> {
+interface ConfirmationModalProps extends VariantProps<typeof _confirmationVariants> {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -111,7 +111,8 @@ export default function ConfirmationModal({
   customIcon,
   variant = 'default',
 }: ConfirmationModalProps) {
-  const config = variantConfig[variant || 'default'];
+  const safeVariant: keyof typeof variantConfig = variant ?? 'default';
+  const config = variantConfig[safeVariant];
   const IconComponent = config.icon;
 
   const handleConfirm = () => {
@@ -177,7 +178,7 @@ export default function ConfirmationModal({
 }
 
 // Export variants for type checking
-export type ConfirmationModalVariant = VariantProps<typeof confirmationVariants>['variant'];
+export type ConfirmationModalVariant = VariantProps<typeof _confirmationVariants>['variant'];
 
 // Helper hook for managing confirmation modal state
 export function useConfirmationModal() {

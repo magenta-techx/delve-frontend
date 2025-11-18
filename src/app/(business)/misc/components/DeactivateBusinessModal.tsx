@@ -10,7 +10,6 @@ import { Input } from '@/components/ui';
 import { Textarea } from '@/components/ui';
 import { Label } from '@/components/ui/label';
 import { authAwareFetch } from '@/utils/authAwareFetch';
-import { ApiMessage } from '@/types/api';
 import { toast } from 'sonner';
 import { X, AlertCircle, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -45,7 +44,7 @@ export function DeactivateBusinessModal({ businessId, businessName, onClose }: D
 
   const deactivateMutation = useMutation({
     mutationFn: async (data: DeactivateFormData) => {
-      const response = await authAwareFetch<ApiMessage>(
+      const response = await authAwareFetch(
         `/api/business/${businessId}/activation/`,
         {
           method: 'PATCH',
