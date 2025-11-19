@@ -8,3 +8,5 @@ export { default as UploadIcon } from './Upload';
 export { default as Upload2Icon } from './Upload2';
 export { default as BookmarkIcon } from './Bookmark';
 export { default as EmptySavedBusinessesIcon } from './EmptySavedBusinesses';
+export { default as VerifiedIcon } from './VerifiedIcon';
+export { default as DelveIcon } from './DelveIcon';

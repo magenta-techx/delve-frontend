@@ -178,11 +178,11 @@ export function useCreateBusiness(): UseMutationResult<ApiEnvelope<{ business_id
   });
 }
 
-export function useBusinessDetails(businessId: BusinessId, page: string = "dashboard"): UseQueryResult<ApiEnvelope<BusinessDetail>, Error> {
+export function useBusinessDetails(businessId: BusinessId,advertisment_id?: string, page: string = "dashboard"): UseQueryResult<ApiEnvelope<BusinessDetail>, Error> {
   return useQuery({
-    queryKey: ["business", businessId, { page }],
+    queryKey: ["business", businessId, { page, advertisment_id}],
     queryFn: async () => {
-      const res = await authAwareFetch(`/api/business/${businessId}?page=${encodeURIComponent(page)}`);
+      const res = await authAwareFetch(`/api/business/${businessId}?page=${encodeURIComponent(page)}&advertisment_id=${encodeURIComponent(advertisment_id || "")}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch business details");
       return data;

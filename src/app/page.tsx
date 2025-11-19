@@ -3,7 +3,6 @@ import { BaseIcons } from '@/assets/icons/base/Icons';
 import BlogCard from '@/components/cards/BlogCard';
 import CategoryCard from '@/components/cards/CategoryCard';
 // import LocationCard from '@/components/cards/LocationCard';
-import SponsoredCard from '@/components/cards/SponsoredCard';
 import { BusinessLandingFAQs } from '@/app/(clients)/misc/components';
 import SectionHeader from '@/components/SectionHeader';
 import ThisWeeksTrends from '@/components/landing-page/ThisWeeksTrends';
@@ -27,6 +26,9 @@ import {
   BusinessCategoriesIconsType as CategoryIconType,
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import LocationCard from '@/components/cards/LocationCard';
+import { useSponsoredAds } from './(clients)/misc/api/sponsored';
+import { useEvents } from './(clients)/misc/api';
+import SponsoredAdsCard from './(clients)/misc/components/SponsoredCard';
 
 export default function HomePage(): JSX.Element {
   // Fetch categories from backend
@@ -195,6 +197,9 @@ export default function HomePage(): JSX.Element {
     },
   ];
 
+const {data:sponsoredAds} = useSponsoredAds()
+const {} = useEvents('Lagos')
+
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[90.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
@@ -274,31 +279,42 @@ export default function HomePage(): JSX.Element {
                 <BaseIcons value='arrow-right-line-curve-black' />
               </button>
             </div>
-            {!loadingCategories &&
-              categories.map(category => {
-                const iconName = category.name
-                  ?.split(' ')[0]
-                  ?.toLowerCase() as CategoryIconType;
-                return (
-                  <SwiperSlide
-                    key={category.id}
-                    className='flex items-center justify-center'
-                  >
+            {loadingCategories
+              ? Array.from({ length: 5 }).map((_, idx) => (
+                  <SwiperSlide key={idx} className='flex items-center justify-center'>
                     <div className='flex w-full items-center justify-center'>
-                      <CategoryCard
-                        title={category.name}
-                        icon={
-                          <BusinessCategoryIcons
-                            className='size-12 text-white'
-                            value={iconName}
-                          />
-                        }
-                        hoverIcon={<BusinessCategoryIcons value={iconName} />}
-                      />
+                      {/* Skeleton for CategoryCard */}
+                      <div className='flex flex-col items-center justify-center gap-2'>
+                        <div className='animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 size-24 lg:size-36 mb-2'></div>
+                        {/* <div className='animate-pulse h-4 w-24 rounded bg-gray-200 dark:bg-gray-700'></div> */}
+                      </div>
                     </div>
                   </SwiperSlide>
-                );
-              })}
+                ))
+              : categories.map(category => {
+                  const iconName = category.name
+                    ?.split(' ')[0]
+                    ?.toLowerCase() as CategoryIconType;
+                  return (
+                    <SwiperSlide
+                      key={category.id}
+                      className='flex items-center justify-center'
+                    >
+                      <div className='flex w-full items-center justify-center'>
+                        <CategoryCard
+                          title={category.name}
+                          icon={
+                            <BusinessCategoryIcons
+                              className='size-12 text-white'
+                              value={iconName}
+                            />
+                          }
+                          hoverIcon={<BusinessCategoryIcons value={iconName} />}
+                        />
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
           </Swiper>
         </div>
       </div>
@@ -428,7 +444,7 @@ export default function HomePage(): JSX.Element {
         </div>
 
         {/* Sponsored picks  */}
-        <div className='relative'>
+        <div className='relative container lg:px-10'>
           <SectionHeader
             iconValue='listing-yellow'
             header='Sponsored Picks'
@@ -480,17 +496,16 @@ export default function HomePage(): JSX.Element {
                   <BaseIcons value='arrow-right-solid-black' />
                 </button>
               </div>
-              {SPONSORED_LIST.map((sponsored, key) => {
+              {sponsoredAds?.data.map((sponsored, key) => {
                 return (
                   <SwiperSlide
                     key={key}
                     className='flex items-center justify-center pt-20'
                   >
                     <div className='flex w-full items-center justify-center'>
-                      <SponsoredCard
+                      <SponsoredAdsCard
                         key={key}
-                        imageUrl={sponsored.imageUrl}
-                        href={sponsored.href}
+                        ad={sponsored}
                       />
                     </div>
                   </SwiperSlide>
