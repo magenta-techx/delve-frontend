@@ -2,9 +2,7 @@
 
 import { useBusinessContext } from "@/contexts/BusinessContext"
 import { ConversationsSection } from "../misc/components/sections/conversations-section"
-import { PerformanceMetrics } from "../misc/components/sections/performance-metrics"
 import { ReviewsSection } from "../misc/components/sections/reviews-section"
-import { StatCard } from "../misc/components/stat-card"
 
 
 export default function DashboardPage(): JSX.Element {
@@ -53,37 +51,7 @@ export default function DashboardPage(): JSX.Element {
           <p className="text-sm text-gray-600 mt-1">Welcome back to {currentBusiness.name}</p>
         </div>
 
-        {/* Stat cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            icon="💬"
-            value={68}
-            label="Conversations"
-            sublabel="Total Message request"
-            metric={{ label: "Unanswered request", value: "12", color: "#6366F1" }}
-          />
-          <StatCard
-            icon="🔥"
-            value={36}
-            label="Feedback"
-            sublabel="Total Client Reviews"
-            metric={{ label: "New reviews", value: "6", color: "#FF6B35" }}
-          />
-          <StatCard
-            icon="🎯"
-            value={147}
-            label="Potential clients"
-            sublabel="Total Business Profile Views"
-            metric={{ label: "New Profile view", value: "29", color: "#FFB84D" }}
-          />
-          <StatCard
-            icon="📌"
-            value={89}
-            label="Saved by Users"
-            sublabel="Total Business Profile Saved"
-            metric={{ label: "New profile save", value: "14", color: "#00B894" }}
-          />
-        </div>
+        
 
 
         {/* Main content grid */}
@@ -97,7 +65,6 @@ export default function DashboardPage(): JSX.Element {
           {/* Right side - Reviews and metrics */}
           <div className="space-y-6">
             <ReviewsSection />
-            <PerformanceMetrics />
           </div>
         </div>
       </div>
