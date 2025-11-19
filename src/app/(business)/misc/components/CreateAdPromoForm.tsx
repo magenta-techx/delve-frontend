@@ -149,7 +149,7 @@ const CreateAdPromoForm = ({
           },
           onError: (err: any) => {
             toast.error('Failed to create checkout session', {
-              description: err,
+              description: err.error,
             });
           },
         }
