@@ -6,6 +6,10 @@ import { BaseIcons } from '@/assets/icons/base/Icons';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
 import type { BusinessDetail } from '@/types/api';
 import { useBusinessDetails } from '@/app/(business)/misc/api';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { Button } from '@/components/ui';
+import { DelveIcon, VerifiedIcon } from '../../misc/icons';
 
 interface BusinessDetailsClientProps {
   business: BusinessDetail;
@@ -16,17 +20,20 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
   const { isSaved, toggleSave } = useSavedBusinessesContext();
   const [_selectedImage, setSelectedImage] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const params = useSearchParams()
+  const params = useSearchParams();
   const ref = params.get('ref');
-  const {} = useBusinessDetails(business.id, ref as string | undefined, '');
+  const { data: businessDetails } = useBusinessDetails(
+    business.id,
+    ref as string | undefined,
+    ''
+  );
 
-  
   const isBusinessSaved = isSaved(business.id);
 
   const galleryImages = [
     business.thumbnail,
     business.logo,
-    ...(business.images || []).map((img) =>
+    ...(business.images || []).map(img =>
       typeof img === 'string' ? img : img.image || img
     ),
   ].filter(Boolean);
@@ -45,107 +52,48 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     { day: 'Sunday', hours: 'Closed', open: false },
   ];
 
+  const navLink = [
+    { name: 'About', href: '#about' },
+    { name: 'Services', href: '#services' },
+    { name: 'Gallery', href: '#gallery' },
+    { name: 'More', href: '#more' },
+  ];
+
+  console.log(businessDetails);
   return (
-    <main className='relative mx-auto max-w-[1540px] px-4 py-8 pt-24 lg:pt-28'>
+    <main className='relative mx-auto max-w-[1540px] py-8 pt-24 lg:pt-28'>
       {/* Back Button */}
-      <button
-        onClick={() => router.back()}
-        className='mb-6 flex items-center gap-2 text-[#475467] transition-colors hover:text-black'
-      >
-        <BaseIcons value='arrows-left-primary' />
-        <span className='text-[16px] font-medium'>Back</span>
-      </button>
 
       {/* Hero Section with Image and Business Info */}
-      <div className='relative mb-8 overflow-hidden rounded-3xl bg-gray-100'>
+      <div
+        className={cn(`relative mb-8 overflow-hidden`)}
+        style={{
+          backgroundImage: `url(${business.thumbnail!})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+        }}
+      >
         {/* Hero Image */}
-        <div className='relative h-[400px] w-full'>
-          {business.thumbnail || business.logo ? (
-            <Image
-              src={business.thumbnail || business.logo || ''}
-              alt={business.name}
-              fill
-              className='object-cover'
-              priority
-            />
-          ) : (
-            <div className='flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-purple-200'>
-              <span className='text-6xl font-bold text-primary/30'>
-                {business.name.charAt(0)}
-              </span>
+        <div className='relative min-h-[50vh] w-full bg-[#00000075] px-5 pb-28 pt-14 md:px-16 xl:px-32 text-white'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-2'>
+              <Image src={business?.logo || '/default-logo.png'} alt={`${business.name} logo`} width={50} height={70} className='rounded-full' />
+              <p>{business.name}</p>
             </div>
-          )}
-
-          {/* Overlay with Business Name and Actions */}
-          <div className='absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent'>
-            <div className='absolute bottom-0 left-0 right-0 p-8'>
-              <div className='flex items-end justify-between'>
-                <div className='flex items-center gap-4'>
-                  {/* Business Logo */}
-                  {business.logo && (
-                    <div className='relative h-20 w-20 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg'>
-                      <Image
-                        src={business.logo}
-                        alt={`${business.name} logo`}
-                        fill
-                        className='object-cover'
-                      />
-                    </div>
-                  )}
-
-                  {/* Business Name and Info */}
-                  <div className='text-white'>
-                    <h1 className='mb-2 text-3xl font-bold'>{business.name}</h1>
-                    <div className='flex items-center gap-4 text-sm'>
-                      {business.category && (
-                        <span className='flex items-center gap-1'>
-                          <BaseIcons value='category-yellow' />
-                          {business.category.name}
-                        </span>
-                      )}
-                      {business.address && (
-                        <span className='flex items-center gap-1'>
-                          <BaseIcons value='location-primary' />
-                          {business.address}
-                        </span>
-                      )}
-                      {business.state && (
-                        <span className='flex items-center gap-1'>
-                          <BaseIcons value='location-primary' />
-                          {business.state}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+            <div className='flex gap-14'>
+              {navLink.map((links, index) => (
+                <div key={index}>
+                  <Link href={links.href}>{links.name}</Link>
                 </div>
-
-                {/* Action Buttons */}
-                <div className='flex items-center gap-3'>
-                  <button
-                    onClick={handleBookmarkClick}
-                    className='flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition hover:bg-white/30'
-                  >
-                    <BaseIcons
-                      value={
-                        isBusinessSaved
-                          ? 'bookmark-white'
-                          : 'bookmark-outline-black'
-                      }
-                    />
-                  </button>
-                  {business.status === 'active' && (
-                    <span className='rounded-full bg-green-500/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm'>
-                      ● Opened
-                    </span>
-                  )}
-                  {business.approved && (
-                    <span className='rounded-full bg-primary/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm'>
-                      ✓ Verified Business
-                    </span>
-                  )}
-                </div>
-              </div>
+              ))}
             </div>
+            <div className=''>
+              <Button className='bg-[#F5F3FF] border border-[#D9D6FE] text-[#551FB9] rounded-2xl py-3'><VerifiedIcon/> Verified By Delve <DelveIcon/></Button>
+            </div>
+          </div>
+          <div className='mt-96'>
+          <h2 className='text-5xl font-bold font-karma max-w-[681px]'>Turn your dreams into unforgettable experiences</h2>
+              <Button className='bg-[#0000006B] border border-[#FCFCFD] !py-5 px-20 mt-10'>Send us a message </Button>
           </div>
         </div>
       </div>
@@ -186,10 +134,8 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                           {service.description}
                         </p>
                       )}
-                    
                     </div>
                     <div className='flex items-center gap-4'>
-                     
                       <button className='rounded-lg bg-primary/10 px-6 py-2 text-sm font-medium text-primary transition hover:bg-primary/20'>
                         Book service
                       </button>
@@ -382,7 +328,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
               Opening hours
             </h3>
             <div className='space-y-3'>
-              {openingHours.map((schedule) => (
+              {openingHours.map(schedule => (
                 <div
                   key={schedule.day}
                   className='flex items-center justify-between text-sm'

@@ -12,7 +12,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
           <LandingPageNavbar />
         </header>
 
-        <main className='container mx-auto'>
+        <main className=' '>
           {children}
         </main>
 
