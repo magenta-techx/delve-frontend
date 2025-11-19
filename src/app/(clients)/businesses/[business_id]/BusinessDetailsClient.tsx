@@ -20,6 +20,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
   const ref = params.get('ref');
   const {} = useBusinessDetails(business.id, ref as string | undefined, '');
 
+  
   const isBusinessSaved = isSaved(business.id);
 
   const galleryImages = [
