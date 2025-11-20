@@ -1,9 +1,12 @@
 'use client';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
+import { useCurrentUser } from '@/app/(clients)/misc/api/user';
+import { useSession } from 'next-auth/react';
+import { useChatSocket } from '@/hooks/chat/useChatSocket';
 import type { BusinessDetail } from '@/types/api';
 import { useBusinessDetails } from '@/app/(business)/misc/api';
 import { cn } from '@/lib/utils';
@@ -27,6 +30,27 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     ref as string | undefined,
     ''
   );
+
+  const { data: currentUserResp } = useCurrentUser();
+  const { data: session } = useSession();
+  const token = session?.user?.accessToken ?? '';
+
+  const { send } = useChatSocket({
+    businessId: String(business.id ?? ''),
+    token: token ?? '',
+    onMessage: (data: unknown) => {
+      console.log('chat socket onMessage', data);
+    },
+    onImages: (data: unknown) => {
+      console.log('chat socket onImages', data);
+    },
+  });
+
+  const isOwner = useMemo(() => {
+    const currentUserId = currentUserResp?.user?.id;
+    const ownerId = business?.owner?.id;
+    return Boolean(ownerId && currentUserId && ownerId === currentUserId);
+  }, [currentUserResp?.user?.id, business?.owner?.id]);
 
   const isBusinessSaved = isSaved(business.id);
 
@@ -60,6 +84,40 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
   ];
 
   console.log(businessDetails);
+
+  const handleStartChat = async () => {
+    // If user not logged in, show auth modal
+    if (!currentUserResp?.user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    try {
+      // Attempt to initiate/start a chat over websocket.
+      // The backend expects JSON messages; send a simple text "init" message
+      // which will create or return the chat associated with this business.
+      const payload = {
+        message_type: 'text',
+        sender_id: currentUserResp?.user?.id,
+        message: 'Hi, I would like to chat about your services.',
+      };
+
+      let result = false;
+      try {
+        if (typeof send === 'function') {
+          // send expects either raw string or object (hook stringifies), so try object first
+          result = send(payload as unknown);
+        }
+      } catch (err) {
+        console.error('Failed to send chat init over socket', err);
+      }
+
+      console.log('startChat socket send result', result);
+      // server responses (chat created / messages) will be logged via onMessage/onImages
+    } catch (err) {
+      console.error('Failed to start/get chat for business', err);
+    }
+  };
   return (
     <main className='relative mx-auto max-w-[1540px] py-8 pt-24 lg:pt-28'>
       {/* Back Button */}
@@ -93,7 +151,15 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           </div>
           <div className='mt-96'>
           <h2 className='text-5xl font-bold font-karma max-w-[681px]'>Turn your dreams into unforgettable experiences</h2>
-              <Button className='bg-[#0000006B] border border-[#FCFCFD] !py-5 px-20 mt-10'>Send us a message </Button>
+              {isOwner ? (
+                <Button className='bg-[#0000006B] border border-[#FCFCFD] !py-5 px-20 mt-10'>
+                  Send us a message
+                </Button>
+              ) : (
+                <Button onClick={handleStartChat} className='bg-[#0000006B] border border-[#FCFCFD] !py-5 px-20 mt-10'>
+                  Chat with business
+                </Button>
+              )}
           </div>
         </div>
       </div>

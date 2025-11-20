@@ -1,70 +1,33 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/components/ui"
 import { Button } from "@/components/ui"
 import { Search, Send, Trash2 } from "lucide-react"
+import Link from "next/link"
+import { useBusinessChats } from "@/hooks/chat/useBusinessChats"
+import { useChatMessages } from "@/hooks/chat/useChatMessages"
+import { useBusinessContext } from "@/contexts/BusinessContext"
 
 export function MessagesPage() {
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(1)
+  const { currentBusiness } = useBusinessContext()
+  const businessId = currentBusiness?.id ?? null
 
-  const conversations = [
-    {
-      id: 1,
-      name: "Ruth",
-      avatar: "👩",
-      lastMessage: "Hi there! Yes, we can absolutely recreate that look for indoor venues. What's the...",
-      date: "11 June",
-      unread: false,
-    },
-    {
-      id: 2,
-      name: "Aura",
-      avatar: "A",
-      lastMessage: "Perfect! I'll share our wedding decor packages with you shortly. Can I send t...",
-      date: "23 June",
-      unread: false,
-    },
-    {
-      id: 3,
-      name: "Kelvin",
-      avatar: "K",
-      lastMessage: "Hi, do you deliver to Lekki Phase 1?",
-      date: "18 June",
-      unread: false,
-    },
-    {
-      id: 4,
-      name: "Roza Luxe",
-      avatar: "R",
-      lastMessage: "Hi! Let me check my calendar... Yes, I'm available that day! Would you like home...",
-      date: "11 June",
-      unread: false,
-    },
-  ]
+  const convQuery = useBusinessChats(businessId)
+  const convLoading = convQuery.isLoading
+  const conversations = convQuery.data?.data ?? []
 
-  const messages = [
-    {
-      id: 1,
-      sender: "other",
-      text: "We'd love to help. Do you have any skin concerns you want to focus on?",
-    },
-    {
-      id: 2,
-      sender: "user",
-      text: "Mainly dullness and hyperpigmentation.",
-    },
-    {
-      id: 3,
-      sender: "other",
-      text: "Can I send you the details?",
-    },
-    {
-      id: 4,
-      sender: "user",
-      text: "Great, we recommend our Bridal Glow Plan. It includes 3 sessions spaced out weekly.",
-    },
-  ]
+  const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!selectedConversation && Array.isArray(conversations) && conversations.length > 0) {
+      const first = conversations[0] as any
+      const id = String(first.id ?? first.chat_id ?? first._id ?? first?.chatId ?? first?.customer?.id ?? '')
+      if (id) setSelectedConversation(id)
+    }
+  }, [conversations, selectedConversation])
+
+  const { data: messages = [], loading: messagesLoading } = useChatMessages(selectedConversation)
 
   return (
     <div className="flex h-[calc(100vh-64px)]">
@@ -74,32 +37,34 @@ export function MessagesPage() {
         <div className="p-4 border-b border-border">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Type to search" className="pl-10" />
+            <Input placeholder="Search chats" className="pl-10" />
           </div>
         </div>
 
         {/* Conversation list */}
         <div className="flex-1 overflow-y-auto">
-          {conversations.map((conv) => (
-            <button
-              key={conv.id}
-              onClick={() => setSelectedConversation(conv.id)}
-              className={`w-full p-4 border-b border-border text-left hover:bg-muted/50 transition-colors ${
-                selectedConversation === conv.id ? "bg-muted" : ""
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-sm font-semibold text-white flex-shrink-0">
-                  {conv.avatar}
+          {convLoading && <div className="p-4">Loading...</div>}
+          {!convLoading && (!conversations || conversations.length === 0) && <div className="p-4">No chats yet</div>}
+          {conversations && conversations.map((conv: any) => {
+            const id = String(conv.id ?? conv.chat_id ?? conv._id ?? conv?.chatId ?? conv?.customer?.id ?? Math.random())
+            const avatar = conv.customer?.profile_image ?? conv.avatar ?? conv.name?.[0] ?? 'U'
+            const name = `${conv.customer?.first_name ?? ''} ${conv.customer?.last_name ?? ''}`.trim() || conv.name || conv.user?.name || 'Chat'
+            const lastMessage = conv.last_message?.content ?? conv.lastMessage ?? conv?.last_message ?? ''
+
+            return (
+              <Link key={id} href={`/business/messages/${id}`} className={`block w-full p-4 border-b border-border text-left hover:bg-muted/50 transition-colors`}>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-sm font-semibold text-white flex-shrink-0">
+                    {avatar}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-sm">{name}</h4>
+                    <p className="text-xs text-muted-foreground truncate">{lastMessage}</p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-sm">{conv.name}</h4>
-                  <p className="text-xs text-muted-foreground truncate">{conv.lastMessage}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{conv.date}</p>
-                </div>
-              </div>
-            </button>
-          ))}
+              </Link>
+            )
+          })}
         </div>
       </div>
 
@@ -108,7 +73,7 @@ export function MessagesPage() {
         {/* Header */}
         <div className="h-16 border-b border-border px-6 flex items-center justify-between">
           <div>
-            <h2 className="font-semibold">Conversation with Aura</h2>
+            <h2 className="font-semibold">{conversations && selectedConversation ? `Conversation` : 'Select a conversation'}</h2>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon">
@@ -122,16 +87,20 @@ export function MessagesPage() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {messages.map((msg) => (
-            <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+          {messagesLoading && <div>Loading messages...</div>}
+          {!messagesLoading && (!messages || messages.length === 0) && (
+            <div className="text-muted-foreground">No messages to show.</div>
+          )}
+          {messages && messages.map((msg: any) => (
+            <div key={String(msg.id ?? msg._id ?? Math.random())} className={`flex ${msg.is_sender || msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
                 className={`max-w-xs px-4 py-2 rounded-lg ${
-                  msg.sender === "user"
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                    : "bg-muted text-foreground"
+                  msg.is_sender || msg.sender === 'user'
+                    ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                    : 'bg-muted text-foreground'
                 }`}
               >
-                <p className="text-sm">{msg.text}</p>
+                <p className="text-sm">{msg.text ?? msg.message ?? msg.body ?? ''}</p>
               </div>
             </div>
           ))}

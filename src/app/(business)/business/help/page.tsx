@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
-import { NavProfileSection } from '../../misc/components';
 // icons inlined as SVGs — no external icon imports needed here
 import { BusinessLandingFAQs } from '@/app/(clients)/misc/components';
+import NavProfileSection from '../../misc/components/layout/NavProfileSection';
 
 const page = () => {
   return (

@@ -26,8 +26,8 @@ export function useChatSocket({
   const shouldReconnect = useRef(true)
 
   // Use the provided production/test socket host; keep scheme matching current page protocol
-  const SOCKET_HOST = "134.209.19.132:8000"
-  const resolvedBase = baseUrl ?? (typeof window !== "undefined" && window.location.protocol === "https:" ? `wss://${SOCKET_HOST}` : `ws://${SOCKET_HOST}`)
+  const SOCKET_HOST = "134.209.19.132:8003"
+  const resolvedBase = `ws://${SOCKET_HOST}`
 
   const buildUrl = useCallback(() => {
     const biz = encodeURIComponent(String(businessId))

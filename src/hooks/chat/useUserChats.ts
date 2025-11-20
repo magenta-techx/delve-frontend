@@ -1,28 +1,40 @@
-import { useEffect, useState } from 'react';
+"use client";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
+import type { ApiEnvelope } from "@/types/api";
 
-export function useUserChats() {
-  const [data, setData] = useState<any[] | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export interface UserChatItem {
+  business: {
+    id: string | number;
+    name: string;
+    logo: string;
+  };
+  is_pinned: boolean;
+  last_message_sent_at: string | null;
+  last_message: {
+    image?: string;
+    content?: string;
+    is_image_message?: boolean;
+    sender?: {
+      id?: number;
+      first_name?: string;
+      last_name?: string;
+      profile_image?: string | null;
+    };
+    is_read?: boolean;
+    sent_at?: string;
+  } | null;
+}
 
-  async function fetchChats() {
-    setLoading(true);
-    setError(null);
-    try {
+
+export function useUserChats(): UseQueryResult<ApiEnvelope<UserChatItem[]>, Error> {
+  return useQuery<ApiEnvelope<UserChatItem[]>, Error>({
+    queryKey: ["user-chats"],
+    queryFn: async () => {
       const res = await fetch(`/api/chat/user`);
-      if (!res.ok) throw new Error('Failed to fetch user chats');
-      const json = await res.json();
-      setData(json.data || json);
-    } catch (err: any) {
-      setError(err?.message || String(err));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    void fetchChats();
-  }, []);
-
-  return { data, loading, error, refresh: fetchChats } as const;
+      const data = (await res.json()) as ApiEnvelope<UserChatItem[]>;
+      if (!res.ok) throw new Error(data?.message || "Failed to fetch user chats");
+      return data;
+    },
+    retry: 2,
+  });
 }
