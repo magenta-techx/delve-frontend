@@ -1,12 +1,13 @@
 import { ApiEnvelope } from '@/types/api';
 import { useQuery } from '@tanstack/react-query';
+import { apiRequest } from '@/utils/apiHandler';
 
 export function useBusinessPerformance({ business_id, filter = 'last_12_months', metric = 'conversations' }: { business_id?: string; filter?: string; metric?: string } = {}) {
   return useQuery({
     queryKey: ['business_performance', business_id, filter, metric],
     queryFn: async () => {
       if (!business_id) throw new Error('Missing business_id');
-      const res = await fetch(`/api/business/${business_id}/performance?filter=${filter}&metric=${metric}`);
+      const res = await apiRequest(`/api/business/${business_id}/performance?filter=${filter}&metric=${metric}`);
       if (!res.ok) throw new Error('Failed to fetch performance data');
       return (await res.json()) as ApiEnvelope<Data>;
     },

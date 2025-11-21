@@ -140,11 +140,22 @@ export interface ChatListItem {
   business?: string; // present on user chat list
 }
 
+
 export interface ChatMessage {
-  sender: string; // "user" | "business"
-  message?: string;
-  timestamp: string;
-  // images messages may have different shape on ws; REST returns normalized list
+  id: number;
+  image: string;
+  content: string;
+  is_image_message: boolean;
+  sender: ChatMessageSender;
+  is_read: boolean;
+  sent_at: string;
+}
+
+interface ChatMessageSender {
+  id: number;
+  first_name: string;
+  last_name: string;
+  profile_image: string;
 }
 
 // Collaboration (hooks pending; add minimal types)

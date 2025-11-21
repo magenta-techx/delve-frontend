@@ -3,7 +3,7 @@ import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } fr
 import type { BusinessId } from "./business";
 import type { ApiEnvelope, ApiMessage, ChatListItem } from "@/types/api";
 
-export function useBusinessChats(businessId: BusinessId): UseQueryResult<ApiEnvelope<ChatListItem[]>, Error> {
+export function useBusinessChats(businessId: BusinessId | null): UseQueryResult<ApiEnvelope<ChatListItem[]>, Error> {
   return useQuery({
     queryKey: ["business-chats", businessId],
     queryFn: async () => {

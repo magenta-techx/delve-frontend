@@ -23,7 +23,7 @@ export function NavbarTop({  }: TopNavProps) {
 
   return (
     <div className="border-b border-border bg-background">
-      <div className="h-16 px-6 flex items-center justify-between">
+      <div className="h-14 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <BusinessSwitcher />
         </div>
@@ -33,7 +33,7 @@ export function NavbarTop({  }: TopNavProps) {
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Menu className="size-6" />
+                <Menu className="size-8" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-80">

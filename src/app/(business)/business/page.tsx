@@ -5,7 +5,6 @@ import { ConversationsSection } from '../misc/components/sections/conversations-
 import { ReviewsSection } from '../misc/components/sections/reviews-section';
 import { useBusinessDetails } from '../misc/api';
 import { LogoLoadingIcon } from '@/assets/icons';
-import Link from 'next/link';
 import { EmptyState, LinkButton } from '@/components/ui';
 import { EmptyListingIcon } from '@/app/(clients)/misc/icons';
 

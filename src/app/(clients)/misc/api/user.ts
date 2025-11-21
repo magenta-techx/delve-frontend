@@ -1,12 +1,13 @@
 "use client";
 import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
 import type { ApiEnvelope, ApiMessage, BillingData, SavedBusinessItem, UserResponse, PlansResponse, SubscriptionPlan, AdvertisementPlan, BusinessPromotionPlan } from "@/types/api";
+import { apiRequest } from '@/utils/apiHandler';
 
 export function useCurrentUser(): UseQueryResult<UserResponse, Error> {
   return useQuery({
     queryKey: ["user", "current"],
     queryFn: async () => {
-      const res = await fetch(`/api/user`);
+      const res = await apiRequest(`/api/user`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch user");
       return data;
@@ -18,7 +19,7 @@ export function useUserByEmail(email: string): UseQueryResult<UserResponse, Erro
   return useQuery({
     queryKey: ["user", email],
     queryFn: async () => {
-      const res = await fetch(`/api/user?email=${encodeURIComponent(email)}`);
+      const res = await apiRequest(`/api/user?email=${encodeURIComponent(email)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch user");
       return data;
@@ -30,7 +31,7 @@ export function useUserByEmail(email: string): UseQueryResult<UserResponse, Erro
 export function useDeactivateAccount(): UseMutationResult<ApiMessage, Error, void> {
   return useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/user/deactivate`, { method: "PATCH" });
+      const res = await apiRequest(`/api/user/deactivate`, { method: "PATCH" });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to deactivate account");
       return data;
@@ -41,7 +42,7 @@ export function useDeactivateAccount(): UseMutationResult<ApiMessage, Error, voi
 export function useDeleteAccount(): UseMutationResult<ApiMessage, Error, void> {
   return useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/user/delete`, { method: "DELETE" });
+      const res = await apiRequest(`/api/user/delete`, { method: "DELETE" });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to delete account");
       return data;
@@ -53,7 +54,7 @@ export function useBilling(): UseQueryResult<ApiEnvelope<BillingData>, Error> {
   return useQuery({
     queryKey: ["user", "billing"],
     queryFn: async () => {
-      const res = await fetch(`/api/user/billing`);
+      const res = await apiRequest(`/api/user/billing`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch billing");
       return data;
@@ -61,22 +62,23 @@ export function useBilling(): UseQueryResult<ApiEnvelope<BillingData>, Error> {
   });
 }
 
-export function useSavedBusinesses(): UseQueryResult<ApiEnvelope<SavedBusinessItem[]>, Error> {
+export function useSavedBusinesses(enabled = true): UseQueryResult<ApiEnvelope<SavedBusinessItem[]>, Error> {
   return useQuery({
     queryKey: ["user", "saved-business"],
     queryFn: async () => {
-      const res = await fetch(`/api/user/saved-business`);
+      const res = await apiRequest(`/api/user/saved-business`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch saved businesses");
       return data;
     },
+    enabled: Boolean(enabled),
   });
 }
 
 export function useSaveBusiness(): UseMutationResult<ApiMessage, Error, { business_id: number | string }> {
   return useMutation({
     mutationFn: async ({ business_id }) => {
-      const res = await fetch(`/api/user/saved-business`, {
+      const res = await apiRequest(`/api/user/saved-business`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ business_id }),
@@ -91,7 +93,7 @@ export function useSaveBusiness(): UseMutationResult<ApiMessage, Error, { busine
 export function useUnsaveBusiness(): UseMutationResult<ApiMessage, Error, { business_id: number | string }> {
   return useMutation({
     mutationFn: async ({ business_id }) => {
-      const res = await fetch(`/api/user/saved-business/remove`, {
+      const res = await apiRequest(`/api/user/saved-business/remove`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ business_id }),
@@ -107,7 +109,7 @@ export function useAvailablePlans(planType: 'subscription' | 'advertisment' | 'b
   return useQuery({
     queryKey: ["plans", planType],
     queryFn: async () => {
-      const res = await fetch(`/api/plans?plan_type=${encodeURIComponent(planType)}`);
+      const res = await apiRequest(`/api/plans?plan_type=${encodeURIComponent(planType)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || data?.error || "Failed to fetch plans");
       return data;
@@ -120,7 +122,7 @@ export function useSubscriptionPlans(): UseQueryResult<ApiEnvelope<SubscriptionP
   return useQuery({
     queryKey: ["plans", "subscription"],
     queryFn: async () => {
-      const res = await fetch(`/api/plans?plan_type=subscription`);
+      const res = await apiRequest(`/api/plans?plan_type=subscription`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || data?.error || "Failed to fetch subscription plans");
       return { status: data.status, message: data.message, data: data.data };
@@ -132,7 +134,7 @@ export function useAdvertisementPlans(): UseQueryResult<ApiEnvelope<Advertisemen
   return useQuery({
     queryKey: ["plans", "advertisment"],
     queryFn: async () => {
-      const res = await fetch(`/api/plans?plan_type=advertisment`);
+      const res = await apiRequest(`/api/plans?plan_type=advertisment`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || data?.error || "Failed to fetch advertisement plans");
       return { status: data.status, message: data.message, data: data.data };
@@ -144,7 +146,7 @@ export function useBusinessPromotionPlans(): UseQueryResult<ApiEnvelope<Business
   return useQuery({
     queryKey: ["plans", "business promotion"],
     queryFn: async () => {
-      const res = await fetch(`/api/plans?plan_type=${encodeURIComponent('business promotion')}`);
+      const res = await apiRequest(`/api/plans?plan_type=${encodeURIComponent('business promotion')}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || data?.error || "Failed to fetch business promotion plans");
       return { status: data.status, message: data.message, data: data.data };
@@ -155,7 +157,7 @@ export function useBusinessPromotionPlans(): UseQueryResult<ApiEnvelope<Business
 export function useCreateSubscriptionCheckout(): UseMutationResult<ApiMessage & { checkout_url?: string }, Error, { plan_id: string }> {
   return useMutation({
     mutationFn: async ({ plan_id }) => {
-      const res = await fetch(`/api/payment/subscription/checkout?plan_id=${encodeURIComponent(plan_id)}`, {
+      const res = await apiRequest(`/api/payment/subscription/checkout?plan_id=${encodeURIComponent(plan_id)}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -174,7 +176,7 @@ export function useUpdateUser(): UseMutationResult<ApiMessage, Error, Partial<{
 }>> {
   return useMutation({
     mutationFn: async (payload) => {
-      const res = await fetch(`/api/user/update`, {
+      const res = await apiRequest(`/api/user/update`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

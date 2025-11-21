@@ -4,7 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 // GET /api/chat/[chat_id]/messages
 export async function GET(
   req: NextRequest,
-  { params }: { params: { chat_id: string } }
+  contextPromise: Promise<{ params: { chat_id: string } }>
 ): Promise<NextResponse> {
+  const { params } = await contextPromise;
   return forward(req, 'GET', `/chat/${params.chat_id}/messages/`, { auth: true });
 }

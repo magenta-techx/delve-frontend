@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useSavedBusinesses } from '@/app/(clients)/misc/api/user';
+import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
 import type { BusinessSummary } from '@/types/api';
 import { EmptyState } from '@/components/ui';
@@ -13,7 +14,8 @@ import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategorie
 
 export default function Page() {
   const router = useRouter();
-  const { data: savedBusinessesData, isLoading } = useSavedBusinesses();
+  const { data: session } = useSession();
+  const { data: savedBusinessesData, isLoading } = useSavedBusinesses(Boolean(session?.user?.accessToken || session?.user?.email));
   const [searchText, setSearchText] = useState('');
   
   // Group saved businesses by category

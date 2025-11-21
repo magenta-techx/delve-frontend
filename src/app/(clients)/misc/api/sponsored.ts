@@ -13,8 +13,10 @@ export interface SponsoredAds {
   days_left: number;
 }
 
+import { apiRequest } from '@/utils/apiHandler';
+
 const fetchSponsoredAds = async () => {
-  const res = await fetch('/api/sponsored');
+  const res = await apiRequest('/api/sponsored');
   if (!res.ok) throw new Error('Failed to fetch sponsored ads');
   return res.json() as Promise<sponsoredAdsResponse>;
 };

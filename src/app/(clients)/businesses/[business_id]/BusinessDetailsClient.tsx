@@ -52,8 +52,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     return Boolean(ownerId && currentUserId && ownerId === currentUserId);
   }, [currentUserResp?.user?.id, business?.owner?.id]);
 
-  const isBusinessSaved = isSaved(business.id);
-
+  
   const galleryImages = [
     business.thumbnail,
     business.logo,
@@ -61,7 +60,8 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
       typeof img === 'string' ? img : img.image || img
     ),
   ].filter(Boolean);
-
+  
+  const isBusinessSaved = isSaved(business.id);
   const handleBookmarkClick = async () => {
     await toggleSave(business.id);
   };

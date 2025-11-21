@@ -1,12 +1,13 @@
 "use client";
 import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
 import type { ApiEnvelope, ApiMessage, PremiumPlan } from "@/types/api";
+import { apiRequest } from '@/utils/apiHandler';
 
 export function usePlans(): UseQueryResult<ApiEnvelope<PremiumPlan[]>, Error> {
   return useQuery({
     queryKey: ["plans"],
     queryFn: async () => {
-      const res = await fetch(`/api/payment/plans`);
+      const res = await apiRequest(`/api/payment/plans`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch premium plans");
       return data;
@@ -18,7 +19,7 @@ export function usePlans(): UseQueryResult<ApiEnvelope<PremiumPlan[]>, Error> {
 export function useVerifyPayment(): UseMutationResult<ApiMessage, Error, { reference_id: string }> {
   return useMutation({
     mutationFn: async ({ reference_id }) => {
-      const res = await fetch(`/api/payment/subscription/verify?reference_id=${encodeURIComponent(reference_id)}`);
+      const res = await apiRequest(`/api/payment/subscription/verify?reference_id=${encodeURIComponent(reference_id)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Verification failed");
       return data;
@@ -35,7 +36,7 @@ export function useVerifyPaymentWithPolling(options?: { intervalMs?: number; max
       // eslint-disable-next-line no-constant-condition
       while (true) {
         attempt += 1;
-        const res = await fetch(`/api/payment/subscription/verify?reference_id=${encodeURIComponent(reference_id)}`);
+        const res = await apiRequest(`/api/payment/subscription/verify?reference_id=${encodeURIComponent(reference_id)}`);
         const data = await res.json().catch(() => ({}));
         if (res.ok) {
           // Expect ApiMessage shape
@@ -60,7 +61,7 @@ export function useVerifyPaymentWithPolling(options?: { intervalMs?: number; max
 export function useCancelSubscription(): UseMutationResult<ApiMessage, Error, void> {
   return useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/payment/subscription/cancel`, { method: "POST" });
+      const res = await apiRequest(`/api/payment/subscription/cancel`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to cancel subscription");
       return data;
@@ -71,7 +72,7 @@ export function useCancelSubscription(): UseMutationResult<ApiMessage, Error, vo
 export function useRetrySubscription(): UseMutationResult<ApiMessage, Error, void> {
   return useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/payment/subscription/retry`, { method: "POST" });
+      const res = await apiRequest(`/api/payment/subscription/retry`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to retry subscription");
       return data;
@@ -82,7 +83,7 @@ export function useRetrySubscription(): UseMutationResult<ApiMessage, Error, voi
 export function useChangeCard(): UseMutationResult<{ card_update_link: string; message: string }, Error, void> {
   return useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/payment/subscription/change-card`, {
+      const res = await apiRequest(`/api/payment/subscription/change-card`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });

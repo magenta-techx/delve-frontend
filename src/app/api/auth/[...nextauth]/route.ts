@@ -45,6 +45,7 @@ declare module 'next-auth' {
       is_active: boolean;
       current_plan: string;
       is_premium_plan_active: boolean;
+      error: string;
     } & DefaultSession['user'];
   }
 }
@@ -67,12 +68,19 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
     return {
       ...token,
       accessToken: refreshedTokens?.data?.access,
-      accessTokenExpires: Date.now() + 60 * 60 * 24000, // expires in 24 hours
+      accessTokenExpires: Date.now() + 55 * 60 * 1000, // expires in 55 minutes
       refreshToken: refreshedTokens?.data?.refresh ?? token.refreshToken, // fall back to old one
+      error: '', // clear error on successful refresh
     };
   } catch (error) {
     console.log('Refresh token error:', error);
-    return { ...token, error: 'RefreshAccessTokenError' };
+    // Mark token as invalid so client can sign out
+    return {
+      ...token,
+      accessToken: '',
+      accessTokenExpires: 0,
+      error: 'RefreshAccessTokenError',
+    };
   }
 }
 
@@ -156,7 +164,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
-        token.accessTokenExpires = Date.now() + 60 * 60 * 1000;
+        token.accessTokenExpires = Date.now() + 55 * 60 * 1000; // expires in 55 minutes
         token.is_brand_owner = user.is_brand_owner;
         token.number_of_owned_brands = user.number_of_owned_brands;
         token.is_active = user.is_active;
@@ -170,11 +178,13 @@ export const authOptions: NextAuthOptions = {
       if (
         token.accessTokenExpires &&
         Date.now() < token.accessTokenExpires &&
-        token.accessToken
+        token.accessToken &&
+        !token.error
       ) {
         return token;
       }
 
+      // If token is expired or error, try to refresh
       return refreshAccessToken(token);
     },
     async session({
@@ -200,7 +210,13 @@ export const authOptions: NextAuthOptions = {
           // Expose tokens to client when needed (e.g., fetch to our API routes)
           accessToken: token.accessToken,
           refreshToken: token.refreshToken,
+          error: token.error ?? '',
         };
+      }
+      // If refresh failed, force sign out on client
+      if (token?.error === 'RefreshAccessTokenError') {
+        // Optionally, you can log or handle this event here
+        // The client should check session.user.error and sign out if present
       }
       return session;
     },

@@ -1,6 +1,7 @@
 "use client";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import type { ApiEnvelope, PaginatedResponse, BusinessSummary, BusinessDetail } from "@/types/api";
+import { apiRequest } from '@/utils/apiHandler';
 
 export interface CampaignAnalyticsResponse {
   total_spending: number;
@@ -27,7 +28,7 @@ export function useBusinessCampaignAnalytics(params: { businessId?: string | num
   return useQuery<ApiEnvelope<CampaignAnalyticsResponse>, Error>({
     queryKey: ['business-campaign-analytics', params.businessId, params.requested_metric, params.filter_method],
     queryFn: async () => {
-      const res = await fetch(`/api/business/${params.businessId}/analytics/campaigns?${qs.toString()}`);
+      const res = await apiRequest(`/api/business/${params.businessId}/analytics/campaigns?${qs.toString()}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || data?.error || 'Failed to fetch campaign analytics');
       return data;
@@ -49,7 +50,7 @@ export function useApprovedBusinesses(): UseQueryResult<ApiEnvelope<BusinessSumm
   return useQuery({
     queryKey: ["approved-businesses"],
     queryFn: async () => {
-      const res = await fetch(`/api/business/approved`);
+      const res = await apiRequest(`/api/business/approved`, {}, undefined, { skipAuthRedirect: true });
       const json: PaginatedResponse<BusinessSummary[]> = await res.json();
       if (!res.ok) throw new Error(json?.results?.message || "Failed to fetch businesses");
       return json.results;
@@ -68,7 +69,7 @@ export function useSearchBusinesses(params?: { q?: string; category?: string; st
   return useQuery({
     queryKey: ["business-search", params],
     queryFn: async () => {
-      const res = await fetch(`/api/business/search?${qs.toString()}`);
+      const res = await apiRequest(`/api/business/search?${qs.toString()}`, {}, undefined, { skipAuthRedirect: true });
       const json: PaginatedResponse<BusinessSummary[]> = await res.json();
       if (!res.ok) throw new Error(json?.results?.message || "Search failed");
       return json.results;
@@ -81,7 +82,7 @@ export function useTrendingBusiness(): UseQueryResult<ApiEnvelope<BusinessDetail
   return useQuery({
     queryKey: ["trending-business"],
     queryFn: async () => {
-      const res = await fetch(`/api/business/trending`);
+      const res = await apiRequest(`/api/business/trending`, {}, undefined, { skipAuthRedirect: true });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch trending business");
       return data;
@@ -96,7 +97,7 @@ export function useBusinessPublic(businessId?: number | string, page?: string): 
   return useQuery({
     queryKey: ["business-public", businessId, page],
     queryFn: async () => {
-      const res = await fetch(`/api/business/${businessId}?${qs.toString()}`);
+      const res = await apiRequest(`/api/business/${businessId}?${qs.toString()}`, {}, undefined, { skipAuthRedirect: true });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch business");
       return data;

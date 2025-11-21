@@ -34,11 +34,27 @@ export async function forward(
     const headers: Record<string, string> = {};
     let body: BodyInit | undefined;
 
-    if (opts.auth) {
+    // Prefer any incoming Authorization header (client-attached bearer token)
+    const incomingAuth = req.headers.get('authorization');
+    if (incomingAuth) {
+      headers['Authorization'] = incomingAuth;
+    }
+
+    // Forward cookie header from the incoming request (so upstream can read session cookies if needed)
+    const incomingCookie = req.headers.get('cookie');
+    if (incomingCookie) {
+      headers['cookie'] = incomingCookie;
+    }
+
+    if (opts.auth && !headers['Authorization']) {
+      // Use NextAuth's getToken which will run jwt callback and refresh if needed.
       const token = await getToken({ req });
       if (!token?.accessToken) {
+        console.log('forward: no token from getToken; incomingCookie present?', !!incomingCookie);
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
+
+      // Rely on NextAuth to refresh tokens via its jwt callback.
       headers['Authorization'] = `Bearer ${token.accessToken}`;
     }
 
@@ -115,8 +131,8 @@ export async function forward(
       return new NextResponse(null, { status: 204 });
     }
 
-    console.log('Forwarded Success Response:', data);
-    console.log('url', url);
+    // console.log('Forwarded Success Response:', data);
+    // console.log('url', url);
 
     return NextResponse.json(data, { status: res.status });
   } catch (err) {

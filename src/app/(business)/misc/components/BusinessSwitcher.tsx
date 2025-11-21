@@ -31,10 +31,10 @@ export const BusinessSwitcher = () => {
     <div className='relative'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] p-3 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3'
+        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] px-3 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3'
       >
         {/* Business Logo */}
-        <div className='md:-10 relative size-7 flex-shrink-0 overflow-hidden rounded-full bg-white'>
+        <div className='size-7 md:size-8 relative flex-shrink-0 overflow-hidden rounded-full bg-white'>
           {currentBusiness.logo ? (
             <Image
               src={currentBusiness.logo}
@@ -129,10 +129,10 @@ export const BusinessSwitcher = () => {
 
                   {/* Business Info */}
                   <div className='flex-1 overflow-hidden'>
-                    <p className='truncate text-sm font-medium'>
+                    <p className='truncate text-[0.8125rem] md:text-sm font-medium'>
                       {business.name}
                     </p>
-                    <p className='truncate text-xs text-gray-500'>
+                    <p className='truncate text-[0.625rem] md:text-xs text-gray-500'>
                       {business.category?.name || 'Uncategorized'}
                     </p>
                   </div>

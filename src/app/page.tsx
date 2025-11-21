@@ -163,24 +163,7 @@ export default function HomePage(): JSX.Element {
     { name: 'Enugu', imageUrl: '/landingpage/feature-listing-2.jpg' },
   ];
 
-  const SPONSORED_LIST = [
-    {
-      imageUrl: '/landingpage/sponsored-2.jpg',
-      href: '/',
-    },
-    {
-      imageUrl: '/landingpage/sponsored-1.jpg',
-      href: '/',
-    },
-    {
-      imageUrl: '/landingpage/sponsored-2.jpg',
-      href: '/',
-    },
-    {
-      imageUrl: '/landingpage/sponsored-1.jpg',
-      href: '/',
-    },
-  ];
+
 
   const STATS = [
     {

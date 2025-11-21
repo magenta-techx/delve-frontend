@@ -165,7 +165,7 @@ export default function PromotionsPage() {
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(p)}
-                  className={`rounded-xl border px-3 py-2 font-inter text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm ${
+                  className={`rounded-xl border p-2 font-inter text-[0.625rem] md:text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm ${
                     isActive
                       ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
                       : 'border-[#D9D6FE] text-[#697586]'

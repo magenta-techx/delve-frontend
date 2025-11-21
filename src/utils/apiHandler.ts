@@ -39,23 +39,45 @@ export function handle401Redirect(): void {
   toast.error('Session Expired', {
     description: 'Your session has expired. Please log in again.',
   });
-  
+  // Debounce repeated redirects: if we've redirected within the last 5s, do nothing.
+  const last = Number(sessionStorage.getItem('lastAuthRedirect') ?? '0');
+  const now = Date.now();
+  if (now - last < 5000) return;
+  sessionStorage.setItem('lastAuthRedirect', String(now));
+
   setTimeout(() => {
     const currentPath = window.location.pathname + window.location.search;
     if (currentPath !== '/signin') {
       sessionStorage.setItem('redirectAfterLogin', currentPath);
     }
-    
+
     window.location.href = '/signin';
   }, 1500);
 }
 
 export async function apiRequest(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  token?: string, // optional bearer token to attach
+  requestOpts?: { skipAuthRedirect?: boolean } // allow skipping automatic 401 redirect
 ): Promise<Response> {
-  const response = await fetch(url, options);
-  
+  // send cookies by default so app routes can read NextAuth session cookie
+  const mergedOptions: RequestInit = {
+    credentials: 'include',
+    ...options,
+    headers: {
+      ...(options.headers ?? {}),
+    },
+  };
+
+  const headers = new Headers(mergedOptions.headers as HeadersInit);
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+  mergedOptions.headers = headers;
+
+  const response = await fetch(url, mergedOptions);
+
   if (!response.ok) {
     let data: unknown;
     try {
@@ -66,13 +88,16 @@ export async function apiRequest(
     } catch {
       // Ignore JSON parsing errors
     }
-    
+
     if (is401Error(response, data)) {
-      handle401Redirect();
-      throw new Error('Unauthorized - redirecting to login');
+      if (!requestOpts?.skipAuthRedirect) {
+        handle401Redirect();
+        throw new Error('Unauthorized - redirecting to login');
+      }
+      // If skipping redirect, just return the response so callers can handle it
     }
   }
-  
+
   return response;
 }
 

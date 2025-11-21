@@ -20,6 +20,7 @@ import '@/styles/globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
 import { SavedBusinessesProvider } from '@/contexts/SavedBusinessesContext';
+import { UserProvider } from '@/contexts/UserContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -87,7 +88,7 @@ export default async function RootLayout({
         <script
           async
           defer
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env['GOOGLE_API_KEY'] || ""}`}
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env['GOOGLE_API_KEY'] || ''}`}
         ></script>
       </head>
       <body
@@ -99,11 +100,12 @@ export default async function RootLayout({
       >
         <SessionProviderWrapper session={session}>
           <QueryProvider>
-            <SavedBusinessesProvider>
-
-              {children}
-              <Toaster />
-            </SavedBusinessesProvider>
+            <UserProvider>
+              <SavedBusinessesProvider>
+                {children}
+                <Toaster />
+              </SavedBusinessesProvider>
+            </UserProvider>
           </QueryProvider>
         </SessionProviderWrapper>
       </body>

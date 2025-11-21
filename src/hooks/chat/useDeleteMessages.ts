@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { apiRequest } from '@/utils/apiHandler';
 
 export function useDeleteMessages() {
   const [loading, setLoading] = useState(false);
@@ -8,7 +9,7 @@ export function useDeleteMessages() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/chat/delete-messages/${chatId}`, {
+      const res = await apiRequest(`/api/chat/delete-messages/${chatId}`, {
         method: 'DELETE',
       });
       if (!res.ok) {

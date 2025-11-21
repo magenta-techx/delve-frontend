@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { apiRequest } from '@/utils/apiHandler';
 
 export function useAddImage() {
   const [loading, setLoading] = useState(false);
@@ -8,7 +9,7 @@ export function useAddImage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/chat/add-image`, {
+      const res = await apiRequest(`/api/chat/add-image`, {
         method: 'POST',
         body: formData,
       });

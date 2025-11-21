@@ -1,6 +1,7 @@
 "use client";
 import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
 import type { ApiEnvelope, ApiMessage, NotificationItem } from "@/types/api";
+import { apiRequest } from '@/utils/apiHandler';
 
 export function useNotifications(params?: { notification_for?: "user" | "business"; business_id?: number | string }): UseQueryResult<ApiEnvelope<NotificationItem[]>, Error> {
   const qs = new URLSearchParams();
@@ -9,7 +10,7 @@ export function useNotifications(params?: { notification_for?: "user" | "busines
   return useQuery({
     queryKey: ["notifications", params],
     queryFn: async () => {
-      const res = await fetch(`/api/notifications?${qs.toString()}`);
+      const res = await apiRequest(`/api/notifications?${qs.toString()}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to fetch notifications");
       return data;
@@ -21,7 +22,7 @@ export function useNotifications(params?: { notification_for?: "user" | "busines
 export function useMarkAllNotifications(): UseMutationResult<ApiMessage, Error, { business_id?: number | string } | void> {
   return useMutation({
     mutationFn: async (body) => {
-      const res = await fetch(`/api/notifications/mark-all`, {
+      const res = await apiRequest(`/api/notifications/mark-all`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         ...(body && { body: JSON.stringify(body) }),
@@ -36,7 +37,7 @@ export function useMarkAllNotifications(): UseMutationResult<ApiMessage, Error, 
 export function useMarkNotificationSeen(): UseMutationResult<ApiMessage, Error, { notification_id: number | string }> {
   return useMutation({
     mutationFn: async ({ notification_id }) => {
-      const res = await fetch(`/api/notifications/${notification_id}/seen`, { method: "PATCH" });
+      const res = await apiRequest(`/api/notifications/${notification_id}/seen`, { method: "PATCH" });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to mark notification seen");
       return data;

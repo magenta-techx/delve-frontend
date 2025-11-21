@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSavedBusinesses, useSaveBusiness, useUnsaveBusiness } from '@/app/(clients)/misc/api/user';
+import { useSession } from 'next-auth/react';
 import type { SavedBusinessItem } from '@/types/api';
 
 interface SavedBusinessesContextType {
@@ -18,8 +19,14 @@ const SavedBusinessesContext = createContext<SavedBusinessesContextType | null>(
 
 export function SavedBusinessesProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
-  const { data: savedBusinessesData, isLoading } = useSavedBusinesses();
-  const saveMutation = useSaveBusiness();
+  const { data: session, status } = useSession();
+
+  // Only fetch when session is authenticated and we have a non-empty access token.
+  const hasValidAccessToken = Boolean(session?.user?.accessToken && String(session.user.accessToken).length > 0);
+  const shouldFetch = status === 'authenticated' && hasValidAccessToken;
+    // Do not log tokens or session contents in production; keep quiet here.
+  const { data: savedBusinessesData, isLoading } = useSavedBusinesses(shouldFetch);
+  const saveMutation = useSaveBusiness(); 
   const unsaveMutation = useUnsaveBusiness();
 
   const savedBusinesses = useMemo(() => savedBusinessesData?.data ?? [], [savedBusinessesData]);

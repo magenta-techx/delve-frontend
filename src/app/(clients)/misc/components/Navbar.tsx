@@ -34,7 +34,6 @@ const LandingPageNavbar = () => {
 
   const VISITORS_LINKS = [
     { name: 'Home', href: '/', hasBlackBg: true },
-    { name: 'Listings', href: '/businesses/explore', hasBlackBg: true },
     { name: 'Cities', href: '/businesses/explore', hasBlackBg: true },
     { name: 'Explore', href: '/businesses/explore', hasBlackBg: true },
     { name: 'Blog', href: '/blog', hasBlackBg: false },
@@ -92,7 +91,7 @@ const LandingPageNavbar = () => {
   return (
     <nav
       className={cn(
-        'relative z-[20] flex h-20 lg:h-24 w-full items-center justify-between p-4 md:backdrop-blur-lg md:px-16 lg:px-24',
+        'relative z-[20] flex h-20 lg:h-20 w-full items-center justify-between p-4 md:backdrop-blur-lg md:px-16 lg:px-24',
         (isBusiness || isMobile) ? 'bg-white' : pageHasBlackBg ? 'bg-[#0D121C2E]' : 'bg-white'
       )}
     >
@@ -237,7 +236,7 @@ const LandingPageNavbar = () => {
                     <LinkButton
                       size='md'
                       variant='ghost'
-                      href='/signup'
+                      href='/signin'
                       className={cn('mr-2', pageHasBlackBg && 'text-white')}
                     >
                       Log in / Sign up

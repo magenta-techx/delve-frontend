@@ -10,3 +10,4 @@ export { default as BookmarkIcon } from './Bookmark';
 export { default as EmptySavedBusinessesIcon } from './EmptySavedBusinesses';
 export { default as VerifiedIcon } from './VerifiedIcon';
 export { default as DelveIcon } from './DelveIcon';
+export { default as EmptyChatIcon } from './EmptyChat';

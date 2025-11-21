@@ -385,7 +385,7 @@ export default function ProfileSettings() {
               <Button
                 size='sm'
                 variant='outline'
-                disabled
+                disabled={!!currentBusiness.category?.id}
                 onClick={() =>
                   handleEdit('category', currentBusiness.category?.id || 0)
                 }
