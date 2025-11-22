@@ -64,8 +64,8 @@ const SignUpForm = (): JSX.Element => {
               placeholder='Enter first name'
               label='First name'
               containerClassName='w-full'
-              hasError={Boolean(methods.formState.errors.first_name)}
-              errorMessage={
+              haserror={Boolean(methods.formState.errors.first_name)}
+              errormessage={
                 methods.formState.errors.first_name?.message as
                   | string
                   | undefined
@@ -79,8 +79,8 @@ const SignUpForm = (): JSX.Element => {
               placeholder='Enter last name'
               label='Last name'
               containerClassName='w-full'
-              hasError={Boolean(methods.formState.errors.last_name)}
-              errorMessage={
+              haserror={Boolean(methods.formState.errors.last_name)}
+              errormessage={
                 methods.formState.errors.last_name?.message as
                   | string
                   | undefined
@@ -94,8 +94,8 @@ const SignUpForm = (): JSX.Element => {
             placeholder='Enter Email'
             label='Email address'
             rightIcon={<CancleIcon />}
-            hasError={Boolean(methods.formState.errors.email)}
-            errorMessage={
+            haserror={Boolean(methods.formState.errors.email)}
+            errormessage={
               methods.formState.errors.email?.message as string | undefined
             }
             {...methods.register('email')}
@@ -106,8 +106,8 @@ const SignUpForm = (): JSX.Element => {
             type='password'
             placeholder='Enter password'
             label='Enter password'
-            hasError={Boolean(methods.formState.errors.password)}
-            errorMessage={
+            haserror={Boolean(methods.formState.errors.password)}
+            errormessage={
               methods.formState.errors.password?.message as string | undefined
             }
             {...methods.register('password')}
@@ -117,8 +117,8 @@ const SignUpForm = (): JSX.Element => {
             type='password'
             placeholder='Confirm password'
             label='Confirm password'
-            hasError={Boolean(methods.formState.errors.confirm_password)}
-            errorMessage={
+            haserror={Boolean(methods.formState.errors.confirm_password)}
+            errormessage={
               methods.formState.errors.confirm_password?.message as
                 | string
                 | undefined

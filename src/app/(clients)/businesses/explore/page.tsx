@@ -8,12 +8,13 @@ import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
 // import Image from 'next/image';
 import Link from 'next/link';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui';
 import UpComingEvents from '@/components/UpComingEvents';
 import Image from 'next/image';
 import { useApprovedBusinesses } from '@/app/(clients)/misc/api';
@@ -42,12 +43,14 @@ export default function HomePage(): JSX.Element {
           <div className='absolute bottom-0 flex h-[88%] w-[100%] rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black via-black/100 to-transparent sm:hidden'></div>
         </div>
         {/* Desktop Hero section  */}
-        <div className='absolute top-[24rem] flex w-full flex-col items-center px-4 sm:top-[20.8rem] sm:px-8 lg:px-20'>
+        <div className='absolute top-[10rem] flex w-full flex-col items-center px-4 sm:top-[20.8rem] sm:px-8 md:top-[24rem] lg:px-20'>
           <div className='flex w-full max-w-[1620px] flex-col'>
             <div className='flex w-full flex-col sm:max-w-[1000px]'></div>
             <div className='mb-9 flex items-center gap-2 text-white'>
               <ExploreBaseIcons value='listing-white-and-gray-solid' />
-              <p className='text-xs text-[#697586] sm:text-base'>LISTINGS</p>
+              <p className='text-xs text-white sm:text-base md:text-[#697586]'>
+                LISTINGS
+              </p>
             </div>
             <h1 className='mb-6 max-w-3xl text-balance pr-8 font-karma text-[clamp(2rem,4vw,2.8rem)] font-bold leading-tight text-white'>
               Discover services tailored to your needs, location, and style.
@@ -60,7 +63,7 @@ export default function HomePage(): JSX.Element {
           </div>
         </div>
 
-        <section className='absolute bottom-16 mx-auto flex max-w-max justify-center px-5 sm:-bottom-9 sm:px-0 md:left-1/2 md:-translate-x-1/2'>
+        <section className='absolute bottom-16 left-1/2 mx-auto flex w-[90vw] max-w-4xl -translate-x-1/2 justify-center px-5 sm:-bottom-9 sm:px-0 lg:w-full'>
           <BusinessSearch />
         </section>
       </div>
@@ -119,88 +122,46 @@ export default function HomePage(): JSX.Element {
       </div>
 
       {/* mobile  */}
-      <div className='mt:px-0 relative flex w-full flex-col items-center justify-center px-4 sm:hidden'>
-        <div className='flex w-full justify-between px-4 sm:px-0'>
-          <div className='flex items-center gap-2'>
+      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden px-4 sm:hidden'>
+        <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
+          <h1 className='flex items-center gap-2 font-inter text-[16px] font-bold sm:text-2xl'>
             <BaseIcons value='stars-primary' />
-            <h1 className='font-inter text-[16px] font-bold sm:text-2xl'>
-              Listings around you
-            </h1>
-          </div>
+            Listings around you
+          </h1>
         </div>
-
-        <div className='-mt-4 mb-20 flex w-[393px] items-center sm:-mt-0 sm:w-[1560px]'>
-          <Swiper
-            centerInsufficientSlides={false}
-            navigation={{
-              nextEl: '.listing-custom-next',
-              prevEl: '.listing-custom-prev',
-            }}
-            modules={[Navigation, Pagination, Scrollbar, A11y]}
-            // modules={[Navigation, Pagination, Scrollbar, A11y]}
-            slidesPerView={4}
-            spaceBetween={7}
-            scrollbar={false}
-            onSwiper={swiper => console.log(swiper)}
-            onSlideChange={() => console.log('slide change')}
-            className='relative h-[370px]'
-            breakpoints={{
-              300: {
-                slidesPerView: 1,
-                spaceBetween: -100,
-              },
-              1024: {
-                slidesPerView: 4,
-                spaceBetween: 7,
-              },
-            }}
+        <div className='mb-20 flex w-full items-center'>
+          <Carousel
+            opts={{ align: 'start', loop: false }}
+            className='w-full max-w-full px-2'
           >
-            <div className='absolute bottom-0 left-5 z-10 -translate-y-1/2'>
-              <button className='listing-custom-prev rotate-180 transition-transform'>
-                <BaseIcons value='arrow-right-solid-black' />
-              </button>
-            </div>
-            <div className='absolute bottom-0 right-5 z-10 -translate-y-1/2'>
-              <button className='listing-custom-next'>
-                <BaseIcons value='arrow-right-solid-black' />
-              </button>
-            </div>
-            {loadingApproved
-              ? Array.from({ length: 4 }).map((_, key) => (
-                  <SwiperSlide
-                    key={key}
-                    className='flex items-center justify-center px-10 pt-10'
-                  >
-                    <div className='-ml-5 flex w-full items-center sm:-ml-0 sm:justify-center'>
-                      <ListingCardSkeleton
-                        classStyle={
-                          'sm:h-[427px] sm:w-[340px] w-[252px] h-[237px]'
-                        }
-                      />
-                    </div>
-                  </SwiperSlide>
-                ))
-              : approved.map((business, key) => (
-                  <SwiperSlide
-                    key={business.id ?? key}
-                    className='flex items-center justify-center px-10 pt-10'
-                  >
-                    <div className='-ml-5 flex w-full items-center sm:-ml-0 sm:justify-center'>
-                      <FeaturedListingCard business={business} group={true} />
-                    </div>
-                  </SwiperSlide>
-                ))}
-          </Swiper>
-          <div className='absolute bottom-24 z-30 flex w-full items-center justify-center'>
-            <button className='rounded-lg border-[1px] border-primary px-5 py-2 text-[12px]'>
-              Browse all
-            </button>
-          </div>
+            <CarouselContent className='-ml-2 gap-4 p-4'>
+              {loadingApproved
+                ? Array.from({ length: 4 }).map((_, key) => (
+                    <CarouselItem
+                      key={key}
+                      className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    >
+                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                    </CarouselItem>
+                  ))
+                : approved.map((business, key) => (
+                    <CarouselItem
+                      key={business.id ?? key}
+                      className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    >
+                      <FeaturedListingCard business={business} />
+                    </CarouselItem>
+                  ))}
+            </CarouselContent>
+            <CarouselPrevious className='absolute left-2 top-1/2 z-10 -translate-y-1/2' />
+            <CarouselNext className='absolute right-2 top-1/2 z-10 -translate-y-1/2' />
+          </Carousel>
         </div>
       </div>
 
-      {/* Featured  */}
-
+      {/*/////////////////////////  Featured  ///////////////////////////////*/}
+      {/*/////////////////////////  Featured  ///////////////////////////////*/}
+      {/*/////////////////////////  Featured  ///////////////////////////////*/}
       {/* Desktop  */}
       <div className='container hidden w-full px-8 sm:block lg:px-12'>
         <div className='flex justify-between'>
@@ -251,71 +212,58 @@ export default function HomePage(): JSX.Element {
       </div>
 
       {/* Mobile  */}
-      <div className='mt:px-0 relative flex w-full flex-col items-center justify-center px-4 sm:hidden'>
-        <div className='flex w-full justify-between px-4 sm:px-0'>
-          <div className='flex items-center gap-2'>
+      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden px-4 sm:hidden'>
+        <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
+          <h1 className='flex items-center gap-2 font-inter text-[16px] font-bold sm:text-2xl'>
             <BaseIcons value='flame-yellow-small' />
-            <h1 className='font-inter text-base font-bold'>Featured</h1>
-          </div>
+            Featured Listings
+          </h1>
         </div>
-
-        <div className='-mt-4 flex w-[393px] items-center sm:-mt-0'>
-          <Swiper
-            centerInsufficientSlides={false}
-            navigation={{
-              nextEl: '.listing-custom-next',
-              prevEl: '.listing-custom-prev',
-            }}
-            modules={[Navigation, Pagination, Scrollbar, A11y]}
-            // modules={[Navigation, Pagination, Scrollbar, A11y]}
-            slidesPerView={4}
-            spaceBetween={7}
-            scrollbar={false}
-            onSwiper={swiper => console.log(swiper)}
-            onSlideChange={() => console.log('slide change')}
-            className='relative h-[370px]'
-            breakpoints={{
-              300: {
-                slidesPerView: 1,
-                spaceBetween: -36,
-              },
-              1024: {
-                slidesPerView: 4,
-                spaceBetween: 7,
-              },
-            }}
+        <div className='mb-20 flex w-full items-center'>
+          <Carousel
+            opts={{ align: 'start', loop: false }}
+            className='w-full max-w-full px-2'
           >
-            {loadingApproved
-              ? Array.from({ length: 4 }).map((_, key) => (
-                  <SwiperSlide
-                    key={key}
-                    className='flex items-center justify-center px-10 pt-10'
-                  >
-                    <div className='-ml-5 flex w-full items-center sm:-ml-0 sm:justify-center'>
-                      <ListingCardSkeleton classStyle={'w-[300px] h-[237px]'} />
-                    </div>
-                  </SwiperSlide>
-                ))
-              : approved.map((business, key) => (
-                  <SwiperSlide
-                    key={business.id ?? key}
-                    className='flex items-center justify-center px-10 pt-10'
-                  >
-                    <div className='-ml-5 flex w-full items-center sm:-ml-0 sm:justify-center'>
-                      <FeaturedListingCard business={business} group={true} />
-                    </div>
-                  </SwiperSlide>
-                ))}
-          </Swiper>
+            <CarouselContent className='-ml-2 gap-4 p-4'>
+              {loadingApproved
+                ? Array.from({ length: 4 }).map((_, key) => (
+                    <CarouselItem
+                      key={key}
+                      className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    >
+                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                    </CarouselItem>
+                  ))
+                : approved.map((business, key) => (
+                    <CarouselItem
+                      key={business.id ?? key}
+                      className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    >
+                      <FeaturedListingCard business={business} />
+                    </CarouselItem>
+                  ))}
+            </CarouselContent>
+            <CarouselPrevious className='absolute left-2 top-1/2 z-10 -translate-y-1/2' />
+            <CarouselNext className='absolute right-2 top-1/2 z-10 -translate-y-1/2' />
+          </Carousel>
         </div>
       </div>
 
-      <div className='container w-full px-8 lg:px-12'>
+      {/*/////////////////////////  Explore  ///////////////////////////////*/}
+      {/*/////////////////////////  Explore  ///////////////////////////////*/}
+      {/*/////////////////////////  Explore  ///////////////////////////////*/}
+      {/* Desktop  */}
+      <div className='container hidden w-full px-8 sm:block lg:px-12'>
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
-            <h1 className='font-inter text-base font-bold sm:text-2xl'>
-              Explore
-            </h1>
+            <BaseIcons value='flames-yellow' />
+            <h1 className='text-2xl font-bold'>Featured</h1>
+          </div>
+          <div className='flex items-center gap-2 text-primary'>
+            <BaseIcons value='arrows-left-primary' />
+            <Link href={'/'} className='uppercase'>
+              See all listings
+            </Link>
           </div>
         </div>
         {isEmptyApproved ? (
@@ -332,7 +280,7 @@ export default function HomePage(): JSX.Element {
         ) : (
           <div
             className={cn(
-              'mb-10 mt-5 grid gap-4 sm:gap-6 2xl:grid-cols-5',
+              'mb-20 mt-5 grid gap-6 2xl:grid-cols-5',
               approved.length < 4
                 ? 'grid-cols-[repeat(auto-fill,minmax(240px,1fr))]'
                 : 'grid-cols-[repeat(auto-fit,minmax(240px,1fr))]'
@@ -340,42 +288,56 @@ export default function HomePage(): JSX.Element {
           >
             {loadingApproved
               ? Array.from({ length: 5 }).map((_, key) => (
-                  <ListingCardSkeleton
-                    key={key}
-                    classStyle={'sm:h-[380px] w-full h-[237px]'}
-                  />
+                  <ListingCardSkeleton key={key} />
                 ))
               : approved.map((business, key) => (
                   <FeaturedListingCard
                     key={business.id ?? key}
                     business={business}
+                    group={true}
                   />
                 ))}
           </div>
         )}
       </div>
-      {/* <div className='-mt-5 mb-20'>
-        <Button
-          variant='neutral'
-          size='lg'
-          className='hidden px-[38px] py-4 text-lg text-black hover:bg-primary/50 sm:flex'
-        >
-          Show more
-        </Button>
+
+      {/* Mobile  */}
+      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden px-4 sm:hidden'>
+        <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
+          <h1 className='flex items-center gap-2 font-inter text-[16px] font-bold sm:text-2xl'>
+            <BaseIcons value='flame-yellow-small' />
+            Explore
+          </h1>
+        </div>
+        <div className='mb-20 flex w-full items-center'>
+          <Carousel
+            opts={{ align: 'start', loop: false }}
+            className='w-full max-w-full px-2'
+          >
+            <CarouselContent className='-ml-2 gap-4 p-4'>
+              {loadingApproved
+                ? Array.from({ length: 4 }).map((_, key) => (
+                    <CarouselItem
+                      key={key}
+                      className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    >
+                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                    </CarouselItem>
+                  ))
+                : approved.map((business, key) => (
+                    <CarouselItem
+                      key={business.id ?? key}
+                      className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    >
+                      <FeaturedListingCard business={business} />
+                    </CarouselItem>
+                  ))}
+            </CarouselContent>
+            <CarouselPrevious className='absolute left-2 top-1/2 z-10 -translate-y-1/2' />
+            <CarouselNext className='absolute right-2 top-1/2 z-10 -translate-y-1/2' />
+          </Carousel>
+        </div>
       </div>
-      {/* <div className='-mt-5 mb-20'>
-        <Button
-          variant='neutral'
-          size='lg'
-          className='hidden px-[38px] py-4 text-lg text-black hover:bg-primary/50 sm:flex'
-        >
-          Show more
-        </Button>
-        <button className='flex flex-col items-center justify-center px-[38px] py-4 text-lg text-black sm:hidden'>
-          More
-          <BaseIcons value='arrow-long-down-black' />
-        </button>
-      </div> */}
 
       <UpComingEvents />
 

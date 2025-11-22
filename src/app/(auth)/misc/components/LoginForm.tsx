@@ -66,8 +66,8 @@ const LoginForm = (): JSX.Element => {
             type='email'
             placeholder='Enter Email'
             label='Email address'
-            hasError={Boolean(methods.formState.errors.email)}
-            errorMessage={
+            haserror={Boolean(methods.formState.errors.email)}
+            errormessage={
               methods.formState.errors.email?.message as string | undefined
             }
             {...methods.register('email')}
@@ -78,8 +78,8 @@ const LoginForm = (): JSX.Element => {
             type='password'
             placeholder='Enter password'
             label='Enter password'
-            hasError={Boolean(methods.formState.errors.password)}
-            errorMessage={
+            haserror={Boolean(methods.formState.errors.password)}
+            errormessage={
               methods.formState.errors.password?.message as string | undefined
             }
             {...methods.register('password')}

@@ -17,8 +17,8 @@ interface SelectProps<T extends Record<string, unknown>> {
   options: T[] | undefined;
   disabled?: boolean;
   name: string;
-  hasError?: boolean;
-  errorMessage?: string;
+  haserror?: boolean;
+  errormessage?: string;
   label?: string | React.ReactNode;
   placeholder: string;
   className?: string;
@@ -40,8 +40,8 @@ const SelectSingleSimple = <T extends Record<string, unknown>>({
   onChange,
   options,
   disabled,
-  hasError,
-  errorMessage,
+  haserror,
+  errormessage,
   label,
   name,
   placeholder,
@@ -76,8 +76,8 @@ const SelectSingleSimple = <T extends Record<string, unknown>>({
         <SelectTrigger
           id={name}
           className={cn('w-full cursor-pointer', className)}
-          hasError={!!hasError}
-          {...(errorMessage ? { errorMessage } : {})}
+          haserror={!!haserror}
+          {...(errormessage ? { errormessage } : {})}
           {...(placeHolderClass ? { valueClassName: placeHolderClass } : {})}
           optional={Boolean(optional)}
         >
@@ -111,8 +111,8 @@ const SelectSingleSimple = <T extends Record<string, unknown>>({
           )}
         </SelectContent>
       </Select>
-      {hasError && errorMessage && (
-        <p className='text-sm text-destructive'>{errorMessage}</p>
+      {haserror && errormessage && (
+        <p className='text-sm text-destructive'>{errormessage}</p>
       )}
     </div>
   );

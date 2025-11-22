@@ -175,16 +175,18 @@ export const authOptions: NextAuthOptions = {
         if (user.email) token.email = user.email;
       }
 
+      // Refresh the token 5 minutes before actual expiration
+      const refreshBuffer = 5 * 60 * 1000;
       if (
         token.accessTokenExpires &&
-        Date.now() < token.accessTokenExpires &&
+        Date.now() < token.accessTokenExpires - refreshBuffer &&
         token.accessToken &&
         !token.error
       ) {
         return token;
       }
 
-      // If token is expired or error, try to refresh
+      // If token is expired or within buffer, try to refresh
       return refreshAccessToken(token);
     },
     async session({

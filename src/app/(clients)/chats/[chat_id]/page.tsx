@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { LinkButton } from '@/components/ui';
 import { Button } from '@/components/ui';
-import { Send, Image as ImageIcon } from 'lucide-react';
+import { Image as ImageIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useUserChats } from '@/app/(clients)/misc/api/useUserChats';
 import { useChatSocket } from '@/hooks/chat/useChatSocket';
@@ -46,7 +45,6 @@ export default function ChatDetailPage({
     },
     debug: true,
     onDebug: entry => {
-      // forward to a UI, Sentry, or local state
       console.log('chat debug entry', entry);
     },
   });
@@ -132,23 +130,34 @@ export default function ChatDetailPage({
     <div className='flex h-full flex-1 grid-rows-[auto_1fr_auto] flex-col'>
       <nav className='flex h-16 items-center justify-between border-b border-border px-6'>
         <div>
-          <h2 className='font-semibold'>
-            {selectedChat?.business.name ?? 'Conversation'}
-          </h2>
+          {isLoadingChats ? (
+            <div className='h-6 w-40 animate-pulse rounded bg-gray-200' />
+          ) : (
+            <h2 className='font-semibold'>
+              {selectedChat?.business.name ?? 'Conversation'}
+            </h2>
+          )}
         </div>
         <div className='flex items-center gap-2'>
-          <LinkButton
-            href={`/businesses/${selectedChat?.business.id ?? ''}`}
-            className='rounded-[0.825rem] border border-purple-500 py-1.5 text-[#551FB9] hover:!text-[#551FB9]'
-            variant='light'
-            size='md'
-          >
-            View profile
-          </LinkButton>
+          {isLoadingChats ? (
+            <div className='h-8 w-32 animate-pulse rounded-[0.825rem] bg-gray-200' />
+          ) : (
+            <LinkButton
+              href={`/businesses/${selectedChat?.business.id ?? ''}`}
+              className='rounded-[0.825rem] border border-purple-500 py-1.5 text-[#551FB9] hover:!text-[#551FB9]'
+              variant='light'
+              size='md'
+            >
+              View profile
+            </LinkButton>
+          )}
         </div>
       </nav>
 
-      <div ref={messagesContainerRef} className='flex flex-1 flex-col justify-end space-y-4 overflow-y-auto p-6'>
+      <div
+        ref={messagesContainerRef}
+        className='flex flex-1 flex-col justify-end space-y-4 overflow-y-auto p-6'
+      >
         {messagesLoading && <div>Loading messages...</div>}
         {messages && messages.data.length === 0 && (
           <div className='py-6 text-center text-gray-500'>No messages yet</div>
@@ -207,7 +216,7 @@ export default function ChatDetailPage({
             }}
             rows={1}
             placeholder='Write your message...'
-            className='w-full max-h-[400px] resize-none border-none bg-transparent px-2 py-1 outline-none focus:border-none'
+            className='max-h-[400px] w-full resize-none border-none bg-transparent px-2 py-1 outline-none focus:border-none'
           />
           <div className='flex items-center gap-2'>
             <label className='flex cursor-pointer items-center gap-2'>

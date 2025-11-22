@@ -24,9 +24,9 @@ function formFieldVariants({ variant = "default", size = "default" }: { variant?
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
     FormFieldVariants {
-  hasError?: boolean;
-  errorMessage?: string | undefined;
-  errorMessageClass?: string;
+  haserror?: boolean;
+  errormessage?: string | undefined;
+  errormessageClass?: string;
   leftIcon?: React.ReactNode;
   leftIconContainerClass?: string;
   rightIcon?: React.ReactNode;
@@ -42,11 +42,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       className,
       containerClassName,
       type,
-      hasError,
+      haserror,
       leftIcon,
       leftIconContainerClass,
       rightIcon,
-      errorMessageClass,
+      errormessageClass,
       label,
       footer,
       optional,
@@ -86,7 +86,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               type === "password" && "pr-12",
               Boolean(leftIcon) && "pl-12",
               Boolean(rightIcon) && "pr-12",
-              hasError && "border-destructive focus-visible:border-destructive",
+              haserror && "border-destructive focus-visible:border-destructive",
               className
             )}
             ref={ref}
@@ -134,9 +134,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {footer && footer}
-        {hasError && props.errorMessage && (
-          <p className={cn("text-sm text-destructive", errorMessageClass)}>
-            {props.errorMessage}
+        {haserror && props.errormessage && (
+          <p className={cn("text-sm text-destructive", errormessageClass)}>
+            {props.errormessage}
           </p>
         )}
       </div>

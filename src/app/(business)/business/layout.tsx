@@ -12,23 +12,22 @@ export default function BusinessLayout({
 }: {
   children: React.ReactNode;
 }): React.ReactElement {
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading: calculatingScreenWidth } = useIsMobile();
 
   return (
     <BusinessProvider>
       <div
         className={cn(
           'flex h-screen bg-background',
-          isMobile && 'grid grid-rows-[auto,1fr,auto] !h-dvh'
+          isMobile && 'grid !h-dvh grid-rows-[auto,1fr,auto]'
         )}
       >
-        {isMobile ? <NavbarTop /> : <Sidebar />}
+        {calculatingScreenWidth ? null : isMobile ? <NavbarTop /> : <Sidebar />}
 
         {/* Main content */}
         <div className='flex flex-1 flex-col overflow-hidden bg-[#FCFCFD]'>
           {children}
         </div>
-
 
         {isMobile && <NavbarBottom />}
       </div>

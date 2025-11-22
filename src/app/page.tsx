@@ -27,143 +27,35 @@ import {
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import LocationCard from '@/components/cards/LocationCard';
 import { useSponsoredAds } from './(clients)/misc/api/sponsored';
-import { useEvents } from './(clients)/misc/api';
+import { useApprovedBusinesses, useEvents } from './(clients)/misc/api';
 import SponsoredAdsCard from './(clients)/misc/components/SponsoredCard';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui';
+import ListingCardSkeleton from './(clients)/misc/components/ListingCardSkeleton';
+import { useIsMobile } from '@/hooks';
 
-export default function HomePage(): JSX.Element {
-  // Fetch categories from backend
+export default function HomePage() {
   const { data: categoriesResp, isLoading: loadingCategories } =
     useBusinessCategories();
   const categories = categoriesResp?.data ?? [];
+  const { data: approvedResp, isLoading: loadingApproved } =
+    useApprovedBusinesses();
+  const approved = approvedResp?.data ?? [];
+  const isEmptyApproved = !loadingApproved && approved.length === 0;
 
-  const FEATURED_LISTINGS = [
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-  ];
-  const LISTINGS_AROUND = [
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-    {
-      header: 'Aura Bloom Spa',
-      desc: 'At Aura Bloom Spa, we believe relaxation is more than a luxury, it’s a lifestyle.',
-      imageUrl: '/landingpage/feature-listing-2.jpg',
-      logoUrl: '/landingpage/logo.jpg',
-      address: '123 Main St, Cityville',
-      rating: 4.8,
-    },
-  ];
+  const { isMobile, isLoading: calculatingScreenWidth } = useIsMobile();
 
-  // Mock locations used by the "Search by location" slider
   const LOCATIONS = [
-    { name: 'Lagos', imageUrl: '/landingpage/feature-listing-2.jpg' },
-    { name: 'Abuja', imageUrl: '/landingpage/feature-listing-2.jpg' },
-    { name: 'Port Harcourt', imageUrl: '/landingpage/feature-listing-2.jpg' },
-    { name: 'Ibadan', imageUrl: '/landingpage/feature-listing-2.jpg' },
-    { name: 'Kano', imageUrl: '/landingpage/feature-listing-2.jpg' },
-    { name: 'Enugu', imageUrl: '/landingpage/feature-listing-2.jpg' },
+    { name: 'Lagos', imageUrl: '/locations/Lagos.jpg' },
+    { name: 'Abuja', imageUrl: '/locations/Abuja.jpg' },
+    { name: 'Ibadan', imageUrl: '/locations/Ibadan.jpg' },
+    { name: 'Port Harcourt', imageUrl: '/locations/Lagos.jpg' },
   ];
-
-
 
   const STATS = [
     {
@@ -180,14 +72,14 @@ export default function HomePage(): JSX.Element {
     },
   ];
 
-const {data:sponsoredAds} = useSponsoredAds()
-const {} = useEvents('Lagos')
+  const { data: sponsoredAds } = useSponsoredAds();
+  const {} = useEvents('Lagos');
 
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[90.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         <LandingPageNavbar />
-        <section></section>
+        <section />
         {/* Mobile hero  */}
         <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
@@ -211,7 +103,7 @@ const {} = useEvents('Lagos')
         </div>
       </section>
 
-      <div className='flex w-full flex-col items-center pt-10 sm:py-20'>
+      <div className='flex w-full flex-col items-center pt-8 sm:py-20'>
         <SectionHeader
           iconValue='category-yellow'
           header='Whatever you’re looking for, find it here.'
@@ -219,86 +111,55 @@ const {} = useEvents('Lagos')
         />
 
         <div className='mb-20 mt-10 flex w-full items-center gap-14 px-2 sm:w-[85vw] sm:max-w-[1485px] sm:px-0'>
-          <Swiper
-            centerInsufficientSlides={false}
-            navigation={{
-              nextEl: '.custom-next',
-              prevEl: '.custom-prev',
-            }}
-            modules={[Navigation, Pagination, Scrollbar, A11y]}
-            spaceBetween={10}
-            slidesPerView={5}
-            breakpoints={{
-              300: {
-                slidesPerView: 2,
-                spaceBetween: 10,
-              },
-              875: {
-                slidesPerView: 3,
-                spaceBetween: 15,
-              },
-              1360: {
-                slidesPerView: 4,
-                spaceBetween: 30,
-              },
-              1560: {
-                slidesPerView: 5,
-                spaceBetween: 50,
-              },
-            }}
-            scrollbar={false}
-            onSwiper={swiper => console.log(swiper)}
-            onSlideChange={() => console.log('slide change')}
-      
-            className='flex w-full items-center justify-center sm:h-[300px] sm:px-[4rem]'
-          >
-            <div className='absolute left-0 top-36 z-10 hidden h-full -translate-y-1/2 bg-white sm:flex'>
-              <button className='custom-prev rotate-180 bg-white p-2 transition-transform'>
-                <BaseIcons value='arrow-right-line-curve-black' />
-              </button>
-            </div>
-            <div className='absolute right-0 top-36 z-10 hidden h-full -translate-y-1/2 bg-white sm:flex'>
-              <button className='custom-next bg-white p-2'>
-                <BaseIcons value='arrow-right-line-curve-black' />
-              </button>
-            </div>
-            {loadingCategories
-              ? Array.from({ length: 5 }).map((_, idx) => (
-                  <SwiperSlide key={idx} className='flex items-center justify-center'>
-                    <div className='flex w-full items-center justify-center'>
-                      {/* Skeleton for CategoryCard */}
-                      <div className='flex flex-col items-center justify-center gap-2'>
-                        <div className='animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 size-24 lg:size-36 mb-2'></div>
-                        {/* <div className='animate-pulse h-4 w-24 rounded bg-gray-200 dark:bg-gray-700'></div> */}
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                ))
-              : categories.map(category => {
-                  const iconName = category.name
-                    ?.split(' ')[0]
-                    ?.toLowerCase() as CategoryIconType;
-                  return (
-                    <SwiperSlide
-                      key={category.id}
-                      className='flex items-center justify-center'
-                    >
-                      <div className='flex w-full items-center justify-center'>
-                        <CategoryCard
-                          title={category.name}
-                          icon={
-                            <BusinessCategoryIcons
-                              className='size-12 text-white'
-                              value={iconName}
+          <div className='relative w-full'>
+            <Carousel opts={{ align: 'start', loop: false }} className='w-full'>
+              <CarouselContent className='-ml-2'>
+                {loadingCategories
+                  ? Array.from({ length: 5 }).map((_, idx) => (
+                      <CarouselItem
+                        key={idx}
+                        className='flex basis-[60vw] items-center justify-center pl-2 sm:basis-[320px]'
+                      >
+                        <div className='flex flex-col items-center justify-center gap-2'>
+                          <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40'></div>
+                        </div>
+                      </CarouselItem>
+                    ))
+                  : categories.map(category => {
+                      const iconName = category.name
+                        ?.split(' ')[0]
+                        ?.toLowerCase() as CategoryIconType;
+                      return (
+                        <CarouselItem
+                          key={category.id}
+                          className='flex basis-32 items-center justify-center pl-2 sm:basis-48'
+                        >
+                          <div className='flex w-full items-center justify-center'>
+                            <CategoryCard
+                              title={category.name}
+                              icon={
+                                <BusinessCategoryIcons
+                                  className='size-12 text-white'
+                                  value={iconName}
+                                />
+                              }
+                              hoverIcon={
+                                <BusinessCategoryIcons value={iconName} />
+                              }
                             />
-                          }
-                          hoverIcon={<BusinessCategoryIcons value={iconName} />}
-                        />
-                      </div>
-                    </SwiperSlide>
-                  );
-                })}
-          </Swiper>
+                          </div>
+                        </CarouselItem>
+                      );
+                    })}
+              </CarouselContent>
+              <CarouselPrevious className='absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 bg-white p-2 sm:flex'>
+                <BaseIcons value='arrow-right-line-curve-black' />
+              </CarouselPrevious>
+              <CarouselNext className='absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 bg-white p-2 sm:flex'>
+                <BaseIcons value='arrow-right-line-curve-black' />
+              </CarouselNext>
+            </Carousel>
+          </div>
         </div>
       </div>
 
@@ -311,123 +172,82 @@ const {} = useEvents('Lagos')
         />
 
         <div className='relative flex w-full items-center justify-center'>
-          <div className='mb-20 mt-10 flex w-full items-center gap-10 sm:max-w-[1490px]'>
-            <Swiper
-              centerInsufficientSlides={false}
-              navigation={{
-                nextEl: '.FeaturedListingCard-next',
-                prevEl: '.FeaturedListingCard-prev',
-              }}
-              // install Swiper modules
-              modules={[Navigation, Pagination, Scrollbar, A11y]}
-              slidesPerView={3}
-              spaceBetween={10}
-              scrollbar={false}
-              onSwiper={swiper => console.log(swiper)}
-              onSlideChange={() => console.log('slide change')}
-              className='relative'
-              breakpoints={{
-                300: {
-                  slidesPerView: 1,
-                  spaceBetween: -50,
-                },
-                1024: {
-                  slidesPerView: 3,
-                  spaceBetween: -45,
-                },
-              }}
+          <div className='mb-20 flex w-full items-center'>
+            <Carousel
+              opts={{ align: calculatingScreenWidth ? 'start' : !isMobile ? 'center' : 'start', loop: false }}
+              className='container mx-auto w-[90vw] px-2'
             >
-              <div className='absolute top-1/2 z-50 hidden -translate-y-1/2 sm:flex'>
-                <button className='FeaturedListingCard-prev rotate-180 transition-transform'>
-                  <BaseIcons value='arrow-right-line-curve-black' />
-                </button>
-              </div>
-              <div className='absolute right-0 top-1/2 z-40 hidden -translate-y-1/2 sm:flex'>
-                <button className='FeaturedListingCard-next'>
-                  <BaseIcons value='arrow-right-line-curve-black' />
-                </button>
-              </div>
-              {FEATURED_LISTINGS.map((listing, key) => {
-                return (
-                  <SwiperSlide
-                    key={key}
-                    className='flex items-center justify-center px-10'
-                  >
-                    <div className='flex w-full items-center justify-center'>
-                      {/* Construct a mock BusinessSummary object from the listing data
-                            and pass it to the FeaturedListingCard as the `business` prop */}
-                      {(() => {
-                        const mockBusiness = {
-                          id: `mock-${key}`,
-                          name: listing.header,
-                          description: listing.desc,
-                          thumbnail: listing.imageUrl,
-                          logo: listing.logoUrl,
-                          address: listing.address,
-                          average_review_rating: listing.rating,
-                        } as const;
-
-                        return (
-                          <FeaturedListingCard
-                            business={mockBusiness as any}
-                            classStyle={
-                              'sm:h-[548px] sm:w-[412px] w-[306px] h-[401px]'
-                            }
-                          />
-                        );
-                      })()}
-                    </div>
-                  </SwiperSlide>
-                );
-              })}
-            </Swiper>
+              <CarouselContent className='-ml-2 xl:justify-center gap-4 py-4'>
+                {loadingApproved
+                  ? Array.from({ length: 4 }).map((_, key) => (
+                      <CarouselItem
+                        key={key}
+                        className='basis-[70vw] pl-2 sm:basis-[340px]'
+                      >
+                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                      </CarouselItem>
+                    ))
+                  : approved.map((business, key) => (
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='basis-[70vw] pl-2 sm:basis-[340px]'
+                      >
+                        <FeaturedListingCard business={business} />
+                      </CarouselItem>
+                    ))}
+              </CarouselContent>
+              <CarouselPrevious className='absolute left-2 top-1/2 z-10 -translate-y-1/2 max-md:hidden' />
+              <CarouselNext className='absolute right-2 top-1/2 z-10 -translate-y-1/2 max-md:hidden' />
+            </Carousel>
           </div>
         </div>
 
         {/* Serch By location  */}
         <div className='container mb-10'>
-          <h1 className='text-2xl font-bold'>Search by location</h1>
+          <h1 className='px-4 font-inter text-xl font-bold md:text-2xl'>
+            Search by location
+          </h1>
 
           <div className='mb-20 flex w-full items-center gap-10 sm:w-[1490px]'>
-            <Swiper
-              centerInsufficientSlides={false}
-              slidesPerView={4}
-              spaceBetween={10}
-              scrollbar={false}
-              onSwiper={swiper => console.log(swiper)}
-              onSlideChange={() => console.log('slide change')}
-              className='relative'
-              breakpoints={{
-                300: {
-                  slidesPerView: 3,
-                  spaceBetween: 10,
-                },
-                1024: {
-                  slidesPerView: 4,
-                  spaceBetween: 10,
-                },
-              }}
-            >
-              {LOCATIONS.map((location, key) => {
-                return (
-                  <SwiperSlide
-                    key={key}
-                    className='flex items-center justify-center pt-5 sm:pt-10'
-                  >
-                    <LocationCard
+            <div className='relative w-full'>
+              <Carousel
+                opts={{ align: 'start', loop: false }}
+                className='w-full'
+              >
+                <CarouselContent className='-ml-2 p-2'>
+                  {LOCATIONS.map((location, key) => (
+                    <CarouselItem
                       key={key}
-                      name={location.name}
-                      imageUrl={location.imageUrl}
-                    />
-                  </SwiperSlide>
-                );
-              })}
-            </Swiper>
+                      className='flex basis-36 items-center justify-center px-1.5'
+                    >
+                      <LocationCard
+                        key={key}
+                        name={location.name}
+                        imageUrl={location.imageUrl}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className='absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 bg-white p-2 sm:flex'>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      transform: 'rotate(180deg)',
+                    }}
+                  >
+                    <BaseIcons value='arrow-right-line-curve-black' />
+                  </span>
+                </CarouselPrevious>
+                <CarouselNext className='absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 bg-white p-2 sm:flex'>
+                  <BaseIcons value='arrow-right-line-curve-black' />
+                </CarouselNext>
+              </Carousel>
+            </div>
           </div>
         </div>
 
         {/* Sponsored picks  */}
-        <div className='relative container lg:px-10'>
+        <div className='container relative lg:px-10'>
           <SectionHeader
             iconValue='listing-yellow'
             header='Sponsored Picks'
@@ -486,10 +306,7 @@ const {} = useEvents('Lagos')
                     className='flex items-center justify-center pt-20'
                   >
                     <div className='flex w-full items-center justify-center'>
-                      <SponsoredAdsCard
-                        key={key}
-                        ad={sponsored}
-                      />
+                      <SponsoredAdsCard key={key} ad={sponsored} />
                     </div>
                   </SwiperSlide>
                 );
@@ -514,7 +331,7 @@ const {} = useEvents('Lagos')
           })}
         </div>
 
-        <div className='mt:px-0 relative flex w-full flex-col items-center justify-center px-4'>
+        <div className='mt:px-0 relative flex w-full flex-col items-center justify-center'>
           <div className='flex w-full justify-between px-4 sm:px-0'>
             <div className='flex items-center gap-2'>
               <BaseIcons value='stars-primary' />
@@ -530,52 +347,33 @@ const {} = useEvents('Lagos')
             </div>
           </div>
 
-          <div className='-mt-4 mb-20 flex w-[393px] items-center sm:-mt-0 sm:w-[1560px]'>
-            <Swiper
-              centerInsufficientSlides={false}
-              // modules={[Navigation, Pagination, Scrollbar, A11y]}
-              slidesPerView={4}
-              spaceBetween={7}
-              scrollbar={false}
-              onSwiper={swiper => console.log(swiper)}
-              onSlideChange={() => console.log('slide change')}
-              className='relative'
-              breakpoints={{
-                300: {
-                  slidesPerView: 1,
-                  spaceBetween: -100,
-                },
-                1024: {
-                  slidesPerView: 4,
-                  spaceBetween: 7,
-                },
-              }}
+          <div className='mb-20 flex w-full items-center'>
+            <Carousel
+              opts={{ align: 'start', loop: false }}
+              className='w-full max-w-full px-2'
             >
-              {LISTINGS_AROUND.map((_, key) => {
-                return (
-                  <SwiperSlide
-                    key={key}
-                    className='flex items-center justify-center px-10 pt-10'
-                  >
-                    <div className='-ml-5 flex w-full items-center sm:-ml-0 sm:justify-center'>
-                      {/* <FeaturedListingCard
+              <CarouselContent className='-ml-2 gap-4 p-4'>
+                {loadingApproved
+                  ? Array.from({ length: 4 }).map((_, key) => (
+                      <CarouselItem
                         key={key}
-                        header={listing.header}
-                        desc={listing.desc}
-                        imageUrl={listing.imageUrl}
-                        logoUrl={listing.logoUrl}
-                        address={listing.address}
-                        rating={listing.rating}
-                        group={true}
-                        classStyle={
-                          'sm:h-[427px] sm:w-[340px] w-[252px] h-[237px]'
-                        }
-                      /> */}
-                    </div>
-                  </SwiperSlide>
-                );
-              })}
-            </Swiper>
+                        className='basis-[70vw] pl-2 sm:basis-[340px]'
+                      >
+                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                      </CarouselItem>
+                    ))
+                  : approved.map((business, key) => (
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='basis-[70vw] pl-2 sm:basis-[340px]'
+                      >
+                        <FeaturedListingCard business={business} />
+                      </CarouselItem>
+                    ))}
+              </CarouselContent>
+              <CarouselPrevious className='absolute left-2 top-1/2 z-10 -translate-y-1/2' />
+              <CarouselNext className='absolute right-2 top-1/2 z-10 -translate-y-1/2' />
+            </Carousel>
           </div>
         </div>
       </div>

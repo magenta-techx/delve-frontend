@@ -50,9 +50,9 @@ function SelectTrigger({
   size,
   variant,
   label,
-  hasError,
-  errorMessage,
-  errorMessageClass,
+  haserror,
+  errormessage,
+  errormessageClass,
   containerClassName,
   valueClassName,
   optional,
@@ -61,9 +61,9 @@ function SelectTrigger({
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> &
   VariantProps<typeof formFieldVariants> & {
     label?: string;
-    hasError?: boolean;
-    errorMessage?: string;
-    errorMessageClass?: string;
+    haserror?: boolean;
+    errormessage?: string;
+    errormessageClass?: string;
     containerClassName?: string;
     valueClassName?: string;
     optional?: boolean;
@@ -78,7 +78,7 @@ function SelectTrigger({
       className={cn(
         formFieldVariants({ variant, size }),
         'flex cursor-pointer items-center justify-between overflow-hidden',
-        hasError && 'border-destructive focus-visible:border-destructive',
+        haserror && 'border-destructive focus-visible:border-destructive',
         className
       )}
       {...props}
@@ -98,7 +98,7 @@ function SelectTrigger({
     </SelectPrimitive.Trigger>
   );
 
-  if (label || hasError) {
+  if (label || haserror) {
     return (
       <div className={cn('flex flex-col gap-2', containerClassName)}>
         {label && (
@@ -111,9 +111,9 @@ function SelectTrigger({
           </label>
         )}
         {trigger}
-        {hasError && errorMessage && (
-          <p className={cn('text-sm text-destructive', errorMessageClass)}>
-            {errorMessage}
+        {haserror && errormessage && (
+          <p className={cn('text-sm text-destructive', errormessageClass)}>
+            {errormessage}
           </p>
         )}
       </div>

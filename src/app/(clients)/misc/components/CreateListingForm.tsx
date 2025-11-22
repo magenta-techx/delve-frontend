@@ -257,11 +257,11 @@ const BusinessStepForm = (): JSX.Element => {
 
     const locationResult = locationZodSchema.safeParse(location);
     if (!locationResult.success) {
-      const errorMessage =
+      const errormessage =
         locationResult.error.issues[0]?.message ||
         'Please complete the location information.';
       toast.error('Validation Error', {
-        description: errorMessage,
+        description: errormessage,
       });
       setIsSubmitting(false);
       return;
@@ -396,11 +396,11 @@ const BusinessStepForm = (): JSX.Element => {
             services: services,
           });
           if (!servicesResult.success) {
-            const errorMessage =
+            const errormessage =
               servicesResult.error.issues[0]?.message ||
               'Please add at least one service.';
             toast.error('Validation Error', {
-              description: errorMessage,
+              description: errormessage,
             });
             return false;
           }
@@ -416,11 +416,11 @@ const BusinessStepForm = (): JSX.Element => {
 
           const locationResult = locationZodSchema.safeParse(location);
           if (!locationResult.success) {
-            const errorMessage =
+            const errormessage =
               locationResult.error.issues[0]?.message ||
               'Please complete the location information.';
             toast.error('Validation Error', {
-              description: errorMessage,
+              description: errormessage,
             });
             return false;
           }

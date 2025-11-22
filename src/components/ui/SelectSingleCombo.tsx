@@ -25,8 +25,8 @@ interface SelectProps<T extends Record<string, unknown>> {
   options: T[] | undefined;
   disabled?: boolean;
   name: string;
-  hasError?: boolean;
-  errorMessage?: string;
+  haserror?: boolean;
+  errormessage?: string;
   label?: string | React.ReactNode;
   bottomItem?: React.ReactNode;
   placeholder: string;
@@ -51,8 +51,8 @@ const SelectSingleCombo = <T extends Record<string, unknown>>({
   onChange,
   options,
   disabled,
-  hasError,
-  errorMessage,
+  haserror,
+  errormessage,
   label,
   name,
   placeholder,
@@ -120,8 +120,8 @@ const SelectSingleCombo = <T extends Record<string, unknown>>({
         <SelectTrigger
           id={name}
           className={cn('w-full', className)}
-          hasError={!!hasError}
-          {...(errorMessage ? { errorMessage } : {})}
+          haserror={!!haserror}
+          {...(errormessage ? { errormessage } : {})}
           {...(placeHolderClass ? { valueClassName: placeHolderClass } : {})}
           optional={Boolean(optional)}
         >
@@ -166,8 +166,8 @@ const SelectSingleCombo = <T extends Record<string, unknown>>({
           {bottomItem}
         </SelectContent>
       </Select>
-      {hasError && errorMessage && (
-        <p className='text-sm text-destructive'>{errorMessage}</p>
+      {haserror && errormessage && (
+        <p className='text-sm text-destructive'>{errormessage}</p>
       )}
     </div>
   );

@@ -3,6 +3,14 @@ export { Button, buttonVariants } from './Button'
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './Card'
 export { LinkButton } from './LinkButton'
 
+export {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from './Carousel'
 
 export {
   Dialog,

@@ -68,16 +68,16 @@ const CreateNewPassword = (): JSX.Element => {
             <Input
               type='password'
               placeholder='New password'
-              hasError={Boolean(methods.formState.errors.password)}
-              errorMessage={methods.formState.errors.password?.message as string | undefined}
+              haserror={Boolean(methods.formState.errors.password)}
+              errormessage={methods.formState.errors.password?.message as string | undefined}
               {...methods.register('password')}
             />
             {/*Confirm Password Field */}
             <Input
               type='password'
               placeholder='Confirm password'
-              hasError={Boolean(methods.formState.errors.confirm_password)}
-              errorMessage={methods.formState.errors.confirm_password?.message as string | undefined}
+              haserror={Boolean(methods.formState.errors.confirm_password)}
+              errormessage={methods.formState.errors.confirm_password?.message as string | undefined}
               {...methods.register('confirm_password')}
             />
           </div>

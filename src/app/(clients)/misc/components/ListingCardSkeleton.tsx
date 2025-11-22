@@ -24,8 +24,8 @@ export default function ListingCardSkeleton({ classStyle = '', group = false }: 
             </div>
             {/* Title and desc lines */}
             <div className='flex w-full flex-col gap-2'>
-              <div className='h-4 w-40 rounded bg-white/70' />
-              <div className='h-3 w-64 rounded bg-white/50' />
+              <div className='h-4 w-24 rounded bg-white/70' />
+              <div className='h-3 w-42 rounded bg-white/50' />
             </div>
           </div>
           <div className='mt-3 flex items-center justify-between'>

@@ -61,8 +61,8 @@ const ForgotPassword = (): JSX.Element => {
               type='email'
               placeholder='Enter Email'
               rightIcon={<CancleIcon />}
-              hasError={Boolean(methods.formState.errors.email)}
-              errorMessage={methods.formState.errors.email?.message as string | undefined}
+              haserror={Boolean(methods.formState.errors.email)}
+              errormessage={methods.formState.errors.email?.message as string | undefined}
               {...methods.register('email')}
             />
           </div>

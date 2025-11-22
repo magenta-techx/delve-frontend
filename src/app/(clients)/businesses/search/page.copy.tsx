@@ -306,7 +306,7 @@ const BusinessSearchPage = (): JSX.Element => {
     ? 'Searching businesses…'
     : `${businesses.length} result${businesses.length === 1 ? '' : 's'} found`;
 
-  const errorMessage =
+  const errormessage =
     error instanceof Error
       ? error.message
       : 'We could not complete the search. Please try again.';
@@ -776,7 +776,7 @@ const BusinessSearchPage = (): JSX.Element => {
           {isError ? (
             <EmptyState
               title='Something went wrong'
-              description={errorMessage}
+              description={errormessage}
               actions={
                 <Button variant='neutral' onClick={() => router.refresh()}>
                   Retry search

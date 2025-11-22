@@ -5,9 +5,9 @@ import { formFieldVariants, type FormFieldVariants } from "./FormVariants";
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
     FormFieldVariants {
-  hasError?: boolean;
-  errorMessage?: string | undefined;
-  errorMessageClass?: string;
+  haserror?: boolean;
+  errormessage?: string | undefined;
+  errormessageClass?: string;
   containerClassName?: string;
   label?: string;
   footer?: React.ReactNode;
@@ -19,8 +19,8 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     {
       className,
       containerClassName,
-      hasError,
-      errorMessageClass,
+      haserror,
+      errormessageClass,
       label,
       footer,
       optional,
@@ -42,7 +42,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           className={cn(
             formFieldVariants({ variant, size }),
             "min-h-[80px] resize-none",
-            hasError && "border-destructive focus-visible:border-destructive",
+            haserror && "border-destructive focus-visible:border-destructive",
             className
           )}
           ref={ref}
@@ -50,9 +50,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
         {footer && footer}
-        {hasError && props.errorMessage && (
-          <p className={cn("text-sm text-destructive", errorMessageClass)}>
-            {props.errorMessage}
+        {haserror && props.errormessage && (
+          <p className={cn("text-sm text-destructive", errormessageClass)}>
+            {props.errormessage}
           </p>
         )}
       </div>

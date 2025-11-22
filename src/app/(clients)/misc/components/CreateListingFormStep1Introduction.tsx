@@ -99,9 +99,9 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
       onSuccess(data.data.id);
     } catch (error) {
       console.error('Error creating business:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to create business';
+      const errormessage = error instanceof Error ? error.message : 'Failed to create business';
       toast.error('Error', {
-        description: errorMessage,
+        description: errormessage,
       });
     } finally {
     }
@@ -177,7 +177,7 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
             {...register('business_name')}
             placeholder="Enter your business name"
             className="mt-1"
-            hasError={!!errors.business_name}
+            haserror={!!errors.business_name}
           />
           {errors.business_name && (
             <p className="mt-1 text-sm text-red-600">{errors.business_name.message}</p>
@@ -195,7 +195,7 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
             placeholder="Write a description"
             rows={4}
             className="mt-1"
-            hasError={!!errors.description}
+            haserror={!!errors.description}
           />
           <div className="mt-1 flex justify-between">
             {errors.description && (
@@ -216,7 +216,7 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
             {...register('website')}
             placeholder="www.yoursite.com"
             className="mt-1"
-            hasError={!!errors.website}
+            haserror={!!errors.website}
           />
           {errors.website && (
             <p className="mt-1 text-sm text-red-600">{errors.website.message}</p>

@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     const data = await detailsResponse.json()
 
-    if (data.error || data.errorMessage) {
+    if (data.error || data.errormessage) {
       console.error("Place details API error:", data)
       return NextResponse.json(
         {
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
           longitude: null,
           formattedAddress: null,
           state: null,
-          error_message: data.error?.message ?? data.errorMessage ?? null,
+          error_message: data.error?.message ?? data.errormessage ?? null,
         },
         { status: 400 }
       )

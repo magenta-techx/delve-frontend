@@ -132,7 +132,41 @@ export interface Review {
   replies?: ReviewReply[];
 }
 
-// Chats
+
+
+export interface BusinessChatListItem {
+  id: number;
+  customer: Customer;
+  is_pinned: boolean;
+  last_message_sent_at: null | string;
+  last_message: Lastmessage;
+}
+
+interface Lastmessage {
+  content: string;
+  is_image_message: boolean;
+  sender: Sender;
+  is_read: boolean;
+  is_deleted_by_business: boolean;
+  is_deleted_by_customer: boolean;
+  id?: number;
+  image?: string;
+  sent_at?: string;
+}
+
+interface Sender {
+  first_name: string;
+  last_name: string;
+  id?: number;
+  profile_image?: string;
+}
+
+interface Customer {
+  id: number;
+  first_name: string;
+  last_name: string;
+  profile_image: string;
+}
 export interface ChatListItem {
   chat_id: number;
   last_message?: string;

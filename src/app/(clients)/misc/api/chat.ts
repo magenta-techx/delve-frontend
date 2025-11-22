@@ -16,6 +16,25 @@ export function useUserChats(): UseQueryResult<ApiEnvelope<ChatListItem[]>, Erro
   });
 }
 
+/**
+ * Fetch chats for a specific business by businessId.
+ * @param businessId The business ID to fetch chats for.
+ */
+export function useBusinessChats(businessId?: string | number): UseQueryResult<ApiEnvelope<ChatListItem[]>, Error> {
+  return useQuery({
+    queryKey: ["business-chats", businessId],
+    queryFn: async () => {
+      if (!businessId) throw new Error("No businessId provided");
+      const res = await apiRequest(`/api/chat/business/${businessId}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to fetch chats");
+      return data;
+    },
+    enabled: !!businessId,
+    refetchInterval: 15_000,
+  });
+}
+
 export function useChatMessages(chatId?: number | string): UseQueryResult<ApiEnvelope<ChatMessage[]>, Error> {
   return useQuery({
     queryKey: ["chat-messages", chatId],

@@ -57,13 +57,13 @@ export async function POST(request: NextRequest) {
 
     const data = await placesResponse.json()
 
-    if (data.error || data.errorMessage || (data.status && data.status !== "OK")) {
+    if (data.error || data.errormessage || (data.status && data.status !== "OK")) {
       console.error("Places autocomplete API error:", data)
       return NextResponse.json(
         {
           predictions: [],
           status: data.status ?? "ERROR",
-          error_message: data.error?.message ?? data.errorMessage ?? null,
+          error_message: data.error?.message ?? data.errormessage ?? null,
         },
         { status: 400 }
       )
