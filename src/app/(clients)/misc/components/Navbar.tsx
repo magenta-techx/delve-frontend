@@ -107,6 +107,7 @@ const LandingPageNavbar = () => {
       <div className='container mx-auto flex flex-row items-center justify-between'>
         <section>
           <Logo
+            className='max-sm:w-20 w-24'
             textColor={
               isBusiness || isMobile
                 ? 'black'
@@ -122,7 +123,7 @@ const LandingPageNavbar = () => {
             {calculatingScreenWidth ? null : (
               <>
                 {!isMobile && (
-                  <ul className='flex items-center gap-4 ml-auto mr-4'>
+                  <ul className='ml-auto mr-4 flex items-center gap-4'>
                     {userIsloggedIn
                       ? AUTHENTICATED_USER_LINKS.map(link => {
                           const isActive =
@@ -170,7 +171,7 @@ const LandingPageNavbar = () => {
                 {userIsloggedIn && (
                   <div
                     className={cn(
-                      'hidden md:block h-6 w-0.5',
+                      'hidden h-6 w-0.5 md:block',
                       pageHasBlackBg ? 'bg-[#9AA4B2]' : 'bg-gray-300'
                     )}
                   />
@@ -188,7 +189,7 @@ const LandingPageNavbar = () => {
                         )}
                       >
                         {isMobile ? (
-                          <span className='flex items-center justify-center size-10 rounded-full bg-purple-800 text-lg font-semibold text-white'>
+                          <span className='flex size-8 items-center justify-center rounded-full bg-purple-800 text-base font-semibold text-white'>
                             {getInitials(session?.user.name || 'US')}
                           </span>
                         ) : (
@@ -201,7 +202,7 @@ const LandingPageNavbar = () => {
                           </>
                         )}
                         {/* <BaseIcons value='user-logged-in-white' /> */}
-                        <CaretDown />
+                        <CaretDown className='max-md:size-5' />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end' className='w-72'>

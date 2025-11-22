@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { forward } from '../_lib/backend';
 
-// POST /api/collaboration (create)
+// POST /api/collab (create)
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  return forward(req, 'POST', '/collaboration/', { auth: true, contentType: 'json' });
+  return forward(req, 'POST', '/collab/create', { auth: true, contentType: 'json' });
 }
 
-// GET /api/collaboration (list for user)
+// GET /api/collab (list for user)
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  return forward(req, 'GET', '/collaboration/', { auth: true });
+  return forward(req, 'GET', '/collab/me', { auth: true });
 }

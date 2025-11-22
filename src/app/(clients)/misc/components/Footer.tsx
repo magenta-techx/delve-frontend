@@ -111,9 +111,9 @@ const Footer = () => {
       <div className='container mx-auto grid w-full gap-12 pb-6 pt-10 md:px-8 lg:grid-cols-[minmax(0,480px)_minmax(0,1fr)] lg:items-start lg:pb-16 lg:pt-14'>
         <aside className='max-md: flex w-full flex-col gap-8 max-md:px-10 sm:px-6 md:max-w-xl'>
           <Link href='/'>
-            <Logo textColor='black' />
+            <Logo textColor='black' className='w-24 max-sm:w-20' />
           </Link>
-          <div className='flex flex-col items-start gap-4 overflow-hidden rounded-2xl sm:flex-row sm:items-center sm:gap-5 sm:p-6 lg:border lg:border-[#EBEEF5] '>
+          <div className='flex flex-col items-start gap-4 overflow-hidden rounded-2xl sm:flex-row sm:items-center sm:gap-5 sm:p-6 lg:border lg:border-[#EBEEF5]'>
             <div className='w-32 sm:mx-0 sm:w-40 md:mx-auto'>
               <NewProductLaunchGraphics />
             </div>
@@ -125,14 +125,18 @@ const Footer = () => {
                 Join hundreds of trusted vendors growing their business with
                 Delve.
               </p>
-              <LinkButton size='md' href='/businesses/create-listing' className='mt-5'>
+              <LinkButton
+                size='md'
+                href='/businesses/create-listing'
+                className='mt-5'
+              >
                 List your business
               </LinkButton>
             </div>
           </div>
         </aside>
 
-        <div className='grid grid-cols-1 gap-10 bg-white pt-6 max-md:px-10 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8 sm:px-6 lg:gap-12 2xl:grid-cols-4 font-inter'>
+        <div className='grid grid-cols-1 gap-10 bg-white pt-6 font-inter max-md:px-10 sm:grid-cols-2 sm:gap-8 sm:px-6 lg:grid-cols-3 lg:gap-12 2xl:grid-cols-4'>
           {FOOTER_LINKS.map(section => (
             <div key={section.id} className='min-w-[150px]'>
               <h3 className='mb-4 text-base font-semibold text-[#0F172B]'>
@@ -175,7 +179,9 @@ const Footer = () => {
       </div>
 
       <div className='flex items-center justify-center border-t border-[#EBEEF5] bg-white'>
-          <small className='mx-auto text-center w-full gap-4 p-4 text-xs text-[#4B5565] sm:flex-row sm:px-6 lg:px-10'>{new Date().getFullYear()} Delve.ng</small>
+        <small className='mx-auto w-full gap-4 p-4 text-center text-xs text-[#4B5565] sm:flex-row sm:px-6 lg:px-10'>
+          {new Date().getFullYear()} Delve.ng
+        </small>
       </div>
     </footer>
   );

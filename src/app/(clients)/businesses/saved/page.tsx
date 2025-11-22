@@ -1,9 +1,5 @@
 'use client';
-import { BaseIcons } from '@/assets/icons/base/Icons';
 import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
-import { useRouter } from 'next/navigation';
-import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import { useSavedBusinesses } from '@/app/(clients)/misc/api/user';
 import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
@@ -26,7 +22,6 @@ import ListingCardSkeleton from '../../misc/components/ListingCardSkeleton';
 import { convertToTitleCase } from '@/utils/strings';
 
 export default function Page() {
-  const router = useRouter();
   const { data: session } = useSession();
   const { data: savedBusinessesData, isLoading } = useSavedBusinesses(
     Boolean(session?.user?.accessToken || session?.user?.email)
@@ -67,11 +62,11 @@ export default function Page() {
       {/* Header and Search */}
       <header className='z-10 mt-20 w-full px-4 sm:px-0 md:mt-28'>
         <div className='mb-6 flex w-full items-center justify-between'>
-          <h1 className='font-inter text-lg sm:text-xl font-semibold text-[#0F0F0F] md:text-2xl'>
+          <h1 className='font-inter text-lg font-semibold text-[#0F0F0F] sm:text-xl md:text-2xl'>
             Saved Businesses
           </h1>
           <LinkButton
-            href='/business/collaboration'
+            href='/businesses/saved/collaboration'
             variant='light'
             className='flex items-center justify-center gap-2'
             size='dynamic_lg'
@@ -94,44 +89,94 @@ export default function Page() {
         </div>
 
         {/* Search Bar */}
-        <div className='mb-16 flex w-full items-center gap-0 overflow-hidden rounded-lg border border-[#CDD5DF] bg-white'>
-          {/* Search Input */}
-          <div className='flex flex-1 items-center gap-2 px-4 py-3'>
-            <BaseIcons value='search-large-outlined-black' />
-            <input
-              type='text'
-              placeholder='Search businesses'
-              value={searchText}
-              onChange={e => setSearchText(e.target.value)}
-              className='flex-1 border-none bg-transparent text-[16px] outline-none placeholder:text-[#94A3B8]'
-            />
+        <search className='mb-8 flex w-max flex-col gap-2 md:mb-10'>
+          <div className='flex w-max items-center gap-0 overflow-hidden rounded-lg border border-[#CDD5DF] bg-white'>
+            {/* Search Input */}
+            <div className='flex flex-1 items-center gap-2 p-1.5 md:px-4 md:py-3'>
+              <svg
+                width='19'
+                height='19'
+                className='!size-2.5 md:size-6'
+                viewBox='0 0 19 19'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M14.3269 14.44L17.8 17.8M16.68 8.84C16.68 13.1699 13.1699 16.68 8.84 16.68C4.51009 16.68 1 13.1699 1 8.84C1 4.51009 4.51009 1 8.84 1C13.1699 1 16.68 4.51009 16.68 8.84Z'
+                  stroke='black'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                />
+              </svg>
+
+              <input
+                type='text'
+                placeholder='Search businesses'
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                className='flex-1 border-none bg-transparent text-xs outline-none placeholder:text-[#94A3B8] md:text-sm'
+              />
+            </div>
+
+            {/* All Dropdown */}
+            <button className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm'>
+              <span>All</span>
+              <svg
+                width='12'
+                height='7'
+                className='!size-2.5 md:size-6'
+                viewBox='0 0 12 7'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M1 1L6.00081 5.58L11 1'
+                  stroke='#0A090B'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+              </svg>
+            </button>
+
+            {/* Category Dropdown */}
+            <button className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm'>
+              <span>Category</span>
+              <svg
+                width='12'
+                height='7'
+                className='!size-2.5 md:size-6'
+                viewBox='0 0 12 7'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M1 1L6.00081 5.58L11 1'
+                  stroke='#0A090B'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+              </svg>
+            </button>
+
+            <button className='bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-primary/90 max-md:hidden md:px-8 md:py-3 md:text-sm'>
+              Search
+            </button>
           </div>
 
-          {/* All Dropdown */}
-          <button className='flex items-center gap-2 border-l border-[#E3E8EF] px-4 py-3 text-[16px] hover:bg-gray-50'>
-            <span>All</span>
-            <BusinessCategoryIcons value='arrow-down' />
-          </button>
-
-          {/* Category Dropdown */}
-          <button className='flex items-center gap-2 border-l border-[#E3E8EF] px-4 py-3 text-[16px] hover:bg-gray-50'>
-            <span>Category</span>
-            <BusinessCategoryIcons value='arrow-down' />
-          </button>
-
-          {/* Search Button */}
-          <button className='bg-primary px-8 py-3 text-[16px] font-medium text-white hover:bg-primary/90'>
+          <button className='w-full rounded-lg bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-[#551FB9]/90 md:hidden md:px-8 md:py-3 md:text-sm'>
             Search
           </button>
-        </div>
+        </search>
       </header>
 
       <div className='mx-auto w-full'>
         {isLoading ? (
-          <div className='mt:px-0 container relative flex min-h-[20vh] w-full items-center justify-center'>
+          <div className='mt:px-0 container relative flex w-full items-center justify-center'>
             {Array.from({ length: 4 }).map((_, key) => (
               <div key={key} className='basis-[70vw] pl-2 sm:basis-[280px]'>
-                <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                <ListingCardSkeleton classStyle='w-[70vw] sm:w-[280px] !aspect-[4/5]' />
               </div>
             ))}
           </div>
