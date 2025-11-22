@@ -1,6 +1,7 @@
 'use client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, useMemo } from 'react';
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
@@ -52,7 +53,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     return Boolean(ownerId && currentUserId && ownerId === currentUserId);
   }, [currentUserResp?.user?.id, business?.owner?.id]);
 
-  
   const galleryImages = [
     business.thumbnail,
     business.logo,
@@ -60,7 +60,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
       typeof img === 'string' ? img : img.image || img
     ),
   ].filter(Boolean);
-  
+
   const isBusinessSaved = isSaved(business.id);
   const handleBookmarkClick = async () => {
     await toggleSave(business.id);
@@ -82,6 +82,20 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     { name: 'Gallery', href: '#gallery' },
     { name: 'More', href: '#more' },
   ];
+
+  // active section/hash state for nav styling
+  const [activeHash, setActiveHash] = useState<string>(() => {
+    if (typeof window !== 'undefined') return window.location.hash || '#about';
+    return '#about';
+  });
+
+  useEffect(() => {
+    const onHashChange = () => setActiveHash(window.location.hash || '#about');
+    // set initial in case mount happens after navigation
+    onHashChange();
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   console.log(businessDetails);
 
@@ -105,21 +119,19 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
       let result = false;
       try {
         if (typeof send === 'function') {
-          // send expects either raw string or object (hook stringifies), so try object first
-          result = send(payload as unknown);
+          result = send(payload);
         }
       } catch (err) {
         console.error('Failed to send chat init over socket', err);
       }
 
       console.log('startChat socket send result', result);
-      // server responses (chat created / messages) will be logged via onMessage/onImages
     } catch (err) {
       console.error('Failed to start/get chat for business', err);
     }
   };
   return (
-    <main className='relative mx-auto max-w-[1540px] py-8 pt-24 lg:pt-28'>
+    <main className='relative mx-auto py-8 pt-24 lg:pt-28'>
       {/* Back Button */}
 
       {/* Hero Section with Image and Business Info */}
@@ -132,36 +144,77 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
         }}
       >
         {/* Hero Image */}
-        <div className='relative min-h-[50vh] w-full bg-[#00000075] px-5 pb-28 pt-14 md:px-16 xl:px-32 text-white'>
+        <div className='relative min-h-[50vh] w-full bg-[#00000075] px-5 pb-28 pt-14 text-white md:px-16 xl:px-32'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
-              <Image src={business?.logo || '/default-logo.png'} alt={`${business.name} logo`} width={50} height={70} className='rounded-full' />
-              <p>{business.name}</p>
+              <div className='relative size-12 overflow-hidden rounded-full'>
+                <Image
+                  src={business?.logo || '/default-logo.png'}
+                  alt={`${business.name} logo`}
+                  objectFit='cover'
+                  fill
+                />
+              </div>
+
+              <p className='text-xs md:text-base'>{business.name}</p>
             </div>
-            <div className='flex gap-14'>
-              {navLink.map((links, index) => (
-                <div key={index}>
-                  <Link href={links.href}>{links.name}</Link>
-                </div>
-              ))}
+            <div className='hidden gap-14 lg:flex'>
+              {navLink.map((links, index) => {
+                const isActive = activeHash === links.href;
+                return (
+                  <div key={index}>
+                    <Link
+                      href={links.href}
+                      onClick={() => setActiveHash(links.href)}
+                      className={cn(
+                        'text-sm font-medium transition-colors',
+                        isActive
+                          ? 'text-[#C3B5FD] underline decoration-[#C3B5FD] decoration-2'
+                          : 'text-white'
+                      )}
+                    >
+                      {links.name}
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
             <div className=''>
-              <Button className='bg-[#F5F3FF] border border-[#D9D6FE] text-[#551FB9] rounded-2xl py-3'><VerifiedIcon/> Verified By Delve <DelveIcon/></Button>
+              <Button className='rounded-2xl border border-[#D9D6FE] bg-[#F5F3FF] py-3 text-[#551FB9]'>
+                <VerifiedIcon /> Verified By Delve <DelveIcon />
+              </Button>
             </div>
           </div>
           <div className='mt-96'>
-          <h2 className='text-5xl font-bold font-karma max-w-[681px]'>Turn your dreams into unforgettable experiences</h2>
-              {isOwner ? (
-                <Button className='bg-[#0000006B] border border-[#FCFCFD] !py-5 px-20 mt-10'>
-                  Send us a message
-                </Button>
-              ) : (
-                <Button onClick={handleStartChat} className='bg-[#0000006B] border border-[#FCFCFD] !py-5 px-20 mt-10'>
-                  Chat with business
-                </Button>
-              )}
+            <h2 className='max-w-[681px] font-karma text-xl font-bold md:text-3xl xl:text-5xl'>
+              Turn your dreams into unforgettable experiences
+            </h2>
+            {isOwner ? (
+              <Button className='mt-10 border border-[#FCFCFD] bg-[#0000006B] !py-6 md:px-20'>
+                Send us a message
+              </Button>
+            ) : (
+              <Button
+                onClick={handleStartChat}
+                className='mt-10 border border-[#FCFCFD] bg-[#0000006B] !py-6 md:px-20'
+              >
+                Chat with business
+              </Button>
+            )}
           </div>
         </div>
+      </div>
+      <div className='bg-white'>
+        <section id='about' className='px-28'>
+          <h2 className='mb-4 font-karma text-5xl font-bold text-[#FF9C66]'>
+            Get to know us
+          </h2>
+          <p className='text-[#475467]'>
+            {business.description ||
+              'No description available for this business.'}
+          </p>
+          <div></div>
+        </section>
       </div>
 
       {/* Main Content Grid */}
@@ -169,15 +222,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
         {/* Left Column - Main Content */}
         <div className='lg:col-span-2'>
           {/* Get to know us */}
-          <section className='mb-8 rounded-2xl bg-white p-8 shadow-sm'>
-            <h2 className='mb-4 text-2xl font-bold text-[#0F172A]'>
-              Get to know us
-            </h2>
-            <p className='text-[#475467]'>
-              {business.description ||
-                'No description available for this business.'}
-            </p>
-          </section>
 
           {/* Services */}
           {business.services && business.services.length > 0 && (
