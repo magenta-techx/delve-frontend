@@ -202,7 +202,7 @@ export function useCreateBusiness(): UseMutationResult<
 export function useBusinessDetails(
   businessId?: BusinessId,
   advertisment_id?: string,
-  page: string = 'dashboard'
+  page?: string
 ): UseQueryResult<ApiEnvelope<BusinessDetail>, Error> {
   const searchParams = new URLSearchParams();
   if (page) searchParams.set('page', page);

@@ -5,3 +5,4 @@ export { default as BusinessLandingTestimonies } from './BusinessLandingTestimon
 export { default as BusinessLandingPricingList } from './BusinessLandingPricingList';
 export { default as BusinessLandingFAQs } from './BusinessLandingFAQs';
 export { default as BusinessSearch } from './BusinessSearch';
+export { default as BusinessServicesAccordion } from './BusinessServicesAccordion';

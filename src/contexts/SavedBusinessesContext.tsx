@@ -14,7 +14,6 @@ import {
   useUnsaveBusiness,
 } from '@/app/(clients)/misc/api/user';
 import { useSession } from 'next-auth/react';
-import { useUserContext } from './UserContext';
 import { SavedBusinessItem } from '@/types/api';
 
 export interface SavedBusinessesContextType {
@@ -39,7 +38,6 @@ export function SavedBusinessesProvider({
   children: React.ReactNode;
 }) {
   const [savingBusinessId, setSavingBusinessId] = useState<string | number | null>(null);
-  const { isAuthenticated } = useUserContext?.() || { isAuthenticated: false };
   const queryClient = useQueryClient();
   const { data: session, status } = useSession();
 

@@ -89,6 +89,7 @@ const LandingPageNavbar = () => {
     '/businesses/create-listing',
   ];
 
+
   if (PAGES_WITHOUT_NAVBAR.includes(pathname)) {
     return null;
   }
@@ -96,7 +97,7 @@ const LandingPageNavbar = () => {
   return (
     <nav
       className={cn(
-        'relative z-[20] flex h-16 w-full items-center justify-between p-4 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24',
+        'relative z-[20] flex h-16 w-full items-center justify-between px-4 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24',
         isBusiness || isMobile
           ? 'bg-white'
           : pageHasBlackBg
@@ -123,7 +124,7 @@ const LandingPageNavbar = () => {
             {calculatingScreenWidth ? null : (
               <>
                 {!isMobile && (
-                  <ul className='ml-auto mr-4 flex items-center gap-4'>
+                  <ul className='mx-auto flex items-center gap-4'>
                     {userIsloggedIn
                       ? AUTHENTICATED_USER_LINKS.map(link => {
                           const isActive =
@@ -210,18 +211,18 @@ const LandingPageNavbar = () => {
                         {session.user.is_brand_owner ? (
                           <LinkButton
                             href='/business'
-                            className='w-full'
-                            size={'lg'}
+                            className='w-full bg-[#551FB9]'
+                            size={'dynamic_lg'}
                           >
                             Business Dashboard
                           </LinkButton>
                         ) : (
                           <LinkButton
                             href='/businesses/create-listing'
-                            className='w-full'
-                            size={'lg'}
+                            className='w-full bg-[#551FB9]'
+                            size={'dynamic_lg'}
                           >
-                            List Business
+                            List your business
                           </LinkButton>
                         )}
                       </div>
@@ -253,7 +254,7 @@ const LandingPageNavbar = () => {
                 ) : (
                   <section>
                     <LinkButton
-                      size='md'
+                      size='lg'
                       variant={isMobile ? 'default' : 'ghost'}
                       href='/signin'
                       className={cn('mr-2', pageHasBlackBg && 'text-white')}
@@ -261,7 +262,7 @@ const LandingPageNavbar = () => {
                       Log in / Sign up
                     </LinkButton>
                     <LinkButton
-                      size='md'
+                      size='lg'
                       href='/signup'
                       className='max-md:!hidden'
                     >

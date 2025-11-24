@@ -1,6 +1,7 @@
+'use client';
 
+import CollaborationForm from "@/app/(clients)/misc/components/CollaborationForm";
 import { useRouter } from "next/navigation";
-import CollaborationForm from "@/components/collaboration/CollaborationForm";
 
 export default function NewCollaborationPage() {
 	const router = useRouter();

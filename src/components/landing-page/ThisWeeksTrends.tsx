@@ -1,42 +1,25 @@
+import { useTrendingBusiness } from '@/app/(clients)/misc/api';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
 const ThisWeeksTrends = (): JSX.Element => {
+  const { data } = useTrendingBusiness();
+
   return (
     <div className='relative flex h-[513px] w-[100%] flex-col items-center sm:h-[553px] sm:flex-row'>
       {/* Desktop  */}
       <div className='relative hidden h-full w-full items-center sm:flex sm:w-[64%]'>
         <div className='absolute h-full w-full bg-black/50'></div>
-        <div className='h-full w-[50%]'>
+        <div className='h-full w-full'>
           <Image
-            src={'/landingpage/trendz-1.jpg'}
+            src={data?.data.thumbnail || '/landingpage/trendz-1.jpg'}
             alt='trendz'
             width={200}
             height={100}
             className='h-full w-full'
           />
-        </div>
-        <div className='h-full w-[50%] bg-black'>
-          <div className='h-[50%]'>
-            <Image
-              src={'/landingpage/trendz-2.jpg'}
-              alt='trendz'
-              width={200}
-              height={100}
-              className='h-full w-full'
-            />
-          </div>
-          <div className='h-[50%]'>
-            <Image
-              src={'/landingpage/trendz-3.jpg'}
-              alt='trendz'
-              width={200}
-              height={100}
-              className='h-full w-full'
-            />
-          </div>
         </div>
       </div>
 
@@ -76,11 +59,11 @@ const ThisWeeksTrends = (): JSX.Element => {
       <div className='h-full w-full bg-[#FFF4ED] px-4 pb-3 pt-10 sm:w-[36%] sm:pl-14 sm:pt-14'>
         <div className='flex items-center gap-2'>
           <BaseIcons value='rocket-outline-primary' />
-          <h1 className='font-karma text-[20px] sm:text-[38px]'>
+          <h1 className='font-karma text-lg sm:text-2xl'>
             This Week’s Trend
           </h1>
         </div>
-        <p className='mb-5 w-full text-[12px] sm:w-[420px] sm:text-[20px]'>
+        <p className='mb-5 w-full text-xs sm:w-[420px] sm:text-lg'>
           Every week, Delve celebrates one outstanding business that’s captured
           the most attention, the most views, the most saves, the most chats.
           It’s our way of saying “Well done!” and giving them a free spotlight
@@ -114,18 +97,19 @@ const ThisWeeksTrends = (): JSX.Element => {
           <div className='flex h-[85px] items-center gap-2 border-b-[1px] border-b-white sm:-mt-5'>
             <div className='h-[46px] w-[46px] shrink-0 rounded-full sm:h-[50px] sm:w-[50px]'>
               <Image
-                src={'/landingpage/lagos.png'}
-                alt={'delve'}
+                src={data?.data.logo || '/landingpage/lagos.png'}
+                alt={data?.data.name || 'business logo'}
                 width={200}
                 height={100}
-                className='h-full w-full rounded-full object-cover'
+                className='h-full w-full rounded-full object-cover text-[0.6rem]'
               />
             </div>
             <div>
-              <h3 className='text-[14px] font-bold sm:text-xl'>Ember Lagos</h3>
+              <h3 className='text-[14px] font-bold sm:text-xl'>
+                {data?.data.name || '...'}
+              </h3>
               <p className='line-clamp-2 text-[13px]'>
-                The Ember Table is where bold Nigerian flavors meet refined
-                culinary flair. Our menu is rooted in tradition bu..
+                {data?.data.description || '...'}
               </p>
             </div>
           </div>
@@ -134,13 +118,13 @@ const ThisWeeksTrends = (): JSX.Element => {
           <div className='my-2 flex items-center justify-between text-[14px]'>
             <div className='flex items-center gap-2'>
               <BaseIcons value='marker-light-red' />
-              <span className='truncate text-[10px] text-[#FFE6D5] sm:text-sm'>
-                12 Adebayo Street, Lekki Phase 1..
+              <span className='truncate text-[0.625rem] text-[#FFE6D5] sm:text-sm'>
+                {data?.data.address || '...'}
               </span>
             </div>
             <div className='flex items-center gap-1'>
               <BaseIcons value='star-yellow' />
-              <p>4.8</p>
+              <p className="text-[0.7rem]">{data?.data.average_review_rating || 'No reviews'}</p>
             </div>
           </div>
 
@@ -150,7 +134,7 @@ const ThisWeeksTrends = (): JSX.Element => {
               <div className='flex h-[10px] w-[10px] items-center justify-center'>
                 <BaseIcons value='food-and-drinks-white' />
               </div>
-              <p>Food & Drinks</p>
+              <p>{data?.data.category || 'Uncategorized'}</p>
             </div>
             <div className='flex w-[200px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[8px] text-white sm:text-[14px]'>
               <div className='flex h-[8px] w-[8px] items-center justify-center'>
@@ -162,15 +146,15 @@ const ThisWeeksTrends = (): JSX.Element => {
               <div className='flex h-[10px] w-[10px] items-center justify-center'>
                 <BaseIcons value='person-white' />
               </div>
-              <p>258</p>
+              <p>{data?.data.number_of_profile_visits ?? 0}</p>
             </div>
           </div>
 
           {/* images  */}
           <div className='h-[219px] w-full rounded-xl bg-black sm:flex sm:w-[449px]'>
             <Image
-              src={'/landingpage/trendz-4.jpg'}
-              alt=''
+              src={data?.data.thumbnail || '/landingpage/trendz-4.jpg'}
+              alt={data?.data.name || 'trending business'}
               width={300}
               height={100}
               className='h-full w-full rounded-2xl'

@@ -4,17 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import type { BusinessSummary } from '@/types/api';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogFooter,
-} from '@/components/ui/AlertDialog';
-import { BookmarkIcon } from '../icons';
+import { AccessDeniedModal } from '@/components/ui';
 
 interface FeaturedListingCardProps {
   business: BusinessSummary;
@@ -24,7 +14,6 @@ interface FeaturedListingCardProps {
 
 const FeaturedListingCard = ({
   business,
-  classStyle,
 }: FeaturedListingCardProps): JSX.Element => {
   const { isSaved, toggleSave, showLoginAlert, setShowLoginAlert, isSaving } =
     useSavedBusinessesContext();
@@ -47,11 +36,11 @@ const FeaturedListingCard = ({
   };
 
   const baseClasses =
-    'xl:group relative flex flex-col items-center justify-center p-2 font-inter ring-[2px] ring-[#FEC601] ring-offset-4 !aspect-[5/6] rounded-xl overflow-hidden';
+    'group relative flex flex-col items-center justify-center p-2 font-inter ring-[2px] ring-[#FEC601] ring-offset-4 !aspect-[5/6] rounded-xl overflow-hidden';
 
   return (
     <>
-      <article className={`${baseClasses} ${classStyle ?? ''}`}>
+      <article className={baseClasses}>
         {/* Bookmark  */}
         <button
           onClick={handleBookmarkClick}
@@ -65,19 +54,18 @@ const FeaturedListingCard = ({
             </div>
           ) : isBusinessSaved ? (
             <svg
-              width='25'
-              height='28'
-              viewBox='0 0 25 28'
-              fill='none'
               xmlns='http://www.w3.org/2000/svg'
+              width='24'
+              height='24'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              className='lucide lucide-loader-circle-icon lucide-loader-circle'
             >
-              <path
-                d='M0.5 5V23.2188C0.5 26.5641 3.45254 27.9104 5.79844 25.5256C6.47274 24.8401 7.23017 24.0609 8.08048 23.1752C10.4881 20.6675 14.5119 20.6675 16.9195 23.1752C17.7698 24.0609 18.5273 24.8401 19.2016 25.5256C21.5475 27.9104 24.5 26.5641 24.5 23.2188V5C24.5 2.51472 22.4853 0.5 20 0.5H5C2.51472 0.5 0.5 2.51472 0.5 5Z'
-                fill='#C3B5FD'
-                stroke='black'
-                stroke-linecap='round'
-                stroke-linejoin='round'
-              />
+              <path d='M21 12a9 9 0 1 1-6.219-8.56' />
             </svg>
           ) : (
             <svg
@@ -91,8 +79,8 @@ const FeaturedListingCard = ({
                 d='M0.5 5V23.2188C0.5 26.5641 3.45254 27.9104 5.79844 25.5256C6.47274 24.8401 7.23017 24.0609 8.08048 23.1752C10.4881 20.6675 14.5119 20.6675 16.9195 23.1752C17.7698 24.0609 18.5273 24.8401 19.2016 25.5256C21.5475 27.9104 24.5 26.5641 24.5 23.2188V5C24.5 2.51472 22.4853 0.5 20 0.5H5C2.51472 0.5 0.5 2.51472 0.5 5Z'
                 fill='#FFFFFF'
                 stroke='black'
-                stroke-linecap='round'
-                stroke-linejoin='round'
+                strokeLinecap='round'
+                strokeLinejoin='round'
               />
             </svg>
           )}
@@ -146,24 +134,11 @@ const FeaturedListingCard = ({
           </div>
         </div>
       </article>
-      {/* Alert dialog for not logged in */}
-      <AlertDialog open={showLoginAlert} onOpenChange={setShowLoginAlert}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Sign in required</AlertDialogTitle>
-            <AlertDialogDescription>
-              You need to be logged in to save a business. Please sign in to
-              continue.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Close</AlertDialogCancel>
-            <AlertDialogAction asChild>
-              <a href='/auth/signup-signin'>Sign in</a>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+
+      <AccessDeniedModal
+        isAccessDeniedModalOpen={showLoginAlert}
+        closeAccessDeniedModal={setShowLoginAlert}
+      />
     </>
   );
 };

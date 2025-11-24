@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
 
 export default function CollaborationDetails({ collabId }: { collabId: number }) {
- 
+ console.log(collabId)
   return (
     <div className="space-y-4">
         PEPPER

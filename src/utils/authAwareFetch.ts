@@ -1,4 +1,4 @@
-import { is401Error, handle401Redirect, apiRequest } from './apiHandler';
+import { apiRequest } from './apiHandler';
 
 interface FetchWrapperOptions extends RequestInit {
   skipAuthRedirect?: boolean; // Allow skipping 401 handling for specific cases

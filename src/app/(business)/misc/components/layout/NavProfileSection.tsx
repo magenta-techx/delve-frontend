@@ -6,7 +6,7 @@ import { MessagesSelectedIcon } from '../icons';
 import { NotificationsIcon } from '@/app/(clients)/misc/icons';
 
 const NavProfileSection = () => {
-  const { status, data } = useSession();
+  const { status } = useSession();
   if (status === 'loading') {
     return <div>Loading...</div>;
   }

@@ -9,7 +9,7 @@ export async function GET(
   const { business_id } = params;
   const { searchParams } = new URL(req.url);
   const page = searchParams.get('page') ?? undefined;
-  return forward(req, 'GET', `/businesses/${business_id}/`, { query: { page }, auth: true });
+  return forward(req, 'GET', `/businesses/${business_id}/`, { query: { page }, auth: !!page });
 }
 
 // DELETE /api/business/[business_id]

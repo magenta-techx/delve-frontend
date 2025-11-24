@@ -16,7 +16,8 @@ export default function DashboardPage(): JSX.Element {
     undefined,
     'dashboard'
   );
-
+  
+  console.log(data?.data.thumbnail);
   if (isLoading || isBusinessDetailsLoading) {
     return (
       <div className='flex size-full items-center justify-center'>

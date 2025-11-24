@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MessageHandler = (data: any) => void;
 
 export function useWebsocket(url?: string, onMessage?: MessageHandler) {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    if (!url) return;
+    if (!url) return undefined;
     try {
       const ws = new WebSocket(url);
       wsRef.current = ws;
@@ -37,6 +38,7 @@ export function useWebsocket(url?: string, onMessage?: MessageHandler) {
       };
     } catch (err) {
       // ignore
+      return undefined;
     }
   }, [url, onMessage]);
 

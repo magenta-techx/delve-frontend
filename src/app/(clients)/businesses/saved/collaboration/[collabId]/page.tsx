@@ -1,6 +1,6 @@
-
+'use client';
+import CollaborationDetails from "@/app/(clients)/misc/components/CollaborationDetails";
 import { useParams } from "next/navigation";
-import CollaborationDetails from "@/components/collaboration/CollaborationDetails";
 
 export default function CollaborationDetailsPage() {
   const params = useParams();

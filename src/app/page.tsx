@@ -46,7 +46,7 @@ export default function HomePage() {
   const { data: approvedResp, isLoading: loadingApproved } =
     useApprovedBusinesses();
   const approved = approvedResp?.data ?? [];
-  const isEmptyApproved = !loadingApproved && approved.length === 0;
+  // const _isEmptyApproved = !loadingApproved && approved.length === 0;
 
   const { isMobile, isLoading: calculatingScreenWidth } = useIsMobile();
 
@@ -130,11 +130,11 @@ export default function HomePage() {
                         ?.split(' ')[0]
                         ?.toLowerCase() as CategoryIconType;
                       return (
-                        <CarouselItem
+                        <div
+                          className='px-4 sm:px-10 md:px-12 xl:px-16'
                           key={category.id}
-                          className='flex basis-32 items-center justify-center pl-2 sm:basis-48'
                         >
-                          <div className='flex w-full items-center justify-center'>
+                          <CarouselItem className='flex basis-32 items-center justify-center sm:basis-48'>
                             <CategoryCard
                               title={category.name}
                               icon={
@@ -147,8 +147,8 @@ export default function HomePage() {
                                 <BusinessCategoryIcons value={iconName} />
                               }
                             />
-                          </div>
-                        </CarouselItem>
+                          </CarouselItem>
+                        </div>
                       );
                     })}
               </CarouselContent>
@@ -174,23 +174,30 @@ export default function HomePage() {
         <div className='relative flex w-full items-center justify-center'>
           <div className='mb-20 flex w-full items-center'>
             <Carousel
-              opts={{ align: calculatingScreenWidth ? 'start' : !isMobile ? 'center' : 'start', loop: false }}
+              opts={{
+                align: calculatingScreenWidth
+                  ? 'start'
+                  : !isMobile
+                    ? 'center'
+                    : 'start',
+                loop: false,
+              }}
               className='container mx-auto w-[90vw] px-2'
             >
-              <CarouselContent className='-ml-2 xl:justify-center gap-4 py-4'>
+              <CarouselContent className='-ml-2 gap-4 py-4 xl:justify-center'>
                 {loadingApproved
                   ? Array.from({ length: 4 }).map((_, key) => (
                       <CarouselItem
                         key={key}
-                        className='basis-[70vw] pl-2 sm:basis-[340px]'
+                        className='basis-[70vw] pl-2 sm:basis-[280px]'
                       >
-                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[280px] !aspect-[4/5]' />
                       </CarouselItem>
                     ))
                   : approved.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[340px]'
+                        className='basis-[70vw] pl-2 sm:basis-[280px]'
                       >
                         <FeaturedListingCard business={business} />
                       </CarouselItem>
@@ -208,7 +215,7 @@ export default function HomePage() {
             Search by location
           </h1>
 
-          <div className='mb-20 flex w-full items-center gap-10 sm:w-[1490px]'>
+          <div className='container mb-20 flex w-full items-center gap-10 px-2 sm:px-0'>
             <div className='relative w-full'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
@@ -218,7 +225,7 @@ export default function HomePage() {
                   {LOCATIONS.map((location, key) => (
                     <CarouselItem
                       key={key}
-                      className='flex basis-36 items-center justify-center px-1.5'
+                      className='flex basis-36 items-center justify-center px-1.5 lg:basis-[25%]'
                     >
                       <LocationCard
                         key={key}
@@ -254,7 +261,7 @@ export default function HomePage() {
             paragraph='Spotlight'
           />
 
-          <h1 className='-mb-16 mt-10 hidden text-2xl font-bold sm:flex'>
+          <h1 className='-mb-16 mt-10 hidden md:text-lg xl:text-xl font-semibold sm:flex'>
             Hot deals and events you don’t want to miss
           </h1>
           <div className='flex items-center gap-3 px-4 sm:px-0'>
@@ -316,8 +323,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Stats  */}
-      <div className='flex flex-col items-center py-14'>
+      <div className='container flex w-full flex-col items-center py-14'>
         <div className='mb-20 flex items-center gap-6 sm:mb-40 sm:gap-72'>
           {STATS.map((stat, key) => {
             return (
@@ -331,8 +337,8 @@ export default function HomePage() {
           })}
         </div>
 
-        <div className='mt:px-0 relative flex w-full flex-col items-center justify-center'>
-          <div className='flex w-full justify-between px-4 sm:px-0'>
+        <section className='mt:px-0 container relative flex w-full flex-col items-center justify-between'>
+          <header className='flex w-full items-center justify-between px-4'>
             <div className='flex items-center gap-2'>
               <BaseIcons value='stars-primary' />
               <h1 className='text-[16px] font-bold sm:text-2xl'>
@@ -345,27 +351,27 @@ export default function HomePage() {
                 See all listings
               </Link>
             </div>
-          </div>
+          </header>
 
           <div className='mb-20 flex w-full items-center'>
             <Carousel
               opts={{ align: 'start', loop: false }}
               className='w-full max-w-full px-2'
             >
-              <CarouselContent className='-ml-2 gap-4 p-4'>
+              <CarouselContent className='-ml-2 w-full gap-4 p-4 xl:justify-center'>
                 {loadingApproved
                   ? Array.from({ length: 4 }).map((_, key) => (
                       <CarouselItem
                         key={key}
-                        className='basis-[70vw] pl-2 sm:basis-[340px]'
+                        className='basis-[70vw] pl-2 sm:basis-[280px]'
                       >
-                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[280px] !aspect-[4/5]' />
                       </CarouselItem>
                     ))
                   : approved.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[340px]'
+                        className='basis-[70vw] pl-2 sm:basis-[280px]'
                       >
                         <FeaturedListingCard business={business} />
                       </CarouselItem>
@@ -375,11 +381,10 @@ export default function HomePage() {
               <CarouselNext className='absolute right-2 top-1/2 z-10 -translate-y-1/2' />
             </Carousel>
           </div>
-        </div>
+        </section>
       </div>
 
-      {/* Tips, trends, vendor stories  */}
-      <div className='-mt-20 mb-20 px-4 sm:-mt-0 sm:mb-32 sm:px-0'>
+      <div className='container -mt-20 mb-20 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-32 sm:px-0'>
         <h1 className='font-karma text-[24px] font-semibold sm:text-[52px]'>
           Tips, Trends & Vendor Stories
         </h1>
@@ -388,29 +393,27 @@ export default function HomePage() {
           success stories all curated for you.
         </p>
 
-        <div className='flex items-center gap-10'>
+        <div className='flex w-full items-center gap-10'>
           <BlogCard
             imageUrl={'/landingpage/stories-1.jpg'}
             header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
             containerClassStyle='w-full h-[422px] sm:w-[816px] sm:h-[740px]'
-            imageClassStyle='sm:w-[752px] sm:h-[440px] w-full'
+            imageClassStyle=' sm:h-[440px] w-full'
           />
           <BlogCard
             imageUrl={'/landingpage/stories-2.jpg'}
             header='Skipping Sunscreen'
             containerClassStyle='w-[647px] sm:flex hidden h-[740px]'
-            imageClassStyle='w-[583px] h-[440px] '
+            imageClassStyle='  h-[440px] '
           />
         </div>
       </div>
 
-      {/* This weeks trends  */}
-      <div className='mb-80 w-full py-10 sm:mb-10 sm:w-[2000px] sm:py-0'>
+      <div className='mb-80 w-full py-10 sm:mb-10 sm:py-0'>
         <ThisWeeksTrends />
       </div>
 
-      {/* FAQS  */}
-      <div className='w-full pb-20 sm:w-[1244px] sm:py-32'>
+      <div className='w-full py-20'>
         <BusinessLandingFAQs />
       </div>
 

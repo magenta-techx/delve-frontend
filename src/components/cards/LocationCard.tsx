@@ -9,7 +9,7 @@ interface LocationProps {
 
 const LocationCard = ({ name, imageUrl }: LocationProps): JSX.Element => {
   return (
-    <Link href={`businesses/search?location=${name}`} className='group relative flex w-36 !aspect-[4/5] items-center justify-center overflow-hidden rounded-2xl sm:h-[210px] sm:w-[360px]'>
+    <Link href={`businesses/search?location=${name}`} className='group relative flex w-36 max-md:!aspect-[4/5] items-center justify-center overflow-hidden rounded-2xl sm:h-[210px] sm:w-full'>
       <div className='absolute z-10 h-full w-full rounded-xl bg-[#0000007A] transition-opacity duration-300 group-hover:opacity-0'></div>
 
       <Image

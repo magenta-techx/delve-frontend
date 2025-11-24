@@ -1,7 +1,6 @@
-import { useState } from 'react';
-
+'use client';
 export default function CollaborationForm({
-  onCreated,
+  
 }: {
   onCreated: (data: any) => void;
 }) {
