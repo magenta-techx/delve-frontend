@@ -39,7 +39,7 @@ export  {
 export { default as EmptyState } from './EmptyState'
 export { Input } from './Input'
 // export { Label } from './Label'
-export { Textarea } from './Textarea'
+export { Textarea } from './Textareaa'
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './Tabs'
 
