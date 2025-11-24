@@ -45,6 +45,7 @@ declare module 'next-auth' {
       is_active: boolean;
       current_plan: string;
       is_premium_plan_active: boolean;
+      error: string;
     } & DefaultSession['user'];
   }
 }
@@ -67,12 +68,19 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
     return {
       ...token,
       accessToken: refreshedTokens?.data?.access,
-      accessTokenExpires: Date.now() + 60 * 60 * 1000, // expires in 1 hour
+      accessTokenExpires: Date.now() + 55 * 60 * 1000, // expires in 55 minutes
       refreshToken: refreshedTokens?.data?.refresh ?? token.refreshToken, // fall back to old one
+      error: '', // clear error on successful refresh
     };
   } catch (error) {
     console.log('Refresh token error:', error);
-    return { ...token, error: 'RefreshAccessTokenError' };
+    // Mark token as invalid so client can sign out
+    return {
+      ...token,
+      accessToken: '',
+      accessTokenExpires: 0,
+      error: 'RefreshAccessTokenError',
+    };
   }
 }
 
@@ -80,6 +88,18 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: 'jwt' },
 
   providers: [
+    //   process.env['GOOGLE_CLIENT_ID'] && process.env['GOOGLE_CLIENT_SECRET']
+    //   ? GoogleProvider({
+    //       clientId: process.env['GOOGLE_CLIENT_ID'] as string,
+    //       clientSecret: process.env['GOOGLE_CLIENT_SECRET'] as string,
+    //     })
+    //   : null,
+    // process.env['FACEBOOK_CLIENT_ID'] && process.env['FACEBOOK_CLIENT_SECRET']
+    //   ? FacebookProvider({
+    //       clientId: process.env['FACEBOOK_CLIENT_ID'] as string,
+    //       clientSecret: process.env['FACEBOOK_CLIENT_SECRET'] as string,
+    //     })
+    //   : null,
     GoogleProvider({
       clientId: process.env['GOOGLE_CLIENT_ID']!,
       clientSecret: process.env['GOOGLE_CLIENT_SECRET']!,
@@ -96,7 +116,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) return null;
-        console.log('API_BASE_URL:', process.env['API_BASE_URL']);
 
         const res = await fetch(
           `${process.env['API_BASE_URL']}/user/auth/token/`,
@@ -136,8 +155,8 @@ export const authOptions: NextAuthOptions = {
   ],
 
   pages: {
-    signIn: '/auth/signin-signup',
-    signOut: '/auth/signin-signup',
+    signIn: '/signin',
+    signOut: '/signin',
   },
 
   callbacks: {
@@ -145,23 +164,29 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
-        token.accessTokenExpires = Date.now() + 60 * 60 * 1000;
-
+        token.accessTokenExpires = Date.now() + 55 * 60 * 1000; // expires in 55 minutes
         token.is_brand_owner = user.is_brand_owner;
         token.number_of_owned_brands = user.number_of_owned_brands;
         token.is_active = user.is_active;
         token.current_plan = user.current_plan;
         token.is_premium_plan_active = user.is_premium_plan_active;
+        // Persist name/email/image too so session callback can read consistently
+        if (user.name) token.name = user.name;
+        if (user.email) token.email = user.email;
       }
 
+      // Refresh the token 5 minutes before actual expiration
+      const refreshBuffer = 5 * 60 * 1000;
       if (
         token.accessTokenExpires &&
-        Date.now() < token.accessTokenExpires &&
-        token.accessToken
+        Date.now() < token.accessTokenExpires - refreshBuffer &&
+        token.accessToken &&
+        !token.error
       ) {
         return token;
       }
 
+      // If token is expired or within buffer, try to refresh
       return refreshAccessToken(token);
     },
     async session({
@@ -174,19 +199,27 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user = {
           ...session.user,
+          // Basic identity
+          name: token.name ?? null,
           email: token.email ?? null,
           image: token.picture ?? null,
+          // App-specific flags
           is_active: token.is_active ?? null,
           is_brand_owner: token.is_brand_owner ?? null,
           is_premium_plan_active: token.is_premium_plan_active ?? null,
           current_plan: token.current_plan ?? null,
-          name: token.name ?? null,
           number_of_owned_brands: token.number_of_owned_brands ?? null,
+          // Expose tokens to client when needed (e.g., fetch to our API routes)
+          accessToken: token.accessToken,
+          refreshToken: token.refreshToken,
+          error: token.error ?? '',
         };
       }
-      console.log('session: ', session);
-      console.log('token: ', token);
-
+      // If refresh failed, force sign out on client
+      if (token?.error === 'RefreshAccessTokenError') {
+        // Optionally, you can log or handle this event here
+        // The client should check session.user.error and sign out if present
+      }
       return session;
     },
   },

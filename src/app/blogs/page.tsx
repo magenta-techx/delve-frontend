@@ -1,15 +1,14 @@
-import BusinessFooter from '@/components/business/BusinessFooter';
 import BlogCards from '@/components/cards/BlogsCard';
 
-import Navbar from '@/components/Navbar';
 import UpComingEvents from '@/components/UpComingEvents';
 // import type { Metadata } from 'next';
 import Image from 'next/image';
+import { Footer, LandingPageNavbar } from '../(clients)/misc/components';
 
 export default function HomePage(): JSX.Element {
   return (
     <main className='relative flex flex-col items-center'>
-      <Navbar type='blog' authFormButtons={false} />
+      <LandingPageNavbar />
 
       {/* Tips, trends, vendor stories  */}
       <div className='sm:mb-42 sm;px-0 my-14 flex flex-col items-center px-4 sm:my-32 sm:items-start'>
@@ -74,7 +73,7 @@ export default function HomePage(): JSX.Element {
         />
       </div>
 
-      <BusinessFooter />
+      <Footer />
     </main>
   );
 }

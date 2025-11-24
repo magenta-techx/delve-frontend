@@ -1,8 +1,7 @@
+import { Footer, LandingPageNavbar } from '@/app/(clients)/misc/components';
 import { BaseIcons } from '@/assets/icons/base/Icons';
-import BusinessFooter from '@/components/business/BusinessFooter';
 import BlogCards from '@/components/cards/BlogsCard';
 
-import Navbar from '@/components/Navbar';
 // import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,7 +9,7 @@ import Link from 'next/link';
 export default function HomePage(): JSX.Element {
   return (
     <main className='relative flex flex-col items-center'>
-      <Navbar type='blog' authFormButtons={false} />
+      <LandingPageNavbar  />
 
       {/* Blog detail  */}
       <div className='my-32 w-[1488px]'>
@@ -201,7 +200,7 @@ export default function HomePage(): JSX.Element {
         />
       </div>
 
-      <BusinessFooter />
+      <Footer />
     </main>
   );
 }

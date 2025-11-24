@@ -1,0 +1,15 @@
+export { default as CaretDown } from './CaretDown';
+export { default as BoxedArrow } from './BoxedArrow';
+export { default as TrashIcon } from './Trash';
+export { default as WhatsappIcon } from './Whatsapp';
+export { default as TikTokIcon } from './TikTok';
+export { default as InstagramIcon } from './Instagram';
+export { default as FacebookIcon } from './Facebook';
+export { default as TwitterIcon } from './Twitter';
+export { default as Logo } from './Logo';
+export { default as LogoIcon } from './LogoIcon';
+export { default as LogoLoadingIcon } from './LogoLoading';
+export { default as MasterCardIcon } from './MasterCard';
+export { default as VisaIcon } from './Visa';
+export { default as ReceiptIcon } from './Receipt';
+export { default as TagIcon } from './Tag';

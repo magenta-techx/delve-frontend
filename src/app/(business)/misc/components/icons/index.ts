@@ -1,0 +1,16 @@
+export { default as BookmarkSelectedIcon } from './BookmarkSelected';
+export { default as DashboardIcon } from './Dashboard';
+export { default as DashboardSelectedIcon } from './DashboardSelected';
+export { default as MessagesIcon } from './Messages';
+export { default as MessagesSelectedIcon } from './MessagesSelected';
+export { default as PaymentsIcon } from './Payments';
+export { default as PaymentsSelectedIcon } from './PaymentsSelected';
+export { default as PerformanceIcon } from './Performance';
+export { default as PerformanceSelectedIcon } from './PerformanceSelected';
+export { default as PromotionsIcon } from './Promotions';
+export { default as PromotionsSelectedIcon } from './PromotionsSelected';
+export { default as ReviewsIcon } from './Reviews';
+export { default as ReviewsSelectedIcon } from './ReviewsSelected';
+export { default as SettingsIcon } from './Settings';
+export { default as SettingsSelectedIcon } from './SettingsSelected';
+export { default as SolidEyeIcon } from './SolidEye';

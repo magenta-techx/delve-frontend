@@ -3,9 +3,6 @@
 import { SessionProvider } from 'next-auth/react';
 import { ReactNode } from 'react';
 import { Session } from 'next-auth';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from '@/redux/store';
 
 type Props = {
   children: ReactNode;
@@ -22,12 +19,6 @@ export default function SessionProviderWrapper({
   // }
 
   return (
-    <SessionProvider session={session}>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          {children}
-        </PersistGate>
-      </Provider>
-    </SessionProvider>
+    <SessionProvider session={session}>{children}</SessionProvider>
   );
 }

@@ -1,140 +1,148 @@
-'use client';
-import { forwardRef, useState } from 'react';
-import type { ReactNode } from 'react';
-import { Field, FieldProps } from 'formik';
-import EyeOpenIcon from '@/assets/icons/form/EyeOpenIcon';
-import EyeClosedIcon from '@/assets/icons/form/EyeClosedIcon';
+import * as React from "react";
 
-type InputProps = {
-  name: string;
-  label?: string | ReactNode;
-  placeholder?: string;
-  type?: string;
-  accepts?: string;
-  className?: string;
-  inputClass?: string;
-  disabled?: boolean;
-  validate?: (value: string) => string | undefined;
-  onChange?: (value: File | string) => void;
-  icon?: ReactNode;
-  iconPosition?: string;
-};
+import { cn } from "@/lib/utils";
+type Variant = "default" | "outline" | "ghost";
+type Size = "sm" | "default" | "lg";
+export type FormFieldVariants = { variant?: Variant | undefined; size?: Size | undefined };
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+function formFieldVariants({ variant = "default", size = "default" }: { variant?: Variant | undefined; size?: Size | undefined } = {}): string {
+  const base =
+    "flex w-full min-w-0 rounded-xl transition-[color,box-shadow] outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive";
+  const variants: Record<Variant, string> = {
+    default: "border border-[#D9D9D9] bg-white focus:border-primary focus-visible:border-primary ",
+    outline: "border border-primary bg-background focus-visible:border-primary focus-visible:ring-primary/50 focus-visible:ring-[3px]",
+    ghost: "border-0 bg-transparent focus-visible:border-primary focus-visible:ring-primary/50 focus-visible:ring-[3px]",
+  };
+  const sizes: Record<Size, string> = {
+    sm: "h-9 px-3 py-2 text-sm",
+    default: "h-12 px-3 py-3 text-sm",
+    lg: "h-14 px-4 py-3 text-lg",
+  };
+  return [base, variants[variant], sizes[size]].join(" ");
+}
+
+export interface InputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+    FormFieldVariants {
+  haserror?: boolean;
+  errormessage?: string | undefined;
+  errormessageClass?: string;
+  leftIcon?: React.ReactNode;
+  leftIconContainerClass?: string;
+  rightIcon?: React.ReactNode;
+  containerClassName?: string;
+  label?: string;
+  footer?: React.ReactNode;
+  optional?: boolean;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
-      name,
+      className,
+      containerClassName,
+      type,
+      haserror,
+      leftIcon,
+      leftIconContainerClass,
+      rightIcon,
+      errormessageClass,
       label,
-      placeholder,
-      type = 'text',
-      className = '',
-      inputClass = 'sm:px-3 sm:py-4 focus:border-primary sm:text-[13px]',
-      accepts = 'image/*',
-      icon,
-      iconPosition = 'right',
-      disabled = false,
-      validate,
-      onChange,
+      footer,
+      optional,
+      variant,
+      size,
+      ...props
     },
     ref
   ) => {
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
+    const inputType = showPassword ? "text" : "password";
 
     return (
-      <Field name={name} validate={validate}>
-        {({ field, form, meta }: FieldProps) => {
-          const isPassword = type === 'password';
-          const isFile = type === 'file';
-          const inputType = isPassword
-            ? showPassword
-              ? 'text'
-              : 'password'
-            : type;
-
-          const hasValue = !!field.value;
-
-          return (
-            <div className={`flex flex-col gap-1 ${className}`}>
-              {label && (
-                <label htmlFor={name} className='text-sm font-medium'>
-                  {label}
-                </label>
+      <div className={cn("flex flex-col gap-1.5", containerClassName)}>
+        {label && (
+          <label className="text-sm text-[#0F172B] font-inter font-medium" htmlFor={label}>
+            {label}
+            {!optional && <span className="text-red-400 font-medium"> *</span>}
+          </label>
+        )}
+        <div className="relative">
+          {leftIcon && (
+            <span
+              className={cn(
+                "absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer",
+                leftIconContainerClass
               )}
-
-              <div className='relative flex items-center'>
-                <input
-                  id={name}
-                  disabled={disabled}
-                  type={inputType}
-                  placeholder={placeholder}
-                  accept={isFile ? accepts : undefined}
-                  ref={ref}
-                  // ✅ spread Formik's field props only for non-file inputs
-                  {...(!isFile ? field : {})}
-                  className={`w-full rounded-md border ${iconPosition === 'left' ? 'pl-8' : 'p-2'} font-inter text-[16px] focus:outline-none ${
-                    meta.touched && meta.error
-                      ? 'border-red-500'
-                      : 'border-gray-300'
-                  } ${inputClass}`}
-                  onChange={e => {
-                    if (isFile) {
-                      const file = e.currentTarget.files?.[0] ?? null;
-                      form.setFieldValue(name, file);
-                      onChange?.(file as File);
-                    } else {
-                      form.setFieldValue(name, e.target.value);
-                      onChange?.(e.target.value);
-                    }
-                  }}
-                />
-                {icon && iconPosition === 'left' && (
-                  <span className='absolute left-3 text-gray-400 hover:text-gray-600'>
-                    {icon}
-                  </span>
-                )}
-                {/* Clear button (for text fields only) */}
-                {icon &&
-                  iconPosition === 'right' &&
-                  hasValue &&
-                  !isPassword &&
-                  !isFile && (
-                    <button
-                      type='button'
-                      className='absolute right-3 text-gray-400 hover:text-gray-600'
-                      onClick={() => form.setFieldValue(name, '')}
-                    >
-                      {icon}
-                    </button>
-                  )}
-                {/* Password toggle */}
-                {isPassword && (
-                  <button
-                    type='button'
-                    className='absolute right-3 text-gray-400 hover:text-gray-600'
-                    onClick={() => setShowPassword(prev => !prev)}
-                  >
-                    {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
-                  </button>
-                )}
-              </div>
-
-              {/* Validation message */}
-              <div className='-mt-2 min-h-[20px] p-0'>
-                {meta.touched && meta.error && (
-                  <span className='text-xs text-red-500'>
-                    {meta.error as string}
-                  </span>
-                )}
-              </div>
-            </div>
-          );
-        }}
-      </Field>
+            >
+              {leftIcon}
+            </span>
+          )}
+          <input
+            type={type === "password" ? inputType : type}
+            id={label}
+            className={cn(
+              formFieldVariants({ variant, size }),
+              type === "password" && "pr-12",
+              Boolean(leftIcon) && "pl-12",
+              Boolean(rightIcon) && "pr-12",
+              haserror && "border-destructive focus-visible:border-destructive",
+              className
+            )}
+            ref={ref}
+            {...props}
+          />
+          {rightIcon && (
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer">
+              {rightIcon}
+            </span>
+          )}
+          {type === "password" && (
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer p-1"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? (
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="w-4 h-4"
+                >
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+              ) : (
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="w-4 h-4"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          )}
+        </div>
+        {footer && footer}
+        {haserror && props.errormessage && (
+          <p className={cn("text-sm text-destructive", errormessageClass)}>
+            {props.errormessage}
+          </p>
+        )}
+      </div>
     );
   }
 );
+Input.displayName = "Input";
 
-Input.displayName = 'Input';
-
-export default Input;
-export type { InputProps };
+export { Input };
