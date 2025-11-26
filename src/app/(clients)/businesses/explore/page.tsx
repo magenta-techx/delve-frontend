@@ -43,7 +43,7 @@ export default function HomePage(): JSX.Element {
           <div className='absolute bottom-0 flex h-[88%] w-[100%] rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black via-black/100 to-transparent sm:hidden'></div>
         </div>
         {/* Desktop Hero section  */}
-        <div className='absolute top-[10rem] flex w-full flex-col items-center px-4 sm:top-[20.8rem] sm:px-8 md:top-[24rem] lg:px-20'>
+        <div className='absolute top-[8rem] flex w-full flex-col items-center px-4 sm:top-[14rem] sm:px-8 md:top-[18rem] lg:px-20'>
           <div className='flex w-full max-w-[1620px] flex-col'>
             <div className='flex w-full flex-col sm:max-w-[1000px]'></div>
             <div className='mb-9 flex items-center gap-2 text-white'>
@@ -52,7 +52,7 @@ export default function HomePage(): JSX.Element {
                 LISTINGS
               </p>
             </div>
-            <h1 className='mb-6 max-w-3xl text-balance pr-8 font-karma text-[clamp(2rem,4vw,2.8rem)] font-bold leading-tight text-white'>
+            <h1 className='mb-6 max-w-3xl text-balance pr-8 font-karma text-[clamp(2rem,5vw,3.2rem)] font-bold leading-tight text-white'>
               Discover services tailored to your needs, location, and style.
             </h1>
             <p className='-mt-2 max-w-3xl font-inter text-sm leading-relaxed text-white sm:text-base'>
@@ -97,10 +97,10 @@ export default function HomePage(): JSX.Element {
         ) : (
           <div
             className={cn(
-              'mb-20 mt-5 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6 2xl:grid-cols-5',
+              'mb-20 mt-5 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 2xl:grid-cols-4',
               approved.length < 4
-                ? 'grid-cols-[repeat(auto-fill,minmax(240px,1fr))]'
-                : 'grid-cols-[repeat(auto-fit,minmax(240px,1fr))]'
+                ? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]'
+                : 'grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
             )}
           >
             {loadingApproved
@@ -141,7 +141,7 @@ export default function HomePage(): JSX.Element {
                       key={key}
                       className='basis-[70vw] pl-2 sm:basis-[340px]'
                     >
-                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
                     </CarouselItem>
                   ))
                 : approved.map((business, key) => (
@@ -190,10 +190,10 @@ export default function HomePage(): JSX.Element {
         ) : (
           <div
             className={cn(
-              'mb-20 mt-5 grid gap-6 2xl:grid-cols-5',
+              'mb-20 mt-5 grid gap-6 2xl:grid-cols-4',
               approved.length < 4
-                ? 'grid-cols-[repeat(auto-fill,minmax(240px,1fr))]'
-                : 'grid-cols-[repeat(auto-fit,minmax(240px,1fr))]'
+                ? 'grid-cols-[repeat(auto-fill,minmax(280,1fr))]'
+                : 'grid-cols-[repeat(auto-fit,minmax(280,1fr))]'
             )}
           >
             {loadingApproved
@@ -231,7 +231,7 @@ export default function HomePage(): JSX.Element {
                       key={key}
                       className='basis-[70vw] pl-2 sm:basis-[340px]'
                     >
-                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
                     </CarouselItem>
                   ))
                 : approved.map((business, key) => (
@@ -280,10 +280,10 @@ export default function HomePage(): JSX.Element {
         ) : (
           <div
             className={cn(
-              'mb-20 mt-5 grid gap-6 2xl:grid-cols-5',
+              'mb-20 mt-5 grid gap-6 2xl:grid-cols-4',
               approved.length < 4
-                ? 'grid-cols-[repeat(auto-fill,minmax(240px,1fr))]'
-                : 'grid-cols-[repeat(auto-fit,minmax(240px,1fr))]'
+                ? 'grid-cols-[repeat(auto-fill,minmax(280,1fr))]'
+                : 'grid-cols-[repeat(auto-fit,minmax(280,1fr))]'
             )}
           >
             {loadingApproved
@@ -321,7 +321,7 @@ export default function HomePage(): JSX.Element {
                       key={key}
                       className='basis-[70vw] pl-2 sm:basis-[340px]'
                     >
-                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[4/5]' />
+                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
                     </CarouselItem>
                   ))
                 : approved.map((business, key) => (
@@ -341,7 +341,7 @@ export default function HomePage(): JSX.Element {
 
       <UpComingEvents />
 
-      <div className='w-full sm:h-[217px]'>
+      {/* <div className='w-full sm:h-[217px]'>
         <Image
           src={'/landingpage/second-banner.jpg'}
           alt=''
@@ -359,7 +359,7 @@ export default function HomePage(): JSX.Element {
           className='flex h-full w-full sm:hidden'
           quality={100}
         />
-      </div>
+      </div> */}
     </main>
   );
 }

@@ -11,8 +11,8 @@ export default function NotFound() {
         <h1 className='mb-4 text-4xl font-bold text-[#0F172A]'>
           Business Not Found
         </h1>
-        <p className='mb-8 text-lg text-[#64748B]'>
-          The business you&apos;re looking for doesn&apos;t exist or has been removed.
+        <p className='mb-8 text-lg text-[#64748B] text-balance max-w-md mx-auto'>
+          The business you&apos;re looking for either doesn&apos;t exist, hasn&apos;t been approved, or has been removed.
         </p>
         <div className='flex flex-col gap-3 sm:flex-row sm:justify-center'>
           <Link

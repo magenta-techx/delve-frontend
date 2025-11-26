@@ -170,7 +170,7 @@ export default function ServicesPage() {
               {/* //////////////////////// */}
               {/* Service Title */}
               {/* //////////////////////// */}
-              <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] lg:items-end xl:gap-12 p-4 ">
+              <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] xl:items-end xl:gap-12 p-4 ">
                 <Label className="text-sm font-medium text-[#0F0F0F]">Service</Label>
 
                 {editingField === `${service.id}-title` ? (

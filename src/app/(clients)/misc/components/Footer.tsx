@@ -20,10 +20,6 @@ const Footer = () => {
           href: '/',
         },
         {
-          text: 'Browse Vendors',
-          href: '/',
-        },
-        {
           text: 'List your business',
           href: '/businesses',
         },
@@ -46,16 +42,16 @@ const Footer = () => {
       header: 'Popular category',
       links: [
         {
-          text: 'Food',
-          href: '/',
+          text: 'Beauty',
+          href: '/businesses/search?category=Beauty',
         },
         {
           text: 'Fashion',
-          href: '/',
+          href: '/businesses/search?category=Fashion',
         },
         {
-          text: 'Wellness',
-          href: '/',
+          text: 'Health & Wellness',
+          href: '/businesses/search?category=Health',
         },
       ],
     },

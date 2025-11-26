@@ -5,7 +5,7 @@ import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import React, { useMemo } from 'react';
+import React, { use, useMemo } from 'react';
 import {
   ChatsIcon,
   ListingsIcon,
@@ -124,7 +124,7 @@ const LandingPageNavbar = () => {
             {calculatingScreenWidth ? null : (
               <>
                 {!isMobile && (
-                  <ul className='mx-auto flex items-center gap-4'>
+                  <ul className={cn('flex items-center gap-4', userIsloggedIn ? 'ml-auto' : 'mx-auto')}>
                     {userIsloggedIn
                       ? AUTHENTICATED_USER_LINKS.map(link => {
                           const isActive =

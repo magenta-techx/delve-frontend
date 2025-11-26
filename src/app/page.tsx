@@ -1,11 +1,11 @@
 'use client';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import BlogCard from '@/components/cards/BlogCard';
-import CategoryCard from '@/components/cards/CategoryCard';
+import CategoryCard from '@/app/(clients)/misc/components/CategoryCard';
 // import LocationCard from '@/components/cards/LocationCard';
 import { BusinessLandingFAQs } from '@/app/(clients)/misc/components';
 import SectionHeader from '@/components/SectionHeader';
-import ThisWeeksTrends from '@/components/landing-page/ThisWeeksTrends';
+import ThisWeeksTrends from '@/app/(clients)/misc/components/ThisWeeksTrends';
 // import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -89,7 +89,7 @@ export default function HomePage() {
         <div className='insert-0 absolute hidden w-full rounded-2xl bg-[#000000B8] sm:top-0 sm:flex sm:h-[90.5vh] sm:rounded-none'></div>
 
         {/* Hero section  */}
-        <div className='absolute top-[20.5rem] flex w-full flex-col items-center sm:top-[27.8rem]'>
+        <div className='absolute top-[20.5rem] flex w-full flex-col items-center sm:top-[22.8rem]'>
           <h1 className='text-balance text-center font-karma text-4xl font-bold text-white sm:text-5xl lg:text-6xl'>
             Great experiences start here.
           </h1>
@@ -97,7 +97,7 @@ export default function HomePage() {
             Delve helps you find reliable vendors who turn plans into beautiful
             memories.
           </p>
-          <div className='mt-20'>
+          <div className='mt-12'>
             <BusinessSearch />
           </div>
         </div>
@@ -184,20 +184,20 @@ export default function HomePage() {
               }}
               className='container mx-auto w-[90vw] px-2'
             >
-              <CarouselContent className='-ml-2 gap-4 py-4 xl:justify-center'>
+              <CarouselContent className='-ml-2 gap-4 py-4'>
                 {loadingApproved
-                  ? Array.from({ length: 4 }).map((_, key) => (
+                  ? Array.from({ length: 6 }).map((_, key) => (
                       <CarouselItem
                         key={key}
-                        className='basis-[70vw] pl-2 sm:basis-[280px]'
+                        className='basis-[70vw] pl-2 sm:basis-[300px]'
                       >
-                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[280px] !aspect-[4/5]' />
+                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] !aspect-[5/6]' />
                       </CarouselItem>
                     ))
                   : approved.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[280px]'
+                        className='basis-[70vw] pl-2 sm:basis-[300px]'
                       >
                         <FeaturedListingCard business={business} />
                       </CarouselItem>
@@ -341,7 +341,7 @@ export default function HomePage() {
           <header className='flex w-full items-center justify-between px-4'>
             <div className='flex items-center gap-2'>
               <BaseIcons value='stars-primary' />
-              <h1 className='text-[16px] font-bold sm:text-2xl'>
+              <h1 className='text-base font-semibold sm:text-2xl'>
                 Listings around you
               </h1>
             </div>
@@ -358,20 +358,20 @@ export default function HomePage() {
               opts={{ align: 'start', loop: false }}
               className='w-full max-w-full px-2'
             >
-              <CarouselContent className='-ml-2 w-full gap-4 p-4 xl:justify-center'>
+              <CarouselContent className='-ml-2 w-full gap-4 p-4'>
                 {loadingApproved
-                  ? Array.from({ length: 4 }).map((_, key) => (
+                  ? Array.from({ length: 6 }).map((_, key) => (
                       <CarouselItem
                         key={key}
-                        className='basis-[70vw] pl-2 sm:basis-[280px]'
+                        className='basis-[70vw] pl-2 sm:basis-[300px]'
                       >
-                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[280px] !aspect-[4/5]' />
+                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] !aspect-[5/6]' />
                       </CarouselItem>
                     ))
                   : approved.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[280px]'
+                        className='basis-[70vw] pl-2 sm:basis-[300px]'
                       >
                         <FeaturedListingCard business={business} />
                       </CarouselItem>
@@ -409,7 +409,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className='mb-80 w-full py-10 sm:mb-10 sm:py-0'>
+      <div className='mb-24 xl:mb-32 w-full py-10 sm:mb-10 sm:py-0'>
         <ThisWeeksTrends />
       </div>
 

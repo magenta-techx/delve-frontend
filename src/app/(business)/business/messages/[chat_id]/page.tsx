@@ -6,23 +6,23 @@ import { LinkButton } from '@/components/ui';
 import { Button } from '@/components/ui';
 import { Image as ImageIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useUserChats } from '@/app/(clients)/misc/api/useUserChats';
 import { useChatSocket } from '@/hooks/chat/useChatSocket';
 import { useAddImage } from '@/hooks/chat/useAddImage';
 import { useUserContext } from '@/contexts/UserContext';
 import { cn } from '@/lib/utils';
 import { useChatMessages } from '@/app/(clients)/misc/api';
+import { useParams } from 'next/navigation';
+import { useBusinessChats } from '@/app/(business)/misc/api';
+import { useBusinessContext } from '@/contexts/BusinessContext';
 
-export default function ChatDetailPage({
-  params,
-}: {
-  params: { chat_id: string };
-}) {
-  const { chat_id } = params;
+export default function ChatDetailPage() {
+  const { chat_id } = useParams() as { chat_id: string };
   const { data: session } = useSession();
   const token = session?.user?.accessToken ?? '';
-
-  const { data: chats, isLoading: isLoadingChats } = useUserChats();
+  const { currentBusiness } = useBusinessContext();
+  const { data: chats, isLoading: isLoadingChats } = useBusinessChats(
+    currentBusiness?.id || ''
+  );
   const { userId } = useUserContext();
   const {
     data: messages,
@@ -34,7 +34,7 @@ export default function ChatDetailPage({
     chats?.data.find(c => String(c.id) === String(chat_id)) || null;
 
   const { sendText } = useChatSocket({
-    businessId: String(selectedChat?.business.id ?? ''),
+    businessId: String(currentBusiness?.id ?? ''),
     chatId: String(chat_id),
     token: token ?? '',
     onMessage: () => {
@@ -134,16 +134,16 @@ export default function ChatDetailPage({
             <div className='h-6 w-40 animate-pulse rounded bg-gray-200' />
           ) : (
             <h2 className='font-semibold'>
-              {selectedChat?.business.name ?? 'Conversation'}
+              {`${(selectedChat?.customer.first_name ?? '')} ${(selectedChat?.customer.last_name ?? '')}`}
             </h2>
           )}
         </div>
-        <div className='flex items-center gap-2'>
+        {/* <div className='flex items-center gap-2'>
           {isLoadingChats ? (
             <div className='h-8 w-32 animate-pulse rounded-[0.825rem] bg-gray-200' />
           ) : (
             <LinkButton
-              href={`/businesses/${selectedChat?.business.id ?? ''}`}
+              href={`/businesses/${currentBusiness?.id ?? ''}`}
               className='rounded-[0.825rem] border border-purple-500 py-1.5 text-[#551FB9] hover:!text-[#551FB9]'
               variant='light'
               size='md'
@@ -151,7 +151,7 @@ export default function ChatDetailPage({
               View profile
             </LinkButton>
           )}
-        </div>
+        </div> */}
       </nav>
 
       <div
@@ -173,7 +173,7 @@ export default function ChatDetailPage({
               >
                 <div
                   className={cn(
-                    'w-[90%] max-w-md rounded-lg px-4 py-2 text-sm font-normal leading-snug',
+                    'w-max max-w-md rounded-lg px-4 py-2 text-sm font-normal leading-snug',
                     msg.sender.id === userId
                       ? 'text-sidebar-primary-foreground bg-[#F8FAFC]'
                       : 'bg-[#F8FAFC] text-foreground'

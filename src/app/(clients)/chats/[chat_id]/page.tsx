@@ -173,7 +173,7 @@ export default function ChatDetailPage({
               >
                 <div
                   className={cn(
-                    'w-[90%] max-w-md rounded-lg px-4 py-2 text-sm font-normal leading-snug',
+                    'w-max max-w-md rounded-lg px-4 py-2 text-sm font-normal leading-snug',
                     msg.sender.id === userId
                       ? 'text-sidebar-primary-foreground bg-[#F8FAFC]'
                       : 'bg-[#F8FAFC] text-foreground'
