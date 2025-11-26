@@ -16,7 +16,6 @@ import {
   CarouselPrevious,
 } from '@/components/ui';
 import UpComingEvents from '@/components/UpComingEvents';
-import Image from 'next/image';
 import { useApprovedBusinesses } from '@/app/(clients)/misc/api';
 import ListingCardSkeleton from '@/app/(clients)/misc/components/ListingCardSkeleton';
 import { EmptyState } from '@/components/ui';

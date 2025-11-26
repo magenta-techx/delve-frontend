@@ -35,8 +35,6 @@ const FeaturedListingCard = ({
     } catch (error) {}
   };
 
-  const baseClasses =
-    'relative  p-2 font-inter ring-[2px] ring-[#FEC601] ring-offset-4 ';
 
   return (
     <>

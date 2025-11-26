@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { LinkButton } from '@/components/ui';
 import { Button } from '@/components/ui';
 import { Image as ImageIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';

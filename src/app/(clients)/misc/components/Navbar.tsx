@@ -5,7 +5,7 @@ import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import React, { use, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   ChatsIcon,
   ListingsIcon,
