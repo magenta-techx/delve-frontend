@@ -123,8 +123,8 @@ const CreateAdPromoForm = ({
             if (data?.checkout_url) router.push(data.checkout_url);
           },
           onError: (err: any) => {
-            toast.error('Failed to create checkout session', {
-              description: err.error,
+              toast.error('Failed to create checkout session', {
+              description: err.message,
             });
           },
         }
@@ -148,8 +148,9 @@ const CreateAdPromoForm = ({
             if (data?.checkout_url) router.push(data.checkout_url);
           },
           onError: (err: any) => {
+
             toast.error('Failed to create checkout session', {
-              description: err.error,
+              description: err.message,
             });
           },
         }

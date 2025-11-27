@@ -24,14 +24,14 @@ export default function ListingCardSkeleton({ classStyle = '', group = false }: 
             </div>
             {/* Title and desc lines */}
             <div className='flex w-full flex-col gap-2'>
-              <div className='h-4 w-24 rounded bg-white/70' />
-              <div className='h-3 w-42 rounded bg-white/50' />
+              <div className='h-4 w-1/2 rounded bg-white/70' />
+              <div className='h-3 w-3/4 rounded bg-white/50' />
             </div>
           </div>
           <div className='mt-3 flex items-center justify-between'>
             <div className='flex items-center gap-2'>
-              <div className='h-4 w-4 rounded bg-white/60' />
-              <div className='h-3 w-24 rounded bg-white/50' />
+              <div className='h-4 w-1/5 rounded bg-white/60' />
+              <div className='h-3 w-3/4 rounded bg-white/50' />
             </div>
             <div className='flex items-center gap-2'>
               <div className='h-4 w-4 rounded bg-white/60' />

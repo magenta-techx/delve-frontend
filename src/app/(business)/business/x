@@ -1,0 +1,116 @@
+{
+  "status": true,
+  "message": "Business retrieved successfully.",
+  "data": {
+    "id": 29,
+    "name": "The Hustle Kingdom",
+    "description": "A fast growing community of goal getters",
+    "website": null,
+    "logo": "http://res.cloudinary.com/the-proton-guy/image/upload/v1762811757/delve/images/business_images/logo/arvnnoer9zbx6d1qq3ws.png",
+    "status": "active",
+    "created_at": "2025-11-10T22:55:56.842944+01:00",
+    "approved": true,
+    "is_free_trial_active": false,
+    "free_trial_expires_when": "2025-11-22T14:26:32.662621Z",
+    "number_of_conversations": 0,
+    "number_of_reviews": 0,
+    "average_review_rating": 0,
+    "number_of_profile_visits": 0,
+    "performances": [
+      {
+        "id": 82,
+        "created_at": "2025-11-26",
+        "formatted_date": "Wednesday, 26 November 2025",
+        "performance_score": 0
+      },
+      {
+        "id": 78,
+        "created_at": "2025-11-25",
+        "formatted_date": "Tuesday, 25 November 2025",
+        "performance_score": 0.75
+      },
+      {
+        "id": 75,
+        "created_at": "2025-11-24",
+        "formatted_date": "Monday, 24 November 2025",
+        "performance_score": 25
+      },
+      {
+        "id": 71,
+        "created_at": "2025-11-23",
+        "formatted_date": "Sunday, 23 November 2025",
+        "performance_score": 0
+      },
+      {
+        "id": 67,
+        "created_at": "2025-11-22",
+        "formatted_date": "Saturday, 22 November 2025",
+        "performance_score": 0
+      },
+      {
+        "id": 63,
+        "created_at": "2025-11-21",
+        "formatted_date": "Friday, 21 November 2025",
+        "performance_score": 23.25
+      },
+      {
+        "id": 58,
+        "created_at": "2025-11-20",
+        "formatted_date": "Thursday, 20 November 2025",
+        "performance_score": 3
+      }
+    ],
+    "conversations": [
+      {
+        "id": 3,
+        "customer": {
+          "id": 34,
+          "first_name": "Khalid",
+          "last_name": "Oni",
+          "profile_image": "https://res.cloudinary.com/the-proton-guy/image/upload/v1660906962/6215195_0_pjwqfq.webp"
+        },
+        "is_pinned": false,
+        "last_message_sent_at": null,
+        "last_message": {
+          "content": "",
+          "is_image_message": false,
+          "sender": {
+            "first_name": "",
+            "last_name": ""
+          },
+          "is_read": false,
+          "is_deleted_by_business": false,
+          "is_deleted_by_customer": false
+        }
+      },
+      {
+        "id": 2,
+        "customer": {
+          "id": 41,
+          "first_name": "Khalid",
+          "last_name": "Oni",
+          "profile_image": "https://res.cloudinary.com/the-proton-guy/image/upload/v1660906962/6215195_0_pjwqfq.webp"
+        },
+        "is_pinned": false,
+        "last_message_sent_at": "2025-11-22T03:02:40.748036+01:00",
+        "last_message": {
+          "id": 44,
+          "image": "",
+          "content": "Message not going why",
+          "is_image_message": false,
+          "sender": {
+            "id": 41,
+            "first_name": "Khalid",
+            "last_name": "Oni",
+            "profile_image": "https://res.cloudinary.com/the-proton-guy/image/upload/v1660906962/6215195_0_pjwqfq.webp"
+          },
+          "is_read": true,
+          "sent_at": "2025-11-22T03:02:40.745058+01:00",
+          "is_deleted_by_business": true,
+          "is_deleted_by_customer": true
+        }
+      }
+    ],
+    "last_payment_failed": false
+  }
+}

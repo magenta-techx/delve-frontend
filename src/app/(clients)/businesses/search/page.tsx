@@ -15,6 +15,7 @@ import { Button, buttonVariants, EmptyState, Input, Sheet, SheetContent, SheetHe
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
 import { cn } from '@/lib/utils';
+import { FeaturedListingCard } from '../../misc/components';
 
 type SearchPatch = {
   searchText?: string | null;
@@ -752,7 +753,7 @@ const BusinessSearchPage = (): JSX.Element => {
               className='rounded-3xl border border-[#E3E8EF] bg-white py-12'
             />
           ) : isSearching ? (
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
               {Array.from({ length: 6 }).map((_, index) => (
                 <ResultSkeleton key={index} />
               ))}
@@ -764,9 +765,12 @@ const BusinessSearchPage = (): JSX.Element => {
               className='rounded-3xl border border-[#E3E8EF] bg-white py-16'
             />
           ) : (
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
               {businesses.map(business => (
-                <SearchResultCard key={business.id} business={business} />
+                <FeaturedListingCard
+                  key={business.id}
+                  business={business}
+                />
               ))}
             </div>
           )}

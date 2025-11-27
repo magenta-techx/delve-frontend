@@ -39,7 +39,7 @@ const FeaturedListingCard = ({
   return (
     <>
       <article
-        className={'!aspect-[5/6] rounded-2xl border-2 border-[#FEC601] p-1'}
+        className={'group !aspect-[5/6] rounded-2xl border-2 border-[#FEC601] p-1'}
       >
         <div className='relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2'>
           {/* Bookmark  */}

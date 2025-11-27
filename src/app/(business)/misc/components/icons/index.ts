@@ -14,3 +14,5 @@ export { default as ReviewsSelectedIcon } from './ReviewsSelected';
 export { default as SettingsIcon } from './Settings';
 export { default as SettingsSelectedIcon } from './SettingsSelected';
 export { default as SolidEyeIcon } from './SolidEye';
+export { default as PromotionBannerStars } from './PromotionBannerStars';
+export { default as PromotionBannerStarsMobile } from './PromotionBannerStarsMobile';
