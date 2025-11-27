@@ -62,7 +62,7 @@ const BusinessLandingFAQs = (): JSX.Element => {
     <section className='px-4 py-12 text-[#0F172B] sm:py-16 mx-auto flex w-full max-w-4xl flex-col items-center gap-8'>
         <BusinessSectionHeader text='We are here to help with your questions' />
 
-        <div className='w-full space-y-4'>
+        <div className='flex flex-col items-center justify-center w-full space-y-4'>
           {FAQ_ITEMS.map(item => {
             const isActive = activeId === item.id;
 

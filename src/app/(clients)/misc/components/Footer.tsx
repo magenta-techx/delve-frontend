@@ -123,7 +123,7 @@ const Footer = () => {
               </p>
               <LinkButton
                 size='md'
-                href='/businesses/create-listing'
+                href='/businesses'
                 className='mt-5'
               >
                 List your business

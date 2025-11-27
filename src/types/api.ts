@@ -73,6 +73,68 @@ export interface BusinessOwner {
   profile_image?: string;
 }
 
+
+export interface BusinessDashboardDetail {
+  id: number;
+  name: string;
+  description: string;
+  website: null;
+  logo: string;
+  status: string;
+  created_at: string;
+  approved: boolean;
+  is_free_trial_active: boolean;
+  free_trial_expires_when: string;
+  number_of_conversations: number;
+  number_of_reviews: number;
+  average_review_rating: number;
+  number_of_profile_visits: number;
+  performances: Performance[];
+  conversations: Conversation[];
+  last_payment_failed: boolean;
+}
+
+interface Conversation {
+  id: number;
+  customer: Customer;
+  is_pinned: boolean;
+  last_message_sent_at: null | string;
+  last_message: Lastmessage;
+}
+
+interface Lastmessage {
+  content: string;
+  is_image_message: boolean;
+  sender: Sender;
+  is_read: boolean;
+  is_deleted_by_business: boolean;
+  is_deleted_by_customer: boolean;
+  id?: number;
+  image?: string;
+  sent_at?: string;
+}
+
+interface Sender {
+  first_name: string;
+  last_name: string;
+  id?: number;
+  profile_image?: string;
+}
+
+interface Customer {
+  id: number;
+  first_name: string;
+  last_name: string;
+  profile_image: string;
+}
+
+interface Performance {
+  id: number;
+  created_at: string;
+  formatted_date: string;
+  performance_score: number;
+}
+
 export interface BusinessDetail {
   id: number;
   name: string;

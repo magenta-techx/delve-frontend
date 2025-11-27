@@ -6,3 +6,4 @@ export { default as BusinessLandingPricingList } from './BusinessLandingPricingL
 export { default as BusinessLandingFAQs } from './BusinessLandingFAQs';
 export { default as BusinessSearch } from './BusinessSearch';
 export { default as BusinessServicesAccordion } from './BusinessServicesAccordion';
+export {  BusinessDetailsGalleryCarousel } from './BusinessDetailsGalleryCarousel';

@@ -16,7 +16,8 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '@/components/ui';import { useMemo, useState } from 'react';
+} from '@/components/ui';
+import { useMemo, useState } from 'react';
 // dialog not used in this page
 import { useBusinessCampaignAnalytics } from '@/app/(clients)/misc/api/business';
 import { useBusinessContext } from '@/contexts/BusinessContext';
@@ -165,7 +166,7 @@ export default function PromotionsPage() {
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(p)}
-                  className={`rounded-xl border p-2 font-inter text-[0.625rem] md:text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm ${
+                  className={`rounded-xl border p-2 font-inter text-[0.625rem] font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm md:text-xs ${
                     isActive
                       ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
                       : 'border-[#D9D6FE] text-[#697586]'
@@ -467,18 +468,23 @@ export default function PromotionsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className='flex flex-1 flex-col space-y-3'>
-                  <div className='flex h-12 max-w-40 items-end justify-center'>
-                    <div className='flex w-full items-end justify-between gap-1'>
-                      {[30, 45, 35, 50, 60, 55, 70].map((height, i) => (
-                        <div
-                          key={i}
-                          className='flex-1 rounded-sm bg-orange-200'
-                          style={{
-                            height: `${(height / 70) * 100}%`,
-                            minHeight: '4px',
-                          }}
-                        ></div>
-                      ))}
+                  <div className='flex h-12 max-w-40 items-end justify-center lg:max-w-60'>
+                    <div className='flex h-full w-full items-end justify-between gap-1 lg:gap-2'>
+                      {[20, 30, 35, 40, 60, 55, 45, 32, 25, 30, 48, 20, 35].map(
+                        (height, i) => (
+                          <div
+                            key={i}
+                            className='flex-1 rounded-lg bg-[#FFD6AE]'
+                            style={{
+                              height:
+                                totalViews <= 0
+                                  ? '4px'
+                                  : `${(height / 70) * 100}%`,
+                              minHeight: '4px',
+                            }}
+                          ></div>
+                        )
+                      )}
                     </div>
                   </div>
 
@@ -503,18 +509,23 @@ export default function PromotionsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className='flex flex-1 flex-col space-y-3'>
-                  <div className='flex h-12 max-w-40 items-end justify-center'>
-                    <div className='flex w-full items-end justify-between gap-1'>
-                      {[25, 40, 30, 45, 55, 50, 65].map((height, i) => (
-                        <div
-                          key={i}
-                          className='flex-1 rounded-sm bg-green-200'
-                          style={{
-                            height: `${(height / 70) * 100}%`,
-                            minHeight: '4px',
-                          }}
-                        ></div>
-                      ))}
+                  <div className='flex h-12 max-w-40 items-end justify-center lg:max-w-60'>
+                    <div className='flex size-full items-end justify-between gap-1 lg:gap-2'>
+                      {[20, 30, 35, 40, 60, 55, 45, 32, 25, 30, 48, 35, 20].map(
+                        (height, i) => (
+                          <div
+                            key={i}
+                            className='flex-1 rounded-sm bg-green-200'
+                            style={{
+                              height:
+                                totalClicks <= 0
+                                  ? '4px'
+                                  : `${(height / 70) * 100}%`,
+                              minHeight: '4px',
+                            }}
+                          ></div>
+                        )
+                      )}
                     </div>
                   </div>
 
@@ -566,7 +577,7 @@ export default function PromotionsPage() {
                     Total number of {selectedGraphView}
                   </p>
                   <p className='mb-3 mt-1 text-xs text-green-600'>
-                    <span className='font-bold text-2xl text-[#0D0D0D] lg:text-4xl'>
+                    <span className='text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
                       {totalViews.toLocaleString()}
                     </span>{' '}
                     This month

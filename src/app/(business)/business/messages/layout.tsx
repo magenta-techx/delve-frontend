@@ -7,7 +7,7 @@ import { LogoLoadingIcon } from '@/assets/icons';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { EmptyChatIcon } from '@/app/(clients)/misc/icons';
+import { EmptyChatMedia } from '@/app/(clients)/misc/icons';
 import { useBusinessChats } from '../../misc/api';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 
@@ -72,7 +72,7 @@ export default function UserChatsPage({
         ) : !current_chat_id ? (
           <div className='flex h-full w-full items-center justify-center'>
             <EmptyState
-              media={<EmptyChatIcon />}
+              media={<EmptyChatMedia />}
               title='No chat selected'
               description='Select a chat to view messages'
             />

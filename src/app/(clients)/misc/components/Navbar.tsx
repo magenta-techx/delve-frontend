@@ -1,11 +1,11 @@
 'use client';
 
+import React, { useMemo } from 'react';
 import { Logo } from '@/assets/icons';
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import React, { useMemo } from 'react';
 import {
   ChatsIcon,
   ListingsIcon,

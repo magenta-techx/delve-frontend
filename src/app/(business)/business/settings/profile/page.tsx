@@ -230,8 +230,6 @@ export default function ProfileSettings() {
     const category = categories?.find(c => c.id === categoryId);
     return category?.name || 'Unknown category';
   };
-  console.log('Current Business:', currentBusiness);
-  // Helper function to get business images for profile picture selection
   const getBusinessImages = () => {
     if (!currentBusiness?.images) return [];
     return currentBusiness.images.map(img =>

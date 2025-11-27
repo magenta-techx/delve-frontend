@@ -110,7 +110,7 @@ const PerformanceAreaChart: React.FC<PerformanceAreaChartProps> = ({
           />
 
           <Area
-            type='monotone'
+            type='natural'
             dataKey={dataKey}
             stroke={color}
             strokeWidth={2}

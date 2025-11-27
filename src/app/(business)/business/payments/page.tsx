@@ -147,7 +147,7 @@ export default function PaymentsPage() {
                 <p className='text-[0.55rem] font-semibold uppercase text-muted-foreground'>
                   Billing Cycle
                 </p>
-                <p className='text-sm font-medium text-[#2C2C2C]'>
+                <p className='text-sm font-medium text-[#2C2C2C] capitalize'>
                   {currentPlan.name === 'Free Trial' && currentPlan.daysLeft
                     ? `${currentPlan.daysLeft} Days`
                     : currentPlan.cycle}
@@ -184,7 +184,9 @@ export default function PaymentsPage() {
                       width:
                         currentPlan.name === 'Free Trial'
                           ? `${((7 - currentPlan.daysLeft!) / 7) * 100}%`
-                          : `${((30 - currentPlan.daysLeft!) / 30) * 100}%`,
+                          : currentPlan.cycle == "monthly" ?
+                          `${((30 - currentPlan.daysLeft!) / 30) * 100}%`
+                          : `${((365 - currentPlan.daysLeft!) / 365) * 100}%`,
                     }}
                   />
                 </div>
@@ -322,41 +324,12 @@ export default function PaymentsPage() {
                 )}
               </>
             )}
-
-            {/* Payment Method */}
-
-            {/* Cancel Subscription (only show for premium users) */}
-            {/* {(currentPlan.name === 'Premium' ||
-              userData?.is_premium_plan_active) && (
-              <Card>
-                <CardContent className='pt-6'>
-                  <div className='space-y-4'>
-                    <div>
-                      <h3 className='mb-2 font-semibold text-red-600'>
-                        Subscription Management
-                      </h3>
-                      <p className='mb-4 text-sm text-muted-foreground'>
-                        Need to make changes to your subscription? You can
-                        cancel anytime.
-                      </p>
-                    </div>
-                    <Button
-                      variant='outline'
-                      className='w-full border-red-200 text-red-600 hover:bg-red-50'
-                      onClick={openCancelConfirm}
-                    >
-                      Cancel subscription
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )} */}
           </article>
         </section>
 
         {/* Payment History */}
-        <section className='relative overflow-hidden rounded-2xl border border-[#CDD5DF] bg-card py-4'>
-          <header className='flex flex-row items-center justify-between px-4 md:px-6'>
+        <section className='relative overflow-hidden rounded-2xl border border-[#E8EAF6] bg-card py-4'>
+          <header className='flex flex-row items-center justify-between p-4 pt-0 md:px-6'>
             <h3 className='font-inter text-lg font-semibold'>
               Payment History
             </h3>
@@ -423,51 +396,67 @@ export default function PaymentsPage() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className='space-y-1'>
+                  <tbody className='space-y-1.5'>
                     {billingData?.payment_history.map(transaction => (
                       <tr
                         key={transaction.payment_reference_id}
                         className={cn(
-                          'cursor-pointer bg-[#FAFAFA] hover:bg-[#f5f3f3]'
+                          'group cursor-pointer bg-[#FAFAFA] !px-0 hover:bg-[#f5f3f3]'
                         )}
                       >
-                        <td className='px-2 py-3 pl-4 font-inter font-normal md:pl-8'>
-                          {transaction.plan.name}
-                          {''} plan
+                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
+                          <div className='bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
+                            {transaction.plan.name}
+                            {''} plan
+                          </div>
                         </td>
-                        <td className='px-2 py-3 font-inter font-normal'>
-                          {transaction.plan.billing_cycle}
+                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
+                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
+                            {transaction.plan.billing_cycle ?? '-'}
+                          </div>
                         </td>
-                        <td className='px-2 py-3 font-inter font-normal'>
-                          ₦{transaction.amount_paid.toLocaleString()}
+                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
+                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
+                            ₦{transaction.amount_paid.toLocaleString()}
+                          </div>
                         </td>
-                        <td className='px-2 py-3 font-inter font-normal'>
-                          <span
-                            className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize ${
-                              transaction.status === 'success'
-                                ? 'bg-[#DAFBD5] text-[#558B2F]'
-                                : 'bg-[#FFE1E1] text-[#C62828]'
-                            }`}
-                          >
-                            {transaction.status}
-                          </span>
+                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
+                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
+                            <span
+                              className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize ${
+                                transaction.status === 'success'
+                                  ? 'bg-[#DAFBD5] text-[#558B2F]'
+                                  : 'bg-[#FFE1E1] text-[#C62828]'
+                              }`}
+                            >
+                              {transaction.status}
+                            </span>
+                          </div>
                         </td>
-                        <td className='px-2 py-3 font-inter font-normal'>
-                          {format(
-                            new Date(transaction.timestamp),
-                            'dd-MM-yyyy'
-                          )}
+                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
+                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
+                            {format(
+                              new Date(transaction.timestamp),
+                              'dd-MM-yyyy'
+                            )}
+                          </div>
                         </td>
-                        <td className='px-2 py-3 font-inter font-normal'>
-                          **** {transaction.payment_card_last_4_digits}
+                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
+                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
+                            **** {transaction.payment_card_last_4_digits}
+                          </div>
                         </td>
-                        <td className='px-2 py-3 pr-4 font-inter font-normal md:pr-8'>
-                          <button
-                            onClick={() => handleSelectTransaction(transaction)}
-                            className='text-blue-600 hover:underline'
-                          >
-                            <ReceiptIcon className='h-4 w-4' />
-                          </button>
+                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
+                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
+                            <button
+                              onClick={() =>
+                                handleSelectTransaction(transaction)
+                              }
+                              className='text-blue-600 hover:underline'
+                            >
+                              <ReceiptIcon className='h-4 w-4' />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

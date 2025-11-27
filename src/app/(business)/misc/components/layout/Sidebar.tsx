@@ -114,7 +114,7 @@ export function Sidebar() {
         <div className='text-sidebar-foreground p-4 px-8 text-xs font-semibold uppercase opacity-50'>
           Overview
         </div>
-        {navItems.map(item => {
+        {navItems.map((item, index) => {
           const Icon = item.icon;
           const IconSelected = item.iconSelected;
           const isActive =
@@ -125,7 +125,7 @@ export function Sidebar() {
 
           return (
             <Link
-              key={item.href}
+              key={index + Date.now()}
               href={item.href}
               className={cn(
                 'relative flex items-center gap-3 px-6 py-3 font-inter text-sm text-[#4B5565] transition-colors',
@@ -161,7 +161,7 @@ export function Sidebar() {
             <>
               {item.onClick ? (
                 <button
-                  key={index}
+                  key={index + Date.now()}
                   onClick={item.onClick}
                   className={cn(
                     'relative flex items-center gap-3 px-6 py-3 font-inter text-sm text-[#4B5565] transition-colors',
@@ -175,7 +175,7 @@ export function Sidebar() {
                 </button>
               ) : (
                 <Link
-                  key={item.href}
+                  key={index + Date.now()}
                   href={item.href}
                   className={cn(
                     'relative flex items-center gap-3 px-6 py-3 font-inter text-sm text-[#4B5565] transition-colors',

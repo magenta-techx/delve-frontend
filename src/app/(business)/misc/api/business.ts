@@ -9,6 +9,7 @@ import {
 import type {
   ApiEnvelope,
   ApiMessage,
+  BusinessDashboardDetail,
   BusinessDetail,
   BusinessPerformanceData,
   BusinessService,
@@ -209,6 +210,27 @@ export function useBusinessDetails(
   if (advertisment_id) searchParams.set('advertisment_id', advertisment_id);
   return useQuery({
     queryKey: ['business', businessId, { page, advertisment_id }],
+
+    queryFn: async () => {
+      const res = await authAwareFetch(
+        `/api/business/${businessId}?${searchParams.toString()}`
+      );
+      const data = await res.json();
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to fetch business details');
+      return data;
+    },
+    enabled: Boolean(businessId),
+  });
+}
+export function useBusinessDashboardDetails(
+  businessId?: BusinessId,
+  page?: string
+): UseQueryResult<ApiEnvelope<BusinessDashboardDetail>, Error> {
+  const searchParams = new URLSearchParams();
+  if (page) searchParams.set('page', page);
+  return useQuery({
+    queryKey: ['business', businessId, { page, }],
 
     queryFn: async () => {
       const res = await authAwareFetch(

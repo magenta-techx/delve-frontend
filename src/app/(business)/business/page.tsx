@@ -1,23 +1,58 @@
 'use client';
 
 import { useBusinessContext } from '@/contexts/BusinessContext';
-import { ConversationsSection } from '../misc/components/sections/conversations-section';
-import { ReviewsSection } from '../misc/components/sections/reviews-section';
-import { useBusinessDetails } from '../misc/api';
+import { useBusinessDashboardDetails } from '../misc/api';
 import { LogoLoadingIcon } from '@/assets/icons';
 import { EmptyState, LinkButton } from '@/components/ui';
-import { EmptyListingIcon } from '@/app/(clients)/misc/icons';
+import { EmptyChatMedia, EmptyListingIcon } from '@/app/(clients)/misc/icons';
+import {
+  MessagesSelectedIcon,
+  PromotionBannerStars,
+  PromotionBannerStarsMobile,
+  ReviewsSelectedIcon,
+  SolidEyeIcon,
+} from '../misc/components/icons';
+import { cn } from '@/lib/utils';
+import {
+  DashboardPerformanceChart,
+  Notifications,
+  RatingStars,
+} from '../misc/components';
+import { useIsMobile } from '@/hooks';
+import Link from 'next/link';
+import Image from 'next/image';
+import { format } from 'date-fns';
 
 export default function DashboardPage(): JSX.Element {
   const { currentBusiness, isLoading } = useBusinessContext();
+  const { isMobile } = useIsMobile();
+  const { data, isLoading: isBusinessDetailsLoading } =
+    useBusinessDashboardDetails(currentBusiness?.id, 'dashboard');
 
-  const { data, isLoading: isBusinessDetailsLoading } = useBusinessDetails(
-    currentBusiness?.id,
-    undefined,
-    'dashboard'
-  );
-  
-  console.log(data?.data.thumbnail);
+  const cardsData = [
+    {
+      title: 'Conversations',
+      title_count: data?.data.number_of_conversations,
+      title_desc: 'Messages',
+      icon: <MessagesSelectedIcon className='text-[#7839EE] max-md:!size-4' />,
+      icon_bg: 'bg-[#F5F3FF]',
+    },
+    {
+      title: 'Feedback',
+      title_count: data?.data.number_of_reviews,
+      title_desc: 'Reviews',
+      icon: <ReviewsSelectedIcon className='text-[#FF4405] max-md:!size-4' />,
+      icon_bg: 'bg-[#FFF4ED]',
+    },
+    {
+      title: 'Clients',
+      title_count: data?.data.number_of_profile_visits,
+      title_desc: 'Views',
+      icon: <SolidEyeIcon className='text-[#FEC601] max-md:!size-4' />,
+      icon_bg: 'bg-[#FEFDF0]',
+    },
+  ];
+
   if (isLoading || isBusinessDetailsLoading) {
     return (
       <div className='flex size-full items-center justify-center'>
@@ -28,20 +63,6 @@ export default function DashboardPage(): JSX.Element {
 
   if (!currentBusiness) {
     return (
-      // <div className='flex-1 overflow-auto'>
-      //   <div className='p-6'>
-      //     <div className='rounded-2xl bg-white p-8 text-center shadow-sm'>
-      //       <p className='mb-4 text-gray-600'>No business selected</p>
-      //       <Link
-      //         href='/businesses/create-listing'
-      //         className='inline-block rounded-lg bg-primary px-6 py-3 text-white transition-colors hover:bg-primary/90'
-      //       >
-      //         Create Your First Business
-      //       </Link>
-      //     </div>
-      //   </div>
-      // </div>
-
       <EmptyState
         media={<EmptyListingIcon />}
         title='No business created yet'
@@ -60,29 +81,168 @@ export default function DashboardPage(): JSX.Element {
   }
 
   return (
-    <div className='flex-1 overflow-auto'>
-      <div className='space-y-6 p-6'>
-        {/* Header */}
-        <div className='mb-6'>
-          <h1 className='text-2xl font-bold text-gray-900'>Dashboard</h1>
-          <p className='mt-1 text-sm text-gray-600'>
-            Welcome back to {currentBusiness.name}
-          </p>
-        </div>
+    <div className='flex h-screen flex-1 flex-col overflow-hidden'>
+      <header></header>
+      <div className='grid flex-1 gap-4 gap-y-5 overflow-y-auto px-3 pt-3 max-md:pb-12 lg:px-5 lg:pt-5 xl:grid-cols-[1fr,minmax(0,280px)] 2xl:grid-cols-[1fr,minmax(0,350px)]'>
+        <section className='w-full overflow-x-hidden'>
+          <article className='relative mb-6 flex flex-col gap-y-3 rounded-2xl bg-[#FEEE95] p-4 lg:p-6'>
+            <h6>🚀 Promote Your Business</h6>
+            <p className='relative z-[2] max-w-md text-balance font-karma text-2xl font-semibold lg:text-3xl 2xl:max-w-2xl 2xl:text-[clamp(2.15rem,2.25vw,2.9rem)] 2xl:leading-snug'>
+              Reach more customers with ads and featured spots on Delve.
+            </p>
+            <LinkButton
+              href='/business/promotions'
+              size={isMobile ? 'dynamic_lg' : 'xl'}
+              className='relative z-[2] mt-5 w-max rounded-full bg-[#5F2EEA] !p-2 text-sm text-white lg:!pl-4 lg:text-base'
+            >
+              Promote
+              <div className='flex size-6 items-center justify-center rounded-full bg-[#ECE9FE] md:size-9'>
+                <svg
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  className='size-3 md:size-6'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M12.8333 7.625L17 12M17 12L12.8333 16.375M17 12L7 12'
+                    stroke='black'
+                    stroke-width='2'
+                    stroke-linecap='round'
+                    stroke-linejoin='round'
+                  />
+                </svg>
+              </div>
+            </LinkButton>
 
-        {/* Main content grid */}
-        <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-          {/* Left side - Performance chart and conversations */}
-          <div className='space-y-6 lg:col-span-2'>
-            {/* <PerformanceChart /> */}
-            <ConversationsSection />
-          </div>
+            <PromotionBannerStarsMobile className='absolute bottom-0 right-0 mt-4 block md:hidden' />
+            <PromotionBannerStars className='absolute bottom-0 right-0 mt-4 hidden md:block' />
+          </article>
 
-          {/* Right side - Reviews and metrics */}
-          <div className='space-y-6'>
-            <ReviewsSection />
+          <div className='container grid grid-cols-2 gap-4 xl:grid-cols-3'>
+            {cardsData.map((card, index) => (
+              <article
+                key={index}
+                className='flex flex-col gap-1.5 overflow-x-hidden rounded-2xl border border-[#F5F3FF] bg-card p-2.5 text-card-foreground md:gap-3 md:p-4 lg:px-6'
+              >
+                <section className='flex items-center gap-2'>
+                  <div
+                    className={cn(
+                      'flex items-center justify-center',
+                      card.icon_bg,
+                      'size-7 rounded-full md:size-10'
+                    )}
+                  >
+                    {card.icon}
+                  </div>
+                  <div>
+                    <h3 className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
+                      {card.title_count ?? 0}{' '}
+                      <span className='ml-0.5 text-[0.625rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
+                        {card.title}
+                        {}
+                      </span>
+                    </h3>
+
+                    <p className='text-xs text-[#0F0F0F] max-md:hidden md:text-sm'>
+                      {card.title_desc}
+                    </p>
+                  </div>
+                </section>
+              </article>
+            ))}
           </div>
-        </div>
+          <section className='mt-4 grid gap-4 lg:grid-cols-3'>
+            {/* ///////////////////////////////////////////////////////////////////// */}
+            {/* /////////////          CONVERSATIONS            ///////////////////// */}
+            {/* ///////////////////////////////////////////////////////////////////// */}
+            <div className='rounded-xl border border-[#F5F3FF] bg-white py-3 lg:col-span-2 lg:py-4'>
+              <header className='mb-4 p-4 pt-0 '>
+                <h1 className='font-inter text-xl font-medium'>
+                  Conversations
+                </h1>
+              </header>
+              <div>
+                {data?.data.conversations.length ? (
+                  <>
+                    {data?.data.conversations.map(conversation => (
+                      <div key={conversation.id} className='mb-0.5'>
+                        <Link
+                          key={conversation.id}
+                          href={`/business/messages/${conversation.id}`}
+                          className={cn(
+                            'flex w-full items-center gap-2 bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50 md:gap-3',
+                            'hover:!bg-[#F5F3FF]'
+                          )}
+                        >
+                          <div className='relative size-10 overflow-hidden rounded-full md:size-14'>
+                            <Image
+                              src={
+                                conversation.customer.profile_image ||
+                                '/default-avatar.png'
+                              }
+                              alt={`${conversation.customer.first_name} ${conversation.customer.last_name}`}
+                              fill
+                              objectFit='cover'
+                            />
+                          </div>
+                          <div className='flex min-w-0 flex-1 flex-col'>
+                            <p className='font-medium'>
+                              {conversation.customer.first_name}{' '}
+                              {conversation.customer.last_name}
+                            </p>
+                            <p className='xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight text-[#111927]'>
+                              {conversation.last_message?.content}
+                            </p>
+                            <small className='text-end text-xs text-[#697586]'>
+                              {conversation.last_message?.sent_at
+                                ? format(
+                                    new Date(
+                                      conversation.last_message?.sent_at || 0
+                                    ),
+                                    'dd MMM, hh:mm a'
+                                  )
+                                : '--'}
+                            </small>
+                          </div>
+                        </Link>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <EmptyState
+                    media={<EmptyChatMedia />}
+                    description='Your conversations will be displayed here.'
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* ///////////////////////////////////////////////////////////////////// */}
+            {/* /////////////              REVIEWS              ///////////////////// */}
+            {/* ///////////////////////////////////////////////////////////////////// */}
+            <div className='rounded-xl bg-white p-4'>
+              <h3 className='text-center font-karma text-3xl font-bold lg:mt-12 xl:text-6xl'>
+                {data?.data.average_review_rating !== undefined
+                  ? data.data.average_review_rating.toFixed(1)
+                  : '0.0'}
+              </h3>
+              <RatingStars rating={data?.data.average_review_rating || 0} />
+              <p className='mt-2 text-center text-sm font-medium text-[#111927] md:text-sm'>
+                {data?.data.number_of_reviews || 0} reviews
+              </p>
+
+              {data?.data.performances && (
+                <DashboardPerformanceChart
+                  performances={data?.data.performances}
+                />
+              )}
+            </div>
+          </section>
+        </section>
+
+        <Notifications />
       </div>
     </div>
   );

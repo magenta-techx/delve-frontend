@@ -15,7 +15,13 @@ export function usePromotionCheckout() {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok || !data?.checkout_url) throw new Error(data?.message || data?.error || "Failed to create checkout session");
+      if (!res.ok || !data?.checkout_url) {
+        throw {
+          message: data?.message || data?.error || "Failed to create checkout session",
+          status: res.status,
+          data,
+        };
+      }
       return data;
     },
   });
@@ -39,7 +45,13 @@ export function useAdvertCheckout() {
         body: formData,
       });
       const data = await res.json();
-      if (!res.ok || !data?.checkout_url) throw new Error(data?.message || data?.error || "Failed to create checkout session");
+      if (!res.ok || !data?.checkout_url) {
+        throw {
+          message: data?.message || data?.error || "Failed to create checkout session",
+          status: res.status,
+          data,
+        };
+      }
       return data;
     },
   });

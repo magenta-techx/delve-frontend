@@ -24,7 +24,10 @@ import {
   VerifiedIcon,
 } from '../../misc/icons';
 import { useBooleanStateControl } from '@/hooks';
-import { BusinessServicesAccordion } from '../../misc/components';
+import {
+  BusinessDetailsGalleryCarousel,
+  BusinessServicesAccordion,
+} from '../../misc/components';
 
 interface BusinessDetailsClientProps {
   business: BusinessDetail;
@@ -56,6 +59,18 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     setShowLoginAlert(state);
     setAccessDeniedModalState(state);
   };
+  const {
+    state: isImageCarouselModalOpen,
+    setTrue: openImageCarouselModal,
+    setFalse: closeImageCarouselModal,
+  } = useBooleanStateControl();
+
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  const handleImageClick = ( index: number) => {
+    setSelectedImageIndex(index);
+    openImageCarouselModal();
+  };
 
   const { send } = useChatSocket({
     businessId: String(business.id ?? ''),
@@ -73,7 +88,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     const ownerId = business?.owner?.id;
     return Boolean(ownerId && currentUserId && ownerId === currentUserId);
   }, [currentUserResp?.user?.id, business?.owner?.id]);
-
 
   const isBusinessSaved = isSaved(business.id);
   const handleBookmarkClick = async () => {
@@ -142,7 +156,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     <Suspense fallback={<div>Loading business details...</div>}>
       <main className='relative mx-auto py-8 pt-16 lg:pt-20'>
         {/* Back Button */}
-
         {/* Hero Section with Image and Business Info */}
         <div
           className={cn(`relative mb-8 overflow-hidden`)}
@@ -196,7 +209,10 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             </div>
             <div className='mt-48 lg:mt-96'>
               <h2 className='max-w-[43rem] text-balance font-karma text-3xl font-bold md:text-3xl xl:text-5xl'>
-                {business.description}
+                {business.description?.substring(0, 100)}{' '}
+                {business.description && business.description.length > 100
+                  ? '...'
+                  : ''}
               </h2>
               {isOwner ? (
                 <LinkButton
@@ -228,8 +244,10 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             <div></div>
           </section>
         </div>
-
-        <section className='container mx-auto grid gap-x-8 gap-y-4 py-8 lg:grid-cols-[1fr,minmax(0,350px)] lg:gap-10 lg:py-12'>
+        <section
+          id='services'
+          className='container mx-auto grid gap-x-8 gap-y-4 py-8 lg:grid-cols-[1fr,minmax(0,350px)] lg:gap-10 lg:py-12'
+        >
           <div id='about' className='container mx-auto px-4 md:px-10'>
             <h2 className='mb-2 font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Services
@@ -439,102 +457,104 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             </div>
           )}
         </section>
-
-        <section
-          id='#gallery'
-          className='container mx-auto columns-2 gap-2.5 py-8 md:columns-3 md:gap-7 md:px-8 lg:py-12 xl:gap-12'
-        >
-          {business.images && business.images.length > 0 ? (
-            <>
-              {business.images.map((image, index) => {
-                const src = typeof image === 'string' ? image : image.image;
-                return (
-                  <div
-                    className='relative'
-                    key={
-                      typeof image === 'object' && 'id' in image
-                        ? image.id
-                        : index
-                    }
-                  >
-                    {index == 0 && (
-                      <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center bg-[#00000099]'>
-                        <h3 className='font-karma text-2xl font-medium text-white lg:text-3xl'>
-                          Gallery
-                        </h3>
-                        <Link
-                          href={`/businesses/${business.id}/gallery`}
-                          className='mt-2 flex items-center justify-center text-sm underline'
-                        >
-                          <svg
-                            width='50'
-                            height='50'
-                            viewBox='0 0 50 50'
-                            fill='none'
-                            xmlns='http://www.w3.org/2000/svg'
-                          >
-                            <rect
-                              x='49.5'
-                              y='49.5'
-                              width='49'
-                              height='49'
-                              rx='24.5'
-                              transform='rotate(-180 49.5 49.5)'
-                              fill='black'
-                              fill-opacity='0.28'
-                            />
-                            <rect
-                              x='49.5'
-                              y='49.5'
-                              width='49'
-                              height='49'
-                              rx='24.5'
-                              transform='rotate(-180 49.5 49.5)'
-                              stroke='white'
-                            />
-                            <path
-                              d='M20.8794 33.7133C20.5377 34.055 20.5377 34.609 20.8794 34.9508C21.2211 35.2925 21.7751 35.2925 22.1168 34.9507L28.1503 28.9172C30.3145 26.7531 30.3145 23.2443 28.1503 21.0801L22.1168 15.0466C21.7751 14.7049 21.2211 14.7049 20.8794 15.0466C20.5377 15.3884 20.5377 15.9424 20.8794 16.2841L26.9129 22.3176C28.3936 23.7983 28.3936 26.1991 26.9129 27.6798L20.8794 33.7133Z'
-                              fill='white'
-                            />
-                          </svg>
-                        </Link>
-                      </div>
-                    )}
-                    <Image
-                      src={src}
-                      alt={
-                        typeof image === 'string'
-                          ? image
-                          : `Business image ${index + 1}`
-                      }
+     
+        <>
+          <section
+            id='gallery'
+            className='container mx-auto columns-2 gap-2.5 py-8 md:columns-3 md:gap-5 md:px-8 lg:py-12 xl:gap-7'
+          >
+            {business.images && business.images.length > 0 ? (
+              <>
+                {business.images.map((image, index) => {
+                  const src = typeof image === 'string' ? image : image.image;
+                  return (
+                    <div
+                      className='group relative mb-2.5 cursor-pointer overflow-hidden rounded md:mb-5 xl:mb-7'
                       key={
                         typeof image === 'object' && 'id' in image
                           ? image.id
                           : index
                       }
-                      width={400}
-                      height={300}
-                      style={{
-                        objectFit: 'cover',
-                        width: '100%',
-                        height: 'auto',
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </>
-          ) : (
-            <div className='col-span-full row-span-full'>
-              <EmptyState
-                media={<EmptySavedBusinessesIcon />}
-                title='No images available'
-                description='This business has not uploaded any images yet.'
-              />
-            </div>
-          )}
-        </section>
+                      onClick={() => handleImageClick(index)}
+                    >
+                      {index === 0 && (
+                        <div className='absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center bg-[#00000099]'>
+                          <h3 className='font-karma text-2xl font-medium text-white lg:text-3xl'>
+                            Gallery
+                          </h3>
+                          <span className='mt-2 flex items-center justify-center text-sm underline'>
+                            <svg
+                              width='50'
+                              height='50'
+                              viewBox='0 0 50 50'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <rect
+                                x='49.5'
+                                y='49.5'
+                                width='49'
+                                height='49'
+                                rx='24.5'
+                                transform='rotate(-180 49.5 49.5)'
+                                fill='black'
+                                fillOpacity='0.28'
+                              />
+                              <rect
+                                x='49.5'
+                                y='49.5'
+                                width='49'
+                                height='49'
+                                rx='24.5'
+                                transform='rotate(-180 49.5 49.5)'
+                                stroke='white'
+                              />
+                              <path
+                                d='M20.8794 33.7133C20.5377 34.055 20.5377 34.609 20.8794 34.9508C21.2211 35.2925 21.7751 35.2925 22.1168 34.9507L28.1503 28.9172C30.3145 26.7531 30.3145 23.2443 28.1503 21.0801L22.1168 15.0466C21.7751 14.7049 21.2211 14.7049 20.8794 15.0466C20.5377 15.3884 20.5377 15.9424 20.8794 16.2841L26.9129 22.3176C28.3936 23.7983 28.3936 26.1991 26.9129 27.6798L20.8794 33.7133Z'
+                                fill='white'
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      )}
+                      <Image
+                        src={src || '/placeholder.svg'}
+                        alt={
+                          typeof image === 'string'
+                            ? `Gallery image ${index + 1}`
+                            : `Business image ${index + 1}`
+                        }
+                        width={400}
+                        height={300}
+                        style={{
+                          objectFit: 'cover',
+                          width: '100%',
+                          height: 'auto',
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </>
+            ) : (
+              <div className='col-span-full row-span-full'>
+                <div className='py-12 text-center'>
+                  <p className='text-gray-500'>No images available</p>
+                </div>
+              </div>
+            )}
+          </section>
 
+          {/* Fullscreen Gallery Modal */}
+         
+            <BusinessDetailsGalleryCarousel
+              images={business?.images ?? []}
+              initialIndex={selectedImageIndex}
+              isOpen={isImageCarouselModalOpen}
+              onClose={closeImageCarouselModal}
+            />
+          
+        </>
         <AccessDeniedModal
           isAccessDeniedModalOpen={showLoginAlert || isAccessDeniedModalOpen}
           closeAccessDeniedModal={closeAccessDeniedModal}
