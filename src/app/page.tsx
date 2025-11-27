@@ -38,7 +38,6 @@ import {
 } from '@/components/ui';
 import ListingCardSkeleton from './(clients)/misc/components/ListingCardSkeleton';
 import { useIsMobile } from '@/hooks';
-import { CarouselArrowIcon } from './(clients)/misc/icons';
 
 export default function HomePage() {
   const { data: categoriesResp, isLoading: loadingCategories } =

@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useCallback, useMemo, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useSearchBusinesses } from '@/app/(clients)/misc/api/business';
@@ -10,8 +8,7 @@ import {
   useBusinessCategories,
   useBusinessStates,
 } from '@/app/(clients)/misc/api/metadata';
-import type { BusinessSummary } from '@/types/api';
-import { Button, buttonVariants, EmptyState, Input, Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui';
+import { Button,  EmptyState, Input, Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
 import { cn } from '@/lib/utils';
@@ -58,92 +55,7 @@ const FilterChip = ({
   </button>
 );
 
-const SearchResultCard = ({
-  business,
-}: {
-  business: BusinessSummary;
-}): JSX.Element => {
-  const ratingValue =
-    typeof business.average_review_rating === 'number'
-      ? business.average_review_rating
-      : null;
-  const ratingLabel =
-    ratingValue && ratingValue > 0 ? ratingValue.toFixed(1) : 'New';
 
-  return (
-    <article className='flex flex-col overflow-hidden rounded-3xl border border-[#E3E8EF] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg'>
-      <div className='relative h-48 w-full bg-[#F8FAFC]'>
-        {business.thumbnail ? (
-          <Image
-            src={business.thumbnail}
-            alt={`${business.name} cover`}
-            fill
-            unoptimized
-            className='object-cover'
-            sizes='(min-width: 1024px) 45vw, (min-width: 768px) 50vw, 100vw'
-            priority={false}
-          />
-        ) : null}
-      </div>
-      <div className='flex flex-col gap-4 p-6'>
-        <div className='flex items-center gap-3'>
-          {business.logo ? (
-            <div className='relative h-12 w-12 overflow-hidden rounded-full bg-[#F4F3FF]'>
-              <Image
-                src={business.logo}
-                alt={`${business.name} logo`}
-                fill
-                unoptimized
-                className='object-cover'
-                sizes='48px'
-                priority={false}
-              />
-            </div>
-          ) : (
-            <div className='flex h-12 w-12 items-center justify-center rounded-full bg-[#F4F3FF] text-sm font-semibold text-[#6E44FF]'>
-              {business.name?.charAt(0)?.toUpperCase() ?? '?'}
-            </div>
-          )}
-
-          <div className='flex flex-col'>
-            <Link
-              href={`/businesses/${business.id}`}
-              className='text-lg font-semibold text-[#0F172B] transition hover:text-[#5B36D4]'
-            >
-              {business.name ?? 'Untitled business'}
-            </Link>
-            {business.address ? (
-              <span className='text-sm text-[#64748B]'>{business.address}</span>
-            ) : null}
-          </div>
-        </div>
-
-        <p className='text-sm leading-relaxed text-[#475467]'>
-          {business.description
-            ? business.description
-            : 'This business has not provided a description yet.'}
-        </p>
-
-        <div className='flex flex-wrap items-center gap-4 text-sm text-[#475467]'>
-          <span className='inline-flex items-center gap-1 text-[#F59E0B]'>
-            <BaseIcons value='star-yellow' />
-            <span className='font-medium'>{ratingLabel}</span>
-          </span>
-        </div>
-
-        <Link
-          href={`/businesses/${business.id}`}
-          className={cn(
-            buttonVariants({ variant: 'neutral', size: 'md' }),
-            'w-fit transition hover:border-[#6E44FF] hover:text-[#5B36D4]'
-          )}
-        >
-          View profile
-        </Link>
-      </div>
-    </article>
-  );
-};
 
 const BusinessSearchPage = (): JSX.Element => {
   const router = useRouter();

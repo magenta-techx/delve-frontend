@@ -35,7 +35,7 @@ export function Notifications() {
       icon: '✅',
     },
   ];
-    const { currentBusiness, isLoading } = useBusinessContext();
+    const { currentBusiness, } = useBusinessContext();
   
   const {} = useNotifications({
     notification_for: 'business',
