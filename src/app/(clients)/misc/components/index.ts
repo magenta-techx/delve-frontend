@@ -8,3 +8,4 @@ export { default as CLientsLandingFAQs } from './CLientsLandingFAQs';
 export { default as BusinessSearch } from './BusinessSearch';
 export { default as BusinessServicesAccordion } from './BusinessServicesAccordion';
 export {  BusinessDetailsGalleryCarousel } from './BusinessDetailsGalleryCarousel';
+export {  default as CollaborationFormEdit } from './CollaborationFormEdit';

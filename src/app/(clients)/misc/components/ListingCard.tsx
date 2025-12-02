@@ -5,15 +5,22 @@ import React from 'react';
 import type { BusinessSummary, SavedBusiness } from '@/types/api';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
 import { AccessDeniedModal } from '@/components/ui';
+import { cn } from '@/lib/utils';
 
 interface FeaturedListingCardProps {
   business: BusinessSummary | SavedBusiness;
   group?: boolean;
   classStyle?: string;
+  isSelectable?: boolean;
+  isSelected?: boolean;
+  onSelectToggle?: (businessId: number) => void;
 }
 
 const FeaturedListingCard = ({
   business,
+  isSelectable,
+  isSelected,
+  onSelectToggle,
 }: FeaturedListingCardProps): JSX.Element => {
   const { isSaved, toggleSave, showLoginAlert, setShowLoginAlert, isSaving } =
     useSavedBusinessesContext();
@@ -35,11 +42,16 @@ const FeaturedListingCard = ({
     } catch (error) {}
   };
 
-
   return (
     <>
       <article
-        className={'group !aspect-[5/6] rounded-2xl border-2 border-[#FEC601] p-1'}
+        className={
+          cn('group !aspect-[5/6] rounded-2xl border-2 border-[#FEC601] p-1', isSelectable && "cursor-pointer")
+        }
+        onClick={() => {
+          if (!isSelectable) return;
+          onSelectToggle?.(business.id);
+        }}
       >
         <div className='relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2'>
           {/* Bookmark  */}
@@ -101,13 +113,33 @@ const FeaturedListingCard = ({
             )}
           </button>
 
-          <Link
-            href={`/businesses/${business.id}`}
-            className='relative z-10 hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex'
-          >
-            <span> View</span>
-            <BaseIcons value='arrow-diagonal-white' />
-          </Link>
+          {!isSelectable && (
+            <Link
+              href={`/businesses/${business.id}`}
+              className='relative z-10 hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex'
+            >
+              <span> View</span>
+              <BaseIcons value='arrow-diagonal-white' />
+            </Link>
+          )}
+          {isSelectable && isSelected && (
+            <div className='absolute inset-0 z-[500] flex items-center justify-center h-full w-full rounded-2xl gap-2 text-white bg-black/50'>
+              <svg
+                width='62'
+                height='62'
+                viewBox='0 0 62 62'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  fill-rule='evenodd'
+                  clip-rule='evenodd'
+                  d='M30.9994 56.8346C45.2667 56.8346 56.8327 45.2687 56.8327 31.0013C56.8327 16.7339 45.2667 5.16797 30.9994 5.16797C16.732 5.16797 5.16602 16.7339 5.16602 31.0013C5.16602 45.2687 16.732 56.8346 30.9994 56.8346ZM43.3485 25.2672C44.1052 24.5105 44.1052 23.2838 43.3485 22.5271C42.5919 21.7705 41.3651 21.7705 40.6085 22.5271L27.7702 35.3654L21.3902 28.9855C20.6336 28.2288 19.4068 28.2288 18.6502 28.9855C17.8935 29.7421 17.8935 30.9688 18.6502 31.7255L26.4002 39.4755C27.1568 40.2321 28.3836 40.2321 29.1402 39.4755L43.3485 25.2672Z'
+                  fill='white'
+                />
+              </svg>
+            </div>
+          )}
 
           {/* background image  */}
           <img
@@ -119,7 +151,7 @@ const FeaturedListingCard = ({
           />
 
           {/* Content  */}
-          <div className='absolute bottom-0 z-10 flex h-48 w-full flex-col gap-2 rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300 group-hover:opacity-0 sm:h-40'>
+          <div className={cn('absolute bottom-0 z-10 flex h-48 w-full flex-col gap-2 rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300  sm:h-40', !isSelectable && "group-hover:opacity-0")}>
             <div className='mt-auto flex w-full flex-col gap-2 divide-y divide-white pb-2.5'>
               <div className='flex items-start gap-2'>
                 <div className='relative size-10 shrink-0 overflow-hidden rounded-full md:size-12'>

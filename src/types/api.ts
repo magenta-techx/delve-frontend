@@ -53,7 +53,7 @@ export interface CategoryMini {
 export interface BusinessService {
   id?: number;
   title: string;
-  image:string  | null;
+  image: string | null;
   is_active?: boolean;
   description?: string;
   uploaded_at?: string;
@@ -72,7 +72,6 @@ export interface BusinessOwner {
   date_joined?: string;
   profile_image?: string;
 }
-
 
 export interface BusinessDashboardDetail {
   id: number;
@@ -165,7 +164,7 @@ export interface BusinessDetail {
   requesting_approval?: boolean;
   status?: string;
   // The detail response in api.md shows performance embedded in example; usually separate
-  performance?: Array<{ date: string; performance_score: number }>; 
+  performance?: Array<{ date: string; performance_score: number }>;
 }
 
 // Business performance
@@ -185,7 +184,10 @@ export interface BusinessPerformanceData {
 }
 
 // Reviews
-export interface ReviewReply { id: number; reply: string }
+export interface ReviewReply {
+  id: number;
+  reply: string;
+}
 export interface Review {
   id: number;
   rating: number;
@@ -193,8 +195,6 @@ export interface Review {
   user: { id: number; username: string };
   replies?: ReviewReply[];
 }
-
-
 
 export interface BusinessChatListItem {
   id: number;
@@ -235,7 +235,6 @@ export interface ChatListItem {
   updated_at: string;
   business?: string; // present on user chat list
 }
-
 
 export interface ChatMessage {
   id: number;
@@ -286,7 +285,9 @@ export interface PremiumPlan {
   price: number;
   duration: string; // e.g. "1 month"
 }
-export interface ChangeCardData { url: string }
+export interface ChangeCardData {
+  url: string;
+}
 
 // Ads
 export interface ActiveAd {
@@ -424,13 +425,31 @@ export interface StateItem {
 }
 
 // Collaboration
-export interface CollaborationMember {
-  id: number;
-  role: string; // admin/editor etc.
-}
+
 
 export interface CollaborationDetail {
   id: number;
+  owner: Owner;
   name: string;
-  members: CollaborationMember[];
+  description: string;
+  number_of_members: number;
+  created_when: string;
+  members: Member[];
+  businesses: any[];
 }
+
+interface Member {
+  member: Owner | null;
+  unregistered_user_email: null | string;
+  priviledge: string;
+  status: string;
+  accepted_when: null | string;
+}
+
+interface Owner {
+  id: number;
+  first_name: string;
+  last_name: string;
+  profile_image: string;
+}
+

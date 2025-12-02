@@ -4,31 +4,41 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input, Textarea, Button } from '@/components/ui';
 import {
+  useCollaboration,
   useCreateCollaboration,
   useCurrentUser,
   useSendInvitation,
 } from '../api';
 import { format } from 'date-fns';
 import { BusinessDetail } from '@/types/api';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { PlusIcon, TrashIcon } from '@/assets/icons';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import {  ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import CollaborationFormBusinessSelector from './CollaborationFormBusinessSelector';
+import { useBooleanStateControl } from '@/hooks';
+import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
+import FeaturedListingCard from './ListingCard';
 
 const collaborationSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
-  business_id: z.array(z.number()).default([]).optional(),
+  business_ids: z.array(z.number()).default([]).optional(),
 });
 type CollaborationFormData = z.infer<typeof collaborationSchema>;
 
 export default function CollaborationForm() {
+  const collab_id = useParams()['collabId'] as string;
+  const { data: collabData } = useCollaboration(collab_id);
   const {
     register,
     getValues,
     watch,
+    setValue,
     trigger,
+    reset,
     formState: { errors, isSubmitting, isValid },
   } = useForm<CollaborationFormData>({
     resolver: zodResolver(collaborationSchema),
@@ -37,18 +47,30 @@ export default function CollaborationForm() {
       description: '',
     },
   });
+
+  const {
+    state: isBusinessSelectorModalOpen,
+    setTrue: openBusinessSelectorModal,
+    setFalse: closeBusinessSelectorModal,
+  } = useBooleanStateControl();
   const { data: currentUser } = useCurrentUser(true);
   const [emailToInvite, setEmailToInvite] = React.useState('');
   const [isEditingEmailInvite, setIsEditingEmailInvite] = React.useState(false);
   const [invitedMembers, setInvitedMembers] = React.useState<
     Array<{ email: string; status: 'Pending' }>
   >([]);
-  const { mutate: sendInvitation, isPending: isSendingInvite } = useSendInvitation();
-  const { mutate: createCollaboration, isPending:isCreatingColabo } = useCreateCollaboration();
+  const { mutate: sendInvitation, isPending: isSendingInvite } =
+    useSendInvitation();
+  const { mutate: createCollaboration, isPending: isCreatingColabo } =
+    useCreateCollaboration();
+  const { savedBusinesses } = useSavedBusinessesContext();
+  const selectedSavedBusiness = useMemo(() => {
+    const businessIds = watch('business_ids') || [];
+    return savedBusinesses.filter(business =>
+      businessIds.includes(business.id)
+    );
+  }, [savedBusinesses, watch('business_ids')]);
 
-  const [selectedBusinesses, setSelectedBusinesses] = React.useState<
-    BusinessDetail[]
-  >([]);
   const onSubmit = async (where_from?: 'submit' | 'invite') => {
     if (where_from === 'invite') {
       if (!emailToInvite.trim()) {
@@ -73,9 +95,12 @@ export default function CollaborationForm() {
         });
         return;
       }
-      
+
       // Add to invited members list for preview
-      setInvitedMembers(prev => [...prev, { email: emailToInvite, status: 'Pending' }]);
+      setInvitedMembers(prev => [
+        ...prev,
+        { email: emailToInvite, status: 'Pending' },
+      ]);
       setEmailToInvite('');
       setIsEditingEmailInvite(false);
       toast.success('Member added to preview!');
@@ -111,7 +136,7 @@ export default function CollaborationForm() {
   };
 
   return (
-    <div className='grid h-screen w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-8 xl:pt-28 xl:pb-12'>
+    <div className='grid h-screen w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-8 xl:pb-12 xl:pt-28'>
       <header className='mx-auto flex w-full max-w-[1356px] items-center justify-between px-4'>
         <Link href='/misc/collaborations' className='flex items-center gap-2'>
           <ChevronLeft className='size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
@@ -130,7 +155,7 @@ export default function CollaborationForm() {
       </header>
       <section className='mx-auto grid w-full max-w-[1356px] gap-8 px-4 xl:grid-cols-2 xl:gap-16'>
         <form className='flex flex-col gap-4'>
-          <h1 className='text-base font-semibold md:text-lg mb-2'>
+          <h1 className='mb-2 text-base font-semibold md:text-lg'>
             Collaborate With Your Crew
           </h1>
           <div>
@@ -257,6 +282,20 @@ export default function CollaborationForm() {
               </Button>
             )}
           </section>
+          <section className='mt-4'>
+            <h5 className='text-sm font-medium'>Group Listings</h5>
+            <Button
+              size='dynamic_lg'
+              variant='colored_outline'
+              type='button'
+              className='mt-2.5'
+              icon={<PlusIcon className='!size-3' />}
+              onClick={openBusinessSelectorModal}
+              iconPosition='right'
+            >
+              Add listings
+            </Button>
+          </section>
         </form>
 
         <article className='custom-scrollbar flex flex-col overflow-y-auto rounded-lg bg-[#FFFFFF] p-5 xl:h-full'>
@@ -267,7 +306,7 @@ export default function CollaborationForm() {
               type='button'
               onClick={() => {
                 setInvitedMembers([]);
-                setSelectedBusinesses([]);
+                reset();
               }}
               className='text-sm text-[#9AA4B2] hover:text-[#0D121C]'
             >
@@ -297,7 +336,7 @@ export default function CollaborationForm() {
               Group description
             </h3>
             {watch('description') ? (
-              <p className='text-base font-normal leading-relaxed text-[#0D121C] min-h-16'>
+              <p className='min-h-16 text-base font-normal leading-relaxed text-[#0D121C]'>
                 {watch('description')}
               </p>
             ) : (
@@ -348,7 +387,10 @@ export default function CollaborationForm() {
                 )}
                 {/* Invited Members */}
                 {invitedMembers.map((member, index) => (
-                  <div key={index} className='flex items-center justify-between'>
+                  <div
+                    key={index}
+                    className='flex items-center justify-between'
+                  >
                     <div className='flex items-center gap-3'>
                       <img
                         src='/collaboration/user_1.png'
@@ -382,102 +424,78 @@ export default function CollaborationForm() {
           )}
 
           {/* Group Listings Section */}
-          {selectedBusinesses.length > 0 && (
-            <div>
-              <div className='mb-4 flex items-center justify-between'>
-                <h3 className='text-sm font-normal text-[#9AA4B2]'>
-                  Group Listings
-                </h3>
-                <div className='flex items-center gap-2'>
-                  <button
-                    type='button'
-                    className='text-[#9AA4B2] hover:text-[#0D121C]'
-                  >
-                    <svg
-                      width='20'
-                      height='20'
-                      viewBox='0 0 20 20'
-                      fill='none'
-                      xmlns='http://www.w3.org/2000/svg'
-                    >
-                      <path
-                        d='M12 8L8 12M8 8L12 12'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        strokeLinecap='round'
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    type='button'
-                    className='text-[#9AA4B2] hover:text-[#0D121C]'
-                  >
-                    <svg
-                      width='20'
-                      height='20'
-                      viewBox='0 0 20 20'
-                      fill='none'
-                      xmlns='http://www.w3.org/2000/svg'
-                    >
-                      <path
-                        d='M8 12L12 8M12 12L8 8'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        strokeLinecap='round'
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <div className='flex gap-4 overflow-x-auto'>
-                {selectedBusinesses.map((business, index) => (
-                  <div
-                    key={index}
-                    className='relative min-w-[200px] flex-shrink-0 overflow-hidden rounded-2xl'
-                  >
-                    <img
-                      src={business.thumbnail || '/placeholder-business.jpg'}
-                      alt={business.name}
-                      className='h-[280px] w-full object-cover'
-                    />
+          {Array.isArray(watch('business_ids')) &&
+            (watch('business_ids')?.length ?? 0) > 0 && (
+              <div>
+                <div className='mb-4 flex items-center justify-between'>
+                  <h3 className='text-sm font-normal text-[#9AA4B2]'>
+                    Group Listings
+                  </h3>
+                  <div className='flex items-center gap-2'>
                     <button
                       type='button'
-                      className='absolute right-3 top-3 rounded-full bg-white p-2 shadow-md hover:bg-gray-100'
+                      className='text-[#9AA4B2] hover:text-[#0D121C]'
                     >
-                      <TrashIcon className='size-4 text-red-600' />
-                    </button>
-                    <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4'>
-                      <div className='flex items-center gap-2'>
-                        <img
-                          src={business.logo || '/placeholder-logo.png'}
-                          alt=''
-                          className='h-8 w-8 rounded-full'
+                      <svg
+                        width='20'
+                        height='20'
+                        viewBox='0 0 20 20'
+                        fill='none'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M12 8L8 12M8 8L12 12'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                          strokeLinecap='round'
                         />
-                        <div className='flex-1 text-white'>
-                          <p className='text-sm font-semibold'>
-                            {business.name}
-                          </p>
-                          <p className='text-xs'>
-                            {business.description?.substring(0, 50)}...
-                          </p>
-                        </div>
-                      </div>
-                      <div className='mt-2 flex items-center justify-between text-white'>
-                        <span className='text-xs'>
-                          {business.address || 'Location'}
-                        </span>
-                        <span className='flex items-center gap-1 text-xs'>
-                          ⭐ {business.average_review_rating || '0.0'}
-                        </span>
-                      </div>
-                    </div>
+                      </svg>
+                    </button>
+                    <button
+                      type='button'
+                      className='text-[#9AA4B2] hover:text-[#0D121C]'
+                    >
+                      <svg
+                        width='20'
+                        height='20'
+                        viewBox='0 0 20 20'
+                        fill='none'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path
+                          d='M8 12L12 8M12 12L8 8'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                          strokeLinecap='round'
+                        />
+                      </svg>
+                    </button>
                   </div>
-                ))}
+                </div>
+                <div className='flex gap-4 overflow-x-auto'>
+                 {
+                  selectedSavedBusiness.map((business) => (
+                    <FeaturedListingCard
+                      key={business.id}
+                      business={business}
+                      isSelectable={true}
+                    />
+                  ))
+                 }
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </article>
       </section>
+
+      <CollaborationFormBusinessSelector
+        selectedBusinesses={watch('business_ids') ?? []}
+        setSelectedBusinesses={(businesses: number[]) => {
+          setValue('business_ids', businesses);
+        }}
+        isBusinessSelectorModalOpen={isBusinessSelectorModalOpen}
+        closeBusinessSelectorModal={closeBusinessSelectorModal}
+      />
     </div>
   );
 }
