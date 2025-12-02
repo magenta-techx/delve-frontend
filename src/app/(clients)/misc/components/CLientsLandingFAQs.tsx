@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
-import BusinessSectionHeader from './BusinessSectionHeader';
-import SectionHeader from '@/components/SectionHeader';
 
 type FaqItem = {
   id: number;
