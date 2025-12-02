@@ -33,6 +33,20 @@ export function useCurrentUser(
   });
 }
 
+export function checkUserByEmail(): UseMutationResult<UserResponse, Error, string> {
+  return useMutation<UserResponse, Error, string>({
+    mutationKey: ['user'],
+    mutationFn: async (email: string) => {
+      const res = await apiRequest(
+        `/api/user?email=${encodeURIComponent(email)}`
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to fetch user');
+      return data;
+    },
+  });
+}
+
 export function useUserByEmail(
   email: string
 ): UseQueryResult<UserResponse, Error> {

@@ -29,10 +29,11 @@ const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
   useEffect(() => {
     if (!isOpen) {
       setSelectedSubcategoryIds([]);
-    } else {
+    } else if (categoryId) {
+      // Only keep existing subcategory selections if we're editing the same category
       setSelectedSubcategoryIds(existingSubcategoryIds);
     }
-  }, [isOpen, existingSubcategoryIds]);
+  }, [isOpen, categoryId, existingSubcategoryIds]);
 
   const toggleSubcategory = (subcategoryId: number) => {
     setSelectedSubcategoryIds(prev => 

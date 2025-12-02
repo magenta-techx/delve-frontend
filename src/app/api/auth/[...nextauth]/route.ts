@@ -55,9 +55,11 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
     const res = await fetch(
       `${process.env['API_BASE_URL']}/user/auth/token/refresh/`,
       {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh: token['refreshToken'] }),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refresh: token['refreshToken'] }),
       }
     );
 

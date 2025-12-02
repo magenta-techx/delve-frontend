@@ -75,8 +75,14 @@ const BusinessCategoryForm: React.FC<BusinessCategoryFormProps> = ({
   const { data: categories = [], isLoading: categoriesLoading, error } = useCategories();
 
   const handleCategoryClick = (categoryId: number) => {
-    // If clicking the same category, keep existing subcategories
-    // If clicking a different category, we'll let the modal handle clearing
+    // If clicking the same category that's already selected, deselect it
+    if (parentSelectedCategoryId === categoryId) {
+      onCategorySelected(0, []); // Clear selection (use 0 or null to indicate no selection)
+      setCurrentCategoryId(null);
+      return;
+    }
+    
+    // If clicking a different category, open modal (subcategories will be cleared)
     setCurrentCategoryId(categoryId);
     setIsModalOpen(true);
   };
@@ -138,10 +144,9 @@ const BusinessCategoryForm: React.FC<BusinessCategoryFormProps> = ({
                   isSelected
                     ? 'border-purple-500 bg-purple-100 text-[#551FB9] hover:border-purple-600'
                     : isOtherCategorySelected
-                    ? 'border-gray-200 bg-gray-100 text-gray-400 opacity-50 cursor-not-allowed'
+                    ? 'border-gray-200 bg-gray-100 text-gray-400 opacity-50 hover:opacity-70'
                     : 'border-[#E6E6E6] bg-white text-[#131316] hover:border-purple-300 hover:bg-purple-50'
                 )}
-                disabled={!!isOtherCategorySelected}
               >
                 <div className="flex flex-col gap-3">
                     <span className="text-xl">{getCategoryIcon(category.name)}</span>
