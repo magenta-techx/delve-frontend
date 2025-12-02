@@ -1,6 +1,6 @@
 'use client';
 
-import AuthFormheader from '../../../app/(auth)/misc/components/AuthFormheader';
+import AuthFormheader from './AuthFormheader';
 import { Button } from '@/components/ui/Button';
 import CancleIcon from '@/assets/icons/CancelIcon';
 import { useRouter } from 'next/navigation';
@@ -33,7 +33,7 @@ const ForgotPassword = (): JSX.Element => {
       });
     
       navigate.push(
-        `/auth/password-reset/otp?email=${encodeURIComponent(values.email)}`
+        `/password-reset/otp?email=${encodeURIComponent(values.email)}`
       );
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Forgot password failed';

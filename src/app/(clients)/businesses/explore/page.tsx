@@ -106,7 +106,7 @@ export default function HomePage(): JSX.Element {
               ? Array.from({ length: 5 }).map((_, key) => (
                   <ListingCardSkeleton
                     key={key}
-                    classStyle={'h-[350px] w-full'}
+                    classStyle={'!aspect-[5/6] w-full'}
                   />
                 ))
               : approved.map((business, key) => (
@@ -189,15 +189,18 @@ export default function HomePage(): JSX.Element {
         ) : (
           <div
             className={cn(
-              'mb-20 mt-5 grid gap-6 2xl:grid-cols-4',
+              'mb-20 mt-5 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 2xl:grid-cols-4',
               approved.length < 4
-                ? 'grid-cols-[repeat(auto-fill,minmax(280,1fr))]'
-                : 'grid-cols-[repeat(auto-fit,minmax(280,1fr))]'
+                ? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]'
+                : 'grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
             )}
           >
             {loadingApproved
               ? Array.from({ length: 5 }).map((_, key) => (
-                  <ListingCardSkeleton key={key} />
+                  <ListingCardSkeleton
+                    key={key}
+                    classStyle={'!aspect-[5/6] w-full'}
+                  />
                 ))
               : approved.map((business, key) => (
                   <FeaturedListingCard
@@ -210,12 +213,12 @@ export default function HomePage(): JSX.Element {
         )}
       </div>
 
-      {/* Mobile  */}
+      {/* mobile  */}
       <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden px-4 sm:hidden'>
         <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
           <h1 className='flex items-center gap-2 font-inter text-[16px] font-bold sm:text-2xl'>
-            <BaseIcons value='flame-yellow-small' />
-            Featured Listings
+            <BaseIcons value='flames-yellow' />
+            Featured
           </h1>
         </div>
         <div className='mb-20 flex w-full items-center'>
@@ -255,8 +258,8 @@ export default function HomePage(): JSX.Element {
       <div className='container hidden w-full px-8 sm:block lg:px-12'>
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
-            <BaseIcons value='flames-yellow' />
-            <h1 className='text-2xl font-bold'>Featured</h1>
+            <BaseIcons value='stars-primary' />
+            <h1 className='text-2xl font-bold'>Listings around you</h1>
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
@@ -279,15 +282,18 @@ export default function HomePage(): JSX.Element {
         ) : (
           <div
             className={cn(
-              'mb-20 mt-5 grid gap-6 2xl:grid-cols-4',
+              'mb-20 mt-5 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 2xl:grid-cols-4',
               approved.length < 4
-                ? 'grid-cols-[repeat(auto-fill,minmax(280,1fr))]'
-                : 'grid-cols-[repeat(auto-fit,minmax(280,1fr))]'
+                ? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]'
+                : 'grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
             )}
           >
             {loadingApproved
               ? Array.from({ length: 5 }).map((_, key) => (
-                  <ListingCardSkeleton key={key} />
+                  <ListingCardSkeleton
+                    key={key}
+                    classStyle={'!aspect-[5/6] w-full'}
+                  />
                 ))
               : approved.map((business, key) => (
                   <FeaturedListingCard
@@ -300,11 +306,11 @@ export default function HomePage(): JSX.Element {
         )}
       </div>
 
-      {/* Mobile  */}
+      {/* mobile  */}
       <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden px-4 sm:hidden'>
         <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
           <h1 className='flex items-center gap-2 font-inter text-[16px] font-bold sm:text-2xl'>
-            <BaseIcons value='flame-yellow-small' />
+            <BaseIcons value='stars-primary' />
             Explore
           </h1>
         </div>
@@ -337,7 +343,6 @@ export default function HomePage(): JSX.Element {
           </Carousel>
         </div>
       </div>
-
       <UpComingEvents />
 
       {/* <div className='w-full sm:h-[217px]'>

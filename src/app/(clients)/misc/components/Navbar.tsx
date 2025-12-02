@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Logo } from '@/assets/icons';
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
@@ -23,9 +23,30 @@ import {
 import { LinkButton } from '@/components/ui';
 import { CaretDown } from '@/assets/icons';
 import { getInitials } from '@/utils/strings';
+import { useBusinessCategories, useBusinessStates } from '../api/metadata';
+import {
+  BusinessCategoryIcons,
+  BusinessCategoriesIconsType as CategoryIconType,
+} from '@/assets/icons/business/BusinessCategoriesIcon';
 
 const LandingPageNavbar = () => {
   const { data: session, status } = useSession();
+  const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+
+  const { data: categoriesData } = useBusinessCategories();
+  const { data: statesData } = useBusinessStates();
+
+  const categories = categoriesData?.data || [];
+  const states = statesData?.data || [];
+
+  // Popular cities from the screenshot
+  const popularCities = ['Lagos', 'Abuja', 'Oyo', 'Rivers', 'Edo'];
+  const popularStates = states.filter(state =>
+    popularCities.includes(state.name)
+  );
+  const otherStates = states.filter(
+    state => !popularCities.includes(state.name)
+  );
 
   const hasValidAccessToken = Boolean(
     session?.user?.accessToken && String(session.user.accessToken).length > 0
@@ -39,16 +60,16 @@ const LandingPageNavbar = () => {
 
   const VISITORS_LINKS = [
     { name: 'Home', href: '/', hasBlackBg: true },
-    { name: 'Cities', href: '/businesses/explore', hasBlackBg: true },
-    { name: 'Explore', href: '/businesses/explore', hasBlackBg: true },
+    { name: 'Listings', href: '/businesses/search', hasBlackBg: true },
+    { name: 'FAQs', href: '/#faqs', hasBlackBg: false },
+    { name: 'Cities', href: '/businesses/search', hasBlackBg: true },
     { name: 'Blog', href: '/blog', hasBlackBg: false },
-    { name: 'FAQs', href: '/faqs', hasBlackBg: false },
   ];
 
   const AUTHENTICATED_USER_LINKS = [
     {
       name: 'Listings',
-      href: '/businesses/explore',
+      href: '/businesses/search',
       hasBlackBg: false,
       icon: ListingsIcon,
     },
@@ -89,7 +110,6 @@ const LandingPageNavbar = () => {
     '/businesses/create-listing',
   ];
 
-
   if (PAGES_WITHOUT_NAVBAR.includes(pathname)) {
     return null;
   }
@@ -108,7 +128,7 @@ const LandingPageNavbar = () => {
       <div className='container mx-auto flex flex-row items-center justify-between'>
         <section>
           <Logo
-            className='max-sm:w-20 w-24'
+            className='w-24 max-sm:w-20'
             textColor={
               isBusiness || isMobile
                 ? 'black'
@@ -124,7 +144,12 @@ const LandingPageNavbar = () => {
             {calculatingScreenWidth ? null : (
               <>
                 {!isMobile && (
-                  <ul className={cn('flex items-center gap-4', userIsloggedIn ? 'ml-auto' : 'mx-auto')}>
+                  <ul
+                    className={cn(
+                      'flex items-center gap-4',
+                      userIsloggedIn ? 'ml-auto' : 'mx-auto'
+                    )}
+                  >
                     {userIsloggedIn
                       ? AUTHENTICATED_USER_LINKS.map(link => {
                           const isActive =
@@ -155,17 +180,211 @@ const LandingPageNavbar = () => {
                             </li>
                           );
                         })
-                      : VISITORS_LINKS.map(link => (
-                          <li
-                            key={link.name}
-                            className={cn(
-                              'px-4',
-                              pageHasBlackBg ? 'text-white' : ''
-                            )}
-                          >
-                            <Link href={link.href}>{link.name}</Link>
-                          </li>
-                        ))}
+                      : VISITORS_LINKS.map(link => {
+                          // Listings and Cities get dropdown menus
+                          if (link.name === 'Listings') {
+                            return (
+                              <li key={link.name}>
+                                <DropdownMenu
+                                  open={hoveredMenu === 'listings'}
+                                  onOpenChange={open =>
+                                    setHoveredMenu(open ? 'listings' : null)
+                                  }
+                                >
+                                  <DropdownMenuTrigger
+                                    asChild
+                                    onMouseEnter={() =>
+                                      setHoveredMenu('listings')
+                                    }
+                                    onMouseLeave={() => setHoveredMenu(null)}
+                                  >
+                                    <button
+                                      className={cn(
+                                        'flex items-center gap-1 px-4',
+                                        pageHasBlackBg
+                                          ? 'text-white'
+                                          : 'text-black'
+                                      )}
+                                    >
+                                      {link.name}
+                                      <CaretDown className='h-3 w-3' />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent
+                                    className='max-h-[500px] w-[880px] overflow-y-auto p-8'
+                                    align='start'
+                                    onMouseEnter={() =>
+                                      setHoveredMenu('categories')
+                                    }
+                                    onMouseLeave={() => setHoveredMenu(null)}
+                                  >
+                                    <div className='mb-4'>
+                                      <p className='mb-2 text-sm text-gray-600'>
+                                        Discover a world of businesses and
+                                        services across lifestyle, wellness,
+                                        fashion, food, tech, and more
+                                      </p>
+                                      <Link
+                                        href='/businesses/search'
+                                        className='text-primary-600 flex items-center gap-1 text-sm hover:underline'
+                                      >
+                                        Explore all category →
+                                      </Link>
+                                    </div>
+
+                                    <h3 className='mb-6 text-2xl font-bold'>
+                                      Browse Category
+                                    </h3>
+
+                                    <div className='grid grid-cols-4 gap-6'>
+                                      {categories.map(category => {
+                                        const iconName = category.name
+                                          ?.split(' ')[0]
+                                          ?.toLowerCase() as CategoryIconType;
+
+                                        return (
+                                          <Link
+                                            key={category.id}
+                                            href={`/businesses/search?category=${encodeURIComponent(category.name)}`}
+                                            className='group flex items-start gap-2.5 hover:!text-primary'
+                                          >
+                                            <BusinessCategoryIcons
+                                              className='!shrink-0 text-primary-600 group-hover:!fill-primary-600 group-hover:!stroke-primary-600 size-5 group-hover:!text-primary'
+                                              value={iconName}
+                                            />
+                                            <div className='group-hover:!fill-primary-600 group-hover:!stroke-primary-600 mb-2 group-hover:!text-primary'>
+                                              <h4 className='mb-1 flex items-center gap-2 text-sm font-semibold group-hover:!text-primary capitalize '>
+                                                {category.name}
+                                              </h4>
+                                              {category.subcategories &&
+                                                category.subcategories.length >
+                                                  0 && (
+                                                  <p className='text-[0.7rem] text-gray-600 group-hover:!text-primary'>
+                                                    {category.subcategories
+                                                      .slice(0, 3)
+                                                      .map(sub => sub.name)
+                                                      .join(', ')}
+                                                    {category.subcategories
+                                                      .length > 3 && '...'}
+                                                  </p>
+                                                )}
+                                            </div>
+                                          </Link>
+                                        );
+                                      })}
+                                    </div>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </li>
+                            );
+                          }
+
+                          if (link.name === 'Cities') {
+                            return (
+                              <li key={link.name}>
+                                <DropdownMenu
+                                  open={hoveredMenu === 'cities'}
+                                  onOpenChange={open =>
+                                    setHoveredMenu(open ? 'cities' : null)
+                                  }
+                                >
+                                  <DropdownMenuTrigger
+                                    asChild
+                                    onMouseEnter={() =>
+                                      setHoveredMenu('cities')
+                                    }
+                                    onMouseLeave={() => setHoveredMenu(null)}
+                                  >
+                                    <button
+                                      className={cn(
+                                        'flex items-center gap-1 px-4',
+                                        pageHasBlackBg
+                                          ? 'text-white'
+                                          : 'text-black'
+                                      )}
+                                    >
+                                      {link.name}
+                                      <CaretDown className='h-3 w-3' />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent
+                                    className='w-[880px] p-8'
+                                    align='start'
+                                    onMouseEnter={() =>
+                                      setHoveredMenu('cities')
+                                    }
+                                    onMouseLeave={() => setHoveredMenu(null)}
+                                  >
+                                    <div className='mb-4'>
+                                      <p className='mb-2 text-sm text-gray-600'>
+                                        Discover a world of businesses and
+                                        services across lifestyle, wellness,
+                                        fashion, food, tech, and more
+                                      </p>
+                                      <Link
+                                        href='/businesses/search'
+                                        className='text-primary-600 flex items-center gap-1 text-sm hover:underline'
+                                      >
+                                        Explore all Cities →
+                                      </Link>
+                                    </div>
+
+                                    <h3 className='mb-6 text-2xl font-bold'>
+                                      Browse by City
+                                    </h3>
+
+                                    <div className='mb-6'>
+                                      <h4 className='mb-3 flex items-center gap-2 text-sm font-semibold'>
+                                        <span>🔥</span> Popular
+                                      </h4>
+                                      <div className='flex flex-wrap gap-3'>
+                                        {popularStates.map(state => (
+                                          <Link
+                                            key={state.name}
+                                            href={`/businesses/search?state=${encodeURIComponent(state.name)}`}
+                                            className='rounded-full bg-black px-6 py-2 text-white transition-colors hover:bg-gray-800'
+                                          >
+                                            {state.name}
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    <div>
+                                      <h4 className='mb-4 text-base font-bold'>
+                                        Others
+                                      </h4>
+                                      <div className='flex flex-wrap gap-3'>
+                                        {otherStates.map(state => (
+                                          <Link
+                                            key={state.name}
+                                            href={`/businesses/search?state=${encodeURIComponent(state.name)}`}
+                                            className='rounded-full bg-gray-100 px-6 py-2 text-black transition-colors hover:bg-gray-200'
+                                          >
+                                            {state.name}
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </li>
+                            );
+                          }
+
+                          // Regular links (Home, Explore, Blog, FAQs)
+                          return (
+                            <li
+                              key={link.name}
+                              className={cn(
+                                'px-4',
+                                pageHasBlackBg ? 'text-white' : ''
+                              )}
+                            >
+                              <Link href={link.href}>{link.name}</Link>
+                            </li>
+                          );
+                        })}
                   </ul>
                 )}
 
@@ -218,7 +437,7 @@ const LandingPageNavbar = () => {
                           </LinkButton>
                         ) : (
                           <LinkButton
-                            href='/businesses/create-listing'
+                            href='/businesses'
                             className='w-full bg-[#551FB9]'
                             size={'dynamic_lg'}
                           >
@@ -263,7 +482,7 @@ const LandingPageNavbar = () => {
                     </LinkButton>
                     <LinkButton
                       size='lg'
-                      href='/signup'
+                      href='/businesses'
                       className='max-md:!hidden'
                     >
                       List your business

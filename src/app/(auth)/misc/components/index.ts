@@ -3,3 +3,7 @@ export { default as SignUpForm } from './SignUpForm';
 export { default as AuthTabsShell } from './AuthTabsShell';
 export { default as AuthFormCarousel } from './AuthFormCarousel';
 export { default as SimpleAuthPanel } from './SimpleAuthPanel';
+export { default as ForgotPassword } from './ForgotPassword';
+export { default as Otp } from './Otp';
+export { default as CreateNewPassword } from './CreateNewPassword';
+export { default as AuthFormheader } from './AuthFormheader';

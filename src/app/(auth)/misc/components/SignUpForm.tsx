@@ -4,12 +4,12 @@ import AuthFormheader from './AuthFormheader';
 import { signupSchema, type SignupInput } from '@/schemas/authSchema';
 
 import { Button } from '@/components/ui/Button';
-import CancleIcon from '@/assets/icons/CancelIcon';
 import { useRouter } from 'next/navigation';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/Input';
 import { useRegister } from '@/app/(auth)/misc/api';
+import { toast } from 'sonner';
 
 const SignUpForm = (): JSX.Element => {
   const router = useRouter();
@@ -30,9 +30,14 @@ const SignUpForm = (): JSX.Element => {
   // Signup Handler
   const handleSignup = async (values: SignupInput): Promise<void> => {
     try {
-      await registerMutation.mutateAsync(values);
-      window.location.reload();
-      router.push('/signin');
+      await registerMutation.mutateAsync(values,
+        {
+          onSuccess() {
+            router.push('/signin');
+            toast.success('Account created successfully! Please sign in.');
+          },
+        }
+      );
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Signup failed';
       alert(message);
@@ -54,7 +59,7 @@ const SignUpForm = (): JSX.Element => {
         />
 
         {/* Fields */}
-        <div className='mb-5 flex w-full flex-col gap-2'>
+        <div className='mb-5 flex w-full flex-col gap-3 xl:gap-5'>
           {/* First name and last name  */}
 
           <div className='flex flex-col gap-5 sm:flex-row sm:items-center'>
@@ -93,7 +98,6 @@ const SignUpForm = (): JSX.Element => {
             type='email'
             placeholder='Enter Email'
             label='Email address'
-            rightIcon={<CancleIcon />}
             haserror={Boolean(methods.formState.errors.email)}
             errormessage={
               methods.formState.errors.email?.message as string | undefined

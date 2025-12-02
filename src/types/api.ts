@@ -377,7 +377,29 @@ export interface PlansResponse {
 }
 
 // Saved businesses return the same structure as BusinessSummary
-export type SavedBusinessItem = BusinessSummary;
+
+export interface SavedBusinessItem {
+  businesses: SavedBusiness[];
+  category: Category;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  icon_name: string;
+  subcategories: Subcategory[];
+}
+
+export interface SavedBusiness {
+  id: number;
+  name: string;
+  description: string;
+  address: null | null | string;
+  average_review_rating: number;
+  thumbnail: string;
+  logo: string;
+  is_promotion_active: boolean;
+}
 
 // Metadata: amenities, categories, subcategories, states
 export interface Amenity {

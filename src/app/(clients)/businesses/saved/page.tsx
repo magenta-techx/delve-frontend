@@ -2,8 +2,7 @@
 import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
 import { useSavedBusinesses } from '@/app/(clients)/misc/api/user';
 import { useSession } from 'next-auth/react';
-import { useMemo, useState } from 'react';
-import type { BusinessSummary } from '@/types/api';
+import { useState } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -28,33 +27,7 @@ export default function Page() {
   );
   const [searchText, setSearchText] = useState('');
 
-  // Group saved businesses by category
-  const businessesByCategory = useMemo(() => {
-    const savedBusinesses = savedBusinessesData?.data ?? [];
-    const grouped: Record<string, BusinessSummary[]> = {};
 
-    savedBusinesses.forEach(business => {
-      const categoryName =
-        (business as BusinessSummary & { category?: { name: string } }).category
-          ?.name || 'Uncategorized';
-
-      if (!grouped[categoryName]) {
-        grouped[categoryName] = [];
-      }
-      grouped[categoryName].push(business);
-    });
-
-    return grouped;
-  }, [savedBusinessesData]);
-
-  const categoriesWithBusinesses = useMemo(() => {
-    return Object.entries(businessesByCategory)
-      .filter(([_, businesses]) => businesses.length > 0)
-      .map(([categoryName, businesses]) => ({
-        name: categoryName,
-        businesses,
-      }));
-  }, [businessesByCategory]);
 
   return (
     <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden lg:w-[80vw]'>
@@ -179,7 +152,7 @@ export default function Page() {
               </div>
             ))}
           </div>
-        ) : categoriesWithBusinesses.length === 0 ? (
+        ) : savedBusinessesData?.data.length === 0 ? (
           <div className='mt:px-0 container relative flex min-h-[45vh] w-full flex-col items-center justify-center'>
             <EmptyState
               title='You have no saved businesses yet'
@@ -191,21 +164,21 @@ export default function Page() {
             />
           </div>
         ) : (
-          categoriesWithBusinesses.map(category => (
+          savedBusinessesData?.data.map(item => (
             <div
-              key={category.name}
+              key={item.category.name}
               className='mt:px-0 relative flex w-full flex-col items-center justify-center'
             >
               <div className='flex w-full justify-between px-4'>
                 <div className='flex items-center gap-1.5'>
                   <BusinessCategoryIcons
                     value={
-                      category.name.toLowerCase() as BusinessCategoriesIconsType
+                      item.category.name.toLowerCase() as BusinessCategoriesIconsType
                     }
                     className='size-5 text-[#5F2EEA]'
                   />
                   <h1 className='text-base font-semibold sm:text-xl'>
-                    {convertToTitleCase(category.name)}
+                    {convertToTitleCase(item.category.name)}
                   </h1>
                 </div>
               </div>
@@ -216,7 +189,7 @@ export default function Page() {
                   className='w-full max-w-full px-2'
                 >
                   <CarouselContent className='-ml-2 gap-4 p-4'>
-                    {category.businesses.map((business, key) => (
+                    {item.businesses.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
                         className='basis-[70vw] pl-2 sm:basis-[280px]'

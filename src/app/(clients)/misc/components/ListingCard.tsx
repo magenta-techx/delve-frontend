@@ -2,12 +2,12 @@
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import Link from 'next/link';
 import React from 'react';
-import type { BusinessSummary } from '@/types/api';
+import type { BusinessSummary, SavedBusiness } from '@/types/api';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
 import { AccessDeniedModal } from '@/components/ui';
 
 interface FeaturedListingCardProps {
-  business: BusinessSummary;
+  business: BusinessSummary | SavedBusiness;
   group?: boolean;
   classStyle?: string;
 }

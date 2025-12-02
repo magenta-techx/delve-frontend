@@ -1,4 +1,4 @@
-import ForgotPassword from '@/components/auth/password-reset/ForgotPassword';
+import { ForgotPassword } from "../../misc/components";
 
 export default function Page(): JSX.Element {
   return <ForgotPassword />;

@@ -64,7 +64,7 @@ const ThisWeeksTrends = (): JSX.Element => {
                 <div className='flex h-[10px] w-[10px] items-center justify-center'>
                   <BaseIcons value='food-and-drinks-white' />
                 </div>
-                <p>{data?.data.category || 'Uncategorized'}</p>
+                <p>{data?.data.category.name || 'Uncategorized'}</p>
               </div>
               <div className='flex w-[200px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[8px] text-white sm:text-sm'>
                 <div className='flex h-[8px] w-[8px] items-center justify-center'>

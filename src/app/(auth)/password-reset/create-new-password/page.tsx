@@ -1,4 +1,4 @@
-import CreateNewPassword from '@/components/auth/password-reset/CreateNewPassword';
+import { CreateNewPassword } from "../../misc/components";
 
 export default function Page(): JSX.Element {
   return <CreateNewPassword />;

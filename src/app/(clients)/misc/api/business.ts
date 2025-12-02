@@ -116,6 +116,7 @@ export function useSearchBusinesses(params?: {
   });
 }
 
+
 export interface TrendingBusinessData {
   id: number;
   name: string;
@@ -124,8 +125,20 @@ export interface TrendingBusinessData {
   average_review_rating: number;
   thumbnail: string;
   logo: string;
-  category: null;
+  category: Category;
   number_of_profile_visits: number;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  icon_name: string;
+  subcategories: Subcategory[];
+}
+
+interface Subcategory {
+  id: number;
+  name: string;
 }
 
 export function useTrendingBusiness(): UseQueryResult<
