@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { forward } from '../../../_lib/backend';
 
-// PATCH /api/collaboration/invite/[member_id]
-export async function PATCH(
+// POST /api/collab/[collab_id]/add-member
+export async function POST(
   req: NextRequest,
-  { params }: { params: { member_id: string } }
+  { params }: { params: { collab_id: string } }
 ): Promise<NextResponse> {
-  return forward(req, 'PATCH', `/collaboration/invite/${params.member_id}/`, {
+  return forward(req, 'POST', `/collab/${params.collab_id}/add-member/`, {
     auth: true,
     contentType: 'json',
   });

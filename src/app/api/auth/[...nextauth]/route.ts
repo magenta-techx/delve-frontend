@@ -70,13 +70,14 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
     return {
       ...token,
       accessToken: refreshedTokens?.data?.access,
-      accessTokenExpires: Date.now() + 55 * 60 * 1000, // expires in 55 minutes
-      refreshToken: refreshedTokens?.data?.refresh ?? token.refreshToken, // fall back to old one
-      error: '', // clear error on successful refresh
+      accessTokenExpires: Date.now() + 55 * 60 * 1000, 
+      refreshToken: refreshedTokens?.data?.refresh ?? token.refreshToken, 
+      error: '', 
     };
   } catch (error) {
     console.log('Refresh token error:', error);
-    // Mark token as invalid so client can sign out
+    console.log('Refresh token used:', token['refreshToken']);
+    
     return {
       ...token,
       accessToken: '',

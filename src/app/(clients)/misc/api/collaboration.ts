@@ -15,7 +15,7 @@ export function useCollaborations(): UseQueryResult<ApiEnvelope<CollaborationSum
   });
 }
 
-export function useCreateCollaboration(): UseMutationResult<ApiEnvelope<{ id: number; name: string }>, Error, { name: string; business_ids: number[] }> {
+export function useCreateCollaboration(): UseMutationResult<ApiEnvelope<{ id: number; description: string; name: string }>, Error, { name: string; description: string; }> {
   return useMutation({
     mutationFn: async (payload) => {
       const res = await apiRequest(`/api/collaboration`, {
@@ -30,6 +30,20 @@ export function useCreateCollaboration(): UseMutationResult<ApiEnvelope<{ id: nu
   });
 }
 
+export function useSendInvitation(): UseMutationResult<ApiMessage, Error, { collab_id: number | string; email: string }> {
+  return useMutation({
+    mutationFn: async ({ collab_id, email }) => {
+      const res = await apiRequest(`/api/collaboration/${collab_id}/invite`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to send invite email ");
+      return data;
+    },
+  });
+}
 export function useUpdateInviteStatus(): UseMutationResult<ApiMessage, Error, { member_id: number | string; status: string }> {
   return useMutation({
     mutationFn: async ({ member_id, status }) => {

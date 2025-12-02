@@ -113,3 +113,40 @@
     width: 100px; /* adjust to what looks balanced on mobile */
   }
 }
+
+
+
+.custom-scrollbar {
+  scrollbar-width: auto !important;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  scrollbar-color: #F5F3FF #ffffff;
+  direction: rtl;
+
+  
+  ::-webkit-scrollbar {
+    width: 10px !important;
+    transition: all 550ms ease-in;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    width: 8px;
+    background-color: #ffffff;
+    border: solid 1px black;
+    transition: all 550ms ease-in;
+
+    &:hover {
+      background-color: hsl(var(--primary));
+      border: solid 1.5px black;
+    }
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+}
+
+.custom-scrollbar > * {
+  direction: ltr;
+}
+
