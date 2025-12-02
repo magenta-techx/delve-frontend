@@ -4,6 +4,7 @@ export { default as Footer } from './Footer';
 export { default as BusinessLandingTestimonies } from './BusinessLandingTestimonies';
 export { default as BusinessLandingPricingList } from './BusinessLandingPricingList';
 export { default as BusinessLandingFAQs } from './BusinessLandingFAQs';
+export { default as CLientsLandingFAQs } from './CLientsLandingFAQs';
 export { default as BusinessSearch } from './BusinessSearch';
 export { default as BusinessServicesAccordion } from './BusinessServicesAccordion';
 export {  BusinessDetailsGalleryCarousel } from './BusinessDetailsGalleryCarousel';

@@ -60,7 +60,7 @@ const LoginForm = (): JSX.Element => {
         />
 
         {/* Fields */}
-        <div className='mb-2 flex w-full flex-col gap-3'>
+        <div className='mb-2 flex w-full flex-col gap-3 xl:gap-5'>
           {/* Email Field */}
           <Input
             type='email'
@@ -87,9 +87,9 @@ const LoginForm = (): JSX.Element => {
         </div>
 
         {/* Forgot password */}
-        <div className='-mt-3 mb-5 flex justify-end'>
+        <div className='mt-3 mb-5 flex justify-end'>
           <Link
-            href='/auth/password-reset/forgot-password'
+            href='/password-reset/forgot-password'
             className='text-sm text-gray-600 hover:underline'
           >
             Forgot password?

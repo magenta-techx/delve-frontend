@@ -1,6 +1,6 @@
 'use client';
 
-import AuthFormheader from '../../../app/(auth)/misc/components/AuthFormheader';
+import AuthFormheader from './AuthFormheader';
 import { Button } from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createPasswordSchema, type CreatePasswordInput } from '@/schemas/authSchema';

@@ -99,7 +99,7 @@ const CampaignAreaChart: React.FC<CampaignAreaChartProps> = ({
           />
 
           <Area
-            type='natural'
+            type='basis'
             // type='basis'
             dataKey={dataKey}
             stroke={color}

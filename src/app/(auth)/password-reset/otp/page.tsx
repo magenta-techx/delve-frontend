@@ -1,4 +1,4 @@
-import Otp from '@/components/auth/password-reset/Otp';
+import { Otp } from "../../misc/components";
 
 export default function Page(): JSX.Element {
   return <Otp />;

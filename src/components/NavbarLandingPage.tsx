@@ -139,7 +139,7 @@ const NavbarLandingPage = ({
                         <DropdownMenuSubContent className='w-64'>
                           {categories.slice(0, 12).map((cat) => (
                             <DropdownMenuItem key={cat.id} asChild>
-                              <Link href={`/explore?categoryId=${cat.id}`} className='flex w-full items-center gap-2'>
+                              <Link href={`/search?categoryId=${cat.id}`} className='flex w-full items-center gap-2'>
                                 <span className='truncate'>{cat.name}</span>
                               </Link>
                             </DropdownMenuItem>

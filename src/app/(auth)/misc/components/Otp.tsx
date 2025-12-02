@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import OTPInput from 'react-otp-input';
-import AuthFormheader from '../../../app/(auth)/misc/components/AuthFormheader';
+import AuthFormheader from './AuthFormheader';
 import { Button } from '@/components/ui/Button';
 import EmailIcon from '@/assets/icons/auth/EmailIcon';
 import '@/styles/auth.css';
@@ -38,7 +38,7 @@ const Otp = (): JSX.Element => {
       //
     
       navigate.push(
-        `/auth/password-reset/create-new-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
+        `/password-reset/create-new-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
       );
     } else {
       const data = await res.json();

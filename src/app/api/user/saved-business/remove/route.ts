@@ -3,5 +3,5 @@ import { forward } from '../../../_lib/backend';
 
 // DELETE /api/user/saved-business/remove  Body: { business_id }
 export async function DELETE(req: NextRequest): Promise<NextResponse> {
-  return forward(req, 'DELETE', '/user/saved-business/remove/', { auth: true, contentType: 'json' });
+  return forward(req, 'DELETE', '/user/business/saved/', { auth: true, contentType: 'json' });
 }
