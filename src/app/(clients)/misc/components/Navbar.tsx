@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Logo } from '@/assets/icons';
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';

@@ -61,10 +61,6 @@ export function SavedBusinessesProvider({
   const saveMutation = useSaveBusiness();
   const unsaveMutation = useUnsaveBusiness();
 
-  const savedBusinesses = useMemo(
-    () => savedBusinessesData?.data ?? [],
-    [savedBusinessesData]
-  );
 
   const isSaved = useCallback(
     (businessId: number | string) => {
