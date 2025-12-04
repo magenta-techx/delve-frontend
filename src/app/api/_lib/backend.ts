@@ -50,7 +50,10 @@ export async function forward(
       // Use NextAuth's getToken which will run jwt callback and refresh if needed.
       const token = await getToken({ req });
       if (!token?.accessToken) {
-        console.log('forward: no token from getToken; incomingCookie present?', !!incomingCookie);
+        console.log(
+          'forward: no token from getToken; incomingCookie present?',
+          !!incomingCookie
+        );
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
 
@@ -77,7 +80,7 @@ export async function forward(
     }
 
     const url = buildUrl(path, opts.query);
-
+    console.log('Forwarding request to:', method, url);
     const fetchOptions: RequestInit = {
       method,
       headers,

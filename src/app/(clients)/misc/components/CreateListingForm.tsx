@@ -14,7 +14,6 @@ import { BusinessShowCaseProps } from '@/types/business/types';
 import { useBusinessRegistrationStore } from '@/stores/businessRegistrationStore';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
 import { useRouter } from 'next/navigation';
-import Loader from '@/components/ui/Loader';
 
 import {
   useUploadBusinessImages,
@@ -25,7 +24,6 @@ import {
 } from '@/app/(business)/misc/api/business';
 import { Logo } from '@/assets/icons';
 import {
-  businessShowcaseZodSchema,
   servicesZodSchema,
   locationZodSchema,
 } from '@/schemas/businessZodSchema';
@@ -34,7 +32,10 @@ import z from 'zod';
 
 export type CreateListingLocation = z.infer<typeof locationZodSchema>;
 const BusinessStepForm = (): JSX.Element => {
-  type IntroFormHandle = { submit: () => Promise<void> };
+  type IntroFormHandle = { 
+    submit: () => Promise<void>;
+    isValid: () => boolean;
+  };
 
   const introFormRef = useRef<IntroFormHandle | null>(null);
 
@@ -89,6 +90,7 @@ const BusinessStepForm = (): JSX.Element => {
   const [businessId, setLocalBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
   );
+  const [isIntroFormValid, setIsIntroFormValid] = useState<boolean>(false);
 
   // Step 1: Introduction
   const handleIntroductionFormSuccess = (createdBusinessId: number) => {
@@ -142,9 +144,24 @@ const BusinessStepForm = (): JSX.Element => {
     categoryId: number,
     subcategoryIds: number[]
   ) => {
-    setSelectedCategoryId(categoryId);
-    setSelectedSubcategoryIds(subcategoryIds);
-    setSubcategoryCount(subcategoryIds.length);
+    // If categoryId is 0 or falsy, clear selection
+    if (!categoryId) {
+      setSelectedCategoryId(null);
+      setSelectedSubcategoryIds([]);
+      setSubcategoryCount(0);
+      return;
+    }
+    
+    // If changing to a different category, clear previous subcategories
+    if (categoryId !== selectedCategoryId) {
+      setSelectedCategoryId(categoryId);
+      setSelectedSubcategoryIds(subcategoryIds);
+      setSubcategoryCount(subcategoryIds.length);
+    } else {
+      // Same category, just update subcategories
+      setSelectedSubcategoryIds(subcategoryIds);
+      setSubcategoryCount(subcategoryIds.length);
+    }
   };
 
   const handleCategoryFormsSubmission = async (): Promise<void> => {
@@ -359,90 +376,36 @@ const BusinessStepForm = (): JSX.Element => {
     return 'Continue';
   };
 
-  const validateCurrentStep = (): boolean => {
-    try {
-      switch (pageNumber) {
-        case 0:
-          return true;
-        case 1:
-          const showcaseResult = businessShowcaseZodSchema.safeParse({
-            images: businessShowCaseFile,
-          });
-          if (!showcaseResult.success) {
-            return true;
-          }
-          return true;
-        case 2:
-          // Validate category selection
-          if (!selectedCategoryId || selectedSubcategoryIds.length === 0) {
-            toast.error('Validation Error', {
-              description:
-                'Please select a category and at least one subcategory.',
-            });
-            return false;
-          }
-          return true;
-        case 3:
-          // Amenities - optional step, always allow to continue
-          return true;
-        case 4:
-          // Services step - only validate if not skipping
-          if (services.length === 0) {
-            // Allow skipping
-            return true;
-          }
-          // Services - validate using schema
-          const servicesResult = servicesZodSchema.safeParse({
-            services: services,
-          });
-          if (!servicesResult.success) {
-            const errormessage =
-              servicesResult.error.issues[0]?.message ||
-              'Please add at least one service.';
-            toast.error('Validation Error', {
-              description: errormessage,
-            });
-            return false;
-          }
-          return true;
-        case 5:
-          // Location validation using schema
-          if (!location) {
-            toast.error('Validation Error', {
-              description: 'Please provide your business location information.',
-            });
-            return false;
-          }
-
-          const locationResult = locationZodSchema.safeParse(location);
-          if (!locationResult.success) {
-            const errormessage =
-              locationResult.error.issues[0]?.message ||
-              'Please complete the location information.';
-            toast.error('Validation Error', {
-              description: errormessage,
-            });
-            return false;
-          }
-          return true;
-        case 6:
-          // Contact validation (location already validated in step 5)
-          if (!contactInfo || !contactInfo.phone_number) {
-            toast.error('Validation Error', {
-              description: 'Please provide your phone number.',
-            });
-            return false;
-          }
-          return true;
-        default:
-          return true;
-      }
-    } catch (error) {
-      console.error('Validation error:', error);
-      toast.error('Validation Error', {
-        description: 'An error occurred during validation. Please try again.',
-      });
-      return false;
+  // Check if current step is valid (for button disabled state)
+  const isCurrentStepValid = (): boolean => {
+    switch (pageNumber) {
+      case 0:
+        // Introduction form validation from state
+        return isIntroFormValid;
+      case 1:
+        // Showcase - optional, always valid
+        return true;
+      case 2:
+        // Category - requires selection
+        return !!(selectedCategoryId && selectedSubcategoryIds.length > 0);
+      case 3:
+        // Amenities - optional, always valid
+        return true;
+      case 4:
+        // Services - optional or must be valid
+        if (services.length === 0) return true;
+        const servicesResult = servicesZodSchema.safeParse({ services });
+        return servicesResult.success;
+      case 5:
+        // Location - required and must be valid
+        if (!location) return false;
+        const locationResult = locationZodSchema.safeParse(location);
+        return locationResult.success;
+      case 6:
+        // Contact - requires phone number
+        return !!(contactInfo && contactInfo.phone_number);
+      default:
+        return true;
     }
   };
 
@@ -458,42 +421,80 @@ const BusinessStepForm = (): JSX.Element => {
           }
           break;
         case 1:
-          // Validate and handle showcase submission
-          if (validateCurrentStep()) {
-            await handleShowCaseFormsSubmission({
-              business_id: businessId,
-              images: businessShowCaseFile,
-            });
-          }
+          // Showcase - allow skipping if no images
+          await handleShowCaseFormsSubmission({
+            business_id: businessId,
+            images: businessShowCaseFile,
+          });
           break;
         case 2:
-          // Validate and handle categories submission
-          if (validateCurrentStep()) {
-            await handleCategoryFormsSubmission();
+          // Validate category selection
+          if (!selectedCategoryId || selectedSubcategoryIds.length === 0) {
+            toast.error('Validation Error', {
+              description:
+                'Please select a category and at least one subcategory.',
+            });
+            setIsSubmitting(false);
+            return;
           }
+          await handleCategoryFormsSubmission();
           break;
         case 3:
-          // Validate and handle amenities submission
-          if (validateCurrentStep()) {
-            await handleAmenitiesFormsSubmission();
-          }
+          // Amenities - optional step
+          await handleAmenitiesFormsSubmission();
           break;
         case 4:
-          if (validateCurrentStep()) {
-            await handleServicesFormsSubmission();
+          // Services - validate if services exist
+          if (services.length > 0) {
+            const servicesResult = servicesZodSchema.safeParse({
+              services: services,
+            });
+            if (!servicesResult.success) {
+              const errormessage =
+                servicesResult.error.issues[0]?.message ||
+                'Please add at least one service.';
+              toast.error('Validation Error', {
+                description: errormessage,
+              });
+              setIsSubmitting(false);
+              return;
+            }
           }
+          await handleServicesFormsSubmission();
           break;
         case 5:
-          // Location validation only
-          if (validateCurrentStep()) {
-            await handleLocationValidation();
+          // Location validation
+          if (!location) {
+            toast.error('Validation Error', {
+              description: 'Please provide your business location information.',
+            });
+            setIsSubmitting(false);
+            return;
           }
+
+          const locationResult = locationZodSchema.safeParse(location);
+          if (!locationResult.success) {
+            const errormessage =
+              locationResult.error.issues[0]?.message ||
+              'Please complete the location information.';
+            toast.error('Validation Error', {
+              description: errormessage,
+            });
+            setIsSubmitting(false);
+            return;
+          }
+          await handleLocationValidation();
           break;
         case 6:
-          // Combined location and contact submission
-          if (validateCurrentStep()) {
-            await handleLocationAndContactSubmission();
+          // Contact validation
+          if (!contactInfo || !contactInfo.phone_number) {
+            toast.error('Validation Error', {
+              description: 'Please provide your phone number.',
+            });
+            setIsSubmitting(false);
+            return;
           }
+          await handleLocationAndContactSubmission();
           break;
         default:
           setPageNumber(prev => prev + 1);
@@ -501,6 +502,7 @@ const BusinessStepForm = (): JSX.Element => {
       }
     } catch (error) {
       console.error('Error in form submission:', error);
+      
     } finally {
       setIsSubmitting(false);
     }
@@ -524,6 +526,7 @@ const BusinessStepForm = (): JSX.Element => {
         <BusinessIntroductionForm
           ref={introFormRef}
           onSuccess={handleIntroductionFormSuccess}
+          onValidationChange={setIsIntroFormValid}
         />
       ),
     },
@@ -639,12 +642,11 @@ const BusinessStepForm = (): JSX.Element => {
 
             <Button
               onClick={handleContinue}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isCurrentStepValid()}
               isloading={isSubmitting}
               className='flex items-center gap-2 max-md:hidden'
               size='xl'
             >
-              {isSubmitting && <Loader />}
               {getButtonText()}
               {!isSubmitting && <ArrowRightIconWhite />}
             </Button>
@@ -669,7 +671,7 @@ const BusinessStepForm = (): JSX.Element => {
       <div className='mx-auto flex max-w-xl items-center justify-between px-4 py-4 sm:px-6'>
         <Button
           onClick={handleContinue}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isCurrentStepValid()}
           isloading={isSubmitting}
           className='flex w-full items-center gap-2 md:hidden'
           size='xl'

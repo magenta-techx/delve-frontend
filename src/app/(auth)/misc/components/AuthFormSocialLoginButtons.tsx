@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/Button';
 import FacebookIcon from '@/assets/icons/thirdParty/FacebookIcon';
-import GoogleIcon from '@/assets/icons/thirdParty/GoogleIcon';
 import AppleIcon from '@/assets/icons/thirdParty/AppleIcon';
+import GoogleLoginButton from './GoogleLoginButton';
 import * as React from 'react';
 import { getProviders, signIn } from 'next-auth/react';
 
-type ProviderId = 'google' | 'facebook' | 'apple';
+type ProviderId = 'facebook' | 'apple';
 type ProviderMap = Partial<Record<ProviderId, boolean>>;
 
 const AuthSocialLoginButtons = (): JSX.Element => {
@@ -20,13 +20,12 @@ const AuthSocialLoginButtons = (): JSX.Element => {
         if (!mounted) return;
         const ids = Object.keys(providers ?? {}) as string[];
         const map: ProviderMap = {
-          google: ids.includes('google'),
           facebook: ids.includes('facebook'),
           apple: ids.includes('apple'),
         };
         setAvailable(map);
       } catch (_e) {
-        setAvailable({ google: true, facebook: true });
+        setAvailable({ facebook: true });
       }
     })();
     return () => {
@@ -47,13 +46,9 @@ const AuthSocialLoginButtons = (): JSX.Element => {
 
   return (
     <div className='w-full'>
-      {/* Optional info when no providers are configured */}
-      {!available.google && !available.facebook && !available.apple && (
-        <div className='mb-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800'>
-          Social login is not configured for this environment.
-        </div>
-      )}
       <div className='flex w-full flex-col gap-3'>
+        <GoogleLoginButton />
+
         {available.facebook && (
           <Button
             className='w-full'
@@ -64,18 +59,6 @@ const AuthSocialLoginButtons = (): JSX.Element => {
             onClick={() => handleSignIn('facebook')}
           >
             Sign in with Facebook
-          </Button>
-        )}
-        {available.google && (
-          <Button
-            className='w-full'
-            variant='neutral'
-            size='lg'
-            icon={<GoogleIcon />}
-            isLoading={!!loading.google}
-            onClick={() => handleSignIn('google')}
-          >
-            Sign in with Google
           </Button>
         )}
         {available.apple && (

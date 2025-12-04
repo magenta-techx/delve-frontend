@@ -90,26 +90,6 @@ export default function Page() {
               />
             </div>
 
-            {/* All Dropdown */}
-            <button className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm'>
-              <span>All</span>
-              <svg
-                width='12'
-                height='7'
-                className='!size-2.5 md:size-6'
-                viewBox='0 0 12 7'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M1 1L6.00081 5.58L11 1'
-                  stroke='#0A090B'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-            </button>
 
             {/* Category Dropdown */}
             <button className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm'>
@@ -147,8 +127,8 @@ export default function Page() {
         {isLoading ? (
           <div className='mt:px-0 container relative flex w-full items-center justify-center'>
             {Array.from({ length: 4 }).map((_, key) => (
-              <div key={key} className='basis-[70vw] pl-2 sm:basis-[280px]'>
-                <ListingCardSkeleton classStyle='w-[70vw] sm:w-[280px] !aspect-[4/5]' />
+              <div key={key} className='basis-[70vw] pl-2 sm:basis-[320px]'>
+                <ListingCardSkeleton classStyle='w-[70vw] sm:w-[320px] !aspect-[5/6]' />
               </div>
             ))}
           </div>
@@ -192,7 +172,7 @@ export default function Page() {
                     {item.businesses.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[280px]'
+                        className='basis-[70vw] pl-2 sm:basis-[320px]'
                       >
                         <FeaturedListingCard business={business} />
                       </CarouselItem>

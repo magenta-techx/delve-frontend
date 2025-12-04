@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useSubscriptionPlans, useCurrentUser, useCreateSubscriptionCheckout } from '@/app/(clients)/misc/api';
 import { Button } from '@/components/ui';
+import { useSession } from 'next-auth/react';
 
 const FEATURES = [
   {
@@ -61,8 +62,16 @@ const BusinessLandingPricingList = () => {
   const router = useRouter();
   
   // API hooks
+
+    const { data: session, status } = useSession();
+  const hasValidAccessToken = Boolean(
+    session?.user?.accessToken && String(session.user.accessToken).length > 0
+  );
+  const userIsLoggedIn =
+    status === 'authenticated' && Boolean(session?.user) && hasValidAccessToken;
+
   const { data: plansResponse, isLoading: plansLoading } = useSubscriptionPlans();
-  const { data: userResponse, isLoading: userLoading } = useCurrentUser();
+  const { data: userResponse, isLoading: userLoading } = useCurrentUser(userIsLoggedIn);
   const createCheckoutMutation = useCreateSubscriptionCheckout();
   
   const plans = plansResponse?.data || [];

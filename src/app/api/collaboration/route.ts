@@ -3,7 +3,7 @@ import { forward } from '../_lib/backend';
 
 // POST /api/collab (create)
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  return forward(req, 'POST', '/collab/create', { auth: true, contentType: 'json' });
+  return forward(req, 'POST', '/collab/create/', { auth: true, contentType: 'json' });
 }
 
 // GET /api/collab (list for user)

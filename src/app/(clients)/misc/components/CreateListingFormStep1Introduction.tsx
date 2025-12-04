@@ -1,5 +1,5 @@
 'use client';
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -20,27 +20,42 @@ type BusinessIntroductionFormData = z.infer<typeof businessIntroSchema>;
 
 interface BusinessIntroductionFormProps {
   onSuccess: (businessId: number) => void;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
 export interface BusinessIntroductionFormHandle {
   submit: () => Promise<void>;
+  isValid: () => boolean;
 }
 
 const BusinessCreateListingFormStep1Introduction = forwardRef<
   BusinessIntroductionFormHandle,
   BusinessIntroductionFormProps
->(({ onSuccess }, ref) => {
+>(({ onSuccess, onValidationChange }, ref) => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid: formIsValid },
     getValues,
+    watch,
   } = useForm<BusinessIntroductionFormData>({
     resolver: zodResolver(businessIntroSchema),
+    mode: 'onChange',
   });
+
+  // Watch all fields to trigger re-validation
+  useEffect(() => {
+    const subscription = watch(() => {
+      // Trigger validation change callback
+      if (onValidationChange) {
+        onValidationChange(formIsValid);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, formIsValid, onValidationChange]);
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -109,6 +124,7 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
 
   useImperativeHandle(ref, () => ({
     submit: submitForm,
+    isValid: () => formIsValid,
   }));
 
   return (

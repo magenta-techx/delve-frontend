@@ -3,55 +3,187 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
+import { BaseIcons } from '@/assets/icons/base/Icons';
 import BusinessSectionHeader from './BusinessSectionHeader';
+import { cn } from '@/lib/utils';
 
-type FaqItem = {
-  id: number;
-  icon: IconsType;
-  question: string;
-  answer: string;
-};
-
-const FAQ_ITEMS: FaqItem[] = [
+const FAQ_ITEMS = [
   {
     id: 1,
-    icon: 'listing-black',
+    icon: (
+      <svg
+        width='28'
+        height='29'
+        viewBox='0 0 28 29'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          fill-rule='evenodd'
+          clipRule='evenodd'
+          d='M15.2229 0.130108C14.182 -0.0433694 13.1196 -0.0433694 12.0787 0.130108L9.31286 0.591086H7.42532C6.65619 0.591086 5.90426 0.818751 5.2643 1.24539L2.78214 2.90017C1.85992 3.51498 1.24323 4.49351 1.08648 5.59074L0.0313242 12.9769C-0.137969 14.1619 0.388266 15.3389 1.3843 16.0029C1.61067 16.1538 1.85225 16.2722 2.10253 16.3578L2.79846 22.2732C3.19716 25.6621 6.06927 28.2161 9.48154 28.2161H18.5284C21.9406 28.2161 24.8128 25.6621 25.2115 22.2732L25.9519 15.9795C26.9255 15.3115 27.4376 14.1481 27.2703 12.9768L26.2151 5.59074C26.0584 4.49351 25.4417 3.51498 24.5194 2.90017L22.0373 1.24539C21.3973 0.818751 20.6454 0.591086 19.8763 0.591086H17.9887L15.2229 0.130108ZM6.44304 3.0135C6.73393 2.81957 7.07572 2.71609 7.42532 2.71609H8.19721L6.99572 12.328L3.59654 14.2704C3.2731 14.4552 2.87299 14.4414 2.56303 14.2348C2.2479 14.0247 2.0814 13.6523 2.13497 13.2774L3.19013 5.89126C3.26137 5.39252 3.54169 4.94773 3.96088 4.66827L6.44304 3.0135ZM4.65083 16.1154L8.01756 14.1915L9.37431 14.8699C12.0664 16.216 15.2352 16.216 17.9273 14.8699L19.284 14.1915L22.6508 16.1154C22.9968 16.3131 23.3706 16.439 23.7518 16.4935L23.101 22.0249C22.8282 24.3436 20.8631 26.0911 18.5284 26.0911H17.5466V22.9036C17.5466 20.752 15.8024 19.0078 13.6508 19.0078C11.4992 19.0078 9.75496 20.752 9.75496 22.9036V26.0911H9.48154C7.14683 26.0911 5.1817 24.3436 4.90891 22.0249L4.23693 16.313C4.37828 16.2579 4.51664 16.1921 4.65083 16.1154ZM23.705 14.2704L20.3059 12.328L19.1044 2.71609H19.8763C20.2259 2.71609 20.5677 2.81957 20.8585 3.0135L23.3407 4.66827C23.7599 4.94773 24.0402 5.39252 24.1115 5.89126L25.1666 13.2774C25.2202 13.6523 25.0537 14.0247 24.7385 14.2348C24.4286 14.4414 24.0285 14.4552 23.705 14.2704ZM14.8735 2.2262L16.9447 2.5714L18.1699 12.3728L16.9769 12.9693C14.8831 14.0162 12.4185 14.0162 10.3246 12.9693L9.13166 12.3728L10.3568 2.5714L12.4281 2.2262C13.2376 2.09127 14.0639 2.09127 14.8735 2.2262ZM13.6508 21.1328C14.6288 21.1328 15.4216 21.9256 15.4216 22.9036V26.0911H11.88V22.9036C11.88 21.9256 12.6728 21.1328 13.6508 21.1328Z'
+          fill='#0F0F0F'
+        />
+      </svg>
+    ),
     question: 'Who can list their business on Delve?',
     answer:
       'Any registered business that serves customers can create a profile on Delve. Service providers, retailers, freelancers, and local shops all have a place here as long as they uphold our community standards.',
   },
   {
     id: 2,
-    icon: 'group-people-black',
+    icon: (
+      <svg
+        width='29'
+        height='29'
+        viewBox='0 0 29 29'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          d='M4.7249 13.358C3.11711 15.9904 2.41556 18.0402 2.57213 19.9134C2.7522 22.0676 4.05568 23.7256 5.56989 25.4848C6.43673 26.4919 7.32433 26.9846 8.34462 27.0274C8.81034 27.047 9.24691 26.9693 9.63336 26.8761C9.86045 26.8214 10.1239 26.7464 10.3713 26.676C10.51 26.6366 10.6447 26.5983 10.764 26.5661C11.4937 26.3691 12.2666 26.2169 13.243 26.3274C14.226 26.4386 15.4918 26.8257 17.1619 27.8278C17.7462 28.1783 18.5098 28.2931 19.2184 28.2365C19.9483 28.1782 20.7565 27.9285 21.4397 27.3949C22.1417 26.8465 22.6661 26.0313 22.8342 24.9514C22.9615 24.1333 22.8795 23.2015 22.568 22.1521C21.7743 22.3014 20.9418 22.189 20.2082 21.808C20.2208 21.8704 20.2391 21.9324 20.2636 21.9936C20.749 23.2083 20.8226 24.0581 20.7345 24.6246C20.6499 25.1675 20.4107 25.5021 20.1315 25.7203C19.8333 25.9532 19.4426 26.0868 19.0491 26.1182C18.6343 26.1514 18.35 26.0624 18.2552 26.0056C16.3835 24.8826 14.829 24.3682 13.4819 24.2158C12.1282 24.0627 11.0613 24.2848 10.2103 24.5145C10.0207 24.5656 9.86122 24.6113 9.7157 24.653C9.5097 24.712 9.33161 24.763 9.13534 24.8103C8.83211 24.8834 8.61489 24.9119 8.4338 24.9043C8.16048 24.8928 7.78242 24.7979 7.18043 24.0985C5.62684 22.2936 4.80526 21.1183 4.68975 19.7364C4.57742 18.3926 5.12227 16.6078 7.0632 13.6364C6.28181 13.801 5.45809 13.7104 4.7249 13.358Z'
+          fill='#363538'
+        />
+        <path
+          d='M7.08333 6.375C7.08333 6.7662 6.7662 7.08333 6.375 7.08333C5.9838 7.08333 5.66667 6.7662 5.66667 6.375C5.66667 5.9838 5.9838 5.66667 6.375 5.66667C6.7662 5.66667 7.08333 5.9838 7.08333 6.375Z'
+          fill='#363538'
+        />
+        <path
+          fill-rule='evenodd'
+          clipRule='evenodd'
+          d='M8.37396 13.0804C10.6732 11.5263 12.4725 9.13354 12.75 6.375C12.75 2.85418 9.89582 0 6.375 0C2.85418 0 0 2.85418 0 6.375C0.281347 9.1719 1.91685 11.5928 4.34251 13.1448C5.57414 13.9328 7.16258 13.8992 8.37396 13.0804ZM9.20833 6.375C9.20833 7.93981 7.93981 9.20833 6.375 9.20833C4.81019 9.20833 3.54167 7.93981 3.54167 6.375C3.54167 4.81019 4.81019 3.54167 6.375 3.54167C7.93981 3.54167 9.20833 4.81019 9.20833 6.375Z'
+          fill='#363538'
+        />
+        <path
+          d='M22.6667 14.875C22.6667 15.2662 22.3495 15.5833 21.9583 15.5833C21.5671 15.5833 21.25 15.2662 21.25 14.875C21.25 14.4838 21.5671 14.1667 21.9583 14.1667C22.3495 14.1667 22.6667 14.4838 22.6667 14.875Z'
+          fill='#363538'
+        />
+        <path
+          fill-rule='evenodd'
+          clipRule='evenodd'
+          d='M23.9573 21.5804C26.2565 20.0263 28.0558 17.6335 28.3333 14.875C28.3333 11.3542 25.4792 8.5 21.9583 8.5C18.4375 8.5 15.5833 11.3542 15.5833 14.875C15.8647 17.6719 17.5002 20.0928 19.9258 21.6448C21.1575 22.4328 22.7459 22.3992 23.9573 21.5804ZM24.7917 14.875C24.7917 16.4398 23.5231 17.7083 21.9583 17.7083C20.3935 17.7083 19.125 16.4398 19.125 14.875C19.125 13.3102 20.3935 12.0417 21.9583 12.0417C23.5231 12.0417 24.7917 13.3102 24.7917 14.875Z'
+          fill='#363538'
+        />
+      </svg>
+    ),
     question: 'Do I need a physical store to list my business?',
     answer:
       'You can list your business whether you are fully online, work-from-home, or operate a storefront. Just share accurate contact details so customers know how best to reach you.',
   },
   {
     id: 3,
-    icon: 'search-black',
+    icon: (
+      <svg
+        width='27'
+        height='27'
+        viewBox='0 0 27 27'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          d='M19.7219 18.9542C21.5515 16.9415 22.6667 14.2676 22.6667 11.3333C22.6667 5.07411 17.5926 0 11.3333 0C5.07411 0 0 5.07411 0 11.3333C0 17.5926 5.07411 22.6667 11.3333 22.6667C13.9136 22.6667 16.2925 21.8044 18.1975 20.3523C18.2539 20.4531 18.3279 20.5464 18.4191 20.6275L24.7941 26.2941C25.2327 26.684 25.9043 26.6445 26.2941 26.2059C26.684 25.7673 26.6445 25.0957 26.2059 24.7059L19.8309 19.0392C19.796 19.0082 19.7595 18.9798 19.7219 18.9542Z'
+          fill='#363538'
+        />
+      </svg>
+    ),
     question: 'How do customers find my business on Delve?',
     answer:
       'Customers discover you through category filters, location searches, and curated recommendations. Premium listings receive priority placement to boost visibility.',
   },
   {
     id: 4,
-    icon: 'person-circle-black',
+    icon: (
+      <svg
+        width='29'
+        height='29'
+        viewBox='0 0 29 29'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          fill-rule='evenodd'
+          clipRule='evenodd'
+          d='M23.9091 21.2453C23.0388 18.5252 19.0078 16.4685 14.1666 16.4685C9.32546 16.4685 5.29456 18.5252 4.4241 21.2451C3.96095 20.6088 3.55864 19.9253 3.22569 19.2032C2.99359 18.6999 2.44192 18.4081 1.90651 18.5516C1.30522 18.7127 0.964693 19.3532 1.21783 19.9219C2.35496 22.4765 4.22587 24.6324 6.56287 26.1219C7.99621 27.1358 9.99582 27.8588 12.2732 28.1198C12.3914 28.1923 12.528 28.2404 12.6783 28.2561C13.1674 28.3072 13.664 28.3333 14.1667 28.3333C15.9246 28.3333 17.6077 28.0132 19.1608 27.4279C20.1528 27.0844 21.0351 26.6417 21.7691 26.1228C25.7156 23.6081 28.3333 19.1931 28.3333 14.1667C28.3333 6.34263 21.9907 0 14.1667 0C13.664 0 13.1675 0.0261794 12.6783 0.077249C12.0588 0.141934 11.6737 0.7573 11.835 1.35899C11.9783 1.89389 12.506 2.22577 13.0574 2.17541C13.4227 2.14205 13.7927 2.125 14.1667 2.125C20.8171 2.125 26.2083 7.51624 26.2083 14.1667C26.2083 16.8121 25.3552 19.2584 23.9091 21.2453ZM18.4237 25.4342C17.2146 25.8473 15.7628 26.1019 14.1666 26.1019C12.2941 26.1019 10.6203 25.7516 9.30404 25.206C9.24944 25.1688 9.1913 25.1359 9.13002 25.1076C8.64565 24.8842 8.17863 24.6297 7.73155 24.3465C6.68241 23.5899 6.375 22.8463 6.375 22.3477C6.375 21.7765 6.77841 20.8838 8.2382 20.0184C9.65163 19.1804 11.7427 18.5935 14.1666 18.5935C16.5905 18.5935 18.6816 19.1804 20.095 20.0184C21.5548 20.8838 21.9582 21.7765 21.9582 22.3477C21.9582 22.8464 21.6506 23.5903 20.6006 24.3472C19.9184 24.7793 19.1896 25.1447 18.4237 25.4342Z'
+          fill='#363538'
+        />
+        <path
+          d='M1.35899 16.4983C0.757293 16.6595 0.141925 16.2745 0.0772426 15.655C0.0261772 15.1658 0 14.6693 0 14.1667C0 13.664 0.0261833 13.1674 0.0772605 12.6782C0.14195 12.0587 0.757314 11.6736 1.359 11.8349C1.8939 11.9782 2.22579 12.5059 2.17542 13.0574C2.14205 13.4227 2.125 13.7927 2.125 14.1667C2.125 14.5406 2.14205 14.9106 2.1754 15.2758C2.22577 15.8273 1.89388 16.355 1.35899 16.4983Z'
+          fill='#363538'
+        />
+        <path
+          d='M1.90658 9.78162C1.30529 9.62051 0.964726 8.98008 1.21787 8.41138C1.62528 7.49614 2.12686 6.63208 2.71033 5.83151C3.07674 5.32875 3.80114 5.30366 4.24104 5.74356C4.63302 6.13554 4.65607 6.75926 4.33552 7.21154C3.90953 7.81259 3.53727 8.45441 3.22574 9.13C2.99364 9.63336 2.44198 9.92508 1.90658 9.78162Z'
+          fill='#363538'
+        />
+        <path
+          d='M5.74365 4.24097C5.30375 3.80106 5.32885 3.07667 5.83161 2.71025C6.63218 2.1268 7.49624 1.62522 8.41148 1.21783C8.98018 0.964687 9.6206 1.30525 9.78172 1.90653C9.92518 2.44194 9.63344 2.9936 9.13009 3.2257C8.4545 3.53722 7.81268 3.90947 7.21162 4.33546C6.75935 4.656 6.13563 4.63295 5.74365 4.24097Z'
+          fill='#363538'
+        />
+        <path
+          fill-rule='evenodd'
+          clipRule='evenodd'
+          d='M14.1665 15.2291C17.5895 15.2291 20.3644 12.4542 20.3644 9.03121C20.3644 5.60822 17.5895 2.83333 14.1665 2.83333C10.7435 2.83333 7.96866 5.60822 7.96866 9.03121C7.96866 12.4542 10.7435 15.2291 14.1665 15.2291ZM14.1665 13.1041C16.4159 13.1041 18.2394 11.2806 18.2394 9.03121C18.2394 6.78182 16.4159 4.95833 14.1665 4.95833C11.9171 4.95833 10.0937 6.78182 10.0937 9.03121C10.0937 11.2806 11.9171 13.1041 14.1665 13.1041Z'
+          fill='#363538'
+        />
+      </svg>
+    ),
     question: 'How does Delve verify businesses?',
     answer:
       'We review business registrations, contact details, and customer feedback. Verified businesses earn a badge that reassures shoppers they are engaging with a trusted vendor.',
   },
   {
     id: 5,
-    icon: 'naira-circle-black',
+    icon: (
+      <svg
+        width='25'
+        height='25'
+        viewBox='0 0 25 25'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          d='M17.3542 24.0833H6.72917V13.1042H17.3542V24.0833Z'
+          fill='#363538'
+        />
+        <path
+          d='M3.54167 24.0833H4.60417V20.1875H0V20.5417C0 22.4977 1.58566 24.0833 3.54167 24.0833Z'
+          fill='#363538'
+        />
+        <path d='M4.60417 13.1042V18.0625H0V13.1042H4.60417Z' fill='#363538' />
+        <path d='M4.60417 10.9792H0V6.02083H4.60417V10.9792Z' fill='#363538' />
+        <path
+          d='M4.60417 3.89583H0V3.54167C0 1.58566 1.58566 0 3.54167 0H4.60417V3.89583Z'
+          fill='#363538'
+        />
+        <path d='M6.72917 0H17.3542V10.9792H6.72917V0Z' fill='#363538' />
+        <path
+          d='M19.4792 3.89583V0H20.5417C22.4977 0 24.0833 1.58566 24.0833 3.54167V3.89583H19.4792Z'
+          fill='#363538'
+        />
+        <path
+          d='M19.4792 6.02083H24.0833V10.9792H19.4792V6.02083Z'
+          fill='#363538'
+        />
+        <path
+          d='M19.4792 13.1042H24.0833V18.0625H19.4792V13.1042Z'
+          fill='#363538'
+        />
+        <path
+          d='M19.4792 20.1875H24.0833V20.5417C24.0833 22.4977 22.4977 24.0833 20.5417 24.0833H19.4792V20.1875Z'
+          fill='#363538'
+        />
+      </svg>
+    ),
     question: 'What types of media can I add to my profile?',
     answer:
       'Upload images, videos, and testimonials that showcase your products or completed work. Clear visuals help customers decide faster and build confidence in your brand.',
   },
 ];
 
-const BusinessLandingFAQs = (): JSX.Element => {
+const BusinessLandingFAQs = ({
+  className,
+}: {
+  className?: string;
+}): JSX.Element => {
   const [activeId, setActiveId] = useState<number | null>(null);
 
   const toggleFaq = (id: number) => {
@@ -59,63 +191,74 @@ const BusinessLandingFAQs = (): JSX.Element => {
   };
 
   return (
-    <section className='px-4 py-12 text-[#0F172B] sm:py-16 mx-auto flex w-full max-w-4xl flex-col items-center gap-8'>
-        <BusinessSectionHeader text='We are here to help with your questions' />
+    <section
+      className={cn(
+        'mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-12 text-[#0F172B] sm:py-16 xl:py-24',
+        className
+      )}
+    >
+      <BusinessSectionHeader text='We are here to help with your questions' />
 
-        <div className='flex flex-col items-center justify-center w-full space-y-4'>
-          {FAQ_ITEMS.map(item => {
-            const isActive = activeId === item.id;
-
-            return (
-              <div
-                key={item.id}
-                className='rounded-[32px] border border-[#ECE9FE] bg-[#F8FAFC] px-4 py-4 shadow-sm sm:px-6 sm:py-5 w-full max-w-3xl'
+      <div className='flex w-full flex-col items-center justify-center space-y-4'>
+        {FAQ_ITEMS.map(item => {
+          const isActive = activeId === item.id;
+          const Icon = item.icon;
+          return (
+            <div
+              key={item.id}
+              className='w-full rounded-[32px] border border-[#ECE9FE] bg-[#F8FAFC] px-4 py-4 shadow-sm sm:px-6 sm:py-5'
+            >
+              <button
+                type='button'
+                onClick={() => toggleFaq(item.id)}
+                aria-expanded={isActive}
+                className='grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 text-left text-sm font-medium sm:text-base'
               >
-                <button
-                  type='button'
-                  onClick={() => toggleFaq(item.id)}
-                  aria-expanded={isActive}
-                  className='grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 text-left text-sm font-medium sm:text-base'
+                <span className='flex h-10 w-10 items-center justify-center rounded-full sm:h-12 sm:w-12'>
+                  {Icon}
+                </span>
+
+                <span className='border-l-[3px] border-[#E3E8EF] pl-4 sm:pl-6'>
+                  {item.question}
+                </span>
+
+                <motion.span
+                  animate={{ rotate: isActive ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  className='flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#6E44FF] sm:h-12 sm:w-12'
                 >
-                  <span className='flex h-10 w-10 items-center justify-center rounded-full sm:h-12 sm:w-12'>
-                    <BaseIcons value={item.icon} />
-                  </span>
+                  <BaseIcons value='arrow-down-primary' />
+                </motion.span>
+              </button>
 
-                  <span className='border-l-[3px] border-[#E3E8EF] pl-4 sm:pl-6'>
-                    {item.question}
-                  </span>
-
-                  <motion.span
-                    animate={{ rotate: isActive ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className='flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#6E44FF] sm:h-12 sm:w-12'
+              <AnimatePresence initial={false}>
+                {isActive && (
+                  <motion.div
+                    key='answer'
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className='grid grid-cols-[auto_1fr_auto] items-start gap-4 overflow-hidden'
                   >
-                    <BaseIcons value='arrow-down-primary' />
-                  </motion.span>
-                </button>
-
-                <AnimatePresence initial={false}>
-                  {isActive && (
-                    <motion.div
-                      key='answer'
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className='grid grid-cols-[auto_1fr_auto] items-start gap-4 overflow-hidden'
-                    >
-                      <span className='invisible h-10 w-10 sm:h-12 sm:w-12' aria-hidden />
-                      <p className='border-l-[3px] border-[#E3E8EF] pl-4 pb-2 pt-4 text-sm text-[#475569] sm:pl-6 sm:text-base'>
-                        {item.answer}
-                      </p>
-                      <span className='invisible h-10 w-10 sm:h-12 sm:w-12' aria-hidden />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
-        </div>
+                    <span
+                      className='invisible h-10 w-10 sm:h-12 sm:w-12'
+                      aria-hidden
+                    />
+                    <p className='border-l-[3px] border-[#E3E8EF] pb-2 pl-4 pt-4 text-sm text-[#475569] sm:pl-6 sm:text-base'>
+                      {item.answer}
+                    </p>
+                    <span
+                      className='invisible h-10 w-10 sm:h-12 sm:w-12'
+                      aria-hidden
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 };

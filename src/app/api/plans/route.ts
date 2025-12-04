@@ -18,5 +18,5 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     );
   }
   
-  return forward(req, 'GET', `/payment/plans?plan_type=${encodeURIComponent(planType)}`, { auth: true });
+  return forward(req, 'GET', `/payment/plans?plan_type=${encodeURIComponent(planType)}`);
 }

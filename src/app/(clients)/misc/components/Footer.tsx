@@ -97,7 +97,12 @@ const Footer = () => {
   ];
 
   const pathname = usePathname();
-  const PAGES_WITHOUT_NAVBAR = ['/businesses/create-listing', '/chats'];
+  const PAGES_WITHOUT_NAVBAR = [
+    '/businesses/create-listing', 
+    '/chats',
+    '/businesses/saved/collaboration'
+
+  ];
 
   if (PAGES_WITHOUT_NAVBAR.some(path => pathname.startsWith(path))) {
     return null;

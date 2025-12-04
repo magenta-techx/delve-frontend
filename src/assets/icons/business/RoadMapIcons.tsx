@@ -6,6 +6,7 @@ const RoadMapIcons = (): JSX.Element => {
     <svg
       width='1190'
       height='110'
+      className='w-full h-auto container  p-6 sm:px-10 md:px-12 lg:max-2xl:px-20'
       viewBox='0 0 1400 110'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
