@@ -24,7 +24,6 @@ import {
 } from '@/app/(business)/misc/api/business';
 import { Logo } from '@/assets/icons';
 import {
-  businessShowcaseZodSchema,
   servicesZodSchema,
   locationZodSchema,
 } from '@/schemas/businessZodSchema';

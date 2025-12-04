@@ -10,7 +10,6 @@ import {
   useSendInvitation,
 } from '../api';
 import { format } from 'date-fns';
-import { BusinessDetail } from '@/types/api';
 import React, { useMemo } from 'react';
 import { PlusIcon, TrashIcon } from '@/assets/icons';
 import { toast } from 'sonner';
@@ -60,9 +59,6 @@ export default function CollaborationForm() {
     setFalse: closeBusinessSelectorModal,
   } = useBooleanStateControl();
 
-  const [selectedBusinesses, setSelectedBusinesses] = React.useState<
-    BusinessDetail[]
-  >([]);
   const { savedBusinesses } = useSavedBusinessesContext();
   const selectedSavedBusiness = useMemo(() => {
     const businessIds = watch('business_ids') || [];
@@ -412,7 +408,6 @@ export default function CollaborationForm() {
               type='button'
               onClick={() => {
                 setInvitedMembers([]);
-                setSelectedBusinesses([]);
               }}
               className='text-sm text-[#9AA4B2] hover:text-[#0D121C]'
             >
