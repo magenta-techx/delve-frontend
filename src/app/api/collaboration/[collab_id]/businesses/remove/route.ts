@@ -7,7 +7,7 @@ export async function DELETE(
   { params }: { params: { collab_id: string } }
 ): Promise<NextResponse> {
   // Body: { business_id: number }
-  return forward(req, 'DELETE', `/collaboration/${params.collab_id}/businesses/remove/`, {
+  return forward(req, 'DELETE', `/collab/${params.collab_id}/business/`, {
     auth: true,
     contentType: 'json',
   });

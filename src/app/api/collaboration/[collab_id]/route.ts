@@ -4,23 +4,24 @@ import { forward } from '../../_lib/backend';
 // GET /api/collab/[collab_id]
 export async function GET(
   req: NextRequest,
-  { params }: { params: { collab_id: string } }
+  context: { params: { collab_id: string } }
 ): Promise<NextResponse> {
+  const { params } = await Promise.resolve(context);
   return forward(req, 'GET', `/collab/${params.collab_id}/`, { auth: true });
 }
 
-// DELETE /api/collab/[collab_id]
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { collab_id: string } }
+  context: { params: { collab_id: string } }
 ): Promise<NextResponse> {
-  return forward(req, 'DELETE', `/collab/${params.collab_id}/`, { auth: true });
+  const { params } = await Promise.resolve(context);
+  return forward(req, 'DELETE', `/collab/${params.collab_id}/deleted`, { auth: true });
 }
 
-// PATCH /api/collab/[collab_id]
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { collab_id: string } }
+  context: { params: { collab_id: string } }
 ): Promise<NextResponse> {
-  return forward(req, 'PATCH', `/collab/${params.collab_id}/`, { auth: true, contentType: 'json' });
+  const { params } = await Promise.resolve(context);
+  return forward(req, 'PATCH', `/collab/${params.collab_id}/edit`, { auth: true, contentType: 'json' });
 }

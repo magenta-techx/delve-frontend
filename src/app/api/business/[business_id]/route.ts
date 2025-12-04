@@ -4,12 +4,17 @@ import { forward } from '../../_lib/backend';
 // GET /api/business/[business_id]?page=dashboard
 export async function GET(
   req: NextRequest,
-  { params }: { params: { business_id: string } }
+  { params }: { params: Promise<{ business_id: string }> }
 ): Promise<NextResponse> {
-  const { business_id } = params;
+  const { business_id } = await params;
   const { searchParams } = new URL(req.url);
   const page = searchParams.get('page') ?? undefined;
-  return forward(req, 'GET', `/businesses/${business_id}/`, { query: { page }, auth: !!page });
+  const advertisment_id = searchParams.get('advertisment_id') ?? undefined
+
+  if (page === 'dashboard') {
+    return forward(req, 'GET', `/businesses/${business_id}/?page=dashboard`, { auth: true });
+  }
+  return forward(req, 'GET', `/businesses/${business_id}/?advertisment_id=${advertisment_id}`, { auth: !!page });
 }
 
 // DELETE /api/business/[business_id]

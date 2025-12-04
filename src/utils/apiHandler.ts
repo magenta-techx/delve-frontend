@@ -1,4 +1,5 @@
 import { toast } from 'sonner';
+import { getSession, signOut } from 'next-auth/react';
 
 export interface ApiErrorResponse {
   error: string;
@@ -35,22 +36,114 @@ export function is401Error(response: Response, data?: unknown): boolean {
   return false;
 }
 
-export function handle401Redirect(): void {
-  toast.error('Session Expired', {
-    description: 'Your session has expired. Please log in again.',
-  });
+// Attempt to refresh the access token using the refresh token
+async function attemptTokenRefresh(): Promise<boolean> {
+  try {
+    const session = await getSession();
+    
+    if (!session?.user?.refreshToken) {
+      console.log('No refresh token available');
+      return false;
+    }
+
+    console.log('Attempting to refresh access token via NextAuth...');
+    
+    // Trigger NextAuth's JWT callback by calling the session endpoint with cache bypass
+    // This will cause NextAuth to check token expiration and refresh if needed
+    const res = await fetch(`${process.env['NEXT_PUBLIC_API_BASE_URL'] || ''}/api/auth/session`, {
+      method: 'GET',
+      credentials: 'include',
+      cache: 'no-store', // Force a fresh session check
+    });
+
+    if (!res.ok) {
+      console.log('Failed to fetch session endpoint');
+      return false;
+    }
+
+    const newSession = await res.json();
+    
+    // Check if the session has an error (refresh failed)
+    if (newSession?.user?.error === 'RefreshAccessTokenError') {
+      console.log('Token refresh failed - refresh token invalid or expired');
+      return false;
+    }
+
+    // Verify we got a new access token
+    if (!newSession?.user?.accessToken) {
+      console.log('No access token in refreshed session');
+      return false;
+    }
+
+    console.log('Token refreshed successfully via NextAuth');
+    return true;
+  } catch (error) {
+    console.error('Error during token refresh:', error);
+    return false;
+  }
+}
+
+export async function handle401Redirect(): Promise<void> {
   // Debounce repeated redirects: if we've redirected within the last 5s, do nothing.
   const last = Number(sessionStorage.getItem('lastAuthRedirect') ?? '0');
   const now = Date.now();
   if (now - last < 5000) return;
+  
   sessionStorage.setItem('lastAuthRedirect', String(now));
+  
+  // Check if we have a refresh token before attempting refresh
+  const session = await getSession();
+  
+  if (!session?.user?.refreshToken) {
+    console.log('No refresh token available, redirecting to signin');
+    // No refresh token, proceed with redirect immediately
+    toast.error('Session Expired', {
+      description: 'Your session has expired. Please log in again.',
+    });
 
-  setTimeout(() => {
+    setTimeout(async () => {
+      const currentPath = window.location.pathname + window.location.search;
+      if (currentPath !== '/signin') {
+        sessionStorage.setItem('redirectAfterLogin', currentPath);
+      }
+
+      // Sign out and redirect to signin
+      await signOut({ redirect: false });
+      window.location.href = '/signin';
+    }, 1500);
+    return;
+  }
+  
+  // Try to refresh the token
+  console.log('401 error detected, attempting token refresh...');
+  const refreshed = await attemptTokenRefresh();
+  
+  if (refreshed) {
+    console.log('Token refreshed successfully, staying on page');
+    toast.success('Session refreshed', {
+      description: 'Your session has been restored.',
+    });
+    // Clear the debounce so future 401s can try again
+    sessionStorage.removeItem('lastAuthRedirect');
+    // Reload the page to retry the failed request with new token
+    window.location.reload();
+    return;
+  }
+
+  // If refresh failed, proceed with redirect
+  console.log('Token refresh failed, redirecting to signin');
+  toast.error('Session Expired', {
+    description: 'Your session has expired. Please log in again.',
+  });
+
+  setTimeout(async () => {
     const currentPath = window.location.pathname + window.location.search;
     if (currentPath !== '/signin') {
       sessionStorage.setItem('redirectAfterLogin', currentPath);
     }
 
+    // Sign out and redirect to signin
+    await signOut({ redirect: false });
     window.location.href = '/signin';
   }, 1500);
 }

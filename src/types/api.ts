@@ -253,11 +253,11 @@ interface ChatMessageSender {
   profile_image: string;
 }
 
-// Collaboration (hooks pending; add minimal types)
 export interface CollaborationSummary {
   id: number;
   name: string;
-  members?: number;
+  description: string;
+  number_of_members: number;
 }
 
 // Events
@@ -427,6 +427,7 @@ export interface StateItem {
 // Collaboration
 
 
+
 export interface CollaborationDetail {
   id: number;
   owner: Owner;
@@ -434,11 +435,22 @@ export interface CollaborationDetail {
   description: string;
   number_of_members: number;
   created_when: string;
-  members: Member[];
-  businesses: any[];
+  members: CollabMember[];
+  businesses: Business[];
 }
 
-interface Member {
+interface Business {
+  id: number;
+  name: string;
+  description: string;
+  address: null | string;
+  average_review_rating: number;
+  thumbnail: string;
+  logo: string;
+  is_promotion_active: boolean;
+}
+
+export interface CollabMember {
   member: Owner | null;
   unregistered_user_email: null | string;
   priviledge: string;
@@ -452,4 +464,3 @@ interface Owner {
   last_name: string;
   profile_image: string;
 }
-

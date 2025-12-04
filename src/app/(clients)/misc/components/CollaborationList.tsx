@@ -1,10 +1,21 @@
 'use client';
 import { useCollaborations } from '@/app/(clients)/misc/api';
 import { EmptyState } from '@/components/ui';
+import CollabCard from './CollabCard';
+import CollabCardSkeleton from './CollabCardSkeleton';
 
 export default function CollaborationList() {
   const { data: collaborations, isLoading, error } = useCollaborations();
-  if (isLoading) return <div>Loading...</div>;
+
+  if (isLoading) {
+    return (
+      <div className='grid w-full items-stretch gap-7 md:grid-cols-2 xl:grid-cols-3 2xl:gap-10'>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <CollabCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
   if (error) return <div className='text-red-500'>{error.message}</div>;
   if (!collaborations?.data.length)
     return (
@@ -14,14 +25,10 @@ export default function CollaborationList() {
       />
     );
   return (
-    <div className='space-y-2'>
-      {/* {collaborations.data.map(collab => (
-        <Link key={collab.id} href={`/businesses/saved/collaboration/${collab.id}`} className="block border rounded p-4 hover:bg-gray-50">
-          <div className="font-bold">{collab.name}</div>
-          <div className="text-sm text-gray-600">{collab.name}</div>
-          <div className="text-xs text-gray-400">{collab.number_of_members} members</div>
-        </Link>
-      ))} */}
+    <div className='grid w-full items-stretch gap-7 md:grid-cols-2 xl:grid-cols-3 2xl:gap-10'>
+      {collaborations.data.map(collab => (
+        <CollabCard key={collab.id} collab={collab} />
+      ))}
     </div>
   );
 }

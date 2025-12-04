@@ -6,7 +6,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: { collab_id: string } }
 ): Promise<NextResponse> {
-  return forward(req, 'PATCH', `/collaboration/${params.collab_id}/businesses/replace/`, {
+  return forward(req, 'PATCH', `/collab/${params.collab_id}/business/`, {
     auth: true,
     contentType: 'json',
   });
