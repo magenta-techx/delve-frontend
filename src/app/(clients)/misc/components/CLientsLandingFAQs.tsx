@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
+import { BaseIcons } from '@/assets/icons/base/Icons';
 
 const FAQ_ITEMS = [
   {
