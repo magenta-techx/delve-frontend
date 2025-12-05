@@ -6,5 +6,5 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: { notification_id: string } }
 ): Promise<NextResponse> {
-  return forward(req, 'PATCH', `/notifications/${params.notification_id}/seen/`, { auth: true });
+  return forward(req, 'PATCH', `/notifications/${params.notification_id}/`, { auth: true });
 }

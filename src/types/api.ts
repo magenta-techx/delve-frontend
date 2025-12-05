@@ -269,15 +269,19 @@ export interface EventItem {
   location: string;
 }
 
-// Notifications
-export interface NotificationItem {
-  id: number;
-  title: string;
-  body: string;
-  is_read: boolean;
-  created_at: string;
-}
 
+export interface NotificationItem {
+  id?: number;
+  type: string;
+  attached_object_id: number;
+  is_seen: boolean;
+  is_read?: boolean;
+  message: string;
+  title?: string;
+  body?: string;
+  created_when: string;
+  created_at?: string;
+}
 // Payment
 export interface PremiumPlan {
   id: number;
