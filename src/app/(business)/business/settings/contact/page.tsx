@@ -13,10 +13,6 @@ import {
 } from '@/app/(business)/misc/api/business';
 import SelectSingleSimple from '@/components/ui/SelectSingleSimple';
 import {
-  FacebookIcon,
-  InstagramIcon,
-  WhatsappIcon,
-  TikTokIcon,
   TwitterIcon,
   LogoLoadingIcon,
 } from '@/assets/icons';
