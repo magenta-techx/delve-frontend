@@ -3,11 +3,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Input } from '@/components/ui';
 import {
-  FacebookIcon,
-  InstagramIcon,
-  TikTokIcon,
   TwitterIcon,
-  WhatsappIcon,
 } from '@/assets/icons';
 
 interface CombinedContactInfo {
