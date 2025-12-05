@@ -67,7 +67,7 @@ const LandingPageNavbar = () => {
   const AUTHENTICATED_USER_LINKS = [
     {
       name: 'Listings',
-      href: '/businesses/search',
+      href: '/businesses/explore',
       hasBlackBg: false,
       icon: ListingsIcon,
     },
@@ -428,7 +428,7 @@ const LandingPageNavbar = () => {
                 {userIsloggedIn && (
                   <div
                     className={cn(
-                      'hidden h-6 w-0.5 md:block',
+                      'hidden h-6 w-0.5 md:block mx-2',
                       pageHasBlackBg ? 'bg-[#9AA4B2]' : 'bg-gray-300'
                     )}
                   />
