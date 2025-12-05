@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import { useAllBlogs } from '../misc/api'
 
