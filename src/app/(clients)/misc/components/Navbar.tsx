@@ -67,7 +67,7 @@ const LandingPageNavbar = () => {
   const AUTHENTICATED_USER_LINKS = [
     {
       name: 'Listings',
-      href: '/businesses/search',
+      href: '/businesses/explore',
       hasBlackBg: false,
       icon: ListingsIcon,
     },
