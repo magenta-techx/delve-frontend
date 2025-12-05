@@ -11,7 +11,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui';
 import { Badge } from '@/components/ui/badge';
 import { Star, MessageCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
-import { useBusinessReviews } from '../../api/reviews';
+import { useBusinessReviews, useReplyToReview } from '../../api/reviews';
+import { useBusinessContext } from '@/contexts/BusinessContext';
 
 interface Review {
   id: string;
@@ -25,7 +26,9 @@ interface Review {
 }
 
 export function ReviewManagementPage() {
-  const {} = useBusinessReviews();
+  const {currentBusiness} = useBusinessContext();
+  const {} = useBusinessReviews(currentBusiness?.id || '');
+  const {} = useReplyToReview();
 
   const [reviews, setReviews] = useState<Review[]>([
     {
