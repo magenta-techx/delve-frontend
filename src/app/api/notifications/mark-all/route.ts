@@ -3,5 +3,5 @@ import { forward } from '../../_lib/backend';
 
 // POST /api/notifications/mark-all  Body: { business_id?: number }
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  return forward(req, 'POST', '/notifications/mark-all/', { auth: true, contentType: 'json' });
+  return forward(req, 'PATCH', '/notifications/mark-all-seen/', { auth: true, contentType: 'json' });
 }

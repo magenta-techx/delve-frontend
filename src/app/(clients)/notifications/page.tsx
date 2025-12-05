@@ -4,7 +4,16 @@ import type { ChangeEventHandler } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import type { LucideIcon } from 'lucide-react';
-import { BellRing, MessageCircle, Sparkles, Star, Users } from 'lucide-react';
+import {
+  BadgeCheck,
+  BellRing,
+  Clock3,
+  CreditCard,
+  Eye,
+  ShieldAlert,
+  Sparkles,
+  Store,
+} from 'lucide-react';
 
 import { useGetProfile } from '@/hooks/user/useGetProfile';
 import type { NotificationItem } from '@/types/api';
@@ -14,7 +23,11 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/badge';
 
-import { useMarkAllNotifications, useNotifications } from '../misc/api';
+import {
+  useMarkAllNotifications,
+  useMarkNotificationSeen,
+  useNotifications,
+} from '../misc/api';
 
 type FormState = {
   firstName: string;
@@ -27,33 +40,80 @@ const defaultFormState: FormState = {
   firstName: '',
   lastName: '',
   email: '',
-  passwordPlaceholder: '••••••••••••',
+  passwordPlaceholder: '********',
 };
 
-const notificationVisuals: Array<{ keywords: string[]; icon: LucideIcon; className: string }> = [
-  { keywords: ['message', 'chat'], icon: MessageCircle, className: 'bg-[#F4EDFF] text-[#5F2EEA]' },
-  { keywords: ['collaboration', 'invite', 'request'], icon: Users, className: 'bg-[#E0F7FF] text-[#0369A1]' },
-  { keywords: ['rate', 'review', 'experience'], icon: Star, className: 'bg-[#FEF3C7] text-[#B45309]' },
-  { keywords: ['account', 'created', 'success'], icon: Sparkles, className: 'bg-[#FDF2FF] text-[#C026D3]' },
-];
+type NotificationVisual = {
+  label: string;
+  icon: LucideIcon;
+  className: string;
+};
+
+const notificationVisuals: Record<string, NotificationVisual> = {
+  profile_views: {
+    label: 'Profile views',
+    icon: Eye,
+    className: '!fill-[#F4EDFF] text-[#5F2EEA]',
+  },
+  free_trial_enabled: {
+    label: 'Free trial activated',
+    icon: BadgeCheck,
+    className: '!fill-[#ECFDF5] text-[#047857]',
+  },
+  free_trial_expiring: {
+    label: 'Free trial expiring',
+    icon: Clock3,
+    className: '!fill-[#FFF7ED] text-[#C2410C]',
+  },
+  free_trial_disabled: {
+    label: 'Free trial ended',
+    icon: ShieldAlert,
+    className: '!fill-[#FEF2F2] text-[#B91C1C]',
+  },
+  payment_received: {
+    label: 'Payment received',
+    icon: CreditCard,
+    className: '!fill-[#E0F2FE] text-[#0369A1]',
+  },
+  subscription_created: {
+    label: 'Subscription updated',
+    icon: Sparkles,
+    className: '!fill-[#FDF4FF] text-[#C026D3]',
+  },
+  business_created: {
+    label: 'Business created',
+    icon: Store,
+    className: '!fill-[#F5F3FF] text-[#6D28D9]',
+  },
+};
+
+const defaultNotificationVisual: NotificationVisual = {
+  label: 'Notification',
+  icon: BellRing,
+  className: 'bg-[#EEF2FF] text-[#4C1D95]',
+};
 
 const NotificationsPage = () => {
   const { data: session } = useSession();
   const userEmail = session?.user?.email ?? null;
 
-  const { data: profileData, isLoading: profileLoading } = useGetProfile(userEmail);
+  const { data: profileData, isLoading: profileLoading } =
+    useGetProfile(userEmail);
   const {
     data: notificationData,
     isLoading: notificationsLoading,
     refetch: refetchNotifications,
   } = useNotifications({ notification_for: 'user' });
   const markAllMutation = useMarkAllNotifications();
+  const markNotificationSeenMutation = useMarkNotificationSeen();
 
   const [formState, setFormState] = useState<FormState>(defaultFormState);
-
+  const [markingNotificationId, setMarkingNotificationId] = useState<
+    number | string | null
+  >(null);
   useEffect(() => {
     if (profileData) {
-      setFormState((prev) => ({
+      setFormState(prev => ({
         ...prev,
         firstName: profileData.first_name ?? '',
         lastName: profileData.last_name ?? '',
@@ -73,17 +133,24 @@ const NotificationsPage = () => {
   const joinedDate = profileData?.['date_joined'] as string | undefined;
   const joinDateLabel = useMemo(() => formatJoinDate(joinedDate), [joinedDate]);
 
-  const notifications = notificationData?.data ?? [];
-  const unreadCount = notifications.filter((item) => !item.is_read).length;
+  const rawNotifications = notificationData?.data ?? [];
+  const notifications = rawNotifications.map(notification => ({
+    ...notification,
+    created_when: notification.created_when ?? notification.created_at ?? '',
+    is_seen: notification.is_seen ?? notification.is_read ?? false,
+  }));
+  const unreadCount = notifications.filter(item => !item.is_seen).length;
 
   const avatarImage =
-    (profileData?.['profile_image'] as string | null | undefined) ?? session?.user?.image ?? null;
+    (profileData?.['profile_image'] as string | null | undefined) ??
+    session?.user?.image ??
+    null;
 
   const handleFieldChange =
     (field: 'firstName' | 'lastName'): ChangeEventHandler<HTMLInputElement> =>
-    (event) => {
+    event => {
       const { value } = event.target;
-      setFormState((prev) => ({ ...prev, [field]: value }));
+      setFormState(prev => ({ ...prev, [field]: value }));
     };
 
   const handleMarkAll = () => {
@@ -94,27 +161,49 @@ const NotificationsPage = () => {
     });
   };
 
+  const handleMarkSingle = (notification: NotificationItem) => {
+    const notificationId = notification.id;
+    if (!notificationId || notification.is_seen) {
+      return;
+    }
+    setMarkingNotificationId(notificationId);
+    markNotificationSeenMutation.mutate(
+      { notification_id: notificationId },
+      {
+        onSuccess: () => {
+          refetchNotifications();
+        },
+        onSettled: () => {
+          setMarkingNotificationId(null);
+        },
+      }
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-[#F8F7FB] px-4 py-6 sm:px-6 lg:px-12">
-      <div className="mx-auto max-w-6xl lg:max-w-7xl">
-        <header className="flex flex-col gap-2">
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#7C3AED]">
+    <div className='min-h-screen bg-[#F8F7FB] px-4 py-6 sm:px-6 lg:px-12'>
+      <div className='mx-auto max-w-6xl lg:max-w-7xl'>
+        <header className='flex flex-col gap-2'>
+          <p className='text-sm font-semibold uppercase tracking-wide text-[#7C3AED]'>
             Profile Settings
           </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-semibold text-[#0F172B]">Profile Settings</h1>
+          <div className='flex flex-wrap items-center gap-3'>
+            <h1 className='text-3xl font-semibold text-[#0F172B]'>
+              Profile Settings
+            </h1>
             {joinDateLabel && (
-              <Badge className="rounded-2xl bg-[#FFF5F0] px-4 py-1 text-xs font-semibold text-[#B45309] shadow-sm">
+              <Badge className='rounded-2xl bg-[#FFF5F0] px-4 py-1 text-xs font-semibold text-[#B45309] shadow-sm'>
                 Joined&nbsp;{joinDateLabel}
               </Badge>
             )}
           </div>
-          <p className="text-sm text-[#6B7280]">
-            Update your personal information and review the latest happenings around your collaborations.
+          <p className='text-sm text-[#6B7280]'>
+            Update your personal information and review the latest happenings
+            around your collaborations.
           </p>
         </header>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.6fr)]">
+        <div className='mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.6fr)]'>
           <ProfilePanel
             isLoading={profileLoading && !profileData}
             formState={formState}
@@ -130,6 +219,8 @@ const NotificationsPage = () => {
             unreadCount={unreadCount}
             onMarkAll={handleMarkAll}
             isMarkingAll={markAllMutation.isPending}
+            onMarkSingle={handleMarkSingle}
+            markingNotificationId={markingNotificationId}
           />
         </div>
       </div>
@@ -161,66 +252,72 @@ const ProfilePanel = ({
   }
 
   return (
-    <section className="rounded-[32px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] ring-1 ring-black/5 sm:p-8">
-      <div className="flex flex-wrap items-center gap-5 border-b border-[#F1F5F9] pb-6">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16 ring-4 ring-[#F2ECFF]">
+    <section className='rounded-[32px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] ring-1 ring-black/5 sm:p-8'>
+      <div className='flex flex-wrap items-center gap-5 border-b border-[#F1F5F9] pb-6'>
+        <div className='flex items-center gap-4'>
+          <Avatar className='h-16 w-16 ring-4 ring-[#F2ECFF]'>
             <AvatarImage src={avatarUrl ?? undefined} alt={displayName} />
-            <AvatarFallback className="bg-[#EEF2FF] text-lg font-semibold text-[#4C1D95]">
-              {getInitials(formState.firstName, formState.lastName, displayName)}
+            <AvatarFallback className='bg-[#EEF2FF] text-lg font-semibold text-[#4C1D95]'>
+              {getInitials(
+                formState.firstName,
+                formState.lastName,
+                displayName
+              )}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-base font-semibold text-[#0F172B]">{displayName}</p>
-            <p className="text-sm text-[#94A3B8]">{formState.email}</p>
+            <p className='text-base font-semibold text-[#0F172B]'>
+              {displayName}
+            </p>
+            <p className='text-sm text-[#94A3B8]'>{formState.email}</p>
           </div>
         </div>
         <Button
-          type="button"
-          variant="colored_outline"
-          size="sm"
-          className="ml-auto rounded-full px-4 text-xs font-semibold text-[#5F2EEA]"
+          type='button'
+          variant='colored_outline'
+          size='sm'
+          className='ml-auto rounded-full px-4 text-xs font-semibold text-[#5F2EEA]'
         >
           Change profile
         </Button>
       </div>
 
-      <div className="mt-6 grid gap-5 sm:grid-cols-2">
+      <div className='mt-6 grid gap-5 sm:grid-cols-2'>
         <Input
-          label="First name"
+          label='First name'
           optional
           value={formState.firstName}
           onChange={onFirstNameChange}
-          placeholder="Enter first name"
+          placeholder='Enter first name'
         />
         <Input
-          label="Last name"
+          label='Last name'
           optional
           value={formState.lastName}
           onChange={onLastNameChange}
-          placeholder="Enter last name"
+          placeholder='Enter last name'
         />
         <Input
-          label="Email address"
+          label='Email address'
           optional
           value={formState.email}
           readOnly
           disabled
-          placeholder="Email address"
+          placeholder='Email address'
         />
-        <div className="flex flex-col gap-2">
+        <div className='flex flex-col gap-2'>
           <Input
-            label="Password"
+            label='Password'
             optional
-            type="password"
+            type='password'
             value={formState.passwordPlaceholder}
             readOnly
           />
           <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="w-fit rounded-full border-[#E2E8F0] px-4 text-xs font-semibold text-[#0F172B]"
+            type='button'
+            variant='outline'
+            size='sm'
+            className='w-fit rounded-full border-[#E2E8F0] px-4 text-xs font-semibold text-[#0F172B]'
           >
             Change password
           </Button>
@@ -228,9 +325,9 @@ const ProfilePanel = ({
       </div>
 
       <Button
-        type="button"
-        size="xl"
-        className="mt-8 w-full rounded-2xl py-3 text-base font-semibold shadow-sm"
+        type='button'
+        size='xl'
+        className='mt-8 w-full rounded-2xl py-3 text-base font-semibold shadow-sm'
       >
         Save Changes
       </Button>
@@ -244,6 +341,8 @@ type NotificationsPanelProps = {
   isLoading: boolean;
   onMarkAll: () => void;
   isMarkingAll: boolean;
+  onMarkSingle: (notification: NotificationItem) => void;
+  markingNotificationId: number | string | null;
 };
 
 const NotificationsPanel = ({
@@ -252,23 +351,22 @@ const NotificationsPanel = ({
   isLoading,
   onMarkAll,
   isMarkingAll,
+  onMarkSingle,
+  markingNotificationId,
 }: NotificationsPanelProps) => (
-  <section className="rounded-[32px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] ring-1 ring-black/5 sm:p-7">
-    <div className="mb-5 flex flex-wrap items-center gap-4">
-      <div className="flex flex-1 flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg font-semibold text-[#0F172B]">Notifications</h2>
-          <span className="rounded-full bg-[#F3E8FF] px-2.5 py-0.5 text-xs font-semibold text-[#6D28D9]">
-            {unreadCount}
-          </span>
-        </div>
-        <p className="text-xs text-[#94A3B8]">Your most recent updates and reminders.</p>
+  <section className='bg-white shadow-[0_20px_60px_rgba(15,23,42,0.05)] ring-1 ring-black/5'>
+    <div className='flex flex-wrap items-center gap-4 border-b border-[#F1F5F9] px-6 py-5'>
+      <div className='flex flex-1 items-center gap-3'>
+        <h2 className='text-lg font-semibold text-[#0F172B]'>Notifications</h2>
+        <span className='rounded-full bg-[#F3E8FF] px-2.5 py-0.5 text-xs font-semibold text-[#6D28D9]'>
+          {unreadCount}
+        </span>
       </div>
       <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        className="text-xs font-semibold text-[#5F2EEA] hover:bg-transparent"
+        type='button'
+        variant='ghost'
+        size='sm'
+        className='text-xs font-semibold text-[#5F2EEA] hover:bg-transparent'
         onClick={onMarkAll}
         disabled={isMarkingAll || !notifications.length}
         isLoading={isMarkingAll}
@@ -277,9 +375,9 @@ const NotificationsPanel = ({
       </Button>
     </div>
 
-    <div className="space-y-3">
+    <div>
       {isLoading && (
-        <div className="space-y-3">
+        <div className='divide-y divide-[#F1F5F9]'>
           {Array.from({ length: 4 }).map((_, idx) => (
             <NotificationSkeletonRow key={`skeleton-${idx}`} />
           ))}
@@ -287,88 +385,156 @@ const NotificationsPanel = ({
       )}
 
       {!isLoading && notifications.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-[#E2E8F0] bg-[#F8FAFC] px-5 py-10 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#5F2EEA] shadow-sm">
-            <BellRing className="h-5 w-5" />
+        <div className='px-6 py-12 text-center'>
+          <div className='mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#F4F4F5] text-[#5F2EEA]'>
+            <BellRing className='h-5 w-5' />
           </div>
-          <p className="text-sm font-semibold text-[#0F172B]">You’re all caught up</p>
-          <p className="mt-1 text-xs text-[#94A3B8]">We’ll let you know when there’s something new.</p>
+          <p className='text-sm font-semibold text-[#0F172B]'>
+            You’re all caught up
+          </p>
+          <p className='mt-1 text-xs text-[#94A3B8]'>
+            We’ll let you know when there’s something new.
+          </p>
         </div>
       )}
 
-      {!isLoading &&
-        notifications.map((notification) => (
-          <NotificationRow key={notification.id} item={notification} />
-        ))}
+      {!isLoading && notifications.length > 0 && (
+        <div className='divide-y divide-[#F1F5F9]'>
+          {notifications.map(notification => (
+            <NotificationRow
+              key={buildNotificationKey(notification)}
+              item={notification}
+              onMarkSeen={onMarkSingle}
+              isMarking={markingNotificationId === notification.id}
+            />
+          ))}
+        </div>
+      )}
     </div>
   </section>
 );
 
-const NotificationRow = ({ item }: { item: NotificationItem }) => {
-  const visual = getNotificationVisual(item.title || item.body);
-  const timestamp = formatNotificationDate(item.created_at);
-  const Icon = visual.icon;
+type NotificationRowProps = {
+  item: NotificationItem;
+  onMarkSeen: (notification: NotificationItem) => void;
+  isMarking: boolean;
+};
+
+const NotificationRow = ({
+  item,
+  onMarkSeen,
+  isMarking,
+}: NotificationRowProps) => {
+  const visual = getNotificationVisual(item);
+  const timestamp = formatNotificationDate(
+    item.created_when ?? item.created_at
+  );
+  const Icon = visual?.icon;
+  const isSeen = item.is_seen ?? false;
+  const message =
+    item.message ?? item.body ?? item.title ?? 'Notification update';
+  const canMark = Boolean(item.id && !isSeen);
+
+  const handleClick = () => {
+    if (canMark) {
+      onMarkSeen(item);
+    }
+  };
 
   return (
-    <div
+    <button
+      type='button'
+      onClick={handleClick}
+      disabled={!canMark || isMarking}
       className={cn(
-        'flex items-start gap-4 rounded-2xl border border-transparent p-4 transition-colors',
-        item.is_read ? 'bg-white hover:border-[#E0E7FF]' : 'bg-[#F7F4FF] hover:border-[#E0E7FF]'
+        'flex w-full items-center gap-1.5 px-6 py-4 text-left transition-colors',
+        isSeen ? 'bg-white' : 'bg-[#F8F5FF]',
+        canMark && !isMarking
+          ? 'cursor-pointer hover:bg-[#F3ECFF]'
+          : 'cursor-default',
+        (!canMark || isMarking) && 'opacity-70'
       )}
     >
-      <span className={cn('flex h-11 w-11 items-center justify-center rounded-2xl', visual.className)}>
-        <Icon className="h-5 w-5" />
-      </span>
-      <div className="flex flex-1 items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-semibold text-[#0F172B]">{item.title}</p>
-          <p className="mt-1 text-sm text-[#6B7280]">{item.body}</p>
-        </div>
-        <div className="text-right text-xs text-[#9CA3AF]">
-          <p>{timestamp.dayLabel}</p>
-          <p className="font-semibold text-[#111827]">{timestamp.timeLabel}</p>
-        </div>
+      <div className='w-24 text-left text-xs text-[#94A3B8]'>
+        <p className='font-medium text-[#0F172B]'>{timestamp.dayLabel}</p>
+        <p className='mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#9399A3]'>
+          {timestamp.timeLabel}
+        </p>
       </div>
-    </div>
+      <div className='flex flex-1 items-center gap-3'>
+        <span
+          className={cn(
+            'flex h-10 w-10 items-center justify-center rounded-full',
+            visual?.className
+          )}
+        >
+          {!!Icon && <Icon className='h-4 w-4' />}
+        </span>
+        <p
+          className={cn(
+            'text-sm text-[#0F172B]',
+            !isSeen && 'font-medium text-[#0F172B]'
+          )}
+        >
+          {message}
+        </p>
+      </div>
+    </button>
   );
 };
 
 const ProfileSkeleton = () => (
-  <section className="rounded-[32px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] ring-1 ring-black/5 sm:p-8">
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-4">
-        <div className="h-16 w-16 animate-pulse rounded-full bg-[#E2E8F0]" />
-        <div className="flex-1 space-y-2">
-          <div className="h-4 w-40 animate-pulse rounded-full bg-[#E2E8F0]" />
-          <div className="h-3 w-32 animate-pulse rounded-full bg-[#E2E8F0]" />
+  <section className='rounded-[32px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] ring-1 ring-black/5 sm:p-8'>
+    <div className='flex flex-col gap-6'>
+      <div className='flex items-center gap-4'>
+        <div className='h-16 w-16 animate-pulse rounded-full bg-[#E2E8F0]' />
+        <div className='flex-1 space-y-2'>
+          <div className='h-4 w-40 animate-pulse rounded-full bg-[#E2E8F0]' />
+          <div className='h-3 w-32 animate-pulse rounded-full bg-[#E2E8F0]' />
         </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className='grid gap-4 sm:grid-cols-2'>
         {Array.from({ length: 4 }).map((_, idx) => (
-          <div key={`profile-skeleton-${idx}`} className="h-12 animate-pulse rounded-2xl bg-[#E2E8F0]" />
+          <div
+            key={`profile-skeleton-${idx}`}
+            className='h-12 animate-pulse rounded-2xl bg-[#E2E8F0]'
+          />
         ))}
       </div>
-      <div className="h-12 animate-pulse rounded-2xl bg-[#E2E8F0]" />
+      <div className='h-12 animate-pulse rounded-2xl bg-[#E2E8F0]' />
     </div>
   </section>
 );
 
 const NotificationSkeletonRow = () => (
-  <div className="flex items-start gap-4 rounded-2xl bg-[#F9FAFB] p-4">
-    <div className="h-11 w-11 animate-pulse rounded-2xl bg-[#E2E8F0]" />
-    <div className="flex-1 space-y-2">
-      <div className="h-4 w-48 animate-pulse rounded-full bg-[#E2E8F0]" />
-      <div className="h-3 w-64 animate-pulse rounded-full bg-[#E2E8F0]" />
+  <div className='flex items-center gap-4 px-6 py-4'>
+    <div className='w-24 space-y-2'>
+      <div className='h-3 w-20 animate-pulse rounded-full bg-[#E2E8F0]' />
+      <div className='h-3 w-16 animate-pulse rounded-full bg-[#E2E8F0]' />
+    </div>
+    <div className='flex flex-1 items-center gap-3'>
+      <div className='h-10 w-10 animate-pulse rounded-full bg-[#E2E8F0]' />
+      <div className='h-3 w-2/3 animate-pulse rounded-full bg-[#E2E8F0]' />
     </div>
   </div>
 );
+
+function buildNotificationKey(item: NotificationItem) {
+  return String(
+    item.id ?? `${item.type}-${item.attached_object_id}-${item.created_when}`
+  );
+}
 
 function getInitials(firstName?: string, lastName?: string, fallback?: string) {
   const letters = [firstName?.[0], lastName?.[0]].filter(Boolean).join('');
   if (letters) return letters.toUpperCase();
   if (fallback) {
     const parts = fallback.split(' ');
-    return parts.slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+    return parts
+      .slice(0, 2)
+      .map(part => part[0])
+      .join('')
+      .toUpperCase();
   }
   return 'DM';
 }
@@ -420,14 +586,9 @@ function formatNotificationDate(input?: string) {
   return { dayLabel, timeLabel };
 }
 
-function getNotificationVisual(text?: string) {
-  if (!text) {
-    return { icon: BellRing, className: 'bg-[#EEF2FF] text-[#4C1D95]' };
+function getNotificationVisual(item: NotificationItem) {
+  if (item.type && notificationVisuals[item.type]) {
+    return notificationVisuals[item.type];
   }
-  const lower = text.toLowerCase();
-  const match = notificationVisuals.find((visual) =>
-    visual.keywords.some((keyword) => lower.includes(keyword))
-  );
-  if (match) return match;
-  return { icon: BellRing, className: 'bg-[#EEF2FF] text-[#4C1D95]' };
+  return defaultNotificationVisual;
 }
