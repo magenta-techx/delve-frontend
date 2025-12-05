@@ -3,7 +3,7 @@ import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import type { ApiEnvelope, Blog } from "@/types/api";
 import { apiRequest } from '@/utils/apiHandler';
 
-export function useBlogs(category?: string): UseQueryResult<ApiEnvelope<Blog[]>, Error> {
+export function useAllBlogs(category?: string): UseQueryResult<ApiEnvelope<Blog[]>, Error> {
   return useQuery({
     queryKey: ["blogs", category],
     queryFn: async () => {
