@@ -1,19 +1,17 @@
-import { BaseIcons, IconsType } from '@/assets/icons/base/Icons';
+import { LogoIcon } from '@/assets/icons';
 
 interface SectionHeaderProps {
   header: string;
   paragraph: string;
-  iconValue: IconsType;
 }
 const SectionHeader = ({
   header,
   paragraph,
-  iconValue,
 }: SectionHeaderProps): JSX.Element => {
   return (
     <div className='flex flex-col items-center justify-center gap-3 px-10'>
       <div className='flex w-[19.8px] items-center justify-center sm:w-full'>
-        <BaseIcons value={iconValue} />
+        <LogoIcon/>
       </div>
       <p className='font-inter text-[12px] font-medium sm:text-[20px]'>
         {paragraph}

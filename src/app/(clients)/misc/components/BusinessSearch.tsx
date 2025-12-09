@@ -118,7 +118,7 @@ const BusinessSearch = (): JSX.Element => {
     <form onSubmit={handleSubmit} className='w-full'>
       <div className='flex w-full flex-col rounded-xl bg-white shadow-sm sm:flex-row max-md:!w-[80vw]'>
         <div className='flex flex-col divide-y divide-[#E3E8EF] sm:flex-1 sm:flex-row sm:divide-x sm:divide-y-0'>
-          <div className='flex items-center gap-3 px-5 py-4 sm:flex-1 md:p-6'>
+          <div className='flex items-center gap-3 px-5 py-4 sm:flex-1 md:p-5'>
             <span className='hidden sm:flex'>
               <BaseIcons value='search-black' />
             </span>
@@ -139,7 +139,7 @@ const BusinessSearch = (): JSX.Element => {
                 setCategoryOpen(prev => !prev);
                 setLocationOpen(false);
               }}
-              className='flex w-full items-center justify-between gap-2 px-5 py-4 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-6'
+              className='flex w-full items-center justify-between gap-2 px-5 py-4 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
               aria-haspopup='listbox'
               aria-expanded={categoryOpen}
             >
@@ -218,7 +218,7 @@ const BusinessSearch = (): JSX.Element => {
                 setLocationOpen(prev => !prev);
                 setCategoryOpen(false);
               }}
-              className='flex w-full items-center justify-between gap-2 px-5 py-4 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-6'
+              className='flex w-full items-center justify-between gap-2 px-5 py-4 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
               aria-haspopup='listbox'
               aria-expanded={locationOpen}
             >
@@ -298,7 +298,7 @@ const BusinessSearch = (): JSX.Element => {
 
         <button
           type='submit'
-          className='flex items-center justify-center rounded-b-xl gap-2 bg-[#6E44FF] px-5 py-4 text-sm font-semibold text-white transition-colors hover:bg-[#5B36D4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B36D4] sm:rounded-b-none sm:rounded-l-none sm:rounded-r-lg sm:px-8 sm:text-base md:p-6 lg:px-8'
+          className='flex items-center justify-center rounded-b-xl gap-2 bg-[#6E44FF] px-5 py-4 text-sm font-semibold text-white transition-colors hover:bg-[#5B36D4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B36D4] sm:rounded-b-none sm:rounded-l-none sm:rounded-r-lg sm:px-8 sm:text-base md:p-5 lg:px-8 xl:px-10'
         >
           <BaseIcons value='search-white' />
           Search

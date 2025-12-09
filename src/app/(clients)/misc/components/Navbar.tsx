@@ -112,14 +112,16 @@ const LandingPageNavbar = () => {
       return (
         AUTHENTICATED_USER_LINKS.some(
           link => link.href === pathname && link.hasBlackBg
-        ) || OTHER_PAGES_WITH_BLACKBG.includes(pathname)
+        ) ||
+        OTHER_PAGES_WITH_BLACKBG.includes(pathname) ||
+        (!isMobile && pathname == '/')
       );
     }
     return (
       VISITORS_LINKS.some(link => link.href === pathname && link.hasBlackBg) ||
       OTHER_PAGES_WITH_BLACKBG.includes(pathname)
     );
-  }, [pathname, userIsloggedIn]);
+  }, [pathname, userIsloggedIn, isMobile]);
 
   const PAGES_WITHOUT_NAVBAR = [
     '/signup',
@@ -135,6 +137,7 @@ const LandingPageNavbar = () => {
     <nav
       className={cn(
         'relative z-[20] flex h-16 w-full items-center justify-between px-4 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24',
+
         pageHasBlackBg
           ? 'bg-[#0D121C2E]'
           : isBusiness || isMobile
@@ -428,7 +431,7 @@ const LandingPageNavbar = () => {
                 {userIsloggedIn && (
                   <div
                     className={cn(
-                      'hidden h-6 w-0.5 md:block mx-2',
+                      'mx-2 hidden h-6 w-0.5 md:block',
                       pageHasBlackBg ? 'bg-[#9AA4B2]' : 'bg-gray-300'
                     )}
                   />

@@ -77,7 +77,7 @@ export default function HomePage() {
 
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
-      <section className='relative flex h-[110vh] w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[90.5vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
+      <section className='relative flex w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[85vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         <LandingPageNavbar />
         <section />
         {/* Mobile hero  */}
@@ -86,31 +86,30 @@ export default function HomePage() {
         </div>
 
         {/* Desktop Hero  */}
-        <div className='insert-0 absolute hidden w-full rounded-2xl bg-[#000000B8] sm:top-0 sm:flex sm:h-[90.5vh] sm:rounded-none'></div>
+        <div className='insert-0 absolute hidden w-full rounded-2xl bg-[#000000B8] sm:top-0 sm:flex sm:h-[85vh] sm:rounded-none'></div>
 
         {/* Hero section  */}
         <div className='absolute top-[20.5rem] flex w-full flex-col items-center sm:top-[22.8rem]'>
-          <h1 className='text-balance text-center font-karma text-4xl font-bold text-white sm:text-5xl lg:text-6xl'>
+          <h1 className='text-balance text-center font-karma text-4xl font-bold text-white sm:text-5xl'>
             Great experiences start here.
           </h1>
           <p className='px-14 text-center font-inter text-[14px] text-white sm:-mt-2 sm:text-[19px]'>
             Delve helps you find reliable vendors who turn plans into beautiful
             memories.
           </p>
-          <div className='mt-12'>
+          <div className='mt-5'>
             <BusinessSearch />
           </div>
         </div>
       </section>
 
-      <div className='flex w-full flex-col items-center pt-8 sm:py-20'>
+      <div className='flex w-full flex-col items-center pt-8 sm:pt-16 sm:pb-12'>
         <SectionHeader
-          iconValue='category-yellow'
           header='Whatever you’re looking for, find it here.'
           paragraph='category'
         />
 
-        <div className='mb-20 mt-10 flex w-full items-center gap-14 px-2 sm:w-[85vw] sm:max-w-[1485px] sm:px-0'>
+        <div className='mb-20 mt-10 flex w-full items-center gap-14 px-2 sm:w-[85vw] sm:max-w-[1366px] sm:px-0'>
           <div className='relative w-full'>
             <Carousel opts={{ align: 'start', loop: false }} className='w-full'>
               <CarouselContent className='-ml-2'>
@@ -118,7 +117,7 @@ export default function HomePage() {
                   ? Array.from({ length: 5 }).map((_, idx) => (
                       <CarouselItem
                         key={idx}
-                        className='flex basis-[60vw] items-center justify-center pl-2 sm:basis-[320px]'
+                        className='flex basis-[60vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
                       >
                         <div className='flex flex-col items-center justify-center gap-2'>
                           <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40 xl:size-44'></div>
@@ -130,11 +129,10 @@ export default function HomePage() {
                         ?.split(' ')[0]
                         ?.toLowerCase() as CategoryIconType;
                       return (
-                        <div
-                          className='px-4 sm:px-10 md:px-12 xl:px-16'
-                          key={category.id}
-                        >
-                          <CarouselItem className='flex basis-32 items-center justify-center sm:basis-48'>
+                          <CarouselItem 
+                            key={category.id}
+                            className='flex basis-[60vw] md:basis-1/3 items-center justify-center px-4 sm:px-10 xl:basis-1/5'
+                          >
                             <CategoryCard
                               title={category.name}
                               imageSrc={`/categories/${iconName}.jpg`}
@@ -149,7 +147,6 @@ export default function HomePage() {
                               }
                             />
                           </CarouselItem>
-                        </div>
                       );
                     })}
               </CarouselContent>
@@ -161,9 +158,8 @@ export default function HomePage() {
       </div>
 
       {/* featured listings  */}
-      <div className='flex w-full flex-col items-center bg-[#FFF4ED] py-7 sm:py-20'>
+      <div className='flex w-full flex-col items-center bg-[#FFF4ED] py-7 sm:py-16'>
         <SectionHeader
-          iconValue='listing-yellow'
           header='Trusted by dozens of happy clients. '
           paragraph='Featured Listing'
         />
@@ -179,22 +175,22 @@ export default function HomePage() {
                     : 'start',
                 loop: false,
               }}
-              className='container mx-auto w-[90vw] px-2 xl:px-6'
+              className='container mx-auto w-[90vw] xl:w-[80vw] 2xl:w-[72vw] px-2 xl:px-6'
             >
-              <CarouselContent className='-ml-2 gap-4 py-4'>
+              <CarouselContent className='-ml-2 gap-2 py-4'>
                 {loadingApproved
                   ? Array.from({ length: 6 }).map((_, key) => (
                       <CarouselItem
                         key={key}
                         className='basis-[70vw] px-2 sm:basis-[300px] xl:basis-[33%] xl:px-5 2xl:px-16'
                       >
-                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-full !aspect-[5/6]' />
+                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-full !aspect-[342/427]' />
                       </CarouselItem>
                     ))
                   : approved.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5 2xl:px-6'
+                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
                       >
                         <FeaturedListingCard business={business} />
                       </CarouselItem>
@@ -240,7 +236,6 @@ export default function HomePage() {
         {/* Sponsored picks  */}
         <div className='container relative lg:px-10'>
           <SectionHeader
-            iconValue='listing-yellow'
             header='Sponsored Picks'
             paragraph='Spotlight'
           />
@@ -342,14 +337,14 @@ export default function HomePage() {
               opts={{ align: 'start', loop: false }}
               className='w-full max-w-full px-2'
             >
-              <CarouselContent className='-ml-2 w-full gap-4 p-4'>
+              <CarouselContent className='-ml-2 w-full gap-1.5 p-4'>
                 {loadingApproved
                   ? Array.from({ length: 6 }).map((_, key) => (
                       <CarouselItem
                         key={key}
                         className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[380px] 2xl:px-4'
                       >
-                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[5/6]' />
+                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
                       </CarouselItem>
                     ))
                   : approved.map((business, key) => (

@@ -6,6 +6,7 @@ import type { BusinessSummary, SavedBusiness } from '@/types/api';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
 import { AccessDeniedModal } from '@/components/ui';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 interface FeaturedListingCardProps {
   business: BusinessSummary | SavedBusiness;
@@ -43,14 +44,36 @@ const FeaturedListingCard = ({
     e.stopPropagation();
     try {
       await toggleSave(business.id);
-    } catch (error) {}
+    } catch (error) { }
   };
+
+  const articleRef = React.useRef<HTMLElement>(null);
+  const [articleWidth, setArticleWidth] = React.useState<number>(0);
+  React.useEffect(() => {
+
+    if (articleRef.current) {
+      setArticleWidth(articleRef.current.offsetWidth);
+    }
+  }, [articleRef.current]);
+
+  // Calculate fluid font size based on article width
+  const getFluidFontSize = (minRem: number, maxRem: number, scaleFactor: number = 0.05) => {
+    if (!articleWidth) return `${minRem}rem`;
+    const calculatedRem = minRem + (articleWidth * scaleFactor);
+    const clampedRem = Math.max(minRem, Math.min(maxRem, calculatedRem));
+    return `${clampedRem}rem`;
+  };
+
+
+
 
   return (
     <>
       <article
+
+        ref={articleRef}
         className={cn(
-          'group !aspect-[5/6] rounded-2xl border-2 border-[#FEC601] p-1',
+          'group !aspect-[342/427] rounded-3xl border-2 border-[#FEC601] p-1.5',
           isSelectable && 'cursor-pointer'
         )}
         onClick={() => {
@@ -166,7 +189,8 @@ const FeaturedListingCard = ({
           {!isSelectable && (
             <Link
               href={`/businesses/${business.id}`}
-              className='relative z-10 hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex'
+              className='relative z-[15] hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex'
+              style={{ fontSize: getFluidFontSize(0.875, 1, 0.003) }}
             >
               <span> View</span>
               <BaseIcons value='arrow-diagonal-white' />
@@ -192,22 +216,23 @@ const FeaturedListingCard = ({
           )}
 
           {/* background image  */}
-          <img
+          <Image
             src={imageUrl}
             alt={imageUrl}
-            width={200}
-            height={100}
-            className='absolute h-full w-full'
+            className='absolute'
+            style={{ objectFit: 'cover' }}
+            fill
+            priority
           />
 
           {/* Content  */}
           <div
             className={cn(
-              'absolute bottom-0 z-10 flex h-48 w-full flex-col gap-2 rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300 sm:h-40',
+              'absolute bottom-0 z-10 flex h-[80%] w-full flex-col gap-2 rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300 sm:h-[80%]',
               !isSelectable && 'group-hover:opacity-0'
             )}
           >
-            <div className='mt-auto flex w-full flex-col gap-2 divide-y divide-white pb-2.5'>
+            <div className='mt-auto flex w-full flex-col gap-2 divide-y divide-white pb-3'>
               <div className='flex items-start gap-2'>
                 <div className='relative size-10 shrink-0 overflow-hidden rounded-full md:size-12'>
                   <img
@@ -217,18 +242,21 @@ const FeaturedListingCard = ({
                   />
                 </div>
                 <div>
-                  <h3 className='text-sm font-semibold'>{header}</h3>
-                  <p className='line-clamp-2 text-[10px] sm:text-xs'>{desc}</p>
+                  <h3 className='font-semibold' style={{ fontSize: getFluidFontSize(0.875, 1.125, 0.0035) }}>{header}</h3>
+                  <p className='line-clamp-2' style={{ fontSize: getFluidFontSize(0.625, 0.825, 0.0025) }}>{desc}</p>
                 </div>
               </div>
-              <div className='flex items-center justify-between pt-2 text-[14px]'>
-                <div className='flex items-center gap-2'>
-                  <BaseIcons value='marker-light-red' />
-                  <span className='sm:text-md text-[0.65rem] text-[#FFE6D5]'>
+              <div className='flex items-center gap-4 justify-between pt-2 w-full overflow-hidden'>
+                <div className='flex items-center gap-2 basis-4/5 truncate'>
+                  <span className='!shrink-0'>
+
+                    <BaseIcons value='marker-light-red' />
+                  </span>
+                  <span className='text-[#FFE6D5] truncate' style={{ fontSize: getFluidFontSize(0.625, 0.875, 0.0025) }}>
                     {address}
                   </span>
                 </div>
-                <div className='sm:text-md flex items-center gap-1 text-[10px]'>
+                <div className='flex items-center justify-end gap-1 shrink-0 basis-1/5' style={{ fontSize: getFluidFontSize(0.625, 0.875, 0.0025) }}>
                   <BaseIcons value='star-yellow' />
                   <p>{rating}</p>
                 </div>

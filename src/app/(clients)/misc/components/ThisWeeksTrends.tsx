@@ -60,20 +60,15 @@ const ThisWeeksTrends = (): JSX.Element => {
 
             {/* Services  */}
             <div className='flex items-center gap-1 sm:mb-4 sm:gap-3'>
-              <div className='flex w-[172px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:text-sm'>
-                <div className='flex h-[10px] w-[10px] items-center justify-center'>
+              <div className='flex flex-1 items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:text-sm'>
+                <div className='flex size-[11px] md:size-[13px] items-center justify-center'>
                   <BaseIcons value='food-and-drinks-white' />
                 </div>
                 <p>{data?.data.category.name || 'Uncategorized'}</p>
               </div>
-              <div className='flex w-[200px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[8px] text-white sm:text-sm'>
-                <div className='flex h-[8px] w-[8px] items-center justify-center'>
-                  <BaseIcons value='calendar-white' />
-                </div>
-                <p>10am - 12pm, daily</p>
-              </div>
+             
               <div className='flex w-[90px] items-center gap-2 rounded-xl bg-[#D9D9D938]/30 px-2 py-2 text-[9px] text-white sm:text-sm'>
-                <div className='flex h-[10px] w-[10px] items-center justify-center'>
+                <div className='flex size-[11px] md:size-[13px] items-center justify-center'>
                   <BaseIcons value='person-white' />
                 </div>
                 <p>{data?.data.number_of_profile_visits ?? 0}</p>
