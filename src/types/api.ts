@@ -233,7 +233,7 @@ export interface ChatListItem {
   chat_id: number;
   last_message?: string;
   updated_at: string;
-  business?: string; // present on user chat list
+  business?: string; 
 }
 
 export interface ChatMessage {
@@ -265,7 +265,7 @@ export interface EventItem {
   id: number;
   title: string;
   description: string;
-  date: string; // YYYY-MM-DD
+  date: string;
   location: string;
 }
 

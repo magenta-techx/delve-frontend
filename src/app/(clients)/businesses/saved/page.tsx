@@ -26,13 +26,21 @@ export default function Page() {
     Boolean(session?.user?.accessToken || session?.user?.email)
   );
   const [searchText, setSearchText] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // Get unique categories from the data
+  const categories = savedBusinessesData?.data.map(item => item.category.name) || [];
 
+  // Filter data based on selected category
+  const filteredData = selectedCategory === 'all' 
+    ? savedBusinessesData?.data 
+    : savedBusinessesData?.data.filter(item => item.category.name === selectedCategory);
 
   return (
     <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden lg:w-[80vw]'>
    
-      <header className='z-10 mt-20 w-full px-4 sm:px-0 md:mt-28'>
+      <header className='relative z-10 mt-20 w-full px-4 sm:px-0 md:mt-28'>
         <div className='mb-6 flex w-full items-center justify-between'>
           <h1 className='font-inter text-lg font-semibold text-[#0F0F0F] sm:text-xl md:text-2xl'>
             Saved Businesses
@@ -61,8 +69,8 @@ export default function Page() {
         </div>
 
         {/* Search Bar */}
-        <search className='mb-8 flex w-max flex-col gap-2 md:mb-10'>
-          <div className='flex w-max items-center gap-0 overflow-hidden rounded-lg border border-[#CDD5DF] bg-white'>
+        <search className='mb-8 flex w-full flex-col gap-2 md:mb-10 max-w-xl'>
+          <div className='flex w-full items-center gap-0 overflow-visible rounded-lg border border-[#CDD5DF] bg-white'>
             {/* Search Input */}
             <div className='flex flex-1 items-center gap-2 p-1.5 md:px-4 md:py-3'>
               <svg
@@ -92,25 +100,61 @@ export default function Page() {
 
 
             {/* Category Dropdown */}
-            <button className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm'>
-              <span>Category</span>
-              <svg
-                width='12'
-                height='7'
-                className='!size-2.5 md:size-6'
-                viewBox='0 0 12 7'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
+            <div className='relative'>
+              <button 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm'
               >
-                <path
-                  d='M1 1L6.00081 5.58L11 1'
-                  stroke='#0A090B'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-            </button>
+                <span>{selectedCategory === 'all' ? 'Category' : convertToTitleCase(selectedCategory)}</span>
+                <svg
+                  width='12'
+                  height='7'
+                  className={`!size-2.5 md:size-6 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  viewBox='0 0 12 7'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M1 1L6.00081 5.58L11 1'
+                    stroke='#0A090B'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                </svg>
+              </button>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <div className='absolute top-full left-0 mt-1 w-48 bg-white border border-[#E3E8EF] rounded-lg shadow-xl z-[100] max-h-60 overflow-y-auto'>
+                  <button
+                    onClick={() => {
+                      setSelectedCategory('all');
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
+                      selectedCategory === 'all' ? 'bg-purple-50 text-[#551FB9] font-medium' : 'text-gray-700'
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                  {categories.map((category, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setSelectedCategory(category);
+                        setIsDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
+                        selectedCategory === category ? 'bg-purple-50 text-[#551FB9] font-medium' : 'text-gray-700'
+                      }`}
+                    >
+                      {convertToTitleCase(category)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <button className='bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-primary/90 max-md:hidden md:px-8 md:py-3 md:text-sm'>
               Search
@@ -143,8 +187,19 @@ export default function Page() {
               media={<EmptySavedBusinessesIcon />}
             />
           </div>
+        ) : filteredData && filteredData.length === 0 ? (
+          <div className='mt:px-0 container relative flex min-h-[45vh] w-full flex-col items-center justify-center'>
+            <EmptyState
+              title='No businesses found in this category'
+              description=''
+              className=''
+              headerClassName=''
+              mediaClassName=''
+              media={<EmptySavedBusinessesIcon />}
+            />
+          </div>
         ) : (
-          savedBusinessesData?.data.map(item => (
+          filteredData?.map(item => (
             <div
               key={item.category.name}
               className='mt:px-0 relative flex w-full flex-col items-center justify-center'

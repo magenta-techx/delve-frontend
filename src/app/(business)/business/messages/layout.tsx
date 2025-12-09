@@ -25,7 +25,11 @@ export default function UserChatsPage({
 
   return (
     <div className='flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] pb-8 pt-20 lg:px-6 xl:px-8'>
-      <section className='hidden w-80 flex-col overflow-y-scroll rounded-2xl border border-[#ECE9FE] bg-background md:flex'>
+      <section
+        className={cn(
+          'flex w-full flex-col overflow-y-scroll rounded-2xl border border-[#ECE9FE] bg-background lg:!w-80'
+        )}
+      >
         <nav className='border-b border-border p-2'>
           <div className='relative'>
             <Search className='absolute left-3 top-2.5 h-4 w-4 text-purple-700' />
@@ -52,7 +56,9 @@ export default function UserChatsPage({
                   />
                 </div>
                 <div className='flex min-w-0 flex-1 flex-col'>
-                  <p className='font-medium'>{chat.customer.first_name} {chat.customer.last_name}</p>
+                  <p className='font-medium'>
+                    {chat.customer.first_name} {chat.customer.last_name}
+                  </p>
                   <p className='xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight text-[#111927]'>
                     {chat.last_message?.content}
                   </p>
@@ -64,7 +70,12 @@ export default function UserChatsPage({
       </section>
 
       {/* <section className='grid flex-1 grid-rows-[max-content,1fr] bg-background border border-[#ECE9FE] rounded-2xl overflow-hidden'> */}
-      <section className='h-full flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background'>
+      <section
+        className={cn(
+          'hidden h-full flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:block',
+          !!current_chat_id ? 'max-lg:hidden' : ''
+        )}
+      >
         {isLoadingChats ? (
           <div className='flex h-full w-full items-center justify-center'>
             <LogoLoadingIcon />

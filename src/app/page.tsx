@@ -103,7 +103,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className='flex w-full flex-col items-center pt-8 sm:pt-16 sm:pb-12'>
+      <div className='flex w-full flex-col items-center pt-8 sm:pb-12 sm:pt-16'>
         <SectionHeader
           header='Whatever you’re looking for, find it here.'
           paragraph='category'
@@ -117,7 +117,7 @@ export default function HomePage() {
                   ? Array.from({ length: 5 }).map((_, idx) => (
                       <CarouselItem
                         key={idx}
-                        className='flex basis-[60vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
+                        className='flex basis-[45vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
                       >
                         <div className='flex flex-col items-center justify-center gap-2'>
                           <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40 xl:size-44'></div>
@@ -129,24 +129,24 @@ export default function HomePage() {
                         ?.split(' ')[0]
                         ?.toLowerCase() as CategoryIconType;
                       return (
-                          <CarouselItem 
-                            key={category.id}
-                            className='flex basis-[60vw] md:basis-1/3 items-center justify-center px-4 sm:px-10 xl:basis-1/5'
-                          >
-                            <CategoryCard
-                              title={category.name}
-                              imageSrc={`/categories/${iconName}.jpg`}
-                              icon={
-                                <BusinessCategoryIcons
-                                  className='size-12 text-white'
-                                  value={iconName}
-                                />
-                              }
-                              hoverIcon={
-                                <BusinessCategoryIcons value={iconName} />
-                              }
-                            />
-                          </CarouselItem>
+                        <CarouselItem
+                          key={category.id}
+                          className='flex basis-[45vw] items-center justify-center px-4 sm:px-6 2xl:px-10 md:basis-1/3 lg:basis-1/4 xl:basis-1/5'
+                        >
+                          <CategoryCard
+                            title={category.name}
+                            imageSrc={`/categories/${iconName}.jpg`}
+                            icon={
+                              <BusinessCategoryIcons
+                                className='size-12 text-white'
+                                value={iconName}
+                              />
+                            }
+                            hoverIcon={
+                              <BusinessCategoryIcons value={iconName} />
+                            }
+                          />
+                        </CarouselItem>
                       );
                     })}
               </CarouselContent>
@@ -175,14 +175,14 @@ export default function HomePage() {
                     : 'start',
                 loop: false,
               }}
-              className='container mx-auto w-[90vw] xl:w-[80vw] 2xl:w-[72vw] px-2 xl:px-6'
+              className='container mx-auto w-[90vw] px-2 xl:w-[80vw] xl:px-6 2xl:w-[72vw]'
             >
               <CarouselContent className='-ml-2 gap-2 py-4'>
                 {loadingApproved
                   ? Array.from({ length: 6 }).map((_, key) => (
                       <CarouselItem
                         key={key}
-                        className='basis-[70vw] px-2 sm:basis-[300px] xl:basis-[33%] xl:px-5 2xl:px-16'
+                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
                       >
                         <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-full !aspect-[342/427]' />
                       </CarouselItem>
@@ -196,8 +196,8 @@ export default function HomePage() {
                       </CarouselItem>
                     ))}
               </CarouselContent>
-              <CarouselPrevious className='absolute -left-5 2xl:-left-10 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-[#FFF4ED] p-2 shadow-none sm:flex' />
-              <CarouselNext className='absolute -right-5 2xl:-right-10 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-[#FFF4ED] p-2 shadow-none sm:flex' />
+              <CarouselPrevious className='absolute -left-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-[#FFF4ED] p-2 shadow-none sm:flex 2xl:-left-10' />
+              <CarouselNext className='absolute -right-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-[#FFF4ED] p-2 shadow-none sm:flex 2xl:-right-10' />
             </Carousel>
           </div>
         </div>
@@ -235,10 +235,7 @@ export default function HomePage() {
 
         {/* Sponsored picks  */}
         <div className='container relative lg:px-10'>
-          <SectionHeader
-            header='Sponsored Picks'
-            paragraph='Spotlight'
-          />
+          <SectionHeader header='Sponsored Picks' paragraph='Spotlight' />
 
           <h1 className='-mb-16 mt-10 hidden font-semibold sm:flex md:text-lg xl:text-xl'>
             Hot deals and events you don’t want to miss
@@ -356,8 +353,8 @@ export default function HomePage() {
                       </CarouselItem>
                     ))}
               </CarouselContent>
-              <CarouselPrevious className='absolute -left-5 2xl:-left-10 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex' />
-              <CarouselNext className='absolute -right-5 2xl:-right-10 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex' />
+              <CarouselPrevious className='absolute -left-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-left-10' />
+              <CarouselNext className='absolute -right-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-right-10' />
             </Carousel>
           </div>
         </section>
@@ -392,7 +389,7 @@ export default function HomePage() {
         <ThisWeeksTrends />
       </div>
 
-      <div className='w-full py-20' id="faqs">
+      <div className='w-full py-20' id='faqs'>
         <CLientsLandingFAQs />
       </div>
 

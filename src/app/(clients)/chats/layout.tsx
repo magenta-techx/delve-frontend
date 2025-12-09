@@ -21,7 +21,11 @@ export default function UserChatsPage({
 
   return (
     <div className='flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] pb-8 pt-20 lg:px-6 xl:px-8'>
-      <section className='hidden w-80 flex-col overflow-y-scroll rounded-2xl border border-[#ECE9FE] bg-background md:flex'>
+      <section
+        className={cn(
+          'flex w-full flex-col overflow-y-scroll rounded-2xl border border-[#ECE9FE] bg-background lg:w-80'
+        )}
+      >
         <nav className='border-b border-border p-2'>
           <div className='relative'>
             <Search className='absolute left-3 top-2.5 h-4 w-4 text-purple-700' />
@@ -35,11 +39,11 @@ export default function UserChatsPage({
                 key={chat.id}
                 href={`/chats/${chat.id}`}
                 className={cn(
-                  'flex w-full items-center gap-2 md:gap-3 bg-[#F8FAFC] py-2.5 px-4 text-left transition-colors hover:bg-muted/50',
+                  'flex w-full items-center gap-2 bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50 md:gap-3',
                   current_chat_id === String(chat.id) && '!bg-[#F5F3FF]'
                 )}
               >
-                <div className='relative size-10 md:size-14 overflow-hidden rounded-full'>
+                <div className='relative size-10 overflow-hidden rounded-full md:size-14'>
                   <Image
                     src={chat.business.logo || '/default-avatar.png'}
                     alt={chat.business.name}
@@ -49,7 +53,7 @@ export default function UserChatsPage({
                 </div>
                 <div className='flex min-w-0 flex-1 flex-col'>
                   <p className='font-medium'>{chat.business.name}</p>
-                  <p className='xs:text-xs line-clamp-2 text-[0.825rem] text-[#111927] min-h-[2lh] leading-tight'>
+                  <p className='xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight text-[#111927]'>
                     {chat.last_message?.content}
                   </p>
                 </div>
@@ -60,7 +64,12 @@ export default function UserChatsPage({
       </section>
 
       {/* <section className='grid flex-1 grid-rows-[max-content,1fr] bg-background border border-[#ECE9FE] rounded-2xl overflow-hidden'> */}
-      <section className='h-full flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background'>
+      <section
+        className={cn(
+          'hidden h-full flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:block',
+          !!current_chat_id ? 'max-lg:hidden' : ''
+        )}
+      >
         {isLoadingChats ? (
           <div className='flex h-full w-full items-center justify-center'>
             <LogoLoadingIcon />

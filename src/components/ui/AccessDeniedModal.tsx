@@ -98,7 +98,7 @@ const AccessDeniedModal = ({
         </AlertDialogHeader>
         <AlertDialogFooter className='flex w-full items-center sm:justify-between'>
           <AlertDialogAction asChild>
-            <LinkButton href='/auth/signin' variant={"white"} className='bg-white text-black hover:text-white'>LOGIN/SIGN UP</LinkButton>
+            <LinkButton href='/signin' variant={"white"} className='bg-white text-black hover:text-white'>LOGIN/SIGN UP</LinkButton>
           </AlertDialogAction>
           <AlertDialogCancel className="text-white bg-transparent border-none hover:bg-white/30 hover:text-white">CANCEL</AlertDialogCancel>
         </AlertDialogFooter>
