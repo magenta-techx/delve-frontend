@@ -7,8 +7,8 @@ interface ListingCardSkeletonProps {
 
 export default function ListingCardSkeleton({ classStyle = '', group = false }: ListingCardSkeletonProps): JSX.Element {
   return (
-    <div className='rounded-xl border-[2px] border-[#FEC601] p-1'>
-      <div className={`relative flex ${classStyle} ${group ? 'group' : ''} flex-col items-center justify-end rounded-xl overflow-hidden font-inter`}>
+    <div className='rounded-3xl border-[2px] border-[#FEC601] p-1'>
+      <div className={`relative flex ${classStyle} ${group ? 'group' : ''} flex-col items-center justify-end rounded-2xl overflow-hidden font-inter`}>
         {/* Bookmark placeholder */}
         <div className='absolute right-5 top-5 z-10 h-6 w-6 rounded-md bg-white/40 backdrop-blur-sm' />
 

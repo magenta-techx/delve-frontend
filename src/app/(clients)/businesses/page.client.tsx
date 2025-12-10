@@ -48,7 +48,7 @@ const BusinessesLandingPage = () => {
           <div className='w-[52%] lg:w-[55%]'>
             <LinkButton
               href={'/businesses/get-started'}
-              size='dynamic_lg'
+              size='xl'
               className='bg-[#551FB9]'
             >
               Get started now
@@ -103,7 +103,7 @@ const BusinessesLandingPage = () => {
               <LinkButton
                 href={'/businesses/get-started'}
                 className='w-full max-w-[250px] bg-[#551FB9]'
-                size='dynamic_lg'
+                size='xl'
               >
                 Get started now
               </LinkButton>

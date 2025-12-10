@@ -14,20 +14,19 @@ import { Button } from '@/components/ui/Button';
 import { useDeleteCollaboration } from '../api';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import { useUserContext } from '@/contexts/UserContext';
+import { CollaborationSummary } from '@/types/api';
 
 interface CollabCardProps {
-  collab: {
-    id: number;
-    name: string;
-    description: string;
-    number_of_members: number;
-  };
+  collab: CollaborationSummary;
 }
 
 export default function CollabCard({ collab }: CollabCardProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const queryClient = useQueryClient();
   const deleteMutation = useDeleteCollaboration();
+  const { userId } = useUserContext();
+  console.log('CollabCard userId:', userId);
 
   const handleDeleteClick = () => {
     setIsDeleteDialogOpen(true);

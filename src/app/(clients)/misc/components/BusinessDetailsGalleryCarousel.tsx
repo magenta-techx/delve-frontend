@@ -67,7 +67,7 @@ export function BusinessDetailsGalleryCarousel({ images, initialIndex, isOpen, o
           src={getCurrentImageSrc() || "/placeholder.svg"}
           alt={`Gallery image ${currentIndex + 1}`}
           fill
-          className="object-contain rounded-2xl"
+          className="object-contain rounded-2xl overflow-hidden"
           priority
           sizes="(max-width: 1536px) 100vw, 1536px"
         />
@@ -105,9 +105,7 @@ export function BusinessDetailsGalleryCarousel({ images, initialIndex, isOpen, o
               <button
                 key={actualIndex}
                 onClick={() => setCurrentIndex(actualIndex)}
-                className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded border-2 transition-all ${
-                  actualIndex === currentIndex ? "border-white scale-110" : "border-gray-600 hover:border-white"
-                }`}
+                className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg 2 transition-all `}
                 aria-label={`Go to image ${actualIndex + 1}`}
               >
                 <Image

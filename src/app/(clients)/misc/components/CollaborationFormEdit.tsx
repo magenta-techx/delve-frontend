@@ -292,7 +292,7 @@ export default function CollaborationForm() {
   return (
     <div className='w-full gap-3 py-8 pt-16 lg:grid lg:h-screen lg:grid-rows-[max-content,1fr] lg:overflow-hidden xl:pb-12 xl:pt-28'>
       <header className='mx-auto flex w-full max-w-[1356px] items-center justify-between px-4'>
-        <Link href='/misc/collaborations' className='flex items-center gap-2'>
+        <Link href='/businesses/saved/collaboration' className='flex items-center gap-2'>
           <ChevronLeft className='size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
           Back
         </Link>

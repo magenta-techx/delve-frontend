@@ -147,7 +147,7 @@ export interface BusinessDetail {
   owner?: BusinessOwner;
   category?: CategoryMini;
   subcategories?: Array<{ id: number; name: string }>;
-  amenities?: Array<{ id: number; name: string } | string>;
+  amenities?: Array<{ id: number; name: string } >;
   images?: Array<{ id: number; image: string } | string>;
   services?: BusinessService[];
   created_at?: string;
@@ -233,7 +233,7 @@ export interface ChatListItem {
   chat_id: number;
   last_message?: string;
   updated_at: string;
-  business?: string; // present on user chat list
+  business?: string; 
 }
 
 export interface ChatMessage {
@@ -265,14 +265,27 @@ export interface EventItem {
   id: number;
   title: string;
   description: string;
-  date: string; // YYYY-MM-DD
+  date: string;
   location: string;
 }
 
 
+export type NotificationType = 
+  | 'review_prompt' 
+  | 'review_received' 
+  | 'review_replied' 
+  | 'profile_views'
+  | 'free_trial_enabled'
+  | 'free_trial_expiring'
+  | 'free_trial_disabled'
+  | 'payment_received'
+  | 'subscription_created'
+  | 'business_created'
+  | string;
+
 export interface NotificationItem {
   id?: number;
-  type: string;
+  type: NotificationType;
   attached_object_id: number;
   is_seen: boolean;
   is_read?: boolean;
@@ -281,6 +294,8 @@ export interface NotificationItem {
   body?: string;
   created_when: string;
   created_at?: string;
+  business?: number;
+  user?: number;
 }
 // Payment
 export interface PremiumPlan {

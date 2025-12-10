@@ -19,7 +19,7 @@ const CategoryCard = ({
   const isHoverIconString = typeof hoverIcon === 'string';
 
   return (
-    <button className='group relative flex size-28 !shrink-0 items-center justify-center rounded-full sm:!size-48'>
+    <button className='group relative flex size-28 !shrink-0 items-center justify-center rounded-full lg:!size-40 2xl:!size-48'>
       <div className='absolute -left-3 -top-1 z-10 flex h-10 w-10 items-center justify-center rounded-full border-[1px] border-[#FEC601] bg-white duration-500 sm:hidden sm:h-16 sm:w-16 sm:group-hover:flex'>
         {isHoverIconString ? (
           <BaseIcons value={hoverIcon as IconsType} />

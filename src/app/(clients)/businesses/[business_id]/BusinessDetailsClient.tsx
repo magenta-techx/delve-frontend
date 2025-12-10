@@ -28,10 +28,20 @@ import {
   BusinessDetailsGalleryCarousel,
   BusinessServicesAccordion,
 } from '../../misc/components';
+import { AmenityIcon } from '../../misc/icons/amenities';
 
 interface BusinessDetailsClientProps {
   business: BusinessDetail;
 }
+
+const positions = [
+  { col: '1/5', row: '1/8' },
+  { col: '5/12', row: '2/8' },
+  { col: '12/16', row: '1/6' },
+  { col: '1/4', row: '8/13' },
+  { col: '4/12', row: '8/13' },
+  { col: '12/16', row: '6/13' },
+];
 
 const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
   const { isSaved, toggleSave, setShowLoginAlert, showLoginAlert } =
@@ -67,7 +77,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const handleImageClick = ( index: number) => {
+  const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
     openImageCarouselModal();
   };
@@ -208,7 +218,14 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
               )}
             </div>
             <div className='mt-48 lg:mt-96'>
-             
+              <div className='relative size-12 overflow-hidden rounded-full lg:size-24'>
+                <Image
+                  src={business?.logo || '/default-logo.png'}
+                  alt={`${business.name} logo`}
+                  objectFit='cover'
+                  fill
+                />
+              </div>
               {isOwner ? (
                 <LinkButton
                   href='/business/settings/general'
@@ -232,13 +249,42 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             <h2 className='mb-2 font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Get to know us
             </h2>
-            <p className='text-[#000000]'>
+            <p className='max-w-[1100px] text-[0.95rem] leading-7 text-[#000000]'>
               {business.description ||
                 'No description available for this business.'}
             </p>
-            <div></div>
+            <div className='mt-8 grid grid-cols-3 gap-4 xl:mt-12 xl:gap-8'>
+              {business.images?.slice(0, 3).map((image, index) => {
+                const src = typeof image === 'string' ? image : image.image;
+                return (
+                  <div
+                    key={
+                      typeof image === 'object' && 'id' in image
+                        ? image.id
+                        : index
+                    }
+                    className='relative aspect-[470/539] cursor-pointer overflow-hidden bg-gray-200'
+                    onClick={() => handleImageClick(index)}
+                  >
+                    {src && (
+                      <Image
+                        src={src}
+                        alt={
+                          typeof image === 'string'
+                            ? `Business image ${index + 1}`
+                            : `Business image ${index + 1}`
+                        }
+                        fill
+                        className='object-cover transition-transform duration-300 hover:scale-105'
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </section>
         </div>
+
         <section
           id='services'
           className='container mx-auto grid gap-x-8 gap-y-4 py-8 lg:grid-cols-[1fr,minmax(0,350px)] lg:gap-10 lg:py-12'
@@ -452,104 +498,114 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             </div>
           )}
         </section>
-     
+
         <>
           <section
             id='gallery'
-            className='container mx-auto columns-2 gap-2.5 py-8 md:columns-3 md:gap-5 md:px-8 lg:py-12 xl:gap-7'
+            className='container mx-auto max-w-8xl py-8 md:px-8 xl:py-12'
           >
             {business.images && business.images.length > 0 ? (
-              <>
-                {business.images.map((image, index) => {
-                  const src = typeof image === 'string' ? image : image.image;
+              <div
+                className='grid gap-2.5 md:gap-5 xl:gap-6'
+                style={{
+                  gridTemplateColumns: 'repeat(15, 1fr)',
+                  gridTemplateRows: 'repeat(12, minmax(40px, 50px))',
+                }}
+              >
+                {Array.from({ length: 6 }).map((_, index) => {
+                  const image = business.images?.[index];
+                  const src = image
+                    ? typeof image === 'string'
+                      ? image
+                      : image.image
+                    : null;
+
+                  const pos = positions[index];
+
                   return (
                     <div
-                      className='group relative mb-2.5 cursor-pointer overflow-hidden rounded md:mb-5 xl:mb-7'
                       key={
-                        typeof image === 'object' && 'id' in image
+                        image && typeof image === 'object' && 'id' in image
                           ? image.id
                           : index
                       }
-                      onClick={() => handleImageClick(index)}
+                      onClick={() => src && handleImageClick(index)}
+                      className='group relative cursor-pointer overflow-hidden rounded bg-gray-200'
+                      style={{
+                        gridColumn: pos?.col,
+                        gridRow: pos?.row,
+                      }}
                     >
-                      {index === 0 && (
+                      {/* Your Gallery overlay */}
+                      {index === 1 && src && (
                         <div className='absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center bg-[#00000099]'>
-                          <h3 className='font-karma text-2xl font-medium text-white lg:text-3xl'>
+                          <h3 className='font-karma text-3xl font-medium text-white lg:text-4xl'>
                             Gallery
                           </h3>
                           <span className='mt-2 flex items-center justify-center text-sm underline'>
-                            <svg
-                              width='50'
-                              height='50'
-                              viewBox='0 0 50 50'
-                              fill='none'
-                              xmlns='http://www.w3.org/2000/svg'
-                            >
-                              <rect
-                                x='49.5'
-                                y='49.5'
-                                width='49'
-                                height='49'
-                                rx='24.5'
-                                transform='rotate(-180 49.5 49.5)'
-                                fill='black'
-                                fillOpacity='0.28'
-                              />
-                              <rect
-                                x='49.5'
-                                y='49.5'
-                                width='49'
-                                height='49'
-                                rx='24.5'
-                                transform='rotate(-180 49.5 49.5)'
-                                stroke='white'
-                              />
-                              <path
-                                d='M20.8794 33.7133C20.5377 34.055 20.5377 34.609 20.8794 34.9508C21.2211 35.2925 21.7751 35.2925 22.1168 34.9507L28.1503 28.9172C30.3145 26.7531 30.3145 23.2443 28.1503 21.0801L22.1168 15.0466C21.7751 14.7049 21.2211 14.7049 20.8794 15.0466C20.5377 15.3884 20.5377 15.9424 20.8794 16.2841L26.9129 22.3176C28.3936 23.7983 28.3936 26.1991 26.9129 27.6798L20.8794 33.7133Z'
-                                fill='white'
-                              />
-                            </svg>
+                            {/* ...your SVG... */}
                           </span>
                         </div>
                       )}
-                      <Image
-                        src={src || '/placeholder.svg'}
-                        alt={
-                          typeof image === 'string'
-                            ? `Gallery image ${index + 1}`
-                            : `Business image ${index + 1}`
-                        }
-                        width={400}
-                        height={300}
-                        style={{
-                          objectFit: 'cover',
-                          width: '100%',
-                          height: 'auto',
-                        }}
-                      />
+
+                      {src && (
+                        <Image
+                          src={src}
+                          alt={
+                            typeof image === 'string'
+                              ? `Gallery image ${index + 1}`
+                              : `Business image ${index + 1}`
+                          }
+                          fill
+                          className='object-cover'
+                        />
+                      )}
                     </div>
                   );
                 })}
-              </>
+              </div>
             ) : (
-              <div className='col-span-full row-span-full'>
-                <div className='py-12 text-center'>
-                  <p className='text-gray-500'>No images available</p>
-                </div>
+              <div className='py-12 text-center'>
+                <p className='text-gray-500'>No images available</p>
               </div>
             )}
           </section>
 
           {/* Fullscreen Gallery Modal */}
-         
-            <BusinessDetailsGalleryCarousel
-              images={business?.images ?? []}
-              initialIndex={selectedImageIndex}
-              isOpen={isImageCarouselModalOpen}
-              onClose={closeImageCarouselModal}
-            />
-          
+
+          <BusinessDetailsGalleryCarousel
+            images={business?.images ?? []}
+            initialIndex={selectedImageIndex}
+            isOpen={isImageCarouselModalOpen}
+            onClose={closeImageCarouselModal}
+          />
         </>
+
+        <div className='container mx-auto px-4 py-8 md:px-8 lg:py-12 xl:pt-20'>
+          <section id='about' className=''>
+            <h2 className='mb-2 text-center font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
+              Amenities
+            </h2>
+            <div className='mx-auto flex max-w-[1100px] items-center justify-center gap-6 xl:gap-10 text-[0.95rem] leading-7 text-[#000000]'>
+              {business.amenities?.map((amenity, index) => {
+                console.log(amenity, 'Amenity');
+                return (
+                  <div className='flex flex-col items-center  gap-1' key={index}>
+                    <span>
+                      {(() => {
+                        const Icon =
+                          AmenityIcon[amenity.name as keyof typeof AmenityIcon];
+                        return Icon ? <Icon /> : <span className='h-9'></span>;
+                      })()}
+                    </span>
+                    <span className='font-medium text-[#0D121C]'>{amenity.name}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+
         <AccessDeniedModal
           isAccessDeniedModalOpen={showLoginAlert || isAccessDeniedModalOpen}
           closeAccessDeniedModal={closeAccessDeniedModal}

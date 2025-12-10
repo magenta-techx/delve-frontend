@@ -100,7 +100,8 @@ const Footer = () => {
   const PAGES_WITHOUT_NAVBAR = [
     '/businesses/create-listing', 
     '/chats',
-    '/businesses/saved/collaboration'
+    '/businesses/saved/collaboration',
+    '/businesses/get-started',
 
   ];
 

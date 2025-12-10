@@ -145,10 +145,10 @@ export default function CollaborationForm() {
           }
 
           toast.success('Collaboration created successfully!');
-          router.push(`/businesses/saved/collaboration/${collabId}`);
+          router.push(`/businesses/saved/collaboration/${collabId}/edit`);
         } catch (error) {
           toast.error('Collaboration created but some operations failed.');
-          router.push(`/businesses/saved/collaboration/${collabId}`);
+          router.push(`/businesses/saved/collaboration/${collabId}/edit`);
         }
       },
       onError: () => {

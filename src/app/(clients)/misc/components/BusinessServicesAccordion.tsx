@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 function ServicesAccordion({ services }: { services: BusinessService[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(-1 );
   return (
     <div className='w-full divide-y-[1.5px] divide-[#bebebe] overflow-hidden'>
       {services.map((service, idx) => {
@@ -43,7 +43,7 @@ function ServicesAccordion({ services }: { services: BusinessService[] }) {
                     {service.description}
                   </p>
                 )}
-                <div className='relative aspect-video flex-shrink-0'>
+                <div className='flex flex-col justify-end relative aspect-video flex-shrink-0'>
                   <div className='relative h-full max-w-full md:max-h-[200px]'>
                     {service.image && (
                       <Image
