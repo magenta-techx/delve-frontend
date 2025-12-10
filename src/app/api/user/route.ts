@@ -7,7 +7,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
   const email = searchParams.get('email');
   if (email) {
-    return forward(req, 'GET', `/user?email=${email}`, { query: { email } });
+    return forward(req, 'GET', `/user/${email}`,);
   }
   return forward(req, 'GET', `/user/`, { auth: true });
 }

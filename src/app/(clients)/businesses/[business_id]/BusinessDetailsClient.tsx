@@ -28,6 +28,7 @@ import {
   BusinessDetailsGalleryCarousel,
   BusinessServicesAccordion,
 } from '../../misc/components';
+import { AmenityIcon } from '../../misc/icons/amenities';
 
 interface BusinessDetailsClientProps {
   business: BusinessDetail;
@@ -501,7 +502,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
         <>
           <section
             id='gallery'
-            className='container mx-auto max-w-7xl py-8 md:px-8 lg:py-12'
+            className='container mx-auto max-w-8xl py-8 md:px-8 xl:py-12'
           >
             {business.images && business.images.length > 0 ? (
               <div
@@ -580,22 +581,28 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           />
         </>
 
-        <div className='container mx-auto px-4 py-8 md:px-8 lg:py-12'>
+        <div className='container mx-auto px-4 py-8 md:px-8 lg:py-12 xl:pt-20'>
           <section id='about' className=''>
             <h2 className='mb-2 text-center font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Amenities
             </h2>
-            <p className='max-w-[1100px] text-[0.95rem] leading-7 text-[#000000]'>
+            <div className='mx-auto flex max-w-[1100px] items-center justify-center gap-6 xl:gap-10 text-[0.95rem] leading-7 text-[#000000]'>
               {business.amenities?.map((amenity, index) => {
                 console.log(amenity, 'Amenity');
                 return (
-                  <span key={index}>
-                    {/* {amenity.name} */}
-                    {index < (business.amenities?.length || 0) - 1 && ', '}
-                  </span>
+                  <div className='flex flex-col items-center  gap-1' key={index}>
+                    <span>
+                      {(() => {
+                        const Icon =
+                          AmenityIcon[amenity.name as keyof typeof AmenityIcon];
+                        return Icon ? <Icon /> : <span className='h-9'></span>;
+                      })()}
+                    </span>
+                    <span className='font-medium text-[#0D121C]'>{amenity.name}</span>
+                  </div>
                 );
               })}
-            </p>
+            </div>
           </section>
         </div>
 

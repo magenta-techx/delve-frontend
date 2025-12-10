@@ -47,8 +47,8 @@ const GetStartedPage = () => {
   const onSubmit = (formData: GetStartedFormData) => {
     mutate(formData.email, {
       onSuccess: (response: any) => {
-        if (response.exists) {
-          router.push(`/businessess/create-listing`);
+        if (response.status) {
+          router.push(`/businesses/create-listing`);
         } else {
           router.push(`/sign-up?email=${encodeURIComponent(formData.email)}`);
         }

@@ -178,14 +178,16 @@ const LandingPageNavbar = () => {
 
         {isBusiness ? (
           <section>
-            <LinkButton
-              size='dynamic_xl'
-              variant={isMobile ? 'default' : 'ghost'}
-              href='/signin'
-              className={cn('mr-2', pageHasBlackBg && 'text-white')}
-            >
-              Log in / Sign up
-            </LinkButton>
+            {!userIsloggedIn && (
+              <LinkButton
+                size='dynamic_xl'
+                variant={isMobile ? 'default' : 'ghost'}
+                href='/signin'
+                className={cn('mr-2', pageHasBlackBg && 'text-white')}
+              >
+                Log in / Sign up
+              </LinkButton>
+            )}
             <LinkButton
               size='dynamic_xl'
               href='/'
