@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 function ServicesAccordion({ services }: { services: BusinessService[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(-1 );
   return (
     <div className='w-full divide-y-[1.5px] divide-[#bebebe] overflow-hidden'>
       {services.map((service, idx) => {

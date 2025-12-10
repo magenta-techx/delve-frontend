@@ -208,7 +208,7 @@ export default function HomePage() {
             Search by location
           </h1>
 
-          <div className='container mb-20 flex w-full items-center gap-10 px-2 sm:px-0'>
+          <div className='container mb-4 sm:mb-20 flex w-full items-center gap-10 px-2 sm:px-0'>
             <div className='relative w-full'>
               <Carousel
                 opts={{ align: 'start', loop: false }}

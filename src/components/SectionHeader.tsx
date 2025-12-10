@@ -16,7 +16,7 @@ const SectionHeader = ({
       <p className='font-inter text-[12px] font-medium sm:text-[20px]'>
         {paragraph}
       </p>
-      <h1 className='text-center font-karma text-[24px] sm:text-[44px] text-balance'>
+      <h1 className='text-center font-karma text-2xl max-sm:font-medium sm:text-[44px] text-balance'>
         {header}
       </h1>
     </div>

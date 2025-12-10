@@ -9,6 +9,7 @@ import '@radix-ui/themes/styles.css';
 
 import SessionProviderWrapper from '@/components/providers/SessionProviderWrapper';
 import QueryProvider from '@/components/providers/QueryProvider';
+import { NotificationProvider } from '@/components/providers/NotificationProvider';
 
 import 'swiper/css';
 import '@radix-ui/themes/styles.css';
@@ -102,8 +103,10 @@ export default async function RootLayout({
           <QueryProvider>
             <UserProvider>
               <SavedBusinessesProvider>
-                {children}
-                <Toaster />
+                <NotificationProvider>
+                  {children}
+                  <Toaster />
+                </NotificationProvider>
               </SavedBusinessesProvider>
             </UserProvider>
           </QueryProvider>
