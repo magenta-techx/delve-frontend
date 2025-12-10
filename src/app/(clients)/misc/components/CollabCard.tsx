@@ -26,6 +26,7 @@ export default function CollabCard({ collab }: CollabCardProps) {
   const queryClient = useQueryClient();
   const deleteMutation = useDeleteCollaboration();
   const { userId } = useUserContext();
+  console.log('CollabCard userId:', userId);
 
   const handleDeleteClick = () => {
     setIsDeleteDialogOpen(true);
