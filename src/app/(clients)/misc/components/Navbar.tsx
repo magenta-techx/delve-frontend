@@ -203,7 +203,7 @@ const LandingPageNavbar = () => {
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
-                  fill-rule='evenodd'
+                  fillRule='evenodd'
                   clipRule='evenodd'
                   d='M11.1933 0.0956677C10.4279 -0.0318892 9.64676 -0.0318892 8.88142 0.0956677L6.84769 0.434622H5.4598C4.89426 0.434622 4.34137 0.602023 3.87081 0.915729L2.04569 2.13247C1.36759 2.58455 0.91414 3.30405 0.798885 4.11084L0.0230325 9.5418C-0.101448 10.4132 0.285489 11.2786 1.01787 11.7668C1.18431 11.8778 1.36195 11.9648 1.54598 12.0278L2.05769 16.3773C2.35085 18.8692 4.4627 20.7471 6.97172 20.7471H13.6238C16.1328 20.7471 18.2447 18.8692 18.5378 16.3773L19.0823 11.7496C19.7981 11.2584 20.1747 10.403 20.0517 9.5418L19.2758 4.11084C19.1606 3.30405 18.7071 2.58455 18.029 2.13247L16.2039 0.915728C15.7333 0.602023 15.1804 0.434622 14.6149 0.434622H13.227L11.1933 0.0956677ZM4.73753 2.21581C4.95142 2.07321 5.20273 1.99712 5.4598 1.99712H6.02736L5.14391 9.0647L2.64451 10.4929C2.40669 10.6288 2.11249 10.6187 1.88458 10.4668C1.65287 10.3123 1.53044 10.0385 1.56983 9.76277L2.34568 4.33181C2.39807 3.96509 2.60418 3.63804 2.91241 3.43255L4.73753 2.21581ZM3.41973 11.8496L5.89527 10.435L6.89288 10.9338C8.87237 11.9235 11.2023 11.9235 13.1818 10.9338L14.1794 10.435L16.655 11.8496C16.9094 11.995 17.1843 12.0875 17.4645 12.1276L16.986 16.1948C16.7855 17.8997 15.3405 19.1846 13.6238 19.1846H12.9019V16.8409C12.9019 15.2588 11.6194 13.9763 10.0373 13.9763C8.45528 13.9763 7.17276 15.2588 7.17276 16.8409V19.1846H6.97172C5.25502 19.1846 3.81007 17.8997 3.60949 16.1948L3.11539 11.9949C3.21932 11.9544 3.32106 11.9059 3.41973 11.8496ZM17.4302 10.4929L14.9308 9.06469L14.0473 1.99712H14.6149C14.872 1.99712 15.1233 2.07321 15.3372 2.21581L17.1623 3.43255C17.4705 3.63804 17.6766 3.96509 17.729 4.33181L18.5049 9.76277C18.5442 10.0385 18.4218 10.3123 18.1901 10.4668C17.9622 10.6187 17.668 10.6288 17.4302 10.4929ZM10.9364 1.63691L12.4594 1.89074L13.3602 9.09763L12.483 9.53623C10.9434 10.306 9.13125 10.306 7.59165 9.53623L6.71446 9.09763L7.61532 1.89074L9.13829 1.63691C9.73356 1.5377 10.3411 1.5377 10.9364 1.63691ZM10.0373 15.5388C10.7565 15.5388 11.3394 16.1218 11.3394 16.8409V19.1846H8.73526V16.8409C8.73526 16.1218 9.31823 15.5388 10.0373 15.5388Z'
                   fill='white'
@@ -272,11 +272,11 @@ const LandingPageNavbar = () => {
                                     </button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent
-                                    className='max-h-[500px] w-[880px] overflow-y-auto p-8'
+                                    className='max-h-[600px] w-[880px] overflow-y-auto p-6'
                                     align='start'
                                   >
-                                    <div className='mb-4'>
-                                      <p className='mb-2 text-sm text-gray-600'>
+                                    <div className='mb-3'>
+                                      <p className='mb-1 text-xs text-gray-600'>
                                         Discover a world of businesses and
                                         services across lifestyle, wellness,
                                         fashion, food, tech, and more
@@ -293,7 +293,7 @@ const LandingPageNavbar = () => {
                                       Browse Category
                                     </h3>
 
-                                    <div className='grid grid-cols-4 gap-6'>
+                                    <div className='grid grid-cols-4 gap-4'>
                                       {categories.map(category => {
                                         const iconName = category.name
                                           ?.split(' ')[0]
@@ -309,14 +309,14 @@ const LandingPageNavbar = () => {
                                               className='text-primary-600 group-hover:!fill-primary-600 group-hover:!stroke-primary-600 size-5 !shrink-0 group-hover:!text-primary'
                                               value={iconName}
                                             />
-                                            <div className='group-hover:!fill-primary-600 group-hover:!stroke-primary-600 mb-2 group-hover:!text-primary'>
-                                              <h4 className='mb-1 flex items-center gap-2 text-sm font-semibold capitalize group-hover:!text-primary'>
+                                            <div className='group-hover:!fill-primary-600 group-hover:!stroke-primary-600 mb-0.5 group-hover:!text-primary'>
+                                              <h4 className='flex items-center gap-2 text-[0.825rem] font-semibold capitalize group-hover:!text-primary'>
                                                 {category.name}
                                               </h4>
                                               {category.subcategories &&
                                                 category.subcategories.length >
                                                   0 && (
-                                                  <p className='text-[0.7rem] text-gray-600 group-hover:!text-primary'>
+                                                  <p className='text-[0.675rem] text-gray-600 group-hover:!text-primary'>
                                                     {category.subcategories
                                                       .slice(0, 3)
                                                       .map(sub => sub.name)
@@ -357,8 +357,8 @@ const LandingPageNavbar = () => {
                                     className='w-[880px] p-8'
                                     align='start'
                                   >
-                                    <div className='mb-4'>
-                                      <p className='mb-2 text-sm text-gray-600'>
+                                    <div className='mb-3'>
+                                      <p className='mb-1 text-xs text-gray-600'>
                                         Discover a world of businesses and
                                         services across lifestyle, wellness,
                                         fashion, food, tech, and more

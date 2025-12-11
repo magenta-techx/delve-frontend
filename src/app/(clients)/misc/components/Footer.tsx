@@ -102,6 +102,7 @@ const Footer = () => {
     '/chats',
     '/businesses/saved/collaboration',
     '/businesses/get-started',
+    '/notifications'
 
   ];
 

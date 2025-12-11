@@ -385,34 +385,35 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className='mb-24 w-full py-10 sm:mb-10 sm:py-0 xl:mb-32'>
+      <div className='md:mb-24 w-full py-10 sm:mb-10 sm:py-0 xl:mb-32'>
         <ThisWeeksTrends />
       </div>
 
-      <div className='w-full py-20' id='faqs'>
+      <div className='w-full py-20 max-md:pt-10' id='faqs'>
         <CLientsLandingFAQs />
       </div>
 
-      <div className='relative mb-1 flex w-full flex-col items-center justify-evenly sm:mt-32 sm:h-[543px]'>
-        <div className='absolute inset-0 top-0'>
+      <div className='relative mb-1 flex w-full flex-col items-center justify-center gap-6 py-10 sm:mt-32 sm:min-h-[543px] sm:py-16'>
+        <div className='absolute inset-0'>
           <Image
             src={'/landingpage/prefooter-banner.jpg'}
             alt=''
             fill
-            objectFit='cover'
+            style={{ objectFit: 'cover' }}
             className='h-full w-full'
             quality={100}
           />
         </div>
-        <div className='absolute inset-0 top-0 z-[2] bg-[#000000BF]' />
+        <div className='absolute inset-0 z-[2] bg-[#000000BF]' />
 
-        <div className='z-20 mb-8 flex flex-col items-center justify-center gap-1 text-white'>
+        <div className='z-20 flex flex-col items-center justify-center gap-1 px-4 text-center text-white'>
           <svg
             width='31'
             height='34'
             viewBox='0 0 31 34'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
+            className='h-6 w-6 sm:h-8 sm:w-8'
           >
             <path
               fillRule='evenodd'
@@ -433,22 +434,44 @@ export default function HomePage() {
               fill='#FEC601'
             />
           </svg>
-          <p>Clients</p>
-          <p className='mt-4 text-lg xl:text-xl'>
+          <p className='text-sm sm:text-base'>Clients</p>
+          <p className='mt-2 text-sm sm:mt-4 sm:text-lg xl:text-xl'>
             Built for businesses that serve with heart
           </p>
         </div>
-        <div className='z-10 flex items-center justify-center gap-4 md:gap-10 xl:gap-20'>
-          {approved?.map((business, idx) => (
-            <div key={idx} className='relative h-16 w-32'>
-              <Image
-                src={business.logo!}
-                alt=''
-                fill
-                className='object-contain'
-              />
-            </div>
-          ))}
+
+        {/* Infinite Marquee */}
+        <div className='z-10 w-full overflow-hidden'>
+          <div className='animate-marquee flex w-max items-center'>
+            {/* First set of logos */}
+            {approved?.map((business, idx) => (
+              <div
+                key={`first-${idx}`}
+                className='relative mx-4 h-10 w-20 flex-shrink-0 sm:mx-8 sm:h-16 sm:w-32 md:mx-10 xl:mx-16'
+              >
+                <Image
+                  src={business.logo!}
+                  alt={business.name || 'Business logo'}
+                  fill
+                  className='object-contain'
+                />
+              </div>
+            ))}
+            {/* Duplicate set for seamless loop */}
+            {approved?.map((business, idx) => (
+              <div
+                key={`second-${idx}`}
+                className='relative mx-4 h-10 w-20 flex-shrink-0 sm:mx-8 sm:h-16 sm:w-32 md:mx-10 xl:mx-16'
+              >
+                <Image
+                  src={business.logo!}
+                  alt={business.name || 'Business logo'}
+                  fill
+                  className='object-contain'
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

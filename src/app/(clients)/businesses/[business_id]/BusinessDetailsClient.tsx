@@ -253,7 +253,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
               {business.description ||
                 'No description available for this business.'}
             </p>
-            <div className='mt-8 grid grid-cols-3 gap-4 xl:mt-12 xl:gap-8'>
+            <div className='mt-8 grid grid-cols-3 gap-4 xl:mt-12 xl:gap-8 max-w-[1100px]'>
               {business.images?.slice(0, 3).map((image, index) => {
                 const src = typeof image === 'string' ? image : image.image;
                 return (
@@ -506,7 +506,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           >
             {business.images && business.images.length > 0 ? (
               <div
-                className='grid gap-2.5 md:gap-5 xl:gap-6'
+                className='grid gap-2.5 md:gap-5 xl:gap-6 max-w-[1100px]'
                 style={{
                   gridTemplateColumns: 'repeat(15, 1fr)',
                   gridTemplateRows: 'repeat(12, minmax(40px, 50px))',
@@ -586,7 +586,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             <h2 className='mb-2 text-center font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Amenities
             </h2>
-            <div className='mx-auto flex max-w-[1100px] items-center justify-center gap-6 xl:gap-10 text-[0.95rem] leading-7 text-[#000000]'>
+            <div className='mx-auto flex max-w-[1100px] items-center justify-center gap-6 xl:gap-14 text-[0.95rem] leading-7 text-[#000000]'>
               {business.amenities?.map((amenity, index) => {
                 console.log(amenity, 'Amenity');
                 return (
@@ -595,10 +595,10 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                       {(() => {
                         const Icon =
                           AmenityIcon[amenity.name as keyof typeof AmenityIcon];
-                        return Icon ? <Icon /> : <span className='h-9'></span>;
+                        return Icon ? <Icon className='!size-8 lg:!size-10' /> : <span className='h-9'></span>;
                       })()}
                     </span>
-                    <span className='font-medium text-[#0D121C]'>{amenity.name}</span>
+                    <span className='text-xs lg:text-[0.9rem] font-medium text-[#0D121C]'>{amenity.name}</span>
                   </div>
                 );
               })}
