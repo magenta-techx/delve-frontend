@@ -181,9 +181,9 @@ const NotificationsPage = () => {
   };
 
   return (
-    <div className='min-h-screen bg-[#F8F7FB] px-4 py-6 sm:px-6 lg:px-12'>
-      <div className='mx-auto max-w-6xl lg:max-w-7xl'>
-        <header className='flex flex-col gap-2'>
+    <div className='h-screen w-screen overflow-y-hidden bg-[#F8F7FB] p-4 sm:px-6 lg:px-12'>
+      {/* <div className='container mx-auto max-w-7xl relative z-10 pt-20 w-full px-4 sm:px-0 md:pt-28'> */}
+        <header className='flex flex-col gap-2 container mx-auto w-full max-w-7xl pt-20 px-4 sm:px-0 md:pt-24'>
           <p className='text-sm font-semibold uppercase tracking-wide text-[#7C3AED]'>
             Profile Settings
           </p>
@@ -203,7 +203,7 @@ const NotificationsPage = () => {
           </p>
         </header>
 
-        <div className='mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.6fr)]'>
+        <section className='mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.6fr)] container mx-auto max-w-7xl'>
           <ProfilePanel
             isLoading={profileLoading && !profileData}
             formState={formState}
@@ -222,8 +222,7 @@ const NotificationsPage = () => {
             onMarkSingle={handleMarkSingle}
             markingNotificationId={markingNotificationId}
           />
-        </div>
-      </div>
+        </section>
     </div>
   );
 };
@@ -252,7 +251,7 @@ const ProfilePanel = ({
   }
 
   return (
-    <section className='rounded-[32px] bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] ring-1 ring-black/5 sm:p-8'>
+    <section className=' bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] ring-1 ring-black/5 sm:p-8 h-max'>
       <div className='flex flex-wrap items-center gap-5 border-b border-[#F1F5F9] pb-6'>
         <div className='flex items-center gap-4'>
           <Avatar className='h-16 w-16 ring-4 ring-[#F2ECFF]'>
