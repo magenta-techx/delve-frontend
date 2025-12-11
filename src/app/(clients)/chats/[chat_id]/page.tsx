@@ -16,9 +16,14 @@ import { cn } from '@/lib/utils';
 export default function ChatDetailPage({
   params,
 }: {
-  params: { chat_id: string };
+  // `params` may be a Promise in newer Next.js versions; unwrap with React.use
+  params: { chat_id: string } | Promise<{ chat_id: string }>;
 }) {
-  const { chat_id } = params;
+  // `React.use()` unwraps a promise provided by Next.js routing. Use it when available.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resolvedParams = (React as any).use ? (React as any).use(params) : params;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { chat_id } = resolvedParams as any;
   const { data: session } = useSession();
   const token = session?.user?.accessToken ?? '';
 
@@ -33,6 +38,8 @@ export default function ChatDetailPage({
   const selectedChat =
     chats?.data.find(c => String(c.id) === String(chat_id)) || null;
 
+  const [connectionState, setConnectionState] = useState<'idle' | 'connecting' | 'open' | 'closed' | 'error'>('idle');
+
   const { sendText } = useChatSocket({
     businessId: String(selectedChat?.business.id ?? ''),
     chatId: String(chat_id),
@@ -44,13 +51,21 @@ export default function ChatDetailPage({
       void refreshMessages();
     },
     debug: true,
+    onOpen: () => setConnectionState('open'),
+    onClose: () => setConnectionState('closed'),
     onDebug: entry => {
+      // update local connection state for UI
+      if (entry.type === 'connect_attempt') setConnectionState('connecting');
+      if (entry.type === 'open') setConnectionState('open');
+      if (entry.type === 'close') setConnectionState('closed');
+      if (entry.type === 'error') setConnectionState('error');
       console.log('chat debug entry', entry);
     },
   });
 
   const { addImage } = useAddImage();
   const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
@@ -121,9 +136,17 @@ export default function ChatDetailPage({
 
   const handleSend = async () => {
     if (!text) return;
-    sendText(text);
-    setText('');
-    void refreshMessages();
+    if (sending) return;
+    setSending(true);
+    try {
+      await sendText(text);
+      setText('');
+      await refreshMessages();
+    } catch (err) {
+      console.error('send failed', err);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -133,9 +156,24 @@ export default function ChatDetailPage({
           {isLoadingChats ? (
             <div className='h-6 w-40 animate-pulse rounded bg-gray-200' />
           ) : (
-            <h2 className='font-semibold'>
-              {selectedChat?.business.name ?? 'Conversation'}
-            </h2>
+            <div className='flex items-center gap-3'>
+              <span
+                title={connectionState}
+                className={
+                  'inline-block h-2.5 w-2.5 rounded-full ' +
+                  (connectionState === 'open'
+                    ? 'bg-green-500'
+                    : connectionState === 'connecting'
+                    ? 'bg-amber-400'
+                    : connectionState === 'error'
+                    ? 'bg-red-500'
+                    : 'bg-gray-300')
+                }
+              />
+              <h2 className='font-semibold'>
+                {selectedChat?.business.name ?? 'Conversation'}
+              </h2>
+            </div>
           )}
         </div>
         <div className='flex items-center gap-2'>
@@ -239,19 +277,26 @@ export default function ChatDetailPage({
               onClick={handleSend}
               className='bg-[#ECE9FE]'
               variant='unstyled'
+              disabled={sending || connectionState !== 'open'}
             >
-              <svg
-                width='23'
-                height='22'
-                viewBox='0 0 23 22'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M4.50998 0.31458L20.7502 8.0073C23.1525 9.14525 23.1525 12.5636 20.7502 13.7016L4.50998 21.3943C1.86889 22.6453 -0.904434 19.9382 0.282464 17.2676L2.56412 12.1339C2.62286 12.0018 2.67206 11.8666 2.71174 11.7293H11.0087C11.492 11.7293 11.8837 11.3376 11.8837 10.8543C11.8837 10.3711 11.492 9.97933 11.0087 9.97933H2.71168C2.67202 9.84216 2.62283 9.70703 2.56412 9.57493L0.282464 4.44121C-0.904433 1.77069 1.86889 -0.93646 4.50998 0.31458Z'
-                  fill={text?.length > 0 ? '#551FB9' : '#9AA4B2'}
-                />
-              </svg>
+              {sending ? (
+                <svg className='h-4 w-4 animate-spin' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                  <circle cx='12' cy='12' r='10' stroke='#551FB9' strokeWidth='4' strokeLinecap='round' strokeDasharray='60' strokeDashoffset='0'></circle>
+                </svg>
+              ) : (
+                <svg
+                  width='23'
+                  height='22'
+                  viewBox='0 0 23 22'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M4.50998 0.31458L20.7502 8.0073C23.1525 9.14525 23.1525 12.5636 20.7502 13.7016L4.50998 21.3943C1.86889 22.6453 -0.904434 19.9382 0.282464 17.2676L2.56412 12.1339C2.62286 12.0018 2.67206 11.8666 2.71174 11.7293H11.0087C11.492 11.7293 11.8837 11.3376 11.8837 10.8543C11.8837 10.3711 11.492 9.97933 11.0087 9.97933H2.71168C2.67202 9.84216 2.62283 9.70703 2.56412 9.57493L0.282464 4.44121C-0.904433 1.77069 1.86889 -0.93646 4.50998 0.31458Z'
+                    fill={text?.length > 0 ? '#551FB9' : '#9AA4B2'}
+                  />
+                </svg>
+              )}
             </Button>
           </div>
         </div>

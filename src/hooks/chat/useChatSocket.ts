@@ -52,12 +52,19 @@ export function useChatSocket({
 }: UseChatSocketOpts) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectRef = useRef<number>(0);
+  const reconnectTimerRef = useRef<number | null>(null);
   const shouldReconnect = useRef(true);
   const debugLogsRef = useRef<ChatDebugEntry[]>([]);
   const statsRef = useRef({ messagesReceived: 0, messagesSent: 0, reconnects: 0 });
   const stateRef = useRef<ChatConnectionState>('idle');
   const reconnectAttemptsRef = useRef<number>(0);
   const maxReconnectAttemptsDefault = 20;
+  type QueuedSend = {
+    payload: Record<string, unknown>;
+    resolve?: (value: boolean) => void;
+    reject?: (reason?: unknown) => void;
+  };
+  const sendQueueRef = useRef<QueuedSend[]>([]);
 
   // Use the provided `baseUrl` when available; otherwise fall back to SOCKET_HOST
   // and pick `ws` vs `wss` depending on the current page protocol.
@@ -117,11 +124,35 @@ export function useChatSocket({
     }
 
     wsRef.current.onopen = () => {
+      // clear any pending reconnect timer
+      if (reconnectTimerRef.current !== null) {
+        try {
+          clearTimeout(reconnectTimerRef.current as unknown as number);
+        } catch (e) {}
+        reconnectTimerRef.current = null;
+      }
       reconnectRef.current = 0;
       reconnectAttemptsRef.current = 0;
       stateRef.current = 'open';
       pushDebug({ ts: Date.now(), type: 'open' });
       onOpen?.();
+      // flush any queued sends (resolve promises when sent)
+      try {
+        while (sendQueueRef.current.length > 0 && wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          const item = sendQueueRef.current.shift();
+          if (item) {
+            try {
+              wsRef.current.send(JSON.stringify(item.payload));
+              pushDebug({ ts: Date.now(), type: 'message_sent', detail: { payload: item.payload, queued: true } });
+              item.resolve?.(true);
+            } catch (err) {
+              item.reject?.(err);
+            }
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
     };
 
     wsRef.current.onmessage = ev => {
@@ -150,14 +181,21 @@ export function useChatSocket({
       onClose?.(ev);
       if (shouldReconnect.current) {
         // simple incremental backoff + jitter
-        reconnectRef.current = Math.min(
-          30000,
-          reconnectRef.current + 1000 + Math.floor(Math.random() * 2000)
-        );
+        reconnectRef.current = Math.min(30000, reconnectRef.current + 1000 + Math.floor(Math.random() * 2000));
         reconnectAttemptsRef.current += 1;
         statsRef.current.reconnects += 1;
         pushDebug({ ts: Date.now(), type: 'reconnect_scheduled', detail: { wait: reconnectRef.current, attempt: reconnectAttemptsRef.current } });
-        setTimeout(() => connect(), reconnectRef.current);
+        // clear any existing timer then schedule
+        if (reconnectTimerRef.current !== null) {
+          try {
+            clearTimeout(reconnectTimerRef.current as unknown as number);
+          } catch (e) {}
+          reconnectTimerRef.current = null;
+        }
+        reconnectTimerRef.current = window.setTimeout(() => {
+          reconnectTimerRef.current = null;
+          connect();
+        }, reconnectRef.current);
       }
     };
 
@@ -177,25 +215,53 @@ export function useChatSocket({
       try {
         wsRef.current?.close();
       } catch {}
+      // clear scheduled reconnect timer on unmount
+      if (reconnectTimerRef.current !== null) {
+        try {
+          clearTimeout(reconnectTimerRef.current as unknown as number);
+        } catch (e) {}
+        reconnectTimerRef.current = null;
+      }
     };
   }, [connect]);
 
-  const send = useCallback((payload: Record<string, unknown>) => {
-    try {
-      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        wsRef.current.send(JSON.stringify(payload));
-        pushDebug({ ts: Date.now(), type: 'message_sent', detail: { payload } });
-        return true;
+  const send = useCallback((payload: Record<string, unknown>): Promise<boolean> => {
+    return new Promise<boolean>((resolve, reject) => {
+      try {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          try {
+            wsRef.current.send(JSON.stringify(payload));
+            pushDebug({ ts: Date.now(), type: 'message_sent', detail: { payload } });
+            resolve(true);
+            return;
+          } catch (err) {
+            // sending failed synchronously
+            reject(err);
+            return;
+          }
+        }
+      } catch (err) {
+        // fallthrough to queue
       }
-    } catch (err) {}
-    return false;
+
+      // socket is not open — queue payload for retry when socket opens
+      try {
+        sendQueueRef.current.push({ payload, resolve, reject });
+        pushDebug({ ts: Date.now(), type: 'message_sent', detail: { payload, queued: true } });
+      } catch (e) {
+        // if queueing fails, reject
+        try {
+          reject(e);
+        } catch {}
+      }
+    });
   }, [pushDebug]);
 
   // Attempt to read sender id from user context; returns null if provider not present
   const userCtx = useUserContext();
 
   const sendText = useCallback(
-    (message: string, senderId?: number | string) => {
+    (message: string, senderId?: number | string): Promise<boolean> => {
       const resolvedSender = typeof senderId !== 'undefined' ? senderId : userCtx?.userId;
       const payload: Record<string, unknown> = {
         message_type: 'text',
