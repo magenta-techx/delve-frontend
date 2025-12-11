@@ -1,6 +1,5 @@
 'use client';
 
-import type { ChangeEventHandler } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
@@ -16,7 +15,6 @@ import {
   ShieldAlert,
   Sparkles,
   Store,
-  Camera,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
