@@ -10,7 +10,7 @@ const SponsoredAdsCard = ({
 }): JSX.Element => {
   return (
     <div
-      className={`relative overflow-hidden h-[273px] w-[353px] sm:h-[479px] sm:w-[745px]`}
+      className={`relative overflow-hidden h-[273px] w-full sm:h-[479px]`}
     >
       <Image
         src={ad.image}

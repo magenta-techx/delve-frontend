@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { LogoLoadingIcon } from '@/assets/icons';
+import { AmenitiesModal } from '@/app/(business)/misc/components/AmenitiesModal';
 
 interface EditableField {
   id: string;
@@ -612,7 +613,7 @@ export default function ProfileSettings() {
       </Dialog>
 
       {/* Amenities Selection Modal */}
-      <Dialog
+      <AmenitiesModal
         open={showAmenitiesModal}
         onOpenChange={open => {
           setShowAmenitiesModal(open);
@@ -621,83 +622,15 @@ export default function ProfileSettings() {
             setFieldValues({});
           }
         }}
-      >
-        <DialogContent className='mx-4 w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl'>
-          <DialogHeader>
-            <DialogTitle className='mb-2 text-balance font-karma text-2xl font-semibold text-[#0F0F0F] md:text-3xl'>
-              Choose your business amenities
-            </DialogTitle>
-            <p className='mb-8 text-gray-600'>
-              Select the amenities that your business offers
-            </p>
-          </DialogHeader>
-
-          {amenitiesLoading ? (
-            <div className='flex items-center justify-center py-8'>
-              <div className='h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent'></div>
-            </div>
-          ) : (
-            <>
-              <div className='mb-8 grid max-h-60 grid-cols-1 gap-3 overflow-y-auto sm:grid-cols-2'>
-                {amenities.map(amenity => {
-                  const currentIds =
-                    (fieldValues['amenities']?.value as number[]) || [];
-                  const isSelected = currentIds.includes(amenity.id);
-
-                  return (
-                    <button
-                      key={amenity.id}
-                      type='button'
-                      onClick={() => {
-                        const currentIds =
-                          (fieldValues['amenities']?.value as number[]) || [];
-                        const newIds = isSelected
-                          ? currentIds.filter(id => id !== amenity.id)
-                          : [...currentIds, amenity.id];
-                        handleFieldChange('amenities', newIds);
-                      }}
-                      className={cn(
-                        'rounded-lg border px-4 py-3 text-left transition-all duration-200',
-                        isSelected
-                          ? 'border-[#A48AFB] bg-[#FBFAFF] text-purple-700'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300 hover:bg-purple-50'
-                      )}
-                    >
-                      <div className='flex items-center justify-between'>
-                        <span className='font-medium'>{amenity.name}</span>
-                        {isSelected && (
-                          <div className='size-3 rounded-full bg-[#A48AFB]'></div>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className='flex justify-end gap-2'>
-                <Button
-                  variant='outline'
-                  onClick={() => {
-                    setShowAmenitiesModal(false);
-                    setEditingField(null);
-                    setFieldValues({});
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => handleSave('amenities')}
-                  disabled={updateAmenitiesMutation.isPending}
-                >
-                  {updateAmenitiesMutation.isPending
-                    ? 'Saving...'
-                    : 'Save Changes'}
-                </Button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+        amenities={amenities}
+        selectedAmenityIds={
+          (fieldValues['amenities']?.value as number[]) || []
+        }
+        onSelectionChange={ids => handleFieldChange('amenities', ids)}
+        onSave={() => handleSave('amenities')}
+        isLoading={amenitiesLoading}
+        isSaving={updateAmenitiesMutation.isPending}
+      />
 
       {/* Change Profile Picture Modal */}
       <Dialog

@@ -31,10 +31,10 @@ export const BusinessSwitcher = () => {
     <div className='relative'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] px-3 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3'
+        className='flex w-full items-center gap-3 rounded-xl xl:rounded-2xl bg-[#1A1A1A] px-3 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3'
       >
         {/* Business Logo */}
-        <div className='size-7 md:size-8 relative flex-shrink-0 overflow-hidden rounded-full bg-white'>
+        <div className='size-7 md:size-8 xl:size-10 relative flex-shrink-0 overflow-hidden rounded-full bg-white ring-white ring-2 ring-offset-1 '>
           {currentBusiness.logo ? (
             <Image
               src={currentBusiness.logo}
@@ -43,7 +43,7 @@ export const BusinessSwitcher = () => {
               className='object-cover'
             />
           ) : (
-            <div className='flex h-full w-full items-center justify-center bg-primary text-sm font-bold text-white'>
+            <div className='flex h-full w-full items-center justify-center bg-primary text-sm xl:text-[0.9rem] font-bold text-white'>
               {currentBusiness.name.charAt(0)}
             </div>
           )}

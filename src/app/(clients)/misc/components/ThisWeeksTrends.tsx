@@ -11,7 +11,7 @@ const ThisWeeksTrends = (): JSX.Element => {
   return (
     <div className='relative flex flex-col md:h-[30rem] w-[100%] lg:grid-cols-[1.45fr_1fr] items-center lg:grid lg:h-[35rem] xl:grid-cols-[1.6fr_1fr]'>
       <div
-        className='relative flex h-full w-full items-center justify-center p-5'
+        className='relative flex h-full w-full items-center justify-start'
         style={{
           background: `url(${data?.data.thumbnail || '/landingpage/trendz-1.jpg'})`,
           backgroundSize: 'cover',
@@ -19,7 +19,7 @@ const ThisWeeksTrends = (): JSX.Element => {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <div className='w-full max-w-md rounded-xl bg-black/70 p-5'>
+        <div className='w-full max-w-md rounded-xl bg-black/70 p-5 md:ml-16 lg:ml-24 '>
           <div className='relative z-10 flex h-full w-full flex-col gap-2 p-2 text-white sm:p-3'>
             {/* Info  */}
             <div className='flex h-[85px] items-center gap-2 border-b-[1px] border-b-white sm:-mt-5'>
@@ -97,7 +97,7 @@ const ThisWeeksTrends = (): JSX.Element => {
             This Week’s Trend
           </h1>
         </div>
-        <p className='mb-5 w-full text-base sm:w-[420px] sm:text-lg'>
+        <p className='mb-5 w-full text-[0.925rem] md:text-base sm:w-[420px] sm:text-lg'>
           Every week, Delve celebrates one outstanding business that’s captured
           the most attention, the most views, the most saves, the most chats.
           It’s our way of saying “Well done!” and giving them a free spotlight

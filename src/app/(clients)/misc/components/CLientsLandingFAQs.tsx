@@ -215,7 +215,7 @@ const CLientsLandingFAQs = (): JSX.Element => {
                 <motion.span
                   animate={{ rotate: isActive ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
-                  className='flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#6E44FF] sm:h-12 sm:w-12'
+                  className='flex h-10 w-10 items-center justify-center rounded-full text-[#6E44FF] sm:h-12 sm:w-12'
                 >
                   <BaseIcons value='arrow-down-primary' />
                 </motion.span>
