@@ -16,10 +16,8 @@ import { cn } from '@/lib/utils';
 export default function ChatDetailPage({
   params,
 }: {
-  // `params` may be a Promise in newer Next.js versions; unwrap with React.use
   params: { chat_id: string } | Promise<{ chat_id: string }>;
 }) {
-  // `React.use()` unwraps a promise provided by Next.js routing. Use it when available.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const resolvedParams = (React as any).use ? (React as any).use(params) : params;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,8 +76,8 @@ export default function ChatDetailPage({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Scroll helper: scroll the messages container to bottom
   const scrollToBottom = (smooth = true) => {
     const el = messagesContainerRef.current;
     if (!el) return;
@@ -96,9 +94,7 @@ export default function ChatDetailPage({
     }
   };
 
-  // Scroll when message count changes and when content size changes (images load)
   useEffect(() => {
-    // small delay to allow DOM updates
     const id = window.setTimeout(() => scrollToBottom(true), 50);
     return () => window.clearTimeout(id);
   }, [messages?.data?.length]);
@@ -142,6 +138,10 @@ export default function ChatDetailPage({
     }
     if (e.target) e.target.value = '';
   };
+
+  const handleSelectImage = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
 
   const handleSend = async () => {
     if (!text) return;
@@ -266,21 +266,21 @@ export default function ChatDetailPage({
             className='max-h-[400px] w-full resize-none border-none bg-transparent px-2 py-1 outline-none focus:border-none'
           />
           <div className='flex items-center gap-2'>
-            <label className='flex cursor-pointer items-center gap-2'>
-              <input
-                type='file'
-                accept='image/*'
-                onChange={sendFileFromInput}
-                className='hidden'
-              />
-              <Button
-                size='icon'
-                // className='bg-[#ECE9FE]'
-                variant='ghost'
-              >
-                <ImageIcon className='h-4 w-4' />
-              </Button>
-            </label>
+            <input
+              ref={fileInputRef}
+              type='file'
+              accept='image/*'
+              onChange={sendFileFromInput}
+              className='hidden'
+            />
+            <Button
+              type='button'
+              size='icon'
+              onClick={handleSelectImage}
+              variant='ghost'
+            >
+              <ImageIcon className='h-4 w-4' />
+            </Button>
             <Button
               size='icon'
               onClick={handleSend}

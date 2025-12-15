@@ -105,20 +105,16 @@ const Footer = () => {
     '/businesses/get-started',
     '/notifications',
   ];
-  const PAGES_WITHOUT_INSTAGRAM_SECTION = [
-    '/businesses/create-listing',
-    '/chats',
-    '/businesses/saved/collaboration',
-    '/businesses/get-started',
-    '/notifications',
-  ];
+  const PAGES_WITHOUT_INSTAGRAM_SECTION = ['/privacy-policy'];
 
   if (PAGES_WITHOUT_NAVBAR.some(path => pathname.startsWith(path))) {
     return null;
   }
   return (
     <>
-      <InstagramSection />
+      {!PAGES_WITHOUT_INSTAGRAM_SECTION.some(path =>
+        pathname.startsWith(path)
+      ) && <InstagramSection />}
       <footer className='w-full border-t font-inter text-[#0F172B] max-md:bg-[#F8FAFC] md:border-[#EBEEF5] md:bg-white'>
         <div className='container mx-auto grid w-full gap-12 pb-6 pt-10 md:px-8 lg:grid-cols-[minmax(0,480px)_minmax(0,1fr)] lg:items-start lg:pb-16 lg:pt-14'>
           <aside className='max-md: flex w-full flex-col gap-8 max-md:px-10 sm:px-6 md:max-w-xl'>
