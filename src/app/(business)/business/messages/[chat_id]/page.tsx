@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui';
 import { Image as ImageIcon } from 'lucide-react';
@@ -13,6 +13,7 @@ import { useChatMessages } from '@/app/(clients)/misc/api';
 import { useParams } from 'next/navigation';
 import { useBusinessChats } from '@/app/(business)/misc/api';
 import { useBusinessContext } from '@/contexts/BusinessContext';
+import { GalleryModal } from '@/components/GalleryModal';
 
 export default function ChatDetailPage() {
   const { chat_id } = useParams() as { chat_id: string };
@@ -56,6 +57,9 @@ export default function ChatDetailPage() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [pendingUploads, setPendingUploads] = useState<Array<{ id: string; url: string; status: 'uploading' | 'error' }>>([]);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   // Scroll helper: scroll the messages container to bottom
   const scrollToBottom = (smooth = true) => {
@@ -106,18 +110,42 @@ export default function ChatDetailPage() {
     resizeTextarea();
   }, [text]);
 
+  const removePendingUpload = useCallback((id: string) => {
+    setPendingUploads(prev => {
+      const target = prev.find(item => item.id === id);
+      if (target) URL.revokeObjectURL(target.url);
+      return prev.filter(item => item.id !== id);
+    });
+  }, []);
+
   const sendFileFromInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-    if (!file) return;
-    const fd = new FormData();
-    fd.append('images', file);
-    fd.append('chat_id', String(chat_id));
-    try {
-      await addImage(fd);
-      void refreshMessages();
-    } catch (err) {
-      // ignore
+    const files = Array.from(e.target.files ?? []).filter(Boolean);
+    if (!files.length) return;
+
+    const entries = files.map(file => {
+      const url = URL.createObjectURL(file);
+      const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+      return { file, url, id };
+    });
+
+    setPendingUploads(prev => [
+      ...prev,
+      ...entries.map(entry => ({ id: entry.id, url: entry.url, status: 'uploading' as const })),
+    ]);
+
+    for (const entry of entries) {
+      const fd = new FormData();
+      fd.append('images', entry.file);
+      fd.append('chat_id', String(chat_id));
+      try {
+        await addImage(fd);
+        removePendingUpload(entry.id);
+        await refreshMessages();
+      } catch (err) {
+        setPendingUploads(prev => prev.map(item => (item.id === entry.id ? { ...item, status: 'error' } : item)));
+      }
     }
+
     if (e.target) e.target.value = '';
   };
 
@@ -131,6 +159,21 @@ export default function ChatDetailPage() {
     setText('');
     void refreshMessages();
   };
+
+  const orderedMessages = useMemo(() => {
+    if (!messages?.data) return [] as typeof messages.data;
+    return [...messages.data].reverse();
+  }, [messages?.data]);
+
+  const imageGallery = useMemo(() => orderedMessages.filter(msg => msg.is_image_message && msg.image).map(msg => String(msg.image)), [orderedMessages]);
+
+  const openLightbox = useCallback((imageUrl: string) => {
+    const index = imageGallery.indexOf(imageUrl);
+    if (index >= 0) {
+      setLightboxIndex(index);
+      setLightboxOpen(true);
+    }
+  }, [imageGallery]);
 
   return (
     <div className='flex h-full flex-1 grid-rows-[auto_1fr_auto] flex-col'>
@@ -169,10 +212,7 @@ export default function ChatDetailPage() {
           <div className='py-6 text-center text-gray-500'>No messages yet</div>
         )}
         {messages &&
-          messages.data
-            .slice()
-            .reverse()
-            .map(msg => (
+          orderedMessages.map(msg => (
               <div
                 key={msg.id}
                 className={`flex ${msg.sender.id === userId ? 'justify-end' : 'justify-start'}`}
@@ -187,23 +227,56 @@ export default function ChatDetailPage() {
                 >
                   <p className='text-sm'>{msg.content ?? ''}</p>
                   {msg.is_image_message && (
-                    <div className='mt-2 max-w-full overflow-hidden rounded'>
-                      <Image
-                        src={String(msg.image)}
-                        alt='img'
-                        width={400}
-                        height={300}
-                        className='h-auto w-full rounded'
-                        onLoadingComplete={() => {
-                          // ensure we scroll after image loads and layout updates
-                          scrollToBottom(false);
-                        }}
-                      />
-                    </div>
+                    <button
+                      type='button'
+                      onClick={() => openLightbox(String(msg.image))}
+                      className='mt-2 block focus:outline-none'
+                    >
+                      <div className='relative h-40 w-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
+                        <Image
+                          src={String(msg.image)}
+                          alt='Chat image'
+                          fill
+                          sizes='160px'
+                          className='object-cover'
+                          onLoadingComplete={() => {
+                            scrollToBottom(false);
+                          }}
+                        />
+                      </div>
+                    </button>
                   )}
                 </div>
               </div>
             ))}
+        {pendingUploads.map(upload => (
+          <div key={upload.id} className='flex justify-end'>
+            <div className='w-max max-w-md rounded-lg bg-[#F8FAFC] px-4 py-2 text-sm font-normal leading-snug text-sidebar-primary-foreground'>
+              <div className='relative mt-2 h-40 w-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
+                <img src={upload.url} alt='Uploading preview' className='h-full w-full object-cover opacity-70' />
+                {upload.status === 'uploading' && (
+                  <div className='absolute inset-0 flex items-center justify-center bg-white/60'>
+                    <svg className='h-6 w-6 animate-spin text-[#551FB9]' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' strokeLinecap='round' strokeDasharray='60' strokeDashoffset='20'></circle>
+                    </svg>
+                  </div>
+                )}
+                {upload.status === 'error' && (
+                  <div className='absolute inset-0 flex flex-col items-center justify-center gap-2 bg-red-50/90 p-3 text-center text-xs font-medium text-red-600'>
+                    <span>Image failed to send</span>
+                    <button
+                      type='button'
+                      className='rounded bg-white/70 px-2 py-1 text-[11px] font-semibold text-red-600 shadow-sm'
+                      onClick={() => removePendingUpload(upload.id)}
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
         <div ref={bottomRef} />
       </div>
 
@@ -229,6 +302,7 @@ export default function ChatDetailPage() {
               ref={fileInputRef}
               type='file'
               accept='image/*'
+              multiple
               onChange={sendFileFromInput}
               className='hidden'
             />
@@ -262,6 +336,14 @@ export default function ChatDetailPage() {
           </div>
         </div>
       </div>
+      {lightboxOpen && imageGallery.length > 0 && (
+        <GalleryModal
+          images={imageGallery}
+          open={lightboxOpen}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </div>
   );
 }
