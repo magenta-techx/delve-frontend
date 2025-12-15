@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui';
 import { Image as ImageIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useChatSocket } from '@/hooks/chat/useChatSocket';
+import { useChatSocket, type ChatDebugEntry } from '@/hooks/chat/useChatSocket';
 import { useAddImage } from '@/hooks/chat/useAddImage';
 import { useUserContext } from '@/contexts/UserContext';
 import { cn } from '@/lib/utils';
@@ -32,20 +32,22 @@ export default function ChatDetailPage() {
   const selectedChat =
     chats?.data.find(c => String(c.id) === String(chat_id)) || null;
 
+  const handleSocketPayload = useCallback(() => {
+    void refreshMessages();
+  }, [refreshMessages]);
+
+  const handleSocketDebug = useCallback((entry: ChatDebugEntry) => {
+    console.log('chat debug entry', entry);
+  }, []);
+
   const { sendText } = useChatSocket({
     businessId: String(currentBusiness?.id ?? ''),
     chatId: String(chat_id),
     token: token ?? '',
-    onMessage: () => {
-      void refreshMessages();
-    },
-    onImages: () => {
-      void refreshMessages();
-    },
+    onMessage: handleSocketPayload,
+    onImages: handleSocketPayload,
     debug: true,
-    onDebug: entry => {
-      console.log('chat debug entry', entry);
-    },
+    onDebug: handleSocketDebug,
   });
 
   const { addImage } = useAddImage();
@@ -53,6 +55,7 @@ export default function ChatDetailPage() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Scroll helper: scroll the messages container to bottom
   const scrollToBottom = (smooth = true) => {
@@ -117,6 +120,10 @@ export default function ChatDetailPage() {
     }
     if (e.target) e.target.value = '';
   };
+
+  const handleSelectImage = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
 
   const handleSend = async () => {
     if (!text) return;
@@ -218,21 +225,21 @@ export default function ChatDetailPage() {
             className='max-h-[400px] w-full resize-none border-none bg-transparent px-2 py-1 outline-none focus:border-none'
           />
           <div className='flex items-center gap-2'>
-            <label className='flex cursor-pointer items-center gap-2'>
-              <input
-                type='file'
-                accept='image/*'
-                onChange={sendFileFromInput}
-                className='hidden'
-              />
-              <Button
-                size='icon'
-                // className='bg-[#ECE9FE]'
-                variant='ghost'
-              >
-                <ImageIcon className='h-4 w-4' />
-              </Button>
-            </label>
+            <input
+              ref={fileInputRef}
+              type='file'
+              accept='image/*'
+              onChange={sendFileFromInput}
+              className='hidden'
+            />
+            <Button
+              type='button'
+              size='icon'
+              onClick={handleSelectImage}
+              variant='ghost'
+            >
+              <ImageIcon className='h-4 w-4' />
+            </Button>
             <Button
               size='icon'
               onClick={handleSend}
