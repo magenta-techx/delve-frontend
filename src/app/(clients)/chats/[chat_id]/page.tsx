@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { LinkButton } from '@/components/ui';
 import { Button } from '@/components/ui';
 import { Image as ImageIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useUserChats } from '@/app/(clients)/misc/api/useUserChats';
-import { useChatSocket } from '@/hooks/chat/useChatSocket';
+import { useChatSocket, type ChatDebugEntry } from '@/hooks/chat/useChatSocket';
 import { useAddImage } from '@/hooks/chat/useAddImage';
 import { useChatMessages } from '../../misc/api';
 import { useUserContext } from '@/contexts/UserContext';
@@ -40,27 +40,36 @@ export default function ChatDetailPage({
 
   const [connectionState, setConnectionState] = useState<'idle' | 'connecting' | 'open' | 'closed' | 'error'>('idle');
 
+  const handleSocketPayload = useCallback(() => {
+    void refreshMessages();
+  }, [refreshMessages]);
+
+  const handleSocketOpen = useCallback(() => {
+    setConnectionState('open');
+  }, []);
+
+  const handleSocketClose = useCallback(() => {
+    setConnectionState('closed');
+  }, []);
+
+  const handleSocketDebug = useCallback((entry: ChatDebugEntry) => {
+    if (entry.type === 'connect_attempt') setConnectionState('connecting');
+    if (entry.type === 'open') setConnectionState('open');
+    if (entry.type === 'close') setConnectionState('closed');
+    if (entry.type === 'error') setConnectionState('error');
+    console.log('chat debug entry', entry);
+  }, []);
+
   const { sendText } = useChatSocket({
     businessId: String(selectedChat?.business.id ?? ''),
     chatId: String(chat_id),
     token: token ?? '',
-    onMessage: () => {
-      void refreshMessages();
-    },
-    onImages: () => {
-      void refreshMessages();
-    },
+    onMessage: handleSocketPayload,
+    onImages: handleSocketPayload,
     debug: true,
-    onOpen: () => setConnectionState('open'),
-    onClose: () => setConnectionState('closed'),
-    onDebug: entry => {
-      // update local connection state for UI
-      if (entry.type === 'connect_attempt') setConnectionState('connecting');
-      if (entry.type === 'open') setConnectionState('open');
-      if (entry.type === 'close') setConnectionState('closed');
-      if (entry.type === 'error') setConnectionState('error');
-      console.log('chat debug entry', entry);
-    },
+    onOpen: handleSocketOpen,
+    onClose: handleSocketClose,
+    onDebug: handleSocketDebug,
   });
 
   const { addImage } = useAddImage();

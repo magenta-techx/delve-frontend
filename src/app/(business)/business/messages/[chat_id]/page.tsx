@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui';
 import { Image as ImageIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useChatSocket } from '@/hooks/chat/useChatSocket';
+import { useChatSocket, type ChatDebugEntry } from '@/hooks/chat/useChatSocket';
 import { useAddImage } from '@/hooks/chat/useAddImage';
 import { useUserContext } from '@/contexts/UserContext';
 import { cn } from '@/lib/utils';
@@ -32,20 +32,22 @@ export default function ChatDetailPage() {
   const selectedChat =
     chats?.data.find(c => String(c.id) === String(chat_id)) || null;
 
+  const handleSocketPayload = useCallback(() => {
+    void refreshMessages();
+  }, [refreshMessages]);
+
+  const handleSocketDebug = useCallback((entry: ChatDebugEntry) => {
+    console.log('chat debug entry', entry);
+  }, []);
+
   const { sendText } = useChatSocket({
     businessId: String(currentBusiness?.id ?? ''),
     chatId: String(chat_id),
     token: token ?? '',
-    onMessage: () => {
-      void refreshMessages();
-    },
-    onImages: () => {
-      void refreshMessages();
-    },
+    onMessage: handleSocketPayload,
+    onImages: handleSocketPayload,
     debug: true,
-    onDebug: entry => {
-      console.log('chat debug entry', entry);
-    },
+    onDebug: handleSocketDebug,
   });
 
   const { addImage } = useAddImage();
