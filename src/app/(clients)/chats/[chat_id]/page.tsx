@@ -81,10 +81,12 @@ export default function ChatDetailPage({
   const [pendingUploads, setPendingUploads] = useState<Array<{ id: string; url: string; status: 'uploading' | 'error' }>>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const shouldAutoScrollRef = useRef(true);
 
-  const scrollToBottom = (smooth = true) => {
+  const scrollToBottom = useCallback((smooth = true, force = false) => {
     const el = messagesContainerRef.current;
     if (!el) return;
+    if (!force && !shouldAutoScrollRef.current) return;
     try {
       if (smooth && 'scrollTo' in el) {
         el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
@@ -96,12 +98,18 @@ export default function ChatDetailPage({
         el.scrollTop = el.scrollHeight;
       } catch {}
     }
-  };
+  }, []);
+
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    shouldAutoScrollRef.current = distanceFromBottom < 80;
+  }, []);
 
   useEffect(() => {
     const id = window.setTimeout(() => scrollToBottom(true), 50);
     return () => window.clearTimeout(id);
-  }, [messages?.data?.length]);
+  }, [messages?.data?.length, pendingUploads.length, scrollToBottom]);
 
   // Use ResizeObserver to detect content size changes and keep scrolled to bottom
   useEffect(() => {
@@ -113,7 +121,7 @@ export default function ChatDetailPage({
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [scrollToBottom]);
 
   // auto-resize textarea based on content
   const resizeTextarea = () => {
@@ -151,6 +159,13 @@ export default function ChatDetailPage({
       ...entries.map(entry => ({ id: entry.id, url: entry.url, status: 'uploading' as const })),
     ]);
 
+    shouldAutoScrollRef.current = true;
+    if (typeof window !== 'undefined') {
+      window.requestAnimationFrame(() => scrollToBottom(true, true));
+    } else {
+      scrollToBottom(false, true);
+    }
+
     for (const entry of entries) {
       const fd = new FormData();
       fd.append('images', entry.file);
@@ -175,6 +190,8 @@ export default function ChatDetailPage({
     if (!text) return;
     if (sending) return;
     setSending(true);
+    shouldAutoScrollRef.current = true;
+    scrollToBottom(true, true);
     try {
       await sendText(text);
       setText('');
@@ -246,7 +263,8 @@ export default function ChatDetailPage({
 
       <div
         ref={messagesContainerRef}
-        className='flex flex-1 flex-col justify-end space-y-4 overflow-y-auto p-6'
+        className='flex flex-1 flex-col space-y-4 overflow-y-auto p-6'
+        onScroll={handleScroll}
       >
         {messagesLoading && <div>Loading messages...</div>}
         {messages && messages.data.length === 0 && (

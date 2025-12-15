@@ -1,7 +1,7 @@
 'use client';
 
 import { EmptyState, Input } from '@/components/ui';
-import { Search } from 'lucide-react';
+import { Search, Image as ImageIcon } from 'lucide-react';
 import { useUserChats } from '@/app/(clients)/misc/api/useUserChats';
 import Link from 'next/link';
 import { LogoLoadingIcon } from '@/assets/icons';
@@ -53,8 +53,20 @@ export default function UserChatsPage({
                 </div>
                 <div className='flex min-w-0 flex-1 flex-col'>
                   <p className='font-medium'>{chat.business.name}</p>
-                  <p className='xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight text-[#111927]'>
-                    {chat.last_message?.content}
+                  <p
+                    className={cn(
+                      'xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight text-[#111927]',
+                      chat.last_message?.is_image_message && 'flex items-center gap-1 text-[#551FB9]'
+                    )}
+                  >
+                    {chat.last_message?.is_image_message ? (
+                      <>
+                        <ImageIcon className='h-3.5 w-3.5' aria-hidden='true' />
+                        <span>Image</span>
+                      </>
+                    ) : (
+                      chat.last_message?.content || 'No messages yet'
+                    )}
                   </p>
                 </div>
               </Link>
