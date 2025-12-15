@@ -105,6 +105,13 @@ const Footer = () => {
     '/businesses/get-started',
     '/notifications',
   ];
+  const PAGES_WITHOUT_INSTAGRAM_SECTION = [
+    '/businesses/create-listing',
+    '/chats',
+    '/businesses/saved/collaboration',
+    '/businesses/get-started',
+    '/notifications',
+  ];
 
   if (PAGES_WITHOUT_NAVBAR.some(path => pathname.startsWith(path))) {
     return null;
