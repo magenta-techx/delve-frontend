@@ -17,6 +17,7 @@ interface FeaturedListingCardProps {
   onSelectToggle?: (businessId: number) => void;
   isDeletable?: boolean;
   onDelete?: (businessId: number) => void;
+  isBigCard?: boolean;
 }
 
 const FeaturedListingCard = ({
@@ -26,6 +27,7 @@ const FeaturedListingCard = ({
   onSelectToggle,
   isDeletable,
   onDelete,
+  isBigCard
 }: FeaturedListingCardProps): JSX.Element => {
   const { isSaved, toggleSave, showLoginAlert, setShowLoginAlert, isSaving } =
     useSavedBusinessesContext();
@@ -74,7 +76,8 @@ const FeaturedListingCard = ({
         ref={articleRef}
         className={cn(
           'group !aspect-[342/427] rounded-3xl border-2 border-[#FEC601] p-1.5',
-          isSelectable && 'cursor-pointer'
+          isSelectable && 'cursor-pointer',
+          isBigCard && "xl:rounded-[1.8rem]"
         )}
         onClick={() => {
           if (!isSelectable) return;
@@ -189,7 +192,7 @@ const FeaturedListingCard = ({
           {!isSelectable && (
             <Link
               href={`/businesses/${business.id}`}
-              className='relative z-[15] hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex'
+              className='relative z-[15] hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md xl:rounded-lg bg-primary px-4 text-center font-medium text-white group-hover:flex'
               style={{ fontSize: getFluidFontSize(0.875, 1, 0.003) }}
             >
               <span> View</span>
@@ -243,7 +246,7 @@ const FeaturedListingCard = ({
                 </div>
                 <div>
                   <h3 className='font-semibold truncate max-sm:w-[90%] ' style={{ fontSize: getFluidFontSize(0.675, 1.2, 0.0035) }}>{header}</h3>
-                  <p className='line-clamp-2 max-sm:w-[90%]' style={{ fontSize: getFluidFontSize(0.4, 0.85, 0.0025) }}>{desc}</p>
+                  <p className='line-clamp-2 max-sm:w-[90%] min-h-[2.5lh]' style={{ fontSize: getFluidFontSize(0.4, 0.85, 0.0025) }}>{desc}</p>
                 </div>
               </div>
               <div className='flex items-center gap-4 justify-between pt-2 w-full overflow-hidden'>

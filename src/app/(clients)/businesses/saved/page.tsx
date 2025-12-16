@@ -233,8 +233,12 @@ export default function Page() {
                       </CarouselItem>
                     ))}
                   </CarouselContent>
-                  <CarouselPrevious className='absolute left-2 top-1/2 z-10 -translate-y-1/2 max-md:hidden' />
-                  <CarouselNext className='absolute right-2 top-1/2 z-10 -translate-y-1/2 max-md:hidden' />
+                  {item.businesses.length > 1 && (
+                    <>
+                      <CarouselPrevious className='absolute left-2 top-1/2 z-10 -translate-y-1/2 max-md:hidden' />
+                      <CarouselNext className='absolute right-2 top-1/2 z-10 -translate-y-1/2 max-md:hidden' />
+                    </>
+                  )}
                 </Carousel>
               </div>
             </div>
