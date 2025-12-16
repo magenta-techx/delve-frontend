@@ -452,14 +452,20 @@ export default function HomePage() {
               </div>
             ))}
             {/* Duplicate set for seamless loop */}
-            {approved?.map((business, idx) => (
+            {[
+              "/logo-1.png",
+              "/logo-2.png",
+              "/logo-3.png",
+              "/logo-4.png",
+              "/logo-5.png",
+            ]?.map((logo, idx) => (
               <div
-                key={`second-${idx}`}
+                key={`first-${idx}`}
                 className='relative mx-4 h-10 w-20 flex-shrink-0 sm:mx-8 sm:h-16 sm:w-32 md:mx-10 xl:mx-16'
               >
                 <Image
-                  src={business.logo!}
-                  alt={business.name || 'Business logo'}
+                  src={logo!}
+                  alt={'Business logo'}
                   fill
                   className='object-contain'
                 />
