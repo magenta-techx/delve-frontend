@@ -179,7 +179,7 @@ export default function HomePage() {
       </div>
 
       {/* featured listings  */}
-      <div className='flex w-full flex-col items-center bg-[#FFF4ED] pt-7 sm:pt-16'>
+      <div className='flex w-full flex-col items-center pt-7 sm:pt-16'>
         <SectionHeader
           header='Trusted by dozens of happy clients. '
           paragraph='Featured Listing'
@@ -296,7 +296,7 @@ export default function HomePage() {
               className='w-full max-w-full'
               setApi={setSponsoredCarouselApi}
             >
-              <CarouselContent className='-ml-4'>
+              <CarouselContent className='-ml-4 sm:gap-x-2'>
                 {sponsoredAds?.data.map((sponsored, key) => {
                   return (
                     <CarouselItem
@@ -375,7 +375,7 @@ export default function HomePage() {
       </div>
 
       <div className='container mb-20 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-32 sm:px-0'>
-        <h1 className='font-karma text-[24px] font-semibold sm:text-[52px]'>
+        <h1 className='font-karma text-[12px] font-medium sm:text-[20px]'>
           Tips, Trends & Vendor Stories
         </h1>
         <p className='mb-10 font-inter text-[13px] sm:text-[18px]'>
@@ -432,14 +432,20 @@ export default function HomePage() {
         <div className='z-10 w-full overflow-hidden'>
           <div className='flex w-max animate-marquee items-center'>
             {/* First set of logos */}
-            {approved?.map((business, idx) => (
+            {[
+              "/logo-1.png",
+              "/logo-2.png",
+              "/logo-3.png",
+              "/logo-4.png",
+              "/logo-5.png",
+            ]?.map((logo, idx) => (
               <div
                 key={`first-${idx}`}
                 className='relative mx-4 h-10 w-20 flex-shrink-0 sm:mx-8 sm:h-16 sm:w-32 md:mx-10 xl:mx-16'
               >
                 <Image
-                  src={business.logo!}
-                  alt={business.name || 'Business logo'}
+                  src={logo!}
+                  alt={'Business logo'}
                   fill
                   className='object-contain'
                 />

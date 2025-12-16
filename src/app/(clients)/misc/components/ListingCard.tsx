@@ -17,6 +17,7 @@ interface FeaturedListingCardProps {
   onSelectToggle?: (businessId: number) => void;
   isDeletable?: boolean;
   onDelete?: (businessId: number) => void;
+  isBigCard?: boolean;
 }
 
 const FeaturedListingCard = ({
@@ -26,6 +27,7 @@ const FeaturedListingCard = ({
   onSelectToggle,
   isDeletable,
   onDelete,
+  isBigCard
 }: FeaturedListingCardProps): JSX.Element => {
   const { isSaved, toggleSave, showLoginAlert, setShowLoginAlert, isSaving } =
     useSavedBusinessesContext();
@@ -74,7 +76,8 @@ const FeaturedListingCard = ({
         ref={articleRef}
         className={cn(
           'group !aspect-[342/427] rounded-3xl border-2 border-[#FEC601] p-1.5',
-          isSelectable && 'cursor-pointer'
+          isSelectable && 'cursor-pointer',
+          isBigCard && "xl:rounded-[1.8rem]"
         )}
         onClick={() => {
           if (!isSelectable) return;
