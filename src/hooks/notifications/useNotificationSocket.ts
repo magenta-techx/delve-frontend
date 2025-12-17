@@ -105,11 +105,10 @@ export function useNotificationSocket({
 
   // Use the provided `baseUrl` when available; otherwise fall back to SOCKET_HOST
   // and pick `ws` vs `wss` depending on the current page protocol.
-  const SOCKET_HOST = '134.209.19.132:8003';
-  const scheme = typeof window !== 'undefined' && window.location.protocol === 'https:' ? 'wss' : 'ws';
+  const SOCKET_HOST = 'backend.delve.ng';
   const resolvedBase = baseUrl
     ? baseUrl.replace(/\/$/, '')
-    : `${scheme}://${SOCKET_HOST}`;
+    : `wss://${SOCKET_HOST}`;
 
   const buildUrl = useCallback(() => {
     if (businessId) {

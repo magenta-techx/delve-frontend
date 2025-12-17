@@ -38,7 +38,7 @@ export default function Page() {
     : savedBusinessesData?.data.filter(item => item.category.name === selectedCategory);
 
   return (
-    <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 md:px-16 lg:px-24'>
+    <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 '>
    
       <header className='relative z-10 mt-20 w-full px-4 sm:px-0 md:mt-28'>
         <div className='mb-6 flex w-full items-center justify-between'>
