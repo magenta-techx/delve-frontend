@@ -375,7 +375,7 @@ export default function HomePage() {
       </div>
 
       <div className='container mb-20 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-32 sm:px-0'>
-        <h1 className='font-karma text-[12px] font-medium sm:text-[20px]'>
+        <h1 className='font-karma text-2xl max-sm:font-medium sm:text-[44px]'>
           Tips, Trends & Vendor Stories
         </h1>
         <p className='mb-10 font-inter text-[13px] sm:text-[18px]'>
