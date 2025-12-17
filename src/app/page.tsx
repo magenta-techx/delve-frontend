@@ -196,7 +196,7 @@ export default function HomePage() {
                     : 'start',
                 loop: false,
               }}
-              className='container mx-auto w-[90vw] px-2 xl:w-[85vw]'
+              className='container mx-auto w-[90vw] max-xl:px-2 xl:w-[85vw] '
             >
               <CarouselContent className='-ml-2 gap-2 py-4'>
                 {loadingApproved
@@ -217,8 +217,8 @@ export default function HomePage() {
                       </CarouselItem>
                     ))}
               </CarouselContent>
-              <CarouselPrevious className='absolute -left-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-[#FFF4ED] p-2 shadow-none sm:flex 2xl:-left-10' />
-              <CarouselNext className='absolute -right-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-[#FFF4ED] p-2 shadow-none sm:flex 2xl:-right-10' />
+              <CarouselPrevious className='absolute -left-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-left-10' />
+              <CarouselNext className='absolute -right-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-right-10' />
             </Carousel>
           </div>
         </div>

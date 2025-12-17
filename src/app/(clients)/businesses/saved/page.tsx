@@ -38,7 +38,7 @@ export default function Page() {
     : savedBusinessesData?.data.filter(item => item.category.name === selectedCategory);
 
   return (
-    <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden lg:w-[80vw]'>
+    <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 md:px-16 lg:px-24'>
    
       <header className='relative z-10 mt-20 w-full px-4 sm:px-0 md:mt-28'>
         <div className='mb-6 flex w-full items-center justify-between'>
@@ -223,7 +223,7 @@ export default function Page() {
                   opts={{ align: 'start', loop: false }}
                   className='w-full max-w-full px-2'
                 >
-                  <CarouselContent className='-ml-2 gap-4 p-4'>
+                  <CarouselContent className='-ml-2 gap-4 py-4'>
                     {item.businesses.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
