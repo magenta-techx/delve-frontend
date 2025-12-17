@@ -221,7 +221,7 @@ const BusinessSearchPage = (): JSX.Element => {
       : 'We could not complete the search. Please try again.';
 
   return (
-    <div className='relative mx-auto flex min-h-screen w-full max-w-7xl flex-1 flex-col gap-10 bg-[#F8FAFC] px-4 pb-24 pt-32 lg:flex-row lg:px-6'>
+    <div className='relative mx-auto flex min-h-screen w-full container flex-1 flex-col gap-10 bg-[#F8FAFC] px-4 pb-24 pt-32 lg:flex-row lg:px-6'>
       {/* Mobile Bottom Sheet */}
       <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
         <SheetContent side="bottom" className="lg:hidden max-h-[85vh] rounded-t-3xl flex flex-col !p-0">
