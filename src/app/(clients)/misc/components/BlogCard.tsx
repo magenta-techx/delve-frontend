@@ -24,6 +24,7 @@ const BlogCard = ({
           alt={imageUrl}
           width={400}
           height={100}
+          objectFit='cover'
           className='h-full w-full rounded-xl'
         />
       </div>
