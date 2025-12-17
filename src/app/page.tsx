@@ -213,7 +213,7 @@ export default function HomePage() {
                         key={business.id ?? key}
                         className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
                       >
-                        <FeaturedListingCard business={business} />
+                        <FeaturedListingCard business={business} isBigCard />
                       </CarouselItem>
                     ))}
               </CarouselContent>

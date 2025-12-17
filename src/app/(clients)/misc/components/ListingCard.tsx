@@ -84,7 +84,9 @@ const FeaturedListingCard = ({
           onSelectToggle?.(business.id);
         }}
       >
-        <div className='relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2'>
+        <div className={cn('relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2',
+              isBigCard && "xl:rounded-[1.5rem]"
+        )}>
           {/* Bookmark  */}
           {isDeletable && onDelete ? (
             <button
@@ -231,8 +233,9 @@ const FeaturedListingCard = ({
           {/* Content  */}
           <div
             className={cn(
-              'absolute bottom-0 z-10 flex h-[80%] w-full flex-col gap-2 rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300 sm:h-[80%]',
-              !isSelectable && 'group-hover:opacity-0'
+              'absolute bottom-0 z-10 flex h-[80%] w-full flex-col gap-2 rounded-b-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300 sm:h-[80%]',
+              !isSelectable && 'group-hover:opacity-0',
+              isBigCard && "xl:rounded-b-[1.65rem]"
             )}
           >
             <div className='mt-auto flex w-full flex-col gap-2 divide-y divide-white pb-3'>

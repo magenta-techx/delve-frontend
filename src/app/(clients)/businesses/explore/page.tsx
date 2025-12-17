@@ -43,7 +43,7 @@ export default function HomePage(): JSX.Element {
         </div>
         {/* Desktop Hero section  */}
         <div className='absolute top-[8rem] flex w-full flex-col items-center px-4 sm:top-[14rem] sm:px-8 md:top-[18rem] lg:px-20'>
-          <div className='flex w-full max-w-[1620px] flex-col'>
+          <div className='flex w-full container flex-col'>
             <div className='flex w-full flex-col sm:max-w-[1000px]'></div>
             <div className='mb-9 flex items-center gap-2 text-white'>
               <ExploreBaseIcons value='listing-white-and-gray-solid' />
@@ -69,7 +69,7 @@ export default function HomePage(): JSX.Element {
 
       {/* Listings around you  */}
       {/* Desktop  */}
-      <div className='container hidden w-full px-8 sm:block lg:px-12'>
+      <div className='container hidden w-full px-8 sm:block'>
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
             <BaseIcons value='stars-primary' />
@@ -162,7 +162,7 @@ export default function HomePage(): JSX.Element {
       {/*/////////////////////////  Featured  ///////////////////////////////*/}
       {/*/////////////////////////  Featured  ///////////////////////////////*/}
       {/* Desktop  */}
-      <div className='container hidden w-full px-8 sm:block lg:px-12'>
+      <div className='container hidden w-full px-8 sm:block'>
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
             <BaseIcons value='flames-yellow' />
@@ -255,7 +255,7 @@ export default function HomePage(): JSX.Element {
       {/*/////////////////////////  Explore  ///////////////////////////////*/}
       {/*/////////////////////////  Explore  ///////////////////////////////*/}
       {/* Desktop  */}
-      <div className='container hidden w-full px-8 sm:block lg:px-12'>
+      <div className='container hidden w-full px-8 sm:block'>
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
             <BaseIcons value='stars-primary' />
