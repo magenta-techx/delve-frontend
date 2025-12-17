@@ -246,7 +246,7 @@ const FeaturedListingCard = ({
                 </div>
                 <div>
                   <h3 className='font-semibold truncate max-sm:w-[90%] ' style={{ fontSize: getFluidFontSize(0.675, 1.2, 0.0035) }}>{header}</h3>
-                  <p className='line-clamp-2 max-sm:w-[90%] min-h-[2.5lh]' style={{ fontSize: getFluidFontSize(0.4, 0.85, 0.0025) }}>{desc}</p>
+                  <p className='line-clamp-2 max-sm:w-[90%] min-h-[2lh]' style={{ fontSize: getFluidFontSize(0.4, 0.85, 0.0025) }}>{desc}</p>
                 </div>
               </div>
               <div className='flex items-center gap-4 justify-between pt-2 w-full overflow-hidden'>
