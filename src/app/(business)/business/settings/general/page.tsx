@@ -205,11 +205,11 @@ export default function GeneralPage() {
         <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
           {editingField !== 'name' ? (
             <Button
-              onClick={() => handleEdit('name')}
+              // onClick={() => handleEdit('name')}
               variant='outline'
               size='sm'
               className='text-gray-500 hover:text-primary'
-              // disabled
+              disabled
               title='Contact support to change business name'
             >
               Edit
