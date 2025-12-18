@@ -222,14 +222,14 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user, account, trigger }: { token: JWT; user: User; account: Account | null; trigger?: string }): Promise<JWT> {
-      console.log('JWT callback triggered:', { 
-        trigger, 
-        hasAccount: !!account, 
-        hasUser: !!user,
-        provider: account?.provider,
-        hasIdToken: !!(account as Record<string, unknown>)?.['id_token'] 
-      });
+    async jwt({ token, user, account }: { token: JWT; user: User; account: Account | null; trigger?: string }): Promise<JWT> {
+      // console.log('JWT callback triggered:', { 
+      //   trigger, 
+      //   hasAccount: !!account, 
+      //   hasUser: !!user,
+      //   provider: account?.provider,
+      //   hasIdToken: !!(account as Record<string, unknown>)?.['id_token'] 
+      // });
 
       // When signing in with Google, call backend API
       if (account?.provider === 'google') {

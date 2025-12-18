@@ -208,22 +208,6 @@ const BusinessesLandingPage = () => {
         </section>
       </div>
 
-      <div className='flex w-full justify-center'>
-        <Image
-          src={'/business/socials.png'}
-          alt='Delve socials'
-          width={1500}
-          height={500}
-          className='hidden w-full lg:flex'
-        />
-      </div>
-      <Image
-        src={'/business/socials-mobile.png'}
-        alt='Delve socials'
-        width={500}
-        height={500}
-        className='flex lg:hidden'
-      />
     </div>
   )
 }

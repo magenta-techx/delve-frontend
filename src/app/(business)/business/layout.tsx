@@ -6,6 +6,7 @@ import { NavbarTop, NavbarBottom } from '../misc/components';
 import { BusinessProvider } from '@/contexts/BusinessContext';
 import { useIsMobile } from '@/hooks';
 import { cn } from '@/lib/utils';
+import { BusinessNotificationsProvider } from '@/contexts/BusinessNotificationsContext';
 
 export default function BusinessLayout({
   children,
@@ -16,21 +17,23 @@ export default function BusinessLayout({
 
   return (
     <BusinessProvider>
-      <div
-        className={cn(
-          'flex h-screen bg-background',
-          isMobile && 'grid !h-dvh grid-rows-[auto,1fr,auto]'
-        )}
-      >
-        {calculatingScreenWidth ? null : isMobile ? <NavbarTop /> : <Sidebar />}
+      <BusinessNotificationsProvider>
+        <div
+          className={cn(
+            'flex h-screen bg-background',
+            isMobile && 'grid !h-dvh grid-rows-[auto,1fr,auto]'
+          )}
+        >
+          {calculatingScreenWidth ? null : isMobile ? <NavbarTop /> : <Sidebar />}
 
-        {/* Main content */}
-        <div className='flex flex-1 flex-col overflow-hidden bg-[#FCFCFD]'>
-          {children}
+          {/* Main content */}
+          <div className='flex flex-1 flex-col overflow-hidden bg-[#FCFCFD]'>
+            {children}
+          </div>
+
+          {isMobile && <NavbarBottom />}
         </div>
-
-        {isMobile && <NavbarBottom />}
-      </div>
+      </BusinessNotificationsProvider>
     </BusinessProvider>
   );
 }
