@@ -159,7 +159,7 @@ export default function CollaborationForm() {
 
   return (
     <div className='grid h-screen w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-8 xl:pb-12 xl:pt-28'>
-      <header className='mx-auto flex w-full max-w-[1356px] items-center justify-between px-4'>
+      <header className='mx-auto flex w-full container items-center justify-between px-4'>
         <Link href='/businesses/saved/collaboration' className='flex items-center gap-2'>
           <ChevronLeft className='size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
           Back
@@ -175,7 +175,7 @@ export default function CollaborationForm() {
           Save and Create
         </Button>
       </header>
-      <section className='mx-auto grid w-full max-w-[1356px] gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
+      <section className='mx-auto grid w-full container gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
         <form className='flex flex-col gap-4'>
           <h1 className='mb-2 text-base font-semibold md:text-lg'>
             Collaborate With Your Crew
@@ -219,7 +219,7 @@ export default function CollaborationForm() {
 
           <section className='mt-4'>
             <h5 className='text-sm font-medium'>Group Members</h5>
-            <div className='custom-scrollbar max-h-[400px] space-y-3 overflow-y-auto pl-4'>
+            <div className='custom-scrollbar max-h-[400px] space-y-3 overflow-y-auto'>
               {/* Owner */}
               <div className='flex items-center justify-between rounded-md bg-[#FFFFFF] px-3 py-2'>
                 <div className='flex items-center gap-3'>
