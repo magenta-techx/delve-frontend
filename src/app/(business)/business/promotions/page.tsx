@@ -17,7 +17,13 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui';
-import { useMemo, useState } from 'react';
+import {
+  type ChangeEvent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 // dialog not used in this page
 import { useBusinessCampaignAnalytics } from '@/app/(clients)/misc/api/business';
 import { useBusinessContext } from '@/contexts/BusinessContext';
@@ -31,6 +37,8 @@ import { cn } from '@/lib/utils';
 import { Check, Circle } from 'lucide-react';
 import Image from 'next/image';
 import { EmptySavedBusinessesIcon } from '@/app/(clients)/misc/icons';
+import { useUpdateSponsoredAd } from '@/app/(clients)/misc/api/sponsored';
+import { toast } from 'sonner';
 
 export default function PromotionsPage() {
   const [selectedView, setSelectedView] = useState<'advert' | 'promotion'>(
@@ -51,6 +59,9 @@ export default function PromotionsPage() {
     isCloseable: false,
     showTabs: true,
   });
+  const advertImageInputRef = useRef<HTMLInputElement | null>(null);
+  const { mutate: updateSponsoredAd, isPending: isUpdatingAdvertImage } =
+    useUpdateSponsoredAd();
   const { currentBusiness, isLoading } = useBusinessContext();
   const businessId = currentBusiness?.id;
   const { data: advertAnalyticsData, isLoading: advertAnalyticsLoading } =
@@ -77,6 +88,53 @@ export default function PromotionsPage() {
       advertAnalyticsData?.data?.performance_metrics &&
       Object.keys(advertAnalyticsData?.data.performance_metrics).length > 0,
     [advertAnalyticsData?.data?.performance_metrics, advertAnalyticsLoading]
+  );
+
+  const activeAdvertCampaign =
+    advertAnalyticsData?.data?.active_campaign as
+      | Record<string, unknown>
+      | undefined;
+  const activeAdvertId =
+    (activeAdvertCampaign?.['advertisement_id'] as
+      | number
+      | string
+      | undefined) ??
+    (activeAdvertCampaign?.['id'] as number | string | undefined) ??
+    (activeAdvertCampaign?.['advert_id'] as number | string | undefined) ??
+    (activeAdvertCampaign?.['campaign_id'] as number | string | undefined) ??
+    null;
+
+  const handleAdvertImageFileChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0] ?? null;
+      const inputEl = event.target;
+
+      if (!file) return;
+
+      if (!activeAdvertId) {
+        toast.error('Unable to update advert image right now.');
+        inputEl.value = '';
+        return;
+      }
+
+      updateSponsoredAd(
+        { advertisementId: activeAdvertId, image: file },
+        {
+          onSuccess: () => {
+            toast.success('Advert image updated');
+          },
+          onError: error => {
+            const description =
+              error instanceof Error ? error.message : 'An unexpected error occurred';
+            toast.error('Failed to update advert image', { description });
+          },
+          onSettled: () => {
+            inputEl.value = '';
+          },
+        }
+      );
+    },
+    [activeAdvertId, updateSponsoredAd]
   );
 
   const hasActiveCampaign = useMemo(
@@ -229,19 +287,39 @@ export default function PromotionsPage() {
 
               {}
               <section className='relative rounded-2xl border border-white p-1'>
+                <input
+                  ref={advertImageInputRef}
+                  type='file'
+                  accept='image/png,image/jpeg,image/jpg'
+                  className='hidden'
+                  onChange={handleAdvertImageFileChange}
+                />
                 {selectedView === 'advert' ? (
                   <>
                     {hasActiveAdvertCampaign ? (
-                      <Image
-                        src={
-                          advertAnalyticsData?.data.performance_metrics
-                            .summary_metrics?.image || '/default-image.png'
-                        }
-                        alt='Advert Campaign Thumbnail'
-                        className='text-[0.6rem]'
-                        fill
-                        objectFit='cover'
-                      />
+                      <div
+                        className='relative w-full overflow-hidden rounded-2xl bg-[#0F172A]/30'
+                        style={{ aspectRatio: '16 / 9' }}
+                      >
+                        <Image
+                          src={
+                            advertAnalyticsData?.data.performance_metrics
+                              .summary_metrics?.image || '/default-image.png'
+                          }
+                          alt='Advert Campaign Thumbnail'
+                          className='object-cover'
+                          fill
+                        />
+                        <Button
+                          type='button'
+                          variant='light'
+                          className='absolute right-4 top-4 z-10 rounded-full border border-[#ECE9FE] bg-white/90 px-4 py-2 text-xs font-semibold text-[#551FB9] shadow-sm transition-colors hover:bg-white disabled:cursor-wait'
+                          onClick={() => advertImageInputRef.current?.click()}
+                          disabled={isUpdatingAdvertImage}
+                        >
+                          {isUpdatingAdvertImage ? 'Updating…' : 'Change Image'}
+                        </Button>
+                      </div>
                     ) : (
                       <div>
                         <EmptyState
