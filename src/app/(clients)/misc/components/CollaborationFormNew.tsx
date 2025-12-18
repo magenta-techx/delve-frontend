@@ -218,7 +218,7 @@ export default function CollaborationForm() {
           </div>
 
           <section className='mt-4'>
-            <h5 className='text-sm font-medium'>Group Members</h5>
+            <h5 className='mb-2 text-sm font-medium'>Group Members</h5>
             <div className='custom-scrollbar max-h-[400px] space-y-3 overflow-y-auto'>
               {/* Owner */}
               <div className='flex items-center justify-between rounded-md bg-[#FFFFFF] px-3 py-2'>

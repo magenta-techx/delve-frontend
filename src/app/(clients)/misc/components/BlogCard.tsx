@@ -18,14 +18,14 @@ const BlogCard = ({
     <div
       className={`bg-[#F5F5F5] sm:py-8 ${containerClassStyle} flex flex-col items-center rounded-2xl p-4 sm:px-9`}
     >
-      <div className={`${imageClassStyle} mb-7`}>
+      <div className={`${imageClassStyle} relative mb-7`}>
         <Image
           src={imageUrl}
           alt={imageUrl}
           width={400}
           height={100}
-          objectFit='cover'
-          className='h-full w-full rounded-xl'
+          className='h-full w-full rounded-xl object-cover'
+          style={{objectFit: 'cover'}}
         />
       </div>
       <div className='w-[100%] border-b-[1px] border-[#9AA4B2] pb-4 sm:h-[200px] sm:pb-6'>

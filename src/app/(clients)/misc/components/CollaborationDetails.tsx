@@ -75,7 +75,7 @@ export default function CollaborationDetails({
 
   return (
     <div className='w-full overflow-hidden py-8 pt-16 lg:h-screen xl:pb-12 xl:pt-28'>
-      <header className='mx-auto mb-2.5 flex h-10 w-full max-w-[1356px] items-center justify-between px-4'>
+      <header className='mx-auto mb-2.5 flex h-10 w-full container items-center justify-between px-4'>
         <Link
           href='/businesses/saved/collaboration'
           className='flex items-center gap-2'
