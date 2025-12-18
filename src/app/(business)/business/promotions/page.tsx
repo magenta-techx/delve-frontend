@@ -593,7 +593,7 @@ export default function PromotionsPage() {
                         (height, i) => (
                           <div
                             key={i}
-                            className='flex-1 rounded-sm bg-green-200'
+                            className='flex-1 rounded-sm bg-green-200 transition-all duration-300 ease-linear'
                             style={{
                               height:
                                 totalClicks <= 0
