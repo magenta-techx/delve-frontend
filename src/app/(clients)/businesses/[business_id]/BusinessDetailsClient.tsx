@@ -165,8 +165,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
   return (
     <Suspense fallback={<div>Loading business details...</div>}>
       <main className='relative mx-auto py-8 pt-16 lg:pt-20'>
-        {/* Back Button */}
-        {/* Hero Section with Image and Business Info */}
         <div
           className={cn(`relative mb-8 overflow-hidden`)}
           style={{
