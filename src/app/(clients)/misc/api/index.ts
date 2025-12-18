@@ -9,3 +9,4 @@ export * from "./user";
 export * from "./metadata";
 export * from "./collaboration";
 export * from "./performance";
+export * from "./reviews";

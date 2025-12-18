@@ -19,5 +19,5 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { business_id: string } }
 ): Promise<NextResponse> {
-  return forward(req, 'POST', `/businesses/${params.business_id}/reviews/`, { auth: true, contentType: 'json' });
+  return forward(req, 'POST', `/businesses/${params.business_id}/reviews/add/`, { auth: true, contentType: 'json' });
 }

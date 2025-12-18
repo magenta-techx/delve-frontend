@@ -3,7 +3,14 @@ import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } fr
 import type { ApiEnvelope, ApiMessage, NotificationItem } from "@/types/api";
 import { apiRequest } from '@/utils/apiHandler';
 
-export function useNotifications(params?: { notification_for?: "user" | "business"; business_id?: number | string }): UseQueryResult<ApiEnvelope<NotificationItem[]>, Error> {
+type UseNotificationsOptions = {
+  enabled?: boolean;
+};
+
+export function useNotifications(
+  params?: { notification_for?: "user" | "business"; business_id?: number | string },
+  options?: UseNotificationsOptions
+): UseQueryResult<ApiEnvelope<NotificationItem[]>, Error> {
   const qs = new URLSearchParams();
   if (params?.notification_for) qs.set("notification_for", params.notification_for);
   if (params?.business_id) qs.set("business_id", String(params.business_id));
@@ -15,7 +22,7 @@ export function useNotifications(params?: { notification_for?: "user" | "busines
       if (!res.ok) throw new Error(data?.error || "Failed to fetch notifications");
       return data;
     },
-    refetchInterval: 15_000,
+    enabled: options?.enabled ?? true,
   });
 }
 

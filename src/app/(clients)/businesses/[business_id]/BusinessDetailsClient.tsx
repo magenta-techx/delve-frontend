@@ -178,17 +178,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           {/* Hero Image */}
           <div className='relative min-h-[50vh] w-full bg-[#00000075] px-5 pb-24 pt-14 text-white md:px-16 xl:px-32'>
             <div className='flex items-center justify-between'>
-              <div className='flex items-center gap-2'>
-                <div className='relative size-12 overflow-hidden rounded-full'>
-                  <Image
-                    src={business?.logo || '/default-logo.png'}
-                    alt={`${business.name} logo`}
-                    objectFit='cover'
-                    fill
-                  />
-                </div>
-                <p className='text-xs md:text-base'>{business.name}</p>
-              </div>
               <div className='hidden gap-14 lg:flex'>
                 {navLink.map((links, index) => {
                   const isActive = activeHash === links.href;
