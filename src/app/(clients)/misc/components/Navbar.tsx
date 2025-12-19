@@ -68,7 +68,7 @@ const LandingPageNavbar = () => {
     {
       name: 'Listings',
       href: '/businesses/explore',
-      hasBlackBg: false,
+      hasBlackBg: true,
       icon: ListingsIcon,
     },
     {
@@ -139,7 +139,7 @@ const LandingPageNavbar = () => {
         'relative z-[20] flex h-16 w-full items-center justify-between md:backdrop-blur-lg lg:h-20 xl:h-24 px-4 md:px-16 lg:px-24',
 
         pageHasBlackBg
-          ? 'bg-[#0D121C2E]'
+          ? 'bg-[#00000014] backdrop-blur-lg'
           : isBusiness || isMobile
             ? 'bg-white'
             : 'bg-white'
