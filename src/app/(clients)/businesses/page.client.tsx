@@ -1,5 +1,5 @@
-'use client'
-import React from 'react'
+'use client';
+import React from 'react';
 import Image from 'next/image';
 
 import RoadMapIconsMobile from '@/assets/icons/business/RoadMapIconMobile';
@@ -10,31 +10,27 @@ import {
   BusinessLandingPricingList,
   BusinessLandingFAQs,
 } from '@/app/(clients)/misc/components';
-import { useApprovedBusinesses } from '../misc/api';
-import Link from 'next/link';
-
 
 const BusinessesLandingPage = () => {
-     const { data: approved } = useApprovedBusinesses();
-    
-      const TESTIMONIES = [
-        {
-          count: '72+',
-          text: 'Verified businesses',
-        },
-        {
-          count: '612+',
-          text: 'Message sent',
-        },
-        {
-          count: '90%',
-          text: 'Business growth',
-        },
-      ];
-    
+
+  const TESTIMONIES = [
+    {
+      count: '72+',
+      text: 'Verified businesses',
+    },
+    {
+      count: '612+',
+      text: 'Message sent',
+    },
+    {
+      count: '90%',
+      text: 'Business growth',
+    },
+  ];
+
   return (
-     <div className='flex flex-col justify-center overflow-y-hidden'>
-      <section className='flex container mx-auto flex-col items-start justify-between p-6 pt-36 sm:flex-row sm:px-10 md:px-12 lg:max-2xl:px-20 sm:pb-20 lg:flex-row xl:pt-60'>
+    <div className='flex flex-col justify-center overflow-y-hidden'>
+      <section className='container mx-auto flex flex-col items-start justify-between p-6 pt-36 sm:flex-row sm:px-10 sm:pb-20 md:px-12 lg:flex-row lg:max-2xl:px-20 xl:pt-60'>
         <h1 className='text-balance font-karma text-[2rem] font-medium leading-normal sm:text-4xl md:text-5xl xl:text-6xl'>
           Because Your Business Deserves to Be Seen
         </h1>
@@ -57,8 +53,8 @@ const BusinessesLandingPage = () => {
         </div>{' '}
       </section>
 
-      <div className='mb-20 hidden w-full justify-center lg:flex '>
-        <RoadMapIcons  />
+      <div className='mb-20 hidden w-full justify-center lg:flex'>
+        <RoadMapIcons />
       </div>
       <div className='mb-10 flex w-full justify-start px-7 lg:hidden lg:px-20'>
         <RoadMapIconsMobile />
@@ -85,7 +81,10 @@ const BusinessesLandingPage = () => {
           className='h-full'
         />
       </div>
-      <div className='mb-10 flex w-full flex-col items-center lg:mb-32 lg:px-8' id="type">
+      <div
+        className='mb-10 flex w-full flex-col items-center lg:mb-32 lg:px-8'
+        id='type'
+      >
         <h1 className='mb-5 w-full max-w-6xl text-balance px-8 pr-10 font-inter text-base font-medium lg:mb-16 lg:px-20 lg:text-center lg:text-4xl'>
           Delve is designed for all businesses, from established storefronts to
           independent service providers.
@@ -177,39 +176,73 @@ const BusinessesLandingPage = () => {
             />
           </svg>
           <p className='text-black'>Clients</p>
-          <p className='mt-4 text-lg xl:text-xl text-black'>
+          <p className='mt-4 text-lg text-black xl:text-xl'>
             Built for businesses that serve with heart
           </p>
         </div>
-        <div className='flex items-center justify-center gap-4 md:gap-10 xl:gap-20'>
-          {approved?.data.map((business, idx) => (
-            <Link href={`businesses/${business.id}`} key={idx} className='relative h-16 w-32'>
-              <Image
-                src={business.logo!}
-                alt=''
-                fill
-                className='object-contain'
-              />
-            </Link>
-          ))}
+        <div className='z-10 w-full overflow-hidden'>
+          <div className='flex w-max animate-marquee items-center'>
+            {/* First set of logos */}
+            {[
+              '/logo-1.png',
+              '/logo-2.png',
+              '/logo-3.png',
+              '/logo-4.png',
+              '/logo-5.png',
+            ]?.map((logo, idx) => (
+              <div
+                key={`first-${idx}`}
+                className='relative mx-4 h-10 w-20 flex-shrink-0 sm:mx-8 sm:h-16 sm:w-32 md:mx-10 xl:mx-16'
+              >
+                <Image
+                  src={logo!}
+                  alt={'Business logo'}
+                  fill
+                  className='object-contain'
+                />
+              </div>
+            ))}
+            {/* Duplicate set for seamless loop */}
+            {[
+              '/logo-1.png',
+              '/logo-2.png',
+              '/logo-3.png',
+              '/logo-4.png',
+              '/logo-5.png',
+            ]?.map((logo, idx) => (
+              <div
+                key={`first-${idx}`}
+                className='relative mx-4 h-10 w-20 flex-shrink-0 sm:mx-8 sm:h-16 sm:w-32 md:mx-10 xl:mx-16'
+              >
+                <Image
+                  src={logo!}
+                  alt={'Business logo'}
+                  fill
+                  className='object-contain'
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className='flex w-full flex-col items-center py-10 lg:bg-[#FCFCFDCC] lg:py-24' id="pricing">
+      <div
+        className='flex w-full flex-col items-center pt-10 lg:bg-[#FCFCFDCC] lg:pt-24'
+        id='pricing'
+      >
         <section className='my-12 hidden w-full flex-col justify-center sm:px-0 lg:flex'>
-          <h1 className='mx-auto mb-10 w-full text-center font-karma text-2xl sm:max-w-screen-md sm:text-3xl xl:text-4xl sm:font-semibold'>
+          <h1 className='mx-auto mb-10 w-full text-center font-karma text-2xl sm:max-w-screen-md sm:text-3xl sm:font-semibold xl:text-4xl'>
             Delve search listing pricing and features
           </h1>
           <BusinessLandingPricingList />
         </section>
 
-        <section className='mb-24 w-full'>
+        <section className='mb-10 w-full'>
           <BusinessLandingFAQs />
         </section>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default BusinessesLandingPage
+export default BusinessesLandingPage;
