@@ -1,47 +1,64 @@
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
 interface BlogCardsProps {
   imageUrl: string;
   header: string;
-  containerClassStyle: string;
-  imageClassStyle: string;
+  description?: string;
+  dateLabel?: string;
+  href?: string;
+  containerClassStyle?: string;
+  imageClassStyle?: string;
 }
 const BlogCards = ({
   imageUrl,
   header,
-  containerClassStyle,
-  imageClassStyle,
+  description,
+  dateLabel,
+  href,
+  containerClassStyle = '',
+  imageClassStyle = '',
 }: BlogCardsProps): JSX.Element => {
-  return (
+  const cardContent = (
     <div
-      className={`${containerClassStyle} flex flex-col items-center border-[1px] border-[#9AA4B2] sm:h-[535px]`}
+      className={`flex h-full flex-col overflow-hidden rounded-2xl border border-[#9AA4B2] bg-white transition hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)] ${containerClassStyle}`}
     >
-      <div className={`${imageClassStyle} mb-3`}>
+      <div className={`${imageClassStyle} mb-3 overflow-hidden`}>
         <Image
-          src={imageUrl}
-          alt={imageUrl}
+          src={imageUrl || '/blog/blog-image.jpg'}
+          alt={header}
           width={400}
-          height={100}
-          className='h-full w-full object-cover object-top'
+          height={280}
+          className='h-full w-full object-cover object-center'
+          priority={false}
         />
       </div>
-      <div className='w-[100%] px-5 sm:h-[150px]'>
-        <h2 className='mb-2 font-inter text-[14px] font-medium sm:text-[20px]'>
+      <div className='flex flex-1 flex-col px-5'>
+        <h2 className='mb-2 font-inter text-[16px] font-semibold leading-6 text-[#101828] sm:text-[20px]'>
           {header}
         </h2>
-        <p className='line-clamp-2 border-b-[1px] border-[#9AA4B2] pb-3 text-[14px] sm:line-clamp-3'>
-          Planning your big day? Here’s what’s trending across weddings this
-          year.
+        <p className='line-clamp-3 border-b border-[#E4E7EC] pb-4 text-sm text-[#475467] sm:text-base'>
+          {description || "Planning your big day? Here’s what’s trending across weddings this year."}
         </p>
       </div>
-      <div className='my-2 flex w-full items-center justify-between px-5 sm:-mt-4'>
-        <p className='text-sm'>25th June,2025</p>
+      <div className='flex items-center justify-between px-5 pb-5 pt-3 text-sm text-[#344054]'>
+        <p>{dateLabel || '25th June, 2025'}</p>
         <BaseIcons value='arrow-right-curve' />
       </div>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className='block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'>
+        {cardContent}
+      </Link>
+    );
+  }
+
+  return cardContent;
 };
 
 export default BlogCards;
