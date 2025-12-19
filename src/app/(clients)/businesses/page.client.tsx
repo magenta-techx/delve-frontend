@@ -10,11 +10,8 @@ import {
   BusinessLandingPricingList,
   BusinessLandingFAQs,
 } from '@/app/(clients)/misc/components';
-import { useApprovedBusinesses } from '../misc/api';
-import Link from 'next/link';
 
 const BusinessesLandingPage = () => {
-  const { data: approved } = useApprovedBusinesses();
 
   const TESTIMONIES = [
     {
