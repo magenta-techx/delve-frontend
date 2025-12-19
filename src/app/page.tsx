@@ -290,7 +290,7 @@ export default function HomePage() {
             </div>
           </header>
 
-          <div className='mb-20 flex w-full items-center'>
+          <div className='flex w-full items-center'>
             <Carousel
               opts={{ align: 'start', loop: false }}
               className='w-full max-w-full'
@@ -315,8 +315,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className='container flex w-full flex-col items-center py-14'>
-        <div className='flex items-center justify-between lg:justify-center gap-6 mb-20 md:mt-24 md:mb-28 max-sm:px-5 lg:gap-72 w-full '>
+      <div className='container flex w-full flex-col items-center pt-8 pb-14'>
+        <div className='flex items-center justify-between lg:justify-center gap-6 pb-6 mb-20 md:mt-24 md:mb-28 max-sm:px-5 lg:gap-72 w-full '>
           {STATS.map((stat, key) => {
             return (
               <div key={key} className='flex flex-col items-center'>

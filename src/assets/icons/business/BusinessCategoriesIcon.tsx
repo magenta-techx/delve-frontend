@@ -27,7 +27,10 @@ type Type = {
   value: BusinessCategoriesIconsType;
 } & React.SVGProps<SVGSVGElement>;
 
-export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element => {
+export const BusinessCategoryIcons = ({
+  value,
+  ...props
+}: Type): JSX.Element => {
   if (value === 'beauty') {
     return (
       <svg
@@ -36,7 +39,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         viewBox='0 0 24 22'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
-        {...props} {...props}
+        {...props}
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -68,7 +72,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 22'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M4.38338 17.5218H5.64399M15.7288 12.4794H18.8803C20.2728 12.4794 21.4016 13.6081 21.4016 15.0006V18.7824C21.4016 20.1748 20.2728 21.3036 18.8803 21.3036H5.64399M10.0561 5.3109L13.9313 1.43571C14.9159 0.451118 16.5122 0.451116 17.4968 1.43571L20.171 4.10986C21.1556 5.09445 21.1556 6.6908 20.171 7.67539L9.4258 18.4206M3.12277 21.3036H6.90459C8.29702 21.3036 9.4258 20.1748 9.4258 18.7824V3.65512C9.4258 2.2627 8.29702 1.13391 6.90459 1.13391H3.12277C1.73035 1.13391 0.601562 2.2627 0.601562 3.65512V18.7824C0.601562 20.1748 1.73035 21.3036 3.12277 21.3036Z'
@@ -87,7 +92,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 22'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -100,22 +106,21 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
   }
   if (value === 'health') {
     return (
-      <div className='text-primary'>
-        <svg
-          width='16'
-          height='16'
-          viewBox='0 0 22 22'
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg' {...props}
-        >
-          <path
-            fillRule='evenodd'
-            clipRule='evenodd'
-            d='M1.8474 12.1869C2.24931 12.5888 2.90095 12.5888 3.30286 12.1869L7.17136 8.31838L13.6826 14.8296L9.81411 18.6981C9.4122 19.1001 9.4122 19.7517 9.81411 20.1536L11.0398 21.3793C11.4417 21.7812 12.0933 21.7812 12.4952 21.3793L13.2996 20.5749L14.1039 21.3793C14.5058 21.7812 15.1574 21.7812 15.5594 21.3793L16.3637 20.5749L17.168 21.3793C17.5699 21.7812 18.2216 21.7812 18.6235 21.3793L21.3812 18.6215C21.7831 18.2196 21.7831 17.568 21.3812 17.1661L20.5769 16.3617L21.3812 15.5574C21.7831 15.1555 21.7831 14.5039 21.3812 14.1019L20.5769 13.2976L21.3812 12.4933C21.7831 12.0914 21.7831 11.4397 21.3812 11.0378L20.1556 9.81216C19.7536 9.41025 19.102 9.41025 18.7001 9.81216L14.8317 13.6806L8.32041 7.16933L12.1888 3.30091C12.5908 2.89899 12.5908 2.24736 12.1888 1.84545L10.9632 0.619795C10.5613 0.21788 9.90964 0.217881 9.50772 0.619795L8.70339 1.42413L7.89906 0.619795C7.49714 0.21788 6.84551 0.217881 6.4436 0.619795L5.63926 1.42413L4.83493 0.619795C4.43301 0.21788 3.78138 0.217881 3.37947 0.619795L0.621748 3.37751C0.219834 3.77943 0.219834 4.43106 0.621748 4.83297L1.42608 5.63731L0.621749 6.44164C0.219834 6.84356 0.219834 7.49519 0.621749 7.8971L1.42608 8.70144L0.621749 9.50577C0.219834 9.90769 0.219834 10.5593 0.621749 10.9612L1.8474 12.1869ZM2.57513 10.6165L2.19211 10.2335L2.99645 9.42917C3.39836 9.02726 3.39836 8.37562 2.99645 7.97371L2.19211 7.16937L2.99645 6.36504C3.39836 5.96312 3.39836 5.31149 2.99645 4.90958L2.19211 4.10524L4.1072 2.19016L4.91153 2.9945C5.31344 3.39641 5.96508 3.39641 6.36699 2.9945L7.17133 2.19016L7.97566 2.9945C8.37757 3.39641 9.02921 3.39641 9.43112 2.9945L10.2355 2.19016L10.6185 2.57318L2.57513 10.6165ZM11.3845 19.4259L11.7675 19.8089L12.5718 19.0046C12.9737 18.6026 13.6254 18.6026 14.0273 19.0046L14.8316 19.8089L15.636 19.0046C16.0379 18.6026 16.6895 18.6026 17.0914 19.0046L17.8958 19.8089L19.8108 17.8938L19.0065 17.0895C18.6046 16.6876 18.6046 16.0359 19.0065 15.634L19.8108 14.8297L19.0065 14.0253C18.6046 13.6234 18.6046 12.9718 19.0065 12.5699L19.8108 11.7655L19.4278 11.3825L11.3845 19.4259Z'
-            fill='currentColor'
-          />
-        </svg>
-      </div>
+      <svg
+        width='16'
+        height='16'
+        viewBox='0 0 22 22'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
+      >
+        <path
+          fillRule='evenodd'
+          clipRule='evenodd'
+          d='M1.8474 12.1869C2.24931 12.5888 2.90095 12.5888 3.30286 12.1869L7.17136 8.31838L13.6826 14.8296L9.81411 18.6981C9.4122 19.1001 9.4122 19.7517 9.81411 20.1536L11.0398 21.3793C11.4417 21.7812 12.0933 21.7812 12.4952 21.3793L13.2996 20.5749L14.1039 21.3793C14.5058 21.7812 15.1574 21.7812 15.5594 21.3793L16.3637 20.5749L17.168 21.3793C17.5699 21.7812 18.2216 21.7812 18.6235 21.3793L21.3812 18.6215C21.7831 18.2196 21.7831 17.568 21.3812 17.1661L20.5769 16.3617L21.3812 15.5574C21.7831 15.1555 21.7831 14.5039 21.3812 14.1019L20.5769 13.2976L21.3812 12.4933C21.7831 12.0914 21.7831 11.4397 21.3812 11.0378L20.1556 9.81216C19.7536 9.41025 19.102 9.41025 18.7001 9.81216L14.8317 13.6806L8.32041 7.16933L12.1888 3.30091C12.5908 2.89899 12.5908 2.24736 12.1888 1.84545L10.9632 0.619795C10.5613 0.21788 9.90964 0.217881 9.50772 0.619795L8.70339 1.42413L7.89906 0.619795C7.49714 0.21788 6.84551 0.217881 6.4436 0.619795L5.63926 1.42413L4.83493 0.619795C4.43301 0.21788 3.78138 0.217881 3.37947 0.619795L0.621748 3.37751C0.219834 3.77943 0.219834 4.43106 0.621748 4.83297L1.42608 5.63731L0.621749 6.44164C0.219834 6.84356 0.219834 7.49519 0.621749 7.8971L1.42608 8.70144L0.621749 9.50577C0.219834 9.90769 0.219834 10.5593 0.621749 10.9612L1.8474 12.1869ZM2.57513 10.6165L2.19211 10.2335L2.99645 9.42917C3.39836 9.02726 3.39836 8.37562 2.99645 7.97371L2.19211 7.16937L2.99645 6.36504C3.39836 5.96312 3.39836 5.31149 2.99645 4.90958L2.19211 4.10524L4.1072 2.19016L4.91153 2.9945C5.31344 3.39641 5.96508 3.39641 6.36699 2.9945L7.17133 2.19016L7.97566 2.9945C8.37757 3.39641 9.02921 3.39641 9.43112 2.9945L10.2355 2.19016L10.6185 2.57318L2.57513 10.6165ZM11.3845 19.4259L11.7675 19.8089L12.5718 19.0046C12.9737 18.6026 13.6254 18.6026 14.0273 19.0046L14.8316 19.8089L15.636 19.0046C16.0379 18.6026 16.6895 18.6026 17.0914 19.0046L17.8958 19.8089L19.8108 17.8938L19.0065 17.0895C18.6046 16.6876 18.6046 16.0359 19.0065 15.634L19.8108 14.8297L19.0065 14.0253C18.6046 13.6234 18.6046 12.9718 19.0065 12.5699L19.8108 11.7655L19.4278 11.3825L11.3845 19.4259Z'
+          fill='currentColor'
+        />
+      </svg>
     );
   }
   if (value === 'clothing') {
@@ -125,7 +130,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 19'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -143,7 +149,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 20'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -173,7 +180,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 22'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -197,7 +205,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 23 24'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -257,7 +266,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 20'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -275,7 +285,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 23'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -293,7 +304,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 24 22'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M7.9362 5.04167C7.9362 4.59294 8.29997 4.22917 8.7487 4.22917H9.83203C10.2808 4.22917 10.6445 4.59294 10.6445 5.04167C10.6445 5.4904 10.2808 5.85417 9.83203 5.85417H8.7487C8.29997 5.85417 7.9362 5.4904 7.9362 5.04167Z'
@@ -349,7 +361,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 22'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M10.3664 17.3649C9.99301 17.116 9.48856 17.2169 9.23965 17.5903C8.99073 17.9636 9.09163 18.4681 9.46499 18.717C10.7219 19.555 12.3594 19.555 13.6164 18.717C13.9897 18.4681 14.0906 17.9636 13.8417 17.5903C13.5928 17.2169 13.0884 17.116 12.715 17.3649C12.0039 17.839 11.0775 17.839 10.3664 17.3649Z'
@@ -375,7 +388,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 22'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -393,7 +407,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 18 22'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M6.0203 6.66601C6.0203 6.21728 6.38407 5.85351 6.8328 5.85351H11.1661C11.6149 5.85351 11.9786 6.21728 11.9786 6.66601C11.9786 7.11475 11.6149 7.47851 11.1661 7.47851H6.8328C6.38407 7.47851 6.0203 7.11475 6.0203 6.66601Z'
@@ -423,7 +438,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 21 20'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -447,7 +463,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 18'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -465,7 +482,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 23 24'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M6.8289 7.04514C6.44028 6.82076 6.30714 6.32384 6.53151 5.93523L8.26797 2.92769C9.83167 0.219371 13.7408 0.219427 15.3044 2.92779L18.0089 7.61225L18.6908 5.06751C18.8069 4.63407 19.2524 4.37684 19.6859 4.49298C20.1193 4.60912 20.3765 5.05465 20.2604 5.48809L19.0739 9.916C19.0221 10.1215 18.8904 10.3067 18.6923 10.4211C18.587 10.4819 18.4738 10.5164 18.3601 10.5267C18.2672 10.5352 18.1711 10.5278 18.0757 10.5022L13.6361 9.31262C13.2027 9.19648 12.9455 8.75095 13.0616 8.31751C13.1777 7.88407 13.6233 7.62685 14.0567 7.74299L16.6017 8.42492L13.8971 3.74027C12.959 2.11525 10.6135 2.11522 9.67525 3.74021L7.93879 6.74775C7.71442 7.13636 7.2175 7.26951 6.8289 7.04514Z'
@@ -489,7 +507,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 22 21'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -515,7 +534,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 23 23'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           fillRule='evenodd'
@@ -539,7 +559,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='16'
         viewBox='0 0 16 24'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M4.75 9.02018C5.19873 9.02018 5.5625 9.38395 5.5625 9.83268V16.3327C5.5625 16.7814 5.19873 17.1452 4.75 17.1452C4.30127 17.1452 3.9375 16.7814 3.9375 16.3327V9.83268C3.9375 9.38395 4.30127 9.02018 4.75 9.02018Z'
@@ -565,7 +586,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='18'
         viewBox='0 0 18 18'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M4.86719 13.1367L13.1395 4.86439'
@@ -591,7 +613,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='19'
         viewBox='0 0 18 19'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M11.2917 9.08398C11.2917 10.3496 10.2657 11.3756 9 11.3756C7.73435 11.3756 6.70833 10.3496 6.70833 9.08398C6.70833 7.81833 7.73435 6.79232 9 6.79232C10.2657 6.79232 11.2917 7.81833 11.2917 9.08398Z'
@@ -613,7 +636,8 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
         height='7'
         viewBox='0 0 12 7'
         fill='none'
-        xmlns='http://www.w3.org/2000/svg' {...props}
+        xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M1 1L6.00081 5.58L11 1'
@@ -627,4 +651,3 @@ export const BusinessCategoryIcons = ({ value, ...props }: Type): JSX.Element =>
   }
   return <></>;
 };
-
