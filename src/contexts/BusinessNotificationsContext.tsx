@@ -13,22 +13,22 @@ import { useSession } from 'next-auth/react';
 import {
   useNotifications,
   useMarkNotificationSeen,
-  useSubmitBusinessReview,
 } from '@/app/(clients)/misc/api';
 import {
-  ReviewPromptModal,
-  type ReviewPromptSubmissionPayload,
-} from '@/components/ui/ReviewPromptModal';
+  useReplyToReview,
+  fetchBusinessReviewThread,
+} from '@/app/(business)/misc/api/reviews';
+import { ReviewReplyPromptModal } from '@/components/ui/ReviewReplyPromptModal';
 import {
-  useReviewPromptQueue,
-  type ReviewPromptEntry,
-} from '@/hooks/notifications/useReviewPromptQueue';
+  useReviewReplyPromptQueue,
+  type ReviewReplyPromptEntry,
+} from '@/hooks/notifications/useReviewReplyPromptQueue';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { toast } from 'sonner';
 import { useNotificationsHook } from '@/components/providers/NotificationProvider';
 
 interface BusinessNotificationsContextValue {
-  reviewPrompts: ReviewPromptEntry[];
+  reviewReplyPrompts: ReviewReplyPromptEntry[];
   dismissReviewPrompt: (key: string) => void;
 }
 
@@ -57,6 +57,8 @@ export function BusinessNotificationsProvider({
   const isAuthenticated = status === 'authenticated';
   const { currentBusiness } = useBusinessContext();
   const businessId = currentBusiness?.id;
+  const businessName = currentBusiness?.name ?? 'your business';
+  const reviewPromptBusinessId: string | number = businessId ?? '';
   const { notifications: socketNotifications } = useNotificationsHook();
   const processedSocketPromptKeysRef = useRef(new Set<string>());
 
@@ -72,7 +74,7 @@ export function BusinessNotificationsProvider({
   );
 
   const markNotificationSeenMutation = useMarkNotificationSeen();
-  const submitReviewMutation = useSubmitBusinessReview();
+  const replyToReviewMutation = useReplyToReview();
 
   const markNotificationSeen = useCallback(
     async (notificationId: number | string) => {
@@ -87,12 +89,14 @@ export function BusinessNotificationsProvider({
     [markNotificationSeenMutation]
   );
 
-  const { reviewPrompts, dismissPrompt } = useReviewPromptQueue({
-    notifications: notificationsData?.data ?? [],
-    enabled: isAuthenticated && businessId !== undefined,
-    markNotificationSeen,
-    refetchNotifications,
-  });
+  const { reviewReplyPrompts, dismissPrompt, upsertPrompt } =
+    useReviewReplyPromptQueue({
+      notifications: notificationsData?.data ?? [],
+      businessId: reviewPromptBusinessId,
+      enabled: isAuthenticated && businessId !== undefined,
+      markNotificationSeen,
+      refetchNotifications,
+    });
 
   useEffect(() => {
     if (
@@ -105,7 +109,7 @@ export function BusinessNotificationsProvider({
 
     let shouldRefetch = false;
     for (const notification of socketNotifications) {
-      if (notification.type !== 'review_prompt') {
+      if (notification.type !== 'review_received') {
         continue;
       }
 
@@ -135,10 +139,10 @@ export function BusinessNotificationsProvider({
 
   const contextValue = useMemo(
     () => ({
-      reviewPrompts,
+      reviewReplyPrompts,
       dismissReviewPrompt: dismissPrompt,
     }),
-    [reviewPrompts, dismissPrompt]
+    [reviewReplyPrompts, dismissPrompt]
   );
 
   const handlePromptClose = useCallback(
@@ -150,44 +154,56 @@ export function BusinessNotificationsProvider({
 
   const handlePromptSubmit = useCallback(
     async (
-      prompt: ReviewPromptEntry,
-      payload: ReviewPromptSubmissionPayload
+      prompt: ReviewReplyPromptEntry,
+      payload: { content: string; parent_reply_id?: number }
     ) => {
       try {
-        await submitReviewMutation.mutateAsync({
+        await replyToReviewMutation.mutateAsync({
           business_id: prompt.businessId,
-          ...payload,
+          review_id: prompt.reviewId,
+          content: payload.content,
+          ...(payload.parent_reply_id !== undefined
+            ? { parent_reply_id: payload.parent_reply_id }
+            : {}),
         });
-        toast.success('Thanks for sharing your review!');
-        dismissPrompt(prompt.key);
+        toast.success('Reply sent');
+
+        try {
+          const updatedThread = await fetchBusinessReviewThread(
+            prompt.businessId,
+            prompt.reviewId
+          );
+          if (updatedThread) {
+            upsertPrompt({ ...prompt, review: updatedThread });
+          }
+        } catch (threadError) {
+          console.error('Failed to refresh review thread', threadError);
+        }
       } catch (error) {
         const message =
-          error instanceof Error
-            ? error.message
-            : 'Failed to submit review';
+          error instanceof Error ? error.message : 'Failed to send reply';
         throw new Error(message);
       }
     },
-    [dismissPrompt, submitReviewMutation]
+    [replyToReviewMutation, upsertPrompt]
   );
 
   return (
     <BusinessNotificationsContext.Provider value={contextValue}>
       {children}
-      {reviewPrompts.map(prompt => (
-        <ReviewPromptModal
-          key={prompt.key}
-          isOpen
-          businessName={prompt.businessName}
-          businessId={prompt.businessId}
-          businessLogo={prompt.businessLogo ?? ''}
-          services={prompt.services ?? []}
-          promptMessage={prompt.message ?? ''}
-          onClose={() => handlePromptClose(prompt.key)}
-          onSubmit={payload => handlePromptSubmit(prompt, payload)}
-          notificationId={prompt.notificationId}
-        />
-      ))}
+      {reviewReplyPrompts.map(prompt =>
+        prompt.review ? (
+          <ReviewReplyPromptModal
+            key={prompt.key}
+            isOpen
+            businessName={businessName}
+            review={prompt.review}
+            onClose={() => handlePromptClose(prompt.key)}
+            onSubmit={payload => handlePromptSubmit(prompt, payload)}
+            isSubmitting={replyToReviewMutation.isPending}
+          />
+        ) : null
+      )}
     </BusinessNotificationsContext.Provider>
   );
 }
