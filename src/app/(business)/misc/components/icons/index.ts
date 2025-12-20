@@ -11,6 +11,8 @@ export { default as PromotionsIcon } from './Promotions';
 export { default as PromotionsSelectedIcon } from './PromotionsSelected';
 export { default as ReviewsIcon } from './Reviews';
 export { default as ReviewsSelectedIcon } from './ReviewsSelected';
+export { default as RatingStars } from './RatingStars';
+export { default as RatingStarsSquare } from './RatingStarsSquare';
 export { default as SettingsIcon } from './Settings';
 export { default as SettingsSelectedIcon } from './SettingsSelected';
 export { default as SolidEyeIcon } from './SolidEye';

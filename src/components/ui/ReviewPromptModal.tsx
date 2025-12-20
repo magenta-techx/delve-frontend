@@ -273,7 +273,7 @@ export function ReviewPromptModal({
           <div className='mb-6 flex flex-col items-center gap-2'>
             <div className='flex items-center justify-center gap-4'>
               {EMOJI_RATINGS.map(({ emoji, value, label }) => (
-                <Button
+                <button
                   key={value}
                   disabled={
                     isSubmitting ||
@@ -287,7 +287,7 @@ export function ReviewPromptModal({
                   type='button'
                 >
                   {emoji}
-                </Button>
+                </button>
               ))}
             </div>
           </div>
@@ -363,10 +363,7 @@ export function ReviewPromptModal({
             onClick={handleSubmit}
             disabled={selectedRating === null || isSubmitting}
             className={cn(
-              'w-full rounded-xl py-6 text-base font-medium transition-colors',
-              selectedRating === null
-                ? 'cursor-not-allowed bg-gray-200 text-gray-400'
-                : 'bg-primary-600 hover:bg-primary-700 text-white'
+              'w-full rounded-xl py-6 text-base font-medium transition-colors'
             )}
           >
             {isSubmitting ? 'Submitting...' : 'Submit'}

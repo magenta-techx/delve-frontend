@@ -399,9 +399,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className='w-full py-10 sm:mb-10 sm:py-0 md:mb-12'>
         <ThisWeeksTrends />
-      </div>
+  
 
       <div className='w-full pt-10' id='faqs'>
         <CLientsLandingFAQs />
