@@ -82,7 +82,6 @@ export function UserNotificationsProvider({
   const { reviewPrompts, dismissPrompt } = useReviewPromptQueue({
     notifications: notificationsData?.data ?? [],
     enabled: isAuthenticated,
-    markNotificationSeen,
     refetchNotifications,
   });
 
@@ -118,10 +117,11 @@ export function UserNotificationsProvider({
   );
 
   const handlePromptClose = useCallback(
-    (key: string) => {
+    async (key: string, notificationId: number | string) => {
       dismissPrompt(key);
+      await markNotificationSeen(notificationId);
     },
-    [dismissPrompt]
+    [dismissPrompt, markNotificationSeen]
   );
 
   const handlePromptSubmit = useCallback(
@@ -136,13 +136,14 @@ export function UserNotificationsProvider({
         });
         toast.success('Thanks for sharing your review!');
         dismissPrompt(prompt.key);
+        await markNotificationSeen(prompt.notificationId);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Failed to submit review';
         throw new Error(message);
       }
     },
-    [dismissPrompt, submitReviewMutation]
+    [dismissPrompt, submitReviewMutation, markNotificationSeen]
   );
 
   return (
@@ -157,7 +158,7 @@ export function UserNotificationsProvider({
           businessLogo={prompt.businessLogo ?? ''}
           services={prompt.services ?? []}
           promptMessage={prompt.message ?? ''}
-          onClose={() => handlePromptClose(prompt.key)}
+          onClose={() => handlePromptClose(prompt.key, prompt.notificationId)}
           onSubmit={payload => handlePromptSubmit(prompt, payload)}
           notificationId={prompt.notificationId}
         />

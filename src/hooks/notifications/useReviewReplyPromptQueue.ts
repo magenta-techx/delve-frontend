@@ -18,7 +18,6 @@ interface UseReviewReplyPromptQueueArgs {
   notifications?: NotificationItem[];
   businessId?: number | string;
   enabled?: boolean;
-  markNotificationSeen?: (notificationId: number | string) => Promise<void>;
   refetchNotifications?: () => void;
 }
 
@@ -32,7 +31,6 @@ export function useReviewReplyPromptQueue({
   notifications,
   businessId,
   enabled = true,
-  markNotificationSeen,
   refetchNotifications,
 }: UseReviewReplyPromptQueueArgs): UseReviewReplyPromptQueueResult {
   const [reviewReplyPrompts, setReviewReplyPrompts] = useState<ReviewReplyPromptEntry[]>([]);
@@ -116,14 +114,6 @@ export function useReviewReplyPromptQueue({
             message: notification.message,
             review,
           });
-
-          if (notification.id !== undefined && markNotificationSeen) {
-            try {
-              await markNotificationSeen(notification.id);
-            } catch (error) {
-              console.error('Failed to mark review notification as seen', error);
-            }
-          }
         } catch (error) {
           console.error('Failed to load review thread for notification', error);
         }
@@ -140,7 +130,7 @@ export function useReviewReplyPromptQueue({
     return () => {
       cancelled = true;
     };
-  }, [notifications, enabled, businessId, markNotificationSeen, refetchNotifications]);
+  }, [notifications, enabled, businessId, refetchNotifications]);
 
   return useMemo(
     () => ({
