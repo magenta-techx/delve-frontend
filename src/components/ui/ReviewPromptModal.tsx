@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/Select';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useMarkNotificationSeen } from '@/app/(clients)/misc/api';
 
 const CUSTOM_SERVICE_OPTION = '__custom__';
 
@@ -61,7 +62,7 @@ export function ReviewPromptModal({
   services,
   businessId,
   promptMessage,
-  notificationId
+  notificationId,
 }: ReviewPromptModalProps) {
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [selectedServiceValue, setSelectedServiceValue] = useState('');
@@ -69,6 +70,11 @@ export function ReviewPromptModal({
   const [content, setContent] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { mutate } = useMarkNotificationSeen();
+  useEffect(() => {
+    mutate({ notification_id: notificationId });
+  }, [notificationId, mutate]);
 
   const hasServices = useMemo(
     () => Array.isArray(services) && services.length > 0,
