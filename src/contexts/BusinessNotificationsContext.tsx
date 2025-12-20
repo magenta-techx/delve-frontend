@@ -94,7 +94,6 @@ export function BusinessNotificationsProvider({
       notifications: notificationsData?.data ?? [],
       businessId: reviewPromptBusinessId,
       enabled: isAuthenticated && businessId !== undefined,
-      markNotificationSeen,
       refetchNotifications,
     });
 
@@ -146,10 +145,11 @@ export function BusinessNotificationsProvider({
   );
 
   const handlePromptClose = useCallback(
-    (key: string) => {
+    async (key: string, notificationId: number | string) => {
       dismissPrompt(key);
+      await markNotificationSeen(notificationId);
     },
-    [dismissPrompt]
+    [dismissPrompt, markNotificationSeen]
   );
 
   const handlePromptSubmit = useCallback(
@@ -198,7 +198,7 @@ export function BusinessNotificationsProvider({
             isOpen
             businessName={businessName}
             review={prompt.review}
-            onClose={() => handlePromptClose(prompt.key)}
+            onClose={() => handlePromptClose(prompt.key, prompt.notificationId)}
             onSubmit={payload => handlePromptSubmit(prompt, payload)}
             isSubmitting={replyToReviewMutation.isPending}
           />

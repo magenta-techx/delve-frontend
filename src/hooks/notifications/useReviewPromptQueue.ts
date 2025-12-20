@@ -19,7 +19,6 @@ export interface ReviewPromptEntry {
 interface UseReviewPromptQueueArgs {
   notifications?: NotificationItem[];
   enabled?: boolean;
-  markNotificationSeen?: (notificationId: number | string) => Promise<void>;
   refetchNotifications?: () => void;
 }
 
@@ -77,7 +76,6 @@ async function fetchBusinessSummary(businessId: number | string): Promise<{
 export function useReviewPromptQueue({
   notifications,
   enabled = true,
-  markNotificationSeen,
   refetchNotifications,
 }: UseReviewPromptQueueArgs): UseReviewPromptQueueResult {
   const [reviewPrompts, setReviewPrompts] = useState<ReviewPromptEntry[]>([]);
@@ -148,17 +146,6 @@ export function useReviewPromptQueue({
             message: notification.message,
             services,
           });
-
-          if (notification.id !== undefined && markNotificationSeen) {
-            try {
-              await markNotificationSeen(notification.id);
-            } catch (error) {
-              console.error(
-                'Failed to mark review prompt notification as seen',
-                error
-              );
-            }
-          }
         }
       }
 
@@ -173,7 +160,7 @@ export function useReviewPromptQueue({
     return () => {
       isCancelled = true;
     };
-  }, [notifications, enabled, markNotificationSeen, refetchNotifications]);
+  }, [notifications, enabled, refetchNotifications]);
 
   return useMemo(
     () => ({
