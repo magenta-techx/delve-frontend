@@ -9,7 +9,8 @@ export async function GET(
   // Supports optional review_id query param; just pass through
   const { searchParams } = new URL(req.url);
   const review_id = searchParams.get('review_id') ?? undefined;
-  return forward(req, 'GET', `/businesses/${params.business_id}/reviews?review_id=${review_id}`, {
+  const path = `/businesses/${params.business_id}/reviews/`;
+  return forward(req, 'GET', path, {
     query: { review_id },
   });
 }

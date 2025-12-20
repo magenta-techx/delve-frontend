@@ -60,6 +60,45 @@ export interface BusinessService {
   uploaded_at?: string;
 }
 
+export interface ReviewReplyNode {
+  id: number;
+  user: {
+    id: number;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    profile_image?: string;
+  };
+  content: string;
+  added_at: string;
+  children: ReviewReplyNode[];
+}
+
+export interface BusinessReviewThread {
+  reviewer: {
+    id: number;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    is_brand_owner?: boolean;
+    number_of_owned_businesses?: number;
+    is_active?: boolean;
+    current_plan?: string;
+    is_premium_plan_active?: boolean;
+    date_joined?: string;
+    profile_image?: string;
+  };
+  service?: BusinessService | null;
+  service_text?: string | null;
+  rating: number;
+  content: string;
+  approved_by_business: boolean;
+  added_at: string;
+  approved_at?: string | null;
+  replies: ReviewReplyNode[];
+  id: number;
+}
+
 export interface BusinessOwner {
   id: number;
   email: string;
