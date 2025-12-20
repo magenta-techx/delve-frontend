@@ -57,13 +57,11 @@ export function UserNotificationsProvider({
   const { notifications: socketNotifications } = useNotificationsHook();
   const processedSocketPromptKeysRef = useRef(new Set<string>());
 
-  const {
-    data: notificationsData,
-    refetch: refetchNotifications,
-  } = useNotifications(
-    { notification_for: 'user' },
-    { enabled: isAuthenticated }
-  );
+  const { data: notificationsData, refetch: refetchNotifications } =
+    useNotifications(
+      { notification_for: 'user' },
+      { enabled: isAuthenticated }
+    );
 
   const markNotificationSeenMutation = useMarkNotificationSeen();
   const submitReviewMutation = useSubmitBusinessReview();
@@ -109,11 +107,7 @@ export function UserNotificationsProvider({
     if (shouldRefetch) {
       void refetchNotifications();
     }
-  }, [
-    isAuthenticated,
-    socketNotifications,
-    refetchNotifications,
-  ]);
+  }, [isAuthenticated, socketNotifications, refetchNotifications]);
 
   const contextValue = useMemo(
     () => ({
@@ -144,9 +138,7 @@ export function UserNotificationsProvider({
         dismissPrompt(prompt.key);
       } catch (error) {
         const message =
-          error instanceof Error
-            ? error.message
-            : 'Failed to submit review';
+          error instanceof Error ? error.message : 'Failed to submit review';
         throw new Error(message);
       }
     },
@@ -167,6 +159,7 @@ export function UserNotificationsProvider({
           promptMessage={prompt.message ?? ''}
           onClose={() => handlePromptClose(prompt.key)}
           onSubmit={payload => handlePromptSubmit(prompt, payload)}
+          notificationId={prompt.notificationId}
         />
       ))}
     </UserNotificationsContext.Provider>

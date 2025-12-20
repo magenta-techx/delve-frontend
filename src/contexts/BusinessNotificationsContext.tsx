@@ -185,6 +185,7 @@ export function BusinessNotificationsProvider({
           promptMessage={prompt.message ?? ''}
           onClose={() => handlePromptClose(prompt.key)}
           onSubmit={payload => handlePromptSubmit(prompt, payload)}
+          notificationId={prompt.notificationId}
         />
       ))}
     </BusinessNotificationsContext.Provider>

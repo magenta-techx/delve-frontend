@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/Select';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useMarkNotificationSeen } from '@/app/(clients)/misc/api';
 
 const CUSTOM_SERVICE_OPTION = '__custom__';
 
@@ -41,6 +42,7 @@ interface ReviewPromptModalProps {
   businessId?: number | string;
   services?: BusinessService[];
   promptMessage?: string;
+  notificationId: string | number;
 }
 
 const EMOJI_RATINGS = [
@@ -60,6 +62,7 @@ export function ReviewPromptModal({
   services,
   businessId,
   promptMessage,
+  notificationId,
 }: ReviewPromptModalProps) {
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [selectedServiceValue, setSelectedServiceValue] = useState('');
@@ -67,6 +70,11 @@ export function ReviewPromptModal({
   const [content, setContent] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { mutate } = useMarkNotificationSeen();
+  useEffect(() => {
+    mutate({ notification_id: notificationId });
+  }, [notificationId, mutate]);
 
   const hasServices = useMemo(
     () => Array.isArray(services) && services.length > 0,
@@ -132,7 +140,10 @@ export function ReviewPromptModal({
     };
 
     if (hasServices) {
-      if (selectedServiceValue && selectedServiceValue !== CUSTOM_SERVICE_OPTION) {
+      if (
+        selectedServiceValue &&
+        selectedServiceValue !== CUSTOM_SERVICE_OPTION
+      ) {
         if (selectedServiceValue.startsWith('id:')) {
           const numericId = Number(selectedServiceValue.slice(3));
           if (!Number.isNaN(numericId)) {
@@ -144,7 +155,8 @@ export function ReviewPromptModal({
             return;
           }
         } else if (selectedServiceValue.startsWith('text:')) {
-          const derived = customService.trim() || selectedServiceValue.slice(5).trim();
+          const derived =
+            customService.trim() || selectedServiceValue.slice(5).trim();
           if (!derived) {
             setFormError('Tell us which service you received.');
             return;
@@ -184,10 +196,11 @@ export function ReviewPromptModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={open => !open && handleClose()}>
-      <DialogContent className='max-w-lg overflow-hidden !rounded-2xl sm:rounded-3xl p-0'
-      style={{
-        borderRadius: 20,
-      }}
+      <DialogContent
+        className='max-w-lg overflow-hidden !rounded-2xl p-0 sm:rounded-3xl'
+        style={{
+          borderRadius: 20,
+        }}
       >
         <button
           onClick={handleClose}
@@ -199,7 +212,7 @@ export function ReviewPromptModal({
 
         <div className='px-8 py-10 text-center'>
           <DialogHeader className='mb-2'>
-            <DialogTitle className='text-xl lg:text-2xl text-[#0F0F0F] text-center font-medium'>
+            <DialogTitle className='text-center text-xl font-medium text-[#0F0F0F] lg:text-2xl'>
               How was your experience with
             </DialogTitle>
           </DialogHeader>
@@ -218,7 +231,7 @@ export function ReviewPromptModal({
                   className='h-8 w-8 rounded-full object-cover'
                 />
               ) : (
-                <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary-100'>
+                <div className='bg-primary-100 flex h-8 w-8 items-center justify-center rounded-full'>
                   <span className='text-xs font-bold text-[#5F2EEA]'>
                     {businessName.charAt(0).toUpperCase()}
                   </span>
@@ -239,7 +252,7 @@ export function ReviewPromptModal({
                   className='h-8 w-8 rounded-full object-cover'
                 />
               ) : (
-                <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary-100'>
+                <div className='bg-primary-100 flex h-8 w-8 items-center justify-center rounded-full'>
                   <span className='text-xs font-bold text-[#5F2EEA]'>
                     {businessName.charAt(0).toUpperCase()}
                   </span>
@@ -251,30 +264,30 @@ export function ReviewPromptModal({
             </div>
           )}
 
-          <p className='mt-5 mb-4 text-[0.825rem] text-[#9098A3]'>
-            {promptMessage?.trim()?.length ? promptMessage : "We'd love to know!"}
+          <p className='mb-4 mt-5 text-[0.825rem] text-[#9098A3]'>
+            {promptMessage?.trim()?.length
+              ? promptMessage
+              : "We'd love to know!"}
           </p>
 
           <div className='mb-6 flex flex-col items-center gap-2'>
             <div className='flex items-center justify-center gap-4'>
               {EMOJI_RATINGS.map(({ emoji, value, label }) => (
-                <button
+                <Button
                   key={value}
+                  disabled={
+                    isSubmitting ||
+                    (selectedRating !== null && selectedRating !== value)
+                  }
                   onClick={() => setSelectedRating(value)}
                   className={cn(
-                    'text-4xl transition-transform hover:scale-110 focus:outline-none',
-                    selectedRating === value
-                      ? 'scale-125 drop-shadow-lg'
-                      : 'grayscale-0',
-                    selectedRating !== null && selectedRating !== value
-                      ? 'opacity-50 grayscale'
-                      : ''
+                    'text-4xl transition-transform hover:scale-110 focus:outline-none'
                   )}
                   title={label}
                   type='button'
                 >
                   {emoji}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -282,10 +295,18 @@ export function ReviewPromptModal({
           <div className='mb-6 space-y-4 text-left'>
             {hasServices && (
               <div className='space-y-2'>
-                <label className='text-sm font-medium text-gray-700'>Service experienced</label>
-                <Select value={selectedServiceValue} onValueChange={handleServiceSelect}>
+                <label className='text-sm font-medium text-gray-700'>
+                  Service experienced
+                </label>
+                <Select
+                  value={selectedServiceValue}
+                  onValueChange={handleServiceSelect}
+                >
                   <SelectTrigger className='w-full'>
-                    <SelectValue placeholder='Select the service you used' className='text-black placeholder:text-[#9098A3]' />
+                    <SelectValue
+                      placeholder='Select the service you used'
+                      className='text-black placeholder:text-[#9098A3]'
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {services?.map(service => (
@@ -300,7 +321,9 @@ export function ReviewPromptModal({
                         {service.title}
                       </SelectItem>
                     ))}
-                    <SelectItem value={CUSTOM_SERVICE_OPTION}>Something else</SelectItem>
+                    <SelectItem value={CUSTOM_SERVICE_OPTION}>
+                      Something else
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -320,7 +343,9 @@ export function ReviewPromptModal({
             )}
 
             <div className='space-y-2'>
-              <label className='text-sm font-medium text-gray-700'>Share a quick review</label>
+              <label className='text-sm font-medium text-gray-700'>
+                Share a quick review
+              </label>
               <Textarea
                 value={content}
                 onChange={event => setContent(event.target.value)}
@@ -341,7 +366,7 @@ export function ReviewPromptModal({
               'w-full rounded-xl py-6 text-base font-medium transition-colors',
               selectedRating === null
                 ? 'cursor-not-allowed bg-gray-200 text-gray-400'
-                : 'bg-primary-600 text-white hover:bg-primary-700'
+                : 'bg-primary-600 hover:bg-primary-700 text-white'
             )}
           >
             {isSubmitting ? 'Submitting...' : 'Submit'}

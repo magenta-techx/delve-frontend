@@ -20,7 +20,7 @@ export default function UserChatsPage({
   const current_chat_id = (params?.['chat_id'] as string) || null;
 
   return (
-    <div className='flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] pb-8 pt-20 lg:px-6 xl:px-8'>
+    <div className='flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] pb-6 pt-20 lg:pt-24 lg:px-6 xl:px-8'>
       <section
         className={cn(
           'flex w-full flex-col overflow-y-scroll rounded-2xl border border-[#ECE9FE] bg-background lg:w-80'
