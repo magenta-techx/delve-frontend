@@ -394,7 +394,7 @@ export default function HomePage() {
             imageUrl={'/landingpage/stories-2.jpg'}
             header='Skipping Sunscreen'
             containerClassStyle=' sm:flex hidden h-[740px]  lg:basis-[40%]'
-            imageClassStyle='  h-[440px] '
+            imageClassStyle='  h-[440px] w-full'
           />
         </div>
       </div>
