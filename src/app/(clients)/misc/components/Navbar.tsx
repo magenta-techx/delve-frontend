@@ -282,7 +282,7 @@ const LandingPageNavbar = () => {
                                         fashion, food, tech, and more
                                       </p>
                                       <Link
-                                        href='/businesses/search'
+                                        href='/businesses/explore'
                                         className='text-primary-600 flex items-center gap-1 text-sm hover:underline'
                                       >
                                         Explore all category →
