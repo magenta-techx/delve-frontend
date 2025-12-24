@@ -309,16 +309,9 @@ export default function PromotionsPage() {
                           alt='Advert Campaign Thumbnail'
                           className='object-cover'
                           fill
+                          objectFit='cover'
                         />
-                        <Button
-                          type='button'
-                          variant='light'
-                          className='absolute right-4 top-4 z-10 rounded-full border border-[#ECE9FE] bg-white/90 px-4 py-2 text-xs font-semibold text-[#551FB9] shadow-sm transition-colors hover:bg-white disabled:cursor-wait'
-                          onClick={() => advertImageInputRef.current?.click()}
-                          disabled={isUpdatingAdvertImage}
-                        >
-                          {isUpdatingAdvertImage ? 'Updating…' : 'Change Image'}
-                        </Button>
+                       
                       </div>
                     ) : (
                       <div>
@@ -356,7 +349,7 @@ export default function PromotionsPage() {
                           ]
                         }
                         alt='Promotion Campaign Thumbnail'
-                        className='rounded-xl text-[0.6rem]'
+                        className='rounded-xl text-[0.6rem] object-cover'
                         fill
                         objectFit='cover'
                       />
