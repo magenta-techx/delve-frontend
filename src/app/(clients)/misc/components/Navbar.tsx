@@ -28,6 +28,7 @@ import {
   BusinessCategoryIcons,
   BusinessCategoriesIconsType as CategoryIconType,
 } from '@/assets/icons/business/BusinessCategoriesIcon';
+import { NotificationsDropdownContent } from './NotificationsDropdown';
 
 const LandingPageNavbar = () => {
   const { data: session, status } = useSession();
@@ -227,6 +228,42 @@ const LandingPageNavbar = () => {
                           const isActive =
                             pathname === link.href ||
                             pathname.startsWith(link.href + '/');
+
+                          // Notifications should be a dropdown
+                          if (link.name === 'Notifications') {
+                            return (
+                              <li key={link.name}>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <button
+                                      className={cn(
+                                        'flex size-[2.75rem] items-center justify-center rounded-full',
+                                        isActive
+                                          ? 'bg-[#ECE9FE]'
+                                          : pageHasBlackBg
+                                            ? 'bg-[#FFFFFF4D]'
+                                            : 'bg-[#F8FAFC]',
+                                        isActive
+                                          ? 'text-primary-600'
+                                          : pageHasBlackBg
+                                            ? 'hover:text-primary-400 text-white'
+                                            : 'hover:text-primary-600 text-black'
+                                      )}
+                                    >
+                                      <link.icon className='' />
+                                      <span className='sr-only'>{link.name}</span>
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent
+                                    className='w-[400px] max-h-[500px] overflow-y-hidden p-0'
+                                    align='end'
+                                  >
+                                    <NotificationsDropdownContent />
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </li>
+                            );
+                          }
 
                           return (
                             <li key={link.name} className=''>

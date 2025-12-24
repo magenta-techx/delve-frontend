@@ -298,6 +298,7 @@ export interface CollaborationSummary {
   name: string;
   description: string;
   number_of_members: number;
+  owner_id: number;
 }
 
 // Events

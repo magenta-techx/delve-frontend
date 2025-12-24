@@ -13,6 +13,7 @@ export interface UserChatItem {
   last_message: Lastmessage;
 }
 
+
 interface Lastmessage {
   content: string;
   is_image_message: boolean;

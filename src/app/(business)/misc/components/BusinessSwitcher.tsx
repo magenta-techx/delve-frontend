@@ -34,7 +34,7 @@ export const BusinessSwitcher = () => {
         className='flex w-full items-center gap-3 rounded-xl xl:rounded-2xl bg-[#1A1A1A] px-3 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3'
       >
         {/* Business Logo */}
-        <div className='size-7 md:size-8 xl:size-10 relative flex-shrink-0 overflow-hidden rounded-full bg-white ring-white ring-2 ring-offset-1 '>
+        <div className='size-7 md:size-8 xl:size-12 relative flex-shrink-0 overflow-hidden rounded-full bg-white ring-white ring-2 ring-offset-1 '>
           {currentBusiness.logo ? (
             <Image
               src={currentBusiness.logo}

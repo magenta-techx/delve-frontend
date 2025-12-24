@@ -157,7 +157,7 @@ export default function CollabCard({ collab }: CollabCardProps) {
               </span>
 
               <LinkButton
-                href={`/businesses/saved/collaboration/${collab.id}`}
+                href={collab.owner_id == userId ? `/businesses/saved/collaboration/${collab.id}/edit` : `/businesses/saved/collaboration/${collab.id}`}
                 variant='light'
                 className='text-[#551FB9]'
                 size='md'

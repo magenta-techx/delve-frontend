@@ -1,15 +1,9 @@
 import type { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]/route';
 
 import { Inter, Karma } from 'next/font/google';
 import 'swiper/css';
 
 import '@radix-ui/themes/styles.css';
-
-import SessionProviderWrapper from '@/components/providers/SessionProviderWrapper';
-import QueryProvider from '@/components/providers/QueryProvider';
-import { NotificationProvider } from '@/components/providers/NotificationProvider';
 
 import 'swiper/css';
 import '@radix-ui/themes/styles.css';
@@ -19,9 +13,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import '@/styles/globals.css';
 import { cn } from '@/lib/utils';
-import { Toaster } from '@/components/ui/sonner';
-import { SavedBusinessesProvider } from '@/contexts/SavedBusinessesContext';
-import { UserProvider } from '@/contexts/UserContext';
+import AllProvider from '@/contexts';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -45,11 +37,11 @@ export const metadata: Metadata = {
   keywords: ['Next.js', 'TypeScript', 'React', 'Tailwind CSS', 'App Router'],
   // authors: [{ name: 'Your Name' }],
   creator: 'Oni Khalid',
-  metadataBase: new URL('https://your-domain.com'),
+  metadataBase: new URL('https://delve.ng'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://your-domain.com',
+    url: 'https://delve.ng',
     title: 'Delve.ng',
     description:
       'Discover businesses and services with Delve.ng - your gateway to trusted local enterprises.',
@@ -82,7 +74,6 @@ interface RootLayoutProps {
 export default async function RootLayout({
   children,
 }: RootLayoutProps): Promise<JSX.Element> {
-  const session = await getServerSession(authOptions);
   return (
     <html lang='en'>
       <head>
@@ -99,18 +90,7 @@ export default async function RootLayout({
           karma.variable
         )}
       >
-        <SessionProviderWrapper session={session}>
-          <QueryProvider>
-            <UserProvider>
-              <SavedBusinessesProvider>
-                <NotificationProvider>
-                  {children}
-                  <Toaster />
-                </NotificationProvider>
-              </SavedBusinessesProvider>
-            </UserProvider>
-          </QueryProvider>
-        </SessionProviderWrapper>
+        <AllProvider>{children}</AllProvider>
       </body>
     </html>
   );

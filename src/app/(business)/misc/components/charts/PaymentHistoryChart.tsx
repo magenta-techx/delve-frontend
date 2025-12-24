@@ -103,9 +103,6 @@ export const CustomPaymentHistoryChart: React.FC<
   useEffect(() => {
     const handleScroll = () => {
       const c = containerRef.current;
-      console.log(c?.scrollLeft, 'SCROLL LEFT');
-      console.log(c?.scrollWidth, 'SCROLL RIGHT');
-      console.log(c?.clientWidth, 'CONTAINER WIDTH');
       if (!c) return;
       setShowLeftFade(c.scrollLeft > 0);
       setShowRightFade(c.scrollWidth > c.clientWidth + c.scrollLeft + 1);
@@ -129,6 +126,24 @@ export const CustomPaymentHistoryChart: React.FC<
     [paymentHistory, selectedPeriod]
   );
   const maxAmount = Math.max(...chartData.map(d => d.amount), 1);
+
+  // Auto-scroll to current day when "this_month" is selected
+  useEffect(() => {
+    if (selectedPeriod === 'this_month' && containerRef.current) {
+      const currentDay = new Date().getDate();
+      const barWidth = 32; // width of each bar
+      const gap = 8; // gap between bars (gap-2 = 0.5rem = 8px)
+      const scrollPosition = (currentDay - 1) * (barWidth + gap) - (containerRef.current.clientWidth / 2) + (barWidth / 2);
+      
+      // Use setTimeout to ensure DOM has rendered
+      setTimeout(() => {
+        containerRef.current?.scrollTo({
+          left: Math.max(0, scrollPosition),
+          behavior: 'smooth',
+        });
+      }, 100);
+    }
+  }, [selectedPeriod, chartData]);
 
   return (
     <div className='overflow-hidden'>
@@ -188,32 +203,34 @@ export const CustomPaymentHistoryChart: React.FC<
             </div>
             <div className='absolute right-0 top-0 h-full w-full bg-gradient-to-l from-white/60 to-transparent' />
           </div>
-          <div
-            ref={containerRef}
-            style={{
-              WebkitOverflowScrolling: 'touch',
-              scrollbarWidth: 'none',
-            }}
-            className='relative flex h-full flex-1 items-end gap-2 overflow-x-auto overflow-y-hidden pr-2 [scrollbar-width:none_!important]'
-          >
-            {/* Y Axis */}
-            <div className='absolute left-0 top-0 flex h-[300px] flex-col justify-between text-xs font-medium text-[#697586]'>
+          <div className='flex'>
+            {/* Sticky Y Axis */}
+            <div className='sticky left-0 z-10 flex h-[320px] w-12 flex-shrink-0 flex-col justify-between bg-white pr-2 text-xs font-medium text-[#697586]'>
               {[1.2, 1, 0.75, 0.5, 0.25, 0].map((v, i) => (
-                <span key={i} style={{ height: 1 }}>
+                <span key={i} className='whitespace-nowrap'>
                   ₦{formatAmount(Math.round(maxAmount * v))}
                 </span>
               ))}
             </div>
-            {/* Bars */}
+            {/* Scrollable Bars Container */}
             <div
-              className={cn(
-                'ml-10 flex min-w-[calc(100%_-_2.5rem)] flex-row items-end gap-2 lg:gap-4',
-                (selectedPeriod === 'last_6_months' ||
-                  selectedPeriod === 'last_12_months') &&
-                  'lg:justify-between'
-              )}
-              style={{ height: 320 }}
+              ref={containerRef}
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+              }}
+              className='relative flex h-full flex-1 items-end gap-2 overflow-x-auto overflow-y-hidden pr-2 [scrollbar-width:none_!important]'
             >
+              {/* Bars */}
+              <div
+                className={cn(
+                  'flex min-w-max flex-row items-end gap-2 lg:gap-4',
+                  (selectedPeriod === 'last_6_months' ||
+                    selectedPeriod === 'last_12_months') &&
+                    'lg:justify-between lg:min-w-full'
+                )}
+                style={{ height: 320 }}
+              >
               {chartData.map((d, idx) => {
                 // Calculate bar height based on tick values
                 // The chart height is 320px, and ticks go from 1.2 to 0
@@ -290,6 +307,7 @@ export const CustomPaymentHistoryChart: React.FC<
                   </div>
                 );
               })}
+              </div>
             </div>
           </div>
           {tooltip && (
