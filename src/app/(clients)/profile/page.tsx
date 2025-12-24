@@ -201,7 +201,7 @@ const ProfilePage = () => {
 
   return (
     <div className='min-h-screen w-screen overflow-hidden bg-[#F8F7FB] sm:px-6 lg:px-12'>
-      <section className='container mx-auto max-w-7xl p-4 pt-16 md:pt-20'>
+      <section className='container mx-auto p-4 pt-16 md:pt-20'>
         <header className='flex w-full flex-col gap-2 py-8'>
           <h1 className='flex items-center gap-2 text-xl font-semibold text-[#0F172B]'>
             <svg

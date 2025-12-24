@@ -40,28 +40,32 @@ const CampaignAreaChart: React.FC<CampaignAreaChartProps> = ({
 
       return [
         {
-          date: format(twoDaysBefore, 'dd MMM') || '',
+          date: format(twoDaysBefore, 'dd/MM/yy') || '',
           views: 0,
           clicks: 0,
         },
         {
-          date: format(prevDate, 'dd MMM') || '',
+          date: format(prevDate, 'dd/MM/yy') || '',
           views: 0,
           clicks: 0,
         },
         {
-          date: format(currentDate, 'dd MMM') || '',
+          date: format(currentDate, 'dd/MM/yy') || '',
           views: data[0]?.views ?? 0,
           clicks: data[0]?.clicks ?? 0,
         },
         {
-          date: format(nextDate, 'dd MMM') || '',
+          date: format(nextDate, 'dd/MM/yy') || '',
           views: 0,
           clicks: 0,
         },
       ];
     }
-    return data;
+    return data.map(datapoint => ({
+      date: format(new Date(datapoint.date), 'dd/MM/yy') || '',
+      views: datapoint.views ?? 0,
+      clicks: datapoint.clicks ?? 0,
+    }));
   };
 
   const data = padDataWithZeros(prepaddedData);
@@ -90,16 +94,21 @@ const CampaignAreaChart: React.FC<CampaignAreaChartProps> = ({
             tickLine={false}
             width={40}
             type='number'
+            domain={[0, 'auto']}
           />
           <Tooltip
             formatter={(value: number) => `${value.toLocaleString()} ${metric}`}
-            contentStyle={{ fontSize: '12px', padding: '4px 8px', borderRadius: '10px' }}
+            contentStyle={{
+              fontSize: '12px',
+              padding: '4px 8px',
+              borderRadius: '10px',
+            }}
             itemStyle={{ fontSize: '12px' }}
             labelStyle={{ fontSize: '12px' }}
           />
 
           <Area
-            type='basis'
+            type='monotone'
             // type='basis'
             dataKey={dataKey}
             stroke={color}

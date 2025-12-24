@@ -298,8 +298,8 @@ export default function PromotionsPage() {
                   <>
                     {hasActiveAdvertCampaign ? (
                       <div
-                        className='relative w-full overflow-hidden rounded-2xl bg-[#0F172A]/30'
-                        style={{ aspectRatio: '16 / 9' }}
+                        className='relative  overflow-hidden rounded-2xl bg-[#0F172A]/30 h-full'
+                        // style={{ aspectRatio: '16 / 9' }}
                       >
                         <Image
                           src={
@@ -649,7 +649,7 @@ export default function PromotionsPage() {
                   </p>
                   <p className='mb-3 mt-1 text-xs text-green-600'>
                     <span className='text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
-                      {totalViews.toLocaleString()}
+                      { selectedGraphView == "clicks" ? totalClicks.toLocaleString() : totalViews.toLocaleString()}
                     </span>{' '}
                     This month
                   </p>
