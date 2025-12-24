@@ -24,7 +24,7 @@ import {
   type ReviewPromptEntry,
 } from '@/hooks/notifications/useReviewPromptQueue';
 import { toast } from 'sonner';
-import { useNotificationsHook } from '@/components/providers/NotificationProvider';
+import { useNotificationsHook } from '@/contexts/NotificationProvider';
 
 interface UserNotificationsContextValue {
   reviewPrompts: ReviewPromptEntry[];

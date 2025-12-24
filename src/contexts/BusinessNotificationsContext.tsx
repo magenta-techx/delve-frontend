@@ -25,7 +25,7 @@ import {
 } from '@/hooks/notifications/useReviewReplyPromptQueue';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { toast } from 'sonner';
-import { useNotificationsHook } from '@/components/providers/NotificationProvider';
+import { useNotificationsHook } from '@/contexts/NotificationProvider';
 
 interface BusinessNotificationsContextValue {
   reviewReplyPrompts: ReviewReplyPromptEntry[];
