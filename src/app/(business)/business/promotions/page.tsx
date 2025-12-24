@@ -60,7 +60,7 @@ export default function PromotionsPage() {
     showTabs: true,
   });
   const advertImageInputRef = useRef<HTMLInputElement | null>(null);
-  const { mutate: updateSponsoredAd, isPending: isUpdatingAdvertImage } =
+  const { mutate: updateSponsoredAd, isPending: _isUpdatingAdvertImage } =
     useUpdateSponsoredAd();
   const { currentBusiness, isLoading } = useBusinessContext();
   const businessId = currentBusiness?.id;
