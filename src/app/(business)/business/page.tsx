@@ -28,7 +28,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { useUserContext } from '@/contexts/UserContext';
-import { getInitials } from '@/utils/strings';
 
 const NAV_LINKS = [
   {
