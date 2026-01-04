@@ -158,7 +158,7 @@ export default function DashboardPage(): JSX.Element {
             {/* /////////////          CONVERSATIONS            ///////////////////// */}
             {/* ///////////////////////////////////////////////////////////////////// */}
             <div className='rounded-xl border border-[#F5F3FF] bg-white py-3 lg:col-span-2 lg:py-4'>
-              <header className='mb-4 p-4 pt-0 '>
+              <header className='mb-4 p-4 pt-0'>
                 <h1 className='font-inter text-xl font-medium'>
                   Conversations
                 </h1>
@@ -242,7 +242,9 @@ export default function DashboardPage(): JSX.Element {
           </section>
         </section>
 
-        <Notifications />
+        <aside className='max-xl:hidden'>
+          <Notifications />
+        </aside>
       </div>
     </div>
   );

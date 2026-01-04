@@ -1,16 +1,7 @@
 import type { Metadata } from 'next';
 
-import { Inter, Karma } from 'next/font/google';
-import 'swiper/css';
+import { Inter, Karma, DM_Sans } from 'next/font/google';
 
-import '@radix-ui/themes/styles.css';
-
-import 'swiper/css';
-import '@radix-ui/themes/styles.css';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
 import '@/styles/globals.css';
 import { cn } from '@/lib/utils';
 import AllProvider from '@/contexts';
@@ -25,6 +16,11 @@ const karma = Karma({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-karma',
+});
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-dm',
 });
 
 export const metadata: Metadata = {
@@ -87,7 +83,8 @@ export default async function RootLayout({
         className={cn(
           'min-h-screen bg-background antialiased',
           inter.className,
-          karma.variable
+          karma.variable,
+          dmSans.variable
         )}
       >
         <AllProvider>{children}</AllProvider>

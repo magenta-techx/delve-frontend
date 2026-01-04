@@ -45,7 +45,7 @@ export default function UserChatsPage({
   }, [chatsToShow, chats]);
 
   return (
-    <div className='container mx-auto flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] pb-4 pt-20 lg:!pt-28'>
+    <div className='container mx-auto flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] pb-4 md:pt-20 lg:!pt-28'>
       <section
         className={cn(
           'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:w-80 xl:rounded-3xl'
@@ -66,8 +66,8 @@ export default function UserChatsPage({
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
-                  fill-rule='evenodd'
-                  clip-rule='evenodd'
+                  fillRule='evenodd'
+                  clipRule='evenodd'
                   d='M12.8453 14.3663C11.5006 15.3913 9.82137 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 10.0713 15.2128 11.9587 13.9214 13.3794C13.9479 13.3975 13.9736 13.4175 13.9983 13.4394L18.4983 17.4394C18.8079 17.7146 18.8357 18.1887 18.5606 18.4983C18.2854 18.8079 17.8113 18.8357 17.5017 18.5606L13.0017 14.5606C12.9373 14.5033 12.8851 14.4375 12.8453 14.3663ZM14.5 8C14.5 11.5899 11.5899 14.5 8 14.5C4.41015 14.5 1.5 11.5899 1.5 8C1.5 4.41015 4.41015 1.5 8 1.5C11.5899 1.5 14.5 4.41015 14.5 8Z'
                   fill='#0F0F0F'
                 />
@@ -131,10 +131,10 @@ export default function UserChatsPage({
                   />
                 </div>
                 <div className='flex min-w-0 flex-1 flex-col'>
-                  <p className='font-medium'>
+                  <p className='text-sm md:text-base font-medium'>
                     {chat.customer.first_name} {chat.customer.last_name}
                   </p>
-                  <p className='xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight text-[#111927]'>
+                  <p className='text-xs line-clamp-2 min-h-[2lh] md:text-[0.825rem] leading-tight text-[#111927]'>
                     {chat.last_message?.content}
                   </p>
                 </div>

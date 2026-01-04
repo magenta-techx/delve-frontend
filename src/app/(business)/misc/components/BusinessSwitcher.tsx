@@ -31,10 +31,10 @@ export const BusinessSwitcher = () => {
     <div className='relative'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='flex w-full items-center gap-3 rounded-xl xl:rounded-2xl bg-[#1A1A1A] px-3 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3'
+        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] px-3 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3 xl:rounded-2xl'
       >
         {/* Business Logo */}
-        <div className='size-7 md:size-8 xl:size-12 relative flex-shrink-0 overflow-hidden rounded-full bg-white ring-white ring-2 ring-offset-1 '>
+        <div className='relative size-7 flex-shrink-0 overflow-hidden rounded-full bg-white ring-2 ring-white ring-offset-1 md:size-8 xl:size-12'>
           {currentBusiness.logo ? (
             <Image
               src={currentBusiness.logo}
@@ -43,15 +43,15 @@ export const BusinessSwitcher = () => {
               className='object-cover'
             />
           ) : (
-            <div className='flex h-full w-full items-center justify-center bg-primary text-sm xl:text-[0.9rem] font-bold text-white'>
+            <div className='flex h-full w-full items-center justify-center bg-primary text-sm font-bold text-white xl:text-[0.9rem]'>
               {currentBusiness.name.charAt(0)}
             </div>
           )}
         </div>
 
         {/* Business Info */}
-        <div className='text-left max-md:hidden md:flex-1'>
-          <p className='truncate font-inter font-semibold'>
+        <div className='text-left max-md:hidden md:flex-1 w-full overflow-hidden'>
+          <p className='truncate font-inter font-semibold xl:text-[1.1rem]'>
             {currentBusiness.name}
           </p>
           <p className='truncate text-xs text-[#CDD5DF]'>
@@ -129,10 +129,10 @@ export const BusinessSwitcher = () => {
 
                   {/* Business Info */}
                   <div className='flex-1 overflow-hidden'>
-                    <p className='truncate text-[0.8125rem] md:text-sm font-medium'>
+                    <p className='truncate text-[0.8125rem] font-medium md:text-sm'>
                       {business.name}
                     </p>
-                    <p className='truncate text-[0.625rem] md:text-xs text-gray-500'>
+                    <p className='truncate text-[0.625rem] text-gray-500 md:text-xs'>
                       {business.category?.name || 'Uncategorized'}
                     </p>
                   </div>
@@ -162,30 +162,32 @@ export const BusinessSwitcher = () => {
             </div>
 
             {/* Create New Business */}
-            <div className='border-t border-gray-200 p-2'>
-              <LinkButton
-                href={'/businesses/create-listing'}
-                variant="light"
-                className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10'
-              >
-                <svg
-                  width='16'
-                  height='16'
-                  viewBox='0 0 16 16'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
+            {businesses.length < 2 && (
+              <div className='border-t border-gray-200 p-2'>
+                <LinkButton
+                  href={'/businesses/create-listing'}
+                  variant='light'
+                  className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10'
                 >
-                  <path
-                    d='M8 3.33334V12.6667M3.33334 8H12.6667'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                  />
-                </svg>
-                <span className='md:hdden'>New</span>
-                <span className='max-md:hidden'>Add New Business</span>
-              </LinkButton>
-            </div>
+                  <svg
+                    width='16'
+                    height='16'
+                    viewBox='0 0 16 16'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d='M8 3.33334V12.6667M3.33334 8H12.6667'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                    />
+                  </svg>
+                  <span className='md:hidden'>New</span>
+                  <span className='max-md:hidden'>Add New Business</span>
+                </LinkButton>
+              </div>
+            )}
           </div>
         </>
       )}

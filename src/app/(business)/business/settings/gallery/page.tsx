@@ -196,7 +196,7 @@ const GalleryPage = () => {
                     <LinkButton className="size-6" variant="ghost" size="icon" href={"/business/settings/profile"}>
                         <ArrowLeft />
                     </LinkButton>
-                    <h1 className="text-2xl font-inter font-semibold text-gray-900">Gallery</h1>
+                    <h1 className="text-2xl font-inter font-medium text-[#0F0F0F]">Gallery</h1>
 
                 </div>
 
