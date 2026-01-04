@@ -187,7 +187,7 @@ export default function SettingsLayout({
           </>
         )}
 
-        <div className='overflow-y-auto p-4 max-md:pb-12'>{children}</div>
+        <div className='overflow-y-auto p-4 max-md:pb-16'>{children}</div>
       </div>
 
       {isDeactivateModalOpen && (

@@ -22,7 +22,7 @@ export function NavbarBottom() {
             const Icon = item.icon;
             const IconSelected = item.iconSelected;
             const isActive =
-              pathname === item.href ||
+              pathname === item.href || 
               (!item.exact &&
                 item.href !== '/business' &&
                 pathname.startsWith(item.href));

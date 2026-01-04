@@ -76,7 +76,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       ...token,
       accessToken: refreshedTokens?.data?.access,
       accessTokenExpires: Date.now() + 55 * 60 * 1000, 
-      refreshToken: refreshedTokens?.data?.refresh, // Always use the new refresh token
+      refreshToken: refreshedTokens?.data?.refresh || token.refreshToken, // Use new or keep old if not provided
       error: '', 
     };
   } catch (error) {
@@ -87,6 +87,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       ...token,
       accessToken: '',
       accessTokenExpires: 0,
+      refreshToken: '', // Clear the invalid refresh token
       error: 'RefreshAccessTokenError',
     };
   }

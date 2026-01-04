@@ -98,7 +98,7 @@ export default function PerformancePage() {
   ];
 
   return (
-    <div className={cn('h-full w-full overflow-y-scroll md:space-y-8')}>
+    <div className={cn('h-full w-full overflow-y-scroll md:space-y-8 max-md:pb-16')}>
       <header>
         <div className='mb-3 flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
           <h1 className='font-inter text-2xl font-semibold lg:text-3xl'>
@@ -174,7 +174,7 @@ export default function PerformancePage() {
       </section>
 
       {/* Performance Trends Chart Section */}
-      <section className='mt-8 px-4 lg:px-6'>
+      <section className='mt-6 md:mt-8 px-4 lg:px-6'>
         <Card className='rounded-2xl border border-[#CDD5DF] bg-card'>
           <CardHeader className='!pb-3'>
             <div className='flex items-center justify-between gap-4'>

@@ -200,7 +200,7 @@ export default function PromotionsPage() {
   }
 
   return (
-    <div className={cn('h-full w-full overflow-y-scroll md:space-y-8')}>
+    <div className={cn('h-full w-full overflow-y-scroll md:space-y-8 max-md:pb-16')}>
       {/* Header */}
       <header>
         <div className='mb-3 flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
@@ -428,7 +428,7 @@ export default function PromotionsPage() {
           </section>
 
           <section className='px-4 lg:px-6'>
-            <header className='mb-6 mt-12 flex justify-between md:items-center'>
+            <header className='mb-6 mt-16 md:mt-12 flex max-md:flex-col gap-y-2.5 justify-between md:items-center'>
               <div>
                 <div className='flex gap-2'>
                   <h3 className='font-inter font-semibold text-black lg:text-lg'>
@@ -437,7 +437,7 @@ export default function PromotionsPage() {
 
                   <DropdownMenu>
                     <DropdownMenuTrigger className='inline-flex w-max items-center justify-between rounded-lg bg-[#FDE272] px-2 py-1.5 text-left text-xs font-medium text-[#0F0F0F]'>
-                      {selectedView === 'advert' ? 'Adverts' : 'Promotions'}
+                      {selectedView === 'advert' ? 'Adverts' : 'Promos'}
                       <CaretDown className='ml-2 h-4 w-4' />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className='!min-w-20 !max-w-40'>
@@ -617,7 +617,7 @@ export default function PromotionsPage() {
           </section>
 
           {/* Performance Trends */}
-          <section className='p-4 pt-0 lg:p-6 lg:pt-0'>
+          <section className='mt-5 p-4 pt-0 lg:p-6 lg:pt-0'>
             <Card>
               <CardHeader className='!pb-3'>
                 <div className='flex items-center justify-between'>
@@ -630,14 +630,14 @@ export default function PromotionsPage() {
                       setSelectedGraphView(e as 'views' | 'clicks')
                     }
                   >
-                    <SelectTrigger className='!h-10 w-[100px] border border-[#EEF2F6] bg-[#F8FAFC] !py-1.5 text-sm'>
-                      <span className='text-black'>
+                    <SelectTrigger className='!h-8 md:!h-10 w-[70px] md:w-[100px] border border-[#EEF2F6] bg-[#F8FAFC] !p-1 md:!py-1.5'>
+                      <span className='text-black text-xs md:text-sm'>
                         {selectedGraphView === 'views' ? 'Views' : 'Clicks'}
                       </span>
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='views'>Views</SelectItem>
-                      <SelectItem value='clicks'>Clicks</SelectItem>
+                    <SelectContent className='max-w-max'>
+                      <SelectItem className='!text-xs' value='views'>Views</SelectItem>
+                      <SelectItem className='!text-xs' value='clicks'>Clicks</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

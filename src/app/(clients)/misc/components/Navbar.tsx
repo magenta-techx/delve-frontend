@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { Logo } from '@/assets/icons';
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import {
   ChatsIcon,
@@ -29,14 +29,11 @@ import {
   BusinessCategoriesIconsType as CategoryIconType,
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import { NotificationsDropdownContent } from './NotificationsDropdown';
+import { useUserContext } from '@/contexts/UserContext';
 
 const LandingPageNavbar = () => {
-  const { data: session, status } = useSession();
-  const hasValidAccessToken = Boolean(
-    session?.user?.accessToken && String(session.user.accessToken).length > 0
-  );
-  const userIsloggedIn =
-    status === 'authenticated' && Boolean(session?.user) && hasValidAccessToken;
+  const { user, isAuthenticated, isLoading } = useUserContext();
+  const userIsloggedIn = !isLoading && isAuthenticated && Boolean(user);
 
   const { data: categoriesData } = useBusinessCategories();
   const { data: statesData } = useBusinessStates();
@@ -137,7 +134,7 @@ const LandingPageNavbar = () => {
   return (
     <nav
       className={cn(
-        'relative z-[20] flex h-16 w-full items-center justify-between md:backdrop-blur-lg lg:h-20 xl:h-24 px-4 md:px-16 lg:px-24',
+        'relative z-[20] flex h-16 w-full items-center justify-between px-4 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24 xl:h-24',
 
         pageHasBlackBg
           ? 'bg-[#00000014] backdrop-blur-lg'
@@ -251,11 +248,13 @@ const LandingPageNavbar = () => {
                                       )}
                                     >
                                       <link.icon className='' />
-                                      <span className='sr-only'>{link.name}</span>
+                                      <span className='sr-only'>
+                                        {link.name}
+                                      </span>
                                     </button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent
-                                    className='w-[400px] max-h-[500px] overflow-y-hidden p-0'
+                                    className='max-h-[500px] w-[400px] overflow-y-hidden p-0'
                                     align='end'
                                   >
                                     <NotificationsDropdownContent />
@@ -489,13 +488,15 @@ const LandingPageNavbar = () => {
                       >
                         {isMobile ? (
                           <span className='flex size-8 items-center justify-center rounded-full bg-purple-800 text-base font-semibold text-white'>
-                            {getInitials(session?.user.name || 'US')}
+                            {getInitials(
+                              `${user?.first_name} ${user?.last_name}` || 'US'
+                            )}
                           </span>
                         ) : (
                           <>
-                            {session?.user.name && (
+                            {!!user?.first_name && (
                               <p className='ml-1 w-max max-w-36 truncate text-left font-semibold capitalize'>
-                                {session?.user.name}
+                                {`${user?.first_name} ${user?.last_name}`}
                               </p>
                             )}
                           </>
@@ -506,7 +507,7 @@ const LandingPageNavbar = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end' className='w-72'>
                       <div className='flex w-full items-center justify-center bg-[#F8FAFC] px-8 py-5'>
-                        {session.user.is_brand_owner ? (
+                        {user?.is_brand_owner ? (
                           <LinkButton
                             href='/business'
                             className='w-full bg-[#551FB9]'
