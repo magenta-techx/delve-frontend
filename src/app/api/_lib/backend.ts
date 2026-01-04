@@ -49,10 +49,11 @@ export async function forward(
     if (opts.auth && !headers['Authorization']) {
       // Use NextAuth's getToken which will run jwt callback and refresh if needed.
       const token = await getToken({ req });
-      if (!token?.accessToken) {
+      if (!token?.accessToken || token.error === 'RefreshAccessTokenError') {
         console.log(
           'forward: no token from getToken; incomingCookie present?',
-          !!incomingCookie
+          !!incomingCookie,
+          token?.error ? `; token error: ${token.error}` : ''
         );
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }

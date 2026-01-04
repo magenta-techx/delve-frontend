@@ -151,7 +151,7 @@ export default function DashboardPage(): JSX.Element {
           </>
         )}
         <LinkButton
-          href='/business/promotions'
+          href='/business'
           className='xl:ml-4'
           size={isMobile ? 'dynamic_lg' : 'xl'}
         >
