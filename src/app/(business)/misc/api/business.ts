@@ -56,6 +56,20 @@ export type CreateMultipleServicesData = {
   services: CreateServiceData[];
 };
 
+export type BusinessHoursPayload = {
+  day: number; // 1-7 (Monday-Sunday)
+  is_open: boolean;
+  open_time?: string; // HH:MM format
+  close_time?: string; // HH:MM format
+};
+
+export type BusinessHoursResponse = {
+  day: number;
+  is_open: boolean;
+  open_time: string | null;
+  close_time: string | null;
+};
+
 export type BusinessHours = {
   day: string;
   open: string;
@@ -778,6 +792,39 @@ export function useUpdateService(): UseMutationResult<
     },
     onSuccess: (_data, { business_id }) => {
       qc.invalidateQueries({ queryKey: ['business-services', business_id] });
+      qc.invalidateQueries({ queryKey: ['business', business_id] });
+    },
+    onError: handleErrorObject,
+  });
+}
+
+export function useUpdateBusinessHours(): UseMutationResult<
+  ApiEnvelope<BusinessHoursResponse[]>,
+  Error,
+  { business_id: BusinessId; hours: BusinessHoursPayload[] }
+> {
+  const qc = useQueryClient();
+  const { handleErrorObject } = useAuthErrorHandler();
+
+  return useMutation<
+    ApiEnvelope<BusinessHoursResponse[]>,
+    Error,
+    { business_id: BusinessId; hours: BusinessHoursPayload[] }
+  >({
+    mutationFn: async ({ business_id, hours }) => {
+      const res = await authAwareFetch(
+        `/api/business/${business_id}/hours/`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ hours }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to update business hours');
+      return data;
+    },
+    onSuccess: (_data, { business_id }) => {
       qc.invalidateQueries({ queryKey: ['business', business_id] });
     },
     onError: handleErrorObject,

@@ -77,7 +77,7 @@ export default function HomePage(): JSX.Element {
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
-            <Link href={'/'} className='uppercase'>
+            <Link href={'/businesses/explore'} className='uppercase'>
               See all listings
             </Link>
           </div>

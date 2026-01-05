@@ -372,7 +372,7 @@ export default function PaymentsPage() {
             ) : (
               <div className='overflow-x-auto'>
                 <table className='w-full text-sm'>
-                  <thead className='px-4 md:px-8'>
+                  <thead>
                     <tr className='bg-[#F5F3FF]'>
                       {[
                         'Subscription plan',
@@ -386,9 +386,10 @@ export default function PaymentsPage() {
                         <th
                           key={header}
                           className={cn(
-                            'px-2 py-3 text-left font-inter font-medium text-[#4B5565]',
-                            idx === 0 && 'pl-4 md:pl-8',
-                            idx === 6 && 'pr-4 md:pr-8'
+                            'py-3 text-left font-inter font-medium text-[#4B5565]',
+                            idx === 0 && 'pl-4 md:pl-8 pr-2',
+                            idx !== 0 && idx !== 6 && 'px-2',
+                            idx === 6 && 'pl-2 pr-4 md:pr-8'
                           )}
                         >
                           {header}
@@ -396,67 +397,71 @@ export default function PaymentsPage() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className='space-y-1.5'>
+                  <tbody>
                     {billingData?.payment_history.map(transaction => (
                       <tr
                         key={transaction.payment_reference_id}
-                        className={cn(
-                          'group cursor-pointer bg-[#FAFAFA] !px-0 hover:bg-[#f5f3f3]'
-                        )}
+                        className='group cursor-pointer bg-[#FAFAFA] hover:bg-[#f5f3f3]'
                       >
-                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
-                          <div className='bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
-                            {transaction.plan.name}
-                            {''} plan
-                          </div>
+                        <td className={cn(
+                          'bg-white py-4 font-inter font-normal',
+                          'pl-4 md:pl-8 pr-2'
+                        )}>
+                          {transaction.plan.name} plan
                         </td>
-                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
-                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
-                            {transaction.plan.billing_cycle ?? '-'}
-                          </div>
+                        <td className={cn(
+                          'bg-white py-4 font-inter font-normal',
+                          'px-2'
+                        )}>
+                          {transaction.plan.billing_cycle ?? '-'}
                         </td>
-                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
-                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
-                            ₦{transaction.amount_paid.toLocaleString()}
-                          </div>
+                        <td className={cn(
+                          'bg-white py-4 font-inter font-normal',
+                          'px-2'
+                        )}>
+                          ₦{transaction.amount_paid.toLocaleString()}
                         </td>
-                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
-                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
-                            <span
-                              className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize ${
-                                transaction.status === 'success'
-                                  ? 'bg-[#DAFBD5] text-[#558B2F]'
-                                  : 'bg-[#FFE1E1] text-[#C62828]'
-                              }`}
-                            >
-                              {transaction.status}
-                            </span>
-                          </div>
+                        <td className={cn(
+                          'bg-white py-4 font-inter font-normal',
+                          'px-2'
+                        )}>
+                          <span
+                            className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize inline-block ${
+                              transaction.status === 'success'
+                                ? 'bg-[#DAFBD5] text-[#558B2F]'
+                                : 'bg-[#FFE1E1] text-[#C62828]'
+                            }`}
+                          >
+                            {transaction.status}
+                          </span>
                         </td>
-                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
-                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
-                            {format(
-                              new Date(transaction.timestamp),
-                              'dd-MM-yyyy'
-                            )}
-                          </div>
+                        <td className={cn(
+                          'bg-white py-4 font-inter font-normal',
+                          'px-2'
+                        )}>
+                          {format(
+                            new Date(transaction.timestamp),
+                            'dd-MM-yyyy'
+                          )}
                         </td>
-                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
-                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
-                            **** {transaction.payment_card_last_4_digits}
-                          </div>
+                        <td className={cn(
+                          'bg-white py-4 font-inter font-normal',
+                          'px-2'
+                        )}>
+                          **** {transaction.payment_card_last_4_digits}
                         </td>
-                        <td className='bg-white !px-0 pb-0.5 font-inter font-normal md:pl-8'>
-                          <div className='h-full bg-[#FAFAFA] px-2 py-4 pl-4 group-hover:bg-[#f5f3f3]'>
-                            <button
-                              onClick={() =>
-                                handleSelectTransaction(transaction)
-                              }
-                              className='text-blue-600 hover:underline'
-                            >
-                              <ReceiptIcon className='h-4 w-4' />
-                            </button>
-                          </div>
+                        <td className={cn(
+                          'bg-white py-4 font-inter font-normal',
+                          'pl-2 pr-4 md:pr-8'
+                        )}>
+                          <button
+                            onClick={() =>
+                              handleSelectTransaction(transaction)
+                            }
+                            className='text-blue-600 hover:underline'
+                          >
+                            <ReceiptIcon className='h-4 w-4' />
+                          </button>
                         </td>
                       </tr>
                     ))}

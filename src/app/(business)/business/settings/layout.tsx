@@ -17,6 +17,7 @@ const tabs = [
   { name: 'Profile', href: '/business/settings/profile' },
   { name: 'Services', href: '/business/settings/services' },
   { name: 'Contact', href: '/business/settings/contact' },
+  { name: 'Opening hours', href: '/business/settings/hours' },
 ];
 
 export default function SettingsLayout({

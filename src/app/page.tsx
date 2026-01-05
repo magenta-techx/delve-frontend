@@ -339,7 +339,7 @@ export default function HomePage() {
             </div>
             <div className='flex items-center gap-2 text-primary'>
               <BaseIcons value='arrows-left-primary' />
-              <Link href={'/'} className='text-[12px] uppercase sm:text-[16px]'>
+              <Link href={'/businesss/explore'} className='text-[12px] uppercase sm:text-[16px]'>
                 See all listings
               </Link>
             </div>

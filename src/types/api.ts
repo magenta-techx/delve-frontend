@@ -187,7 +187,7 @@ export interface BusinessDetail {
   owner?: BusinessOwner;
   category?: CategoryMini;
   subcategories?: Array<{ id: number; name: string }>;
-  amenities?: Array<{ id: number; name: string } >;
+  amenities?: Array<{ id: number; name: string }>;
   images?: Array<{ id: number; image: string } | string>;
   services?: BusinessService[];
   created_at?: string;
@@ -203,10 +203,19 @@ export interface BusinessDetail {
   approved?: boolean;
   requesting_approval?: boolean;
   status?: string;
+  business_hours: Businesshour[];
   // The detail response in api.md shows performance embedded in example; usually separate
   performance?: Array<{ date: string; performance_score: number }>;
 }
 
+
+interface Businesshour {
+  day: number;
+  day_label: string;
+  is_open: boolean;
+  open_time: string | null;
+  close_time: string | null;
+}
 // Business performance
 export interface PerformanceTotals {
   total_conversations?: number;
@@ -273,7 +282,7 @@ export interface ChatListItem {
   chat_id: number;
   last_message?: string;
   updated_at: string;
-  business?: string; 
+  business?: string;
 }
 
 export interface ChatMessage {
@@ -311,10 +320,10 @@ export interface EventItem {
 }
 
 
-export type NotificationType = 
-  | 'review_prompt' 
-  | 'review_received' 
-  | 'review_replied' 
+export type NotificationType =
+  | 'review_prompt'
+  | 'review_received'
+  | 'review_replied'
   | 'profile_views'
   | 'free_trial_enabled'
   | 'free_trial_expiring'

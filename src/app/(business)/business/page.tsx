@@ -102,7 +102,7 @@ export default function DashboardPage(): JSX.Element {
 
   return (
     <div className='flex h-screen flex-1 flex-col overflow-hidden'>
-      <header className='hidden md:flex items-center justify-end gap-4 p-1.5 md:p-4'>
+      <header className='hidden items-center justify-end gap-4 p-1.5 md:flex md:p-4'>
         <div className='hidden items-center gap-4 border-r-[0.4px] pr-5 md:flex'>
           {NAV_LINKS.map(link => (
             <Link
@@ -134,7 +134,7 @@ export default function DashboardPage(): JSX.Element {
                     fill='#0F0F0F'
                   />
                   <path
-                    fill-rule='evenodd'
+                    fillRule='evenodd'
                     clip-rule='evenodd'
                     d='M16.8238 12.7848C16.5546 12.3185 16.7143 11.7222 17.1807 11.4529L18.0251 10.9654C18.4914 10.6962 19.0877 10.856 19.3569 11.3223C19.6607 11.8484 20.4201 11.8484 20.7238 11.3223C20.993 10.856 21.5893 10.6962 22.0557 10.9654L22.9001 11.4529C23.3664 11.7222 23.5262 12.3185 23.2569 12.7848C22.9532 13.3109 23.3329 13.9686 23.9404 13.9686C24.4788 13.9686 24.9154 14.4051 24.9154 14.9436V15.9186C24.9154 16.457 24.4788 16.8936 23.9404 16.8936C23.3329 16.8936 22.9532 17.5512 23.2569 18.0773C23.5262 18.5436 23.3664 19.1399 22.9 19.4092L22.0557 19.8967C21.5893 20.1659 20.993 20.0061 20.7238 19.5398C20.4201 19.0137 19.6607 19.0137 19.3569 19.5398C19.0877 20.0061 18.4914 20.1659 18.0251 19.8967L17.1807 19.4092C16.7143 19.1399 16.5546 18.5436 16.8238 18.0773C17.1276 17.5512 16.7479 16.8936 16.1404 16.8936C15.6019 16.8936 15.1654 16.457 15.1654 15.9186V14.9436C15.1654 14.4051 15.6019 13.9686 16.1404 13.9686C16.7479 13.9686 17.1276 13.3109 16.8238 12.7848ZM20.0402 17.307C21.0757 17.307 21.9152 16.4675 21.9152 15.432C21.9152 14.3965 21.0757 13.557 20.0402 13.557C19.0046 13.557 18.1652 14.3965 18.1652 15.432C18.1652 16.4675 19.0046 17.307 20.0402 17.307Z'
                     fill='#0F0F0F'
@@ -151,7 +151,7 @@ export default function DashboardPage(): JSX.Element {
           </>
         )}
         <LinkButton
-          href='/business'
+          href='/businesses/explore'
           className='xl:ml-4'
           size={isMobile ? 'dynamic_lg' : 'xl'}
         >
@@ -261,8 +261,8 @@ export default function DashboardPage(): JSX.Element {
             {/* /////////////          CONVERSATIONS            ///////////////////// */}
             {/* ///////////////////////////////////////////////////////////////////// */}
             <div className='rounded-xl border border-[#F5F3FF] bg-white py-3 lg:col-span-2 lg:py-4'>
-              <header className='p-2 md:mb-4 md:p-4 pt-0'>
-                <h1 className='font-inter text-base md:text-xl font-medium'>
+              <header className='p-2 pt-0 md:mb-4 md:p-4'>
+                <h1 className='font-inter text-base font-medium md:text-xl'>
                   Conversations
                 </h1>
               </header>
@@ -275,7 +275,7 @@ export default function DashboardPage(): JSX.Element {
                           key={conversation.id}
                           href={`/business/messages/${conversation.id}`}
                           className={cn(
-                            'flex w-full items-center gap-2 bg-[#F8FAFC] p-2 md:px-4 md:py-2.5 text-left transition-colors hover:bg-muted/50 md:gap-3',
+                            'flex w-full items-center gap-2 bg-[#F8FAFC] p-2 text-left transition-colors hover:bg-muted/50 md:gap-3 md:px-4 md:py-2.5',
                             'hover:!bg-[#F5F3FF]'
                           )}
                         >
@@ -291,11 +291,11 @@ export default function DashboardPage(): JSX.Element {
                             />
                           </div>
                           <div className='flex min-w-0 flex-1 flex-col'>
-                            <p className='text-sm md:text-base font-medium'>
+                            <p className='text-sm font-medium md:text-base'>
                               {conversation.customer.first_name}{' '}
                               {conversation.customer.last_name}
                             </p>
-                            <p className='text-xs line-clamp-2 min-h-[2lh] md:text-[0.825rem] leading-tight text-[#111927]'>
+                            <p className='line-clamp-2 min-h-[2lh] text-xs leading-tight text-[#111927] md:text-[0.825rem]'>
                               {conversation.last_message?.content}
                             </p>
                             <small className='text-end text-xs text-[#697586]'>

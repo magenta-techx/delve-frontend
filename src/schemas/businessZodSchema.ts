@@ -77,3 +77,29 @@ export type BusinessShowcaseInput = z.infer<typeof businessShowcaseZodSchema>;
 export type ServicesInput = z.infer<typeof servicesZodSchema>;
 export type ContactInformationInput = z.infer<typeof contactInformationZodSchema>;
 export type LocationInput = z.infer<typeof locationZodSchema>;
+
+export const businessHoursZodSchema = z.object({
+  hours: z.array(
+    z.object({
+      day: z.number().min(1).max(7),
+      is_open: z.boolean(),
+      open_hour: z.string().optional().nullable(),
+      open_meridiem: z.enum(['AM', 'PM']).optional(),
+      close_hour: z.string().optional().nullable(),
+      close_meridiem: z.enum(['AM', 'PM']).optional(),
+    }).refine(
+      (data) => {
+        if (data.is_open) {
+          return data.open_hour && data.open_meridiem && data.close_hour && data.close_meridiem;
+        }
+        return true;
+      },
+      {
+        message: 'Opening and closing times are required when the business is open',
+        path: ['open_hour'],
+      }
+    )
+  ).length(7, 'Business hours must include all 7 days of the week'),
+});
+
+export type BusinessHoursInput = z.infer<typeof businessHoursZodSchema>;

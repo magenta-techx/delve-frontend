@@ -111,7 +111,7 @@ export function NavbarTop({}: TopNavProps) {
                 })}
 
                 <LinkButton
-                  href='/business/promotions'
+                  href='/businesses/explore'
                   className='mt-8'
                   size={'xl'}
                 >

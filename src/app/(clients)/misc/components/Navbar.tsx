@@ -188,7 +188,7 @@ const LandingPageNavbar = () => {
             )}
             <LinkButton
               size='dynamic_xl'
-              href='/'
+              href='/businesses/explore'
               className='max-md:!hidden'
               variant={'black'}
             >
