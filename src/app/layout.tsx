@@ -8,8 +8,9 @@ import AllProvider from '@/contexts';
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-inter',
+  display: 'swap',
 });
 
 const karma = Karma({

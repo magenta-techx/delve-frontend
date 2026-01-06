@@ -7,7 +7,7 @@ export type FormFieldVariants = { variant?: Variant | undefined; size?: Size | u
 
 function formFieldVariants({ variant = "default", size = "default" }: { variant?: Variant | undefined; size?: Size | undefined } = {}): string {
   const base =
-    "flex w-full min-w-0 rounded-xl transition-[color,box-shadow] outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive";
+    "flex w-full min-w-0 rounded-xl transition-[color,box-shadow] outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/50 selection:bg-primary selection:text-primary-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive";
   const variants: Record<Variant, string> = {
     default: "border border-[#D9D9D9] bg-white focus:border-primary focus-visible:border-primary ",
     outline: "border border-primary bg-background focus-visible:border-primary focus-visible:ring-primary/50 focus-visible:ring-[3px]",

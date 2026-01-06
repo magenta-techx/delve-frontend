@@ -13,6 +13,7 @@ import {
   BusinessHoursInput,
 } from '@/schemas/businessZodSchema';
 import { LogoLoadingIcon } from '@/assets/icons';
+import { cn } from '@/lib/utils';
 
 const DAYS_OF_WEEK = [
   { value: 1, label: 'Monday' },
@@ -53,9 +54,13 @@ export default function BusinessHoursPage() {
           day: hour.day,
           is_open: hour.is_open,
           open_hour: hour.is_open ? openTime.hour : null,
-          open_meridiem: hour.is_open ? openTime.meridiem as 'AM' | 'PM' : 'AM',
+          open_meridiem: hour.is_open
+            ? (openTime.meridiem as 'AM' | 'PM')
+            : 'AM',
           close_hour: hour.is_open ? closeTime.hour : null,
-          close_meridiem: hour.is_open ? closeTime.meridiem as 'AM' | 'PM' : 'PM',
+          close_meridiem: hour.is_open
+            ? (closeTime.meridiem as 'AM' | 'PM')
+            : 'PM',
         };
       });
       console.log(generated, 'generated default values');
@@ -81,12 +86,14 @@ export default function BusinessHoursPage() {
   const {
     control,
     handleSubmit,
+    clearErrors,
     watch,
     formState: { errors },
     reset,
   } = useForm<BusinessHoursInput>({
     resolver: zodResolver(businessHoursZodSchema),
     defaultValues: getDefaultValues(),
+    mode: 'onChange',
   });
 
   // Reset form when business hours data changes
@@ -165,144 +172,149 @@ export default function BusinessHoursPage() {
           onSubmit={handleSubmit(onSubmit)}
           className='space-y-6 rounded-2xl border border-[#E8EAF6] bg-white p-6'
         >
-          <div>
-            <h1 className='font-inter text-xl font-semibold lg:text-3xl'>
-              Business Hours
-            </h1>
-            <p className='text-balance text-xs font-normal text-[#4B5565] max-lg:max-w-[30ch] lg:text-sm'>
-              Set your weekly operating hours. Customers will see these times on
-              your business profile.
-            </p>
-          </div>
+          <h1 className='!font-inter text-lg font-semibold lg:text-xl'>
+            Business Opening Hours
+          </h1>
 
           <div className=''>
-            <div className='space-y-0'>
+            <div className='space-y-2.5'>
               {DAYS_OF_WEEK.map((day, index) => (
-                <div
-                  key={day.value}
-                  className='flex items-center justify-between gap-8 border-b border-[#F0F0F0] px-4 py-4 last:border-b-0 hover:bg-[#FAFAFA]'
-                >
-                  {/* Day Name */}
-                  <div className='w-24'>
-                    <p className='text-sm font-semibold text-[#212121]'>
-                      {day.label}
-                    </p>
-                  </div>
-
-                  {/* Time Inputs */}
-                  <div className='flex flex-1 items-center justify-center gap-6'>
-                    {hoursWatch[index]?.is_open ? (
-                      <>
-                        {/* From */}
-                        <div className='flex items-center gap-2'>
-                          <span className='text-xs font-medium text-[#999999]'>
-                            From
-                          </span>
-                          <Controller
-                            name={`hours.${index}.open_hour`}
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                type='number'
-                                value={field.value ?? ''}
-                                min='1'
-                                max='12'
-                                placeholder='9'
-                                haserror={!!errors.hours?.[index]?.open_hour}
-                                errormessage={
-                                  errors?.hours?.[index]?.open_hour?.message
-                                }
-                                className='w-12 rounded border border-[#E0E0E0] px-1 py-1.5 text-center text-sm font-semibold text-[#212121]'
-                              />
-                            )}
-                          />
-                          <Controller
-                            name={`hours.${index}.open_meridiem`}
-                            control={control}
-                            render={({ field }) => (
-                              <select
-                                {...field}
-                                className='h-9 rounded border border-[#E0E0E0] bg-white px-2 py-1.5 text-sm font-medium text-[#212121]'
-                              >
-                                <option value='AM'>AM</option>
-                                <option value='PM'>PM</option>
-                              </select>
-                            )}
-                          />
-                        </div>
-
-                        {/* To */}
-                        <div className='flex items-center gap-2'>
-                          <span className='text-xs font-medium text-[#999999]'>
-                            To
-                          </span>
-                          <Controller
-                            name={`hours.${index}.close_hour`}
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                type='number'
-                                min='1'
-                                max='12'
-                                placeholder='6'
-                                value={field.value ?? ''}
-                                haserror={!!errors.hours?.[index]?.close_hour}
-                                errormessage={
-                                  errors?.hours?.[index]?.close_hour?.message
-                                }
-                                className='w-12 rounded border border-[#E0E0E0] px-1 py-1.5 text-center text-sm font-semibold text-[#212121]'
-                              />
-                            )}
-                          />
-                          <Controller
-                            name={`hours.${index}.close_meridiem`}
-                            control={control}
-                            render={({ field }) => (
-                              <select
-                                {...field}
-                                className='h-9 rounded border border-[#E0E0E0] bg-white px-2 py-1.5 text-sm font-medium text-[#212121]'
-                              >
-                                <option value='AM'>AM</option>
-                                <option value='PM'>PM</option>
-                              </select>
-                            )}
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <span className='text-sm font-medium text-[#BDBDBD] py-2.5'>
-                        Closed
-                      </span>
+                <div key={day.value}>
+                  <div
+                    className={cn(
+                      'flex items-center justify-between gap-8 rounded-xl bg-[#FCFCFD] px-4 py-3 last:border-b-0 hover:bg-[#FAFAFA]',
+                      !hoursWatch[index]?.is_open && 'opacity-50'
                     )}
+                  >
+                    <div className='w-24'>
+                      <p className='text-sm font-semibold text-[#212121]'>
+                        {day.label}
+                      </p>
+                    </div>
+
+                    {/* Time Inputs */}
+                    <div
+                      className={cn(
+                        'flex flex-1 items-center justify-center gap-6 md:gap-12'
+                      )}
+                    >
+                      {/* From */}
+                      <div className='flex items-center gap-2'>
+                        <span className='text-xs font-medium text-[#999999]'>
+                          From
+                        </span>
+                        <Controller
+                          name={`hours.${index}.open_hour`}
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              value={field.value ?? ''}
+                              min='1'
+                              max='12'
+                              placeholder='9'
+                              className='h-9 w-12 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-sm font-semibold text-[#212121] md:w-14 md:rounded-lg'
+                            />
+                          )}
+                        />
+                        <Controller
+                          name={`hours.${index}.open_meridiem`}
+                          control={control}
+                          render={({ field }) => (
+                            <select
+                              {...field}
+                              className='h-9 rounded border border-[#EEF2F6] bg-white px-2 py-1.5 text-xs text-[#212121] md:rounded-lg'
+                            >
+                              <option value='AM'>AM</option>
+                              <option value='PM'>PM</option>
+                            </select>
+                          )}
+                        />
+                      </div>
+
+                      {/* To */}
+                      <div className='flex items-center gap-2'>
+                        <span className='text-xs font-medium text-[#999999]'>
+                          To
+                        </span>
+                        <Controller
+                          name={`hours.${index}.close_hour`}
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              type='number'
+                              min='1'
+                              max='12'
+                              placeholder='6'
+                              value={field.value ?? ''}
+                              className='h-9 w-12 rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-sm font-semibold text-[#212121] md:w-14 md:rounded-lg'
+                            />
+                          )}
+                        />
+                        <Controller
+                          name={`hours.${index}.close_meridiem`}
+                          control={control}
+                          render={({ field }) => (
+                            <select
+                              {...field}
+                              className='h-9 rounded border border-[#EEF2F6] bg-white px-2 py-1.5 text-xs text-[#212121] md:rounded-lg'
+                            >
+                              <option value='AM'>AM</option>
+                              <option value='PM'>PM</option>
+                            </select>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Toggle and Status */}
+                    <div className='flex items-center gap-2'>
+                      <Controller
+                        name={`hours.${index}.is_open`}
+                        control={control}
+                        render={({ field }) => (
+                          <button
+                            type='button'
+                            onClick={() => {
+                              field.onChange(!field.value);
+                              clearErrors([
+                                `hours.${index}.open_hour`,
+                                `hours.${index}.close_hour`,
+                              ]);
+                            }}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                              field.value ? 'bg-[#1A73E8]' : 'bg-[#EEF2F6]'
+                            }`}
+                          >
+                            <span
+                              className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                                field.value
+                                  ? 'translate-x-[1.45rem]'
+                                  : 'translate-x-0.5'
+                              }`}
+                            />
+                          </button>
+                        )}
+                      />
+                      <span className='w-12 text-right font-inter text-sm font-normal text-[#212121]'>
+                        {hoursWatch[index]?.is_open ? 'Open' : 'Close'}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Toggle and Status */}
-                  <div className='flex items-center gap-3'>
-                    <Controller
-                      name={`hours.${index}.is_open`}
-                      control={control}
-                      render={({ field }) => (
-                        <button
-                          type='button'
-                          onClick={() => field.onChange(!field.value)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                            field.value ? 'bg-blue-500' : 'bg-[#D1D5DB]'
-                          }`}
-                        >
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              field.value ? 'translate-x-6' : 'translate-x-1'
-                            }`}
-                          />
-                        </button>
-                      )}
-                    />
-                    <span className='w-12 text-right text-sm font-medium text-[#212121]'>
-                      {hoursWatch[index]?.is_open ? 'Open' : 'Close'}
-                    </span>
-                  </div>
+                  {!!errors?.hours?.[index]?.open_hour &&
+                    errors?.hours?.[index]?.open_hour?.message && (
+                      <p className='mt-1 rounded-md bg-red-100 p-1 px-4 text-center text-[0.725rem] text-red-600'>
+                        {errors.hours[index]?.open_hour?.message}
+                      </p>
+                    )}
+                  {!!errors?.hours?.[index]?.close_hour &&
+                    errors?.hours?.[index]?.close_hour?.message && (
+                      <p className='mt-1 rounded-md bg-red-100 p-1 px-4 text-center text-[0.725rem] text-red-600'>
+                        {errors.hours[index]?.close_hour?.message}
+                      </p>
+                    )}
                 </div>
               ))}
             </div>

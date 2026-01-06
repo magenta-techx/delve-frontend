@@ -8,5 +8,8 @@ export async function POST(
   { params }: { params: Promise<{ business_id: string }> }
 ): Promise<NextResponse> {
   const { business_id } = await params;
-  return forward(req, 'POST', `/businesses/${business_id}/hours/`, { auth: true });
+  return forward(req, 'POST', `/businesses/${business_id}/hours/`, {
+    auth: true,
+    contentType: 'json',
+  });
 }

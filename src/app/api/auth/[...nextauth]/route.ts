@@ -51,46 +51,85 @@ declare module 'next-auth' {
   }
 }
 
+// Token refresh locking to prevent race conditions
+// This ensures only one refresh happens at a time for single-use refresh tokens
+let refreshPromise: Promise<JWT> | null = null;
+let lastRefreshToken: string | null = null;
+
 async function refreshAccessToken(token: JWT): Promise<JWT> {
-  try {
-    console.log('Refreshing access token...');
-    const res = await fetch(
-      `${process.env['API_BASE_URL']}/user/auth/token/refresh/`,
-      {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refresh: token['refreshToken'] }),
-      }
-    );
-
-    const refreshedTokens = await res.json();
-
-    if (!res.ok) throw refreshedTokens;
-
-    console.log('Token refresh successful, new tokens received');
-    // IMPORTANT: Backend returns a NEW refresh token after each use
-    // The old refresh token is now invalid and cannot be reused
-    return {
-      ...token,
-      accessToken: refreshedTokens?.data?.access,
-      accessTokenExpires: Date.now() + 55 * 60 * 1000, 
-      refreshToken: refreshedTokens?.data?.refresh || token.refreshToken, // Use new or keep old if not provided
-      error: '', 
-    };
-  } catch (error) {
-    console.log('Refresh token error:', error);
-    console.log('Refresh token used:', token['refreshToken']);
-    
-    return {
-      ...token,
-      accessToken: '',
-      accessTokenExpires: 0,
-      refreshToken: '', // Clear the invalid refresh token
-      error: 'RefreshAccessTokenError',
-    };
+  // If a refresh is already in progress for this same refresh token, wait for it
+  if (refreshPromise && lastRefreshToken === token.refreshToken) {
+    console.log('Refresh already in progress, waiting for result...');
+    return refreshPromise;
   }
+
+  // Create a new refresh promise
+  refreshPromise = (async () => {
+    try {
+      console.log('Refreshing access token...');
+      lastRefreshToken = token.refreshToken;
+
+      const res = await fetch(
+        `${process.env['API_BASE_URL']}/user/auth/token/refresh/`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refresh: token.refreshToken }),
+        }
+      );
+
+      const refreshedTokens = await res.json();
+
+      if (!res.ok) {
+        console.error('Token refresh API returned error:', refreshedTokens);
+        throw refreshedTokens;
+      }
+
+      // Validate the response has the required token data
+      if (!refreshedTokens?.data?.access) {
+        console.error('Invalid refresh response - missing access token:', refreshedTokens);
+        throw new Error('Missing access token in refresh response');
+      }
+
+      console.log('Token refresh successful, new tokens received');
+      
+      // IMPORTANT: Backend returns a NEW refresh token after each use
+      // The old refresh token is now invalid and cannot be reused
+      const newToken = {
+        ...token,
+        accessToken: refreshedTokens.data.access,
+        accessTokenExpires: Date.now() + 55 * 60 * 1000,
+        refreshToken: refreshedTokens.data.refresh || token.refreshToken,
+        error: '',
+      };
+
+      // Clear the last refresh token after successful refresh
+      lastRefreshToken = newToken.refreshToken;
+      return newToken;
+    } catch (error) {
+      console.error('Refresh token error:', error);
+      console.log('Refresh token used:', token.refreshToken);
+
+      const errorToken = {
+        ...token,
+        accessToken: '',
+        accessTokenExpires: 0,
+        refreshToken: '',
+        error: 'RefreshAccessTokenError',
+      };
+
+      return errorToken;
+    } finally {
+      // Clear the refresh promise after it completes
+      setTimeout(() => {
+        refreshPromise = null;
+      }, 500); // Small delay to allow concurrent requests to pick up the new token
+    }
+  })();
+
+  return refreshPromise;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -333,11 +372,24 @@ export const authOptions: NextAuthOptions = {
 
       // Token is expired, try to refresh if we have a refresh token
       if (token.refreshToken && !token.error) {
-        console.log('Access token expired, attempting refresh...');
-        return refreshAccessToken(token);
+        const expiresIn = token.accessTokenExpires ? token.accessTokenExpires - Date.now() : 'unknown';
+        console.log(`Access token expired (expires in ${expiresIn}ms), attempting refresh...`);
+        const refreshedToken = await refreshAccessToken(token);
+        
+        // Log the result of the refresh attempt
+        if (refreshedToken.error) {
+          console.error(`Token refresh failed: ${refreshedToken.error}`);
+        } else {
+          console.log(`Token refresh succeeded, new expiry: ${refreshedToken.accessTokenExpires}`);
+        }
+        
+        return refreshedToken;
       }
       
       // No refresh token available or previous error
+      if (token.error) {
+        console.log(`JWT callback returning token with error: ${token.error}`);
+      }
       return token;
     },
     async session({
