@@ -30,6 +30,7 @@ import {
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import { NotificationsDropdownContent } from './NotificationsDropdown';
 import { useUserContext } from '@/contexts/UserContext';
+import { SettingsIcon } from '@/app/(business)/misc/components/icons';
 
 const LandingPageNavbar = () => {
   const { user, isAuthenticated, isLoading } = useUserContext();
@@ -86,6 +87,12 @@ const LandingPageNavbar = () => {
       href: '/notifications',
       hasBlackBg: false,
       icon: NotificationsIcon,
+    },
+    {
+      name: 'Profile Settings',
+      href: '/profile',
+      hasBlackBg: false,
+      icon: SettingsIcon,
     },
   ];
   const BUSINESS_LANDING_NAVLINKS = [

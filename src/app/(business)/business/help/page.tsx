@@ -3,8 +3,12 @@ import React from 'react';
 // icons inlined as SVGs — no external icon imports needed here
 import { BusinessLandingFAQs } from '@/app/(clients)/misc/components';
 import NavProfileSection from '../../misc/components/layout/NavProfileSection';
+import { useUserContext } from '@/contexts/UserContext';
+import { PremiumUserHelpForm } from '../../misc/components';
 
 const page = () => {
+  const { user } = useUserContext();
+  const isPremuiumUser = user?.is_premium_plan_active;
   return (
     <div
       className='h-full overflow-y-scroll'
@@ -26,8 +30,8 @@ const page = () => {
           <div className='grid grid-cols-1 gap-6 sm:grid-cols-3'>
             <a
               href='https://www.facebook.com/Delve_ng'
-              target="_blank"
-              className='flex flex-col justify-between gap-4 lg:gap-6 rounded-xl border border-[#E3E8EF] bg-white p-6 hover:shadow'
+              target='_blank'
+              className='flex flex-col justify-between gap-4 rounded-xl border border-[#E3E8EF] bg-white p-6 hover:shadow lg:gap-6'
             >
               <div className='flex h-12 w-12 items-center justify-center rounded-xl border border-[#CDD5DF] text-primary'>
                 <svg
@@ -60,8 +64,8 @@ const page = () => {
 
             <a
               href='https://www.instagram.com/delve_ng/'
-              target="_blank"
-              className='flex flex-col justify-between gap-4 lg:gap-6 rounded-xl border border-[#E3E8EF] bg-white p-6 hover:shadow'
+              target='_blank'
+              className='flex flex-col justify-between gap-4 rounded-xl border border-[#E3E8EF] bg-white p-6 hover:shadow lg:gap-6'
             >
               <div className='flex h-12 w-12 items-center justify-center rounded-xl border border-[#CDD5DF]'>
                 <svg
@@ -97,8 +101,8 @@ const page = () => {
 
             <a
               href='tel:2348123456789'
-              target="_blank"
-              className='flex flex-col justify-between gap-4 lg:gap-6 rounded-xl border border-[#E3E8EF] bg-white p-6 hover:shadow'
+              target='_blank'
+              className='flex flex-col justify-between gap-4 rounded-xl border border-[#E3E8EF] bg-white p-6 hover:shadow lg:gap-6'
             >
               <div className='flex h-12 w-12 items-center justify-center rounded-xl border border-[#CDD5DF]'>
                 <svg
@@ -118,24 +122,26 @@ const page = () => {
                     d='M13.2112 4.74532C12.5577 4.09182 11.7637 3.73992 11.1606 3.82606C10.8873 3.86511 10.634 3.67516 10.5949 3.40179C10.5559 3.12843 10.7458 2.87516 11.0192 2.83611C12.0661 2.68658 13.1576 3.2775 13.9183 4.03822C14.679 4.79893 15.27 5.89051 15.1204 6.93736C15.0813 7.21073 14.8281 7.40068 14.5547 7.36162C14.2813 7.32257 14.0914 7.0693 14.1305 6.79594C14.2166 6.19287 13.8647 5.39882 13.2112 4.74532Z'
                     fill='#363538'
                   />
-                  <path 
+                  <path
                     d='M10.5601 5.91991C11.5241 5.55426 12.4023 6.43238 12.0366 7.39643C11.9387 7.65462 12.0686 7.94332 12.3268 8.04125C12.585 8.13919 12.8737 8.00928 12.9716 7.75108C13.643 5.98097 11.9756 4.31351 10.2055 4.98491C9.94729 5.08284 9.81738 5.37154 9.91531 5.62973C10.0132 5.88793 10.3019 6.01784 10.5601 5.91991Z'
                     fill='#363538'
                   />
                 </svg>
               </div>
               <div className='mt-8'>
-                <h3 className='font-sm font-inter font-bold'>
-                  Call us
-                </h3>
+                <h3 className='font-sm font-inter font-bold'>Call us</h3>
                 <p className='text-xs font-normal text-[#0D121C]'>
                   Available Mon - Fri from 8am to 5pm
                 </p>
               </div>
-              <p className='mt-auto text-sm text-gray-600 underline'>+234 8123456789</p>
+              <p className='mt-auto text-sm text-gray-600 underline'>
+                +234 8123456789
+              </p>
             </a>
           </div>
         </section>
+
+        {isPremuiumUser && <PremiumUserHelpForm />}
 
         <section className='mx-auto mt-12 max-w-6xl'>
           <BusinessLandingFAQs />

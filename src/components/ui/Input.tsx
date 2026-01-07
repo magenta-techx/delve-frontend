@@ -32,6 +32,7 @@ export interface InputProps
   rightIcon?: React.ReactNode;
   containerClassName?: string;
   label?: string;
+  labelClassName?: string;
   footer?: React.ReactNode;
   optional?: boolean;
 }
@@ -48,6 +49,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       rightIcon,
       errormessageClass,
       label,
+      labelClassName,
       footer,
       optional,
       variant,
@@ -62,7 +64,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={cn("flex flex-col gap-1.5", containerClassName)}>
         {label && (
-          <label className="text-sm text-[#0F172B] font-inter font-medium" htmlFor={label}>
+          <label className={cn("text-sm text-[#0F172B] font-inter font-medium", labelClassName)} htmlFor={label}>
             {label}
             {!optional && <span className="text-red-400 font-medium"> *</span>}
           </label>
