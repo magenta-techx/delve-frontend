@@ -14,6 +14,10 @@ import type {
   BusinessPerformanceData,
   BusinessService,
 } from '@/types/api';
+import {
+  OngoingBusinessOnboarding,
+  OngoingBusinessOnboardingResponse,
+} from '@/types/business/types';
 import { authAwareFetch } from '@/utils/authAwareFetch';
 import { useAuthErrorHandler } from '@/hooks/useAuthErrorHandler';
 
@@ -828,5 +832,22 @@ export function useUpdateBusinessHours(): UseMutationResult<
       qc.invalidateQueries({ queryKey: ['business', business_id] });
     },
     onError: handleErrorObject,
+  });
+}
+
+// Fetch ongoing business onboarding
+export function useOngoingBusinessOnboarding(): UseQueryResult<
+  OngoingBusinessOnboardingResponse,
+  Error
+> {
+  return useQuery({
+    queryKey: ['ongoing-business-onboarding'],
+    queryFn: async () => {
+      const res = await authAwareFetch('/api/businesses/onboarding/ongoing/');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to fetch onboarding data');
+      return data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

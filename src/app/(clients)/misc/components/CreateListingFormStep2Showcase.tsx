@@ -1,64 +1,129 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Trash } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow } from 'swiper/modules';
 
 // Import Swiper styles
+// @ts-ignore - Swiper CSS modules don't have type declarations
 import 'swiper/css';
+// @ts-ignore
 import 'swiper/css/effect-coverflow';
+// @ts-ignore
 import 'swiper/css/navigation';
 import { UploadIcon } from '../icons';
 
+interface ImageData {
+  type: 'cloud' | 'local';
+  source: string | File; // URL string for cloud, File object for local
+  id?: number; // Only for cloud images
+}
+
 interface BusinessShowCaseFormProps {
   setBusinessShowCaseFile: (files: File[]) => void;
+  setCloudImages?: (images: { id: number; image: string; uploaded_at: string }[]) => void;
+  initialCloudImages?: { id: number; image: string; uploaded_at: string }[];
 }
 
 const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   setBusinessShowCaseFile,
+  setCloudImages,
+  initialCloudImages = [] as { id: number; image: string; uploaded_at: string }[],
 }) => {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [localFiles, setLocalFiles] = useState<File[]>([]);
+  const [cloudImages, setCloudImagesState] = useState<{ id: number; image: string; uploaded_at: string }[]>(initialCloudImages);
+  const [previews, setPreviews] = useState<ImageData[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Initialize with cloud images on mount
+  useEffect(() => {
+    const cloudImagePreviews: ImageData[] = initialCloudImages.map(img => ({
+      type: 'cloud',
+      source: img.image,
+      id: img.id,
+    }));
+    setPreviews(cloudImagePreviews);
+    setLocalFiles([]);
+    // Reset businessShowCaseFile to empty when initializing with cloud images
+    // Did this to ensure we don't re-upload files from a previous session
+    setBusinessShowCaseFile([]);
+  }, [initialCloudImages, setBusinessShowCaseFile]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
-    // Limit to 10 images total
-    const remainingSlots = 10 - uploadedFiles.length;
+    // Total limit is 10 images (cloud + local combined)
+    const totalCurrent = cloudImages.length + localFiles.length;
+    const remainingSlots = 10 - totalCurrent;
     const filesToAdd = files.slice(0, remainingSlots);
 
-    const newFiles = [...uploadedFiles, ...filesToAdd];
-    setUploadedFiles(newFiles);
+    const newFiles = [...localFiles, ...filesToAdd];
+    setLocalFiles(newFiles);
     setBusinessShowCaseFile(newFiles);
 
     // Create previews for new files
     filesToAdd.forEach((file) => {
       const reader = new FileReader();
+      reader.onerror = () => {
+        console.error('Failed to read file:', file.name);
+      };
       reader.onload = (e) => {
-        setPreviews((prev) => [...prev, e.target?.result as string]);
+        const result = e.target?.result;
+        if (typeof result === 'string') {
+          setPreviews((prev) => [
+            ...prev,
+            {
+              type: 'local',
+              source: result, 
+            },
+          ]);
+        } else {
+          console.error('FileReader result is not a string for file:', file.name);
+        }
       };
       reader.readAsDataURL(file);
     });
   };
 
   const removeFile = (index: number) => {
-    const newFiles = uploadedFiles.filter((_, i) => i !== index);
-    const newPreviews = previews.filter((_, i) => i !== index);
+    const imageData = previews[index];
+
+    if (!imageData) return;
     
-    setUploadedFiles(newFiles);
+    if (imageData.type === 'cloud') {
+      // Count how many cloud images come before this one
+      const cloudImagesBefore = previews
+        .slice(0, index)
+        .filter(p => p.type === 'cloud').length;
+      
+      // Remove from cloud images
+      const newCloudImages = cloudImages.filter((_, i) => i !== cloudImagesBefore);
+      setCloudImages?.(newCloudImages);
+      setCloudImagesState(newCloudImages);
+    } else {
+      // Count how many local files come before this one
+      const localFilesBefore = previews
+        .slice(0, index)
+        .filter(p => p.type === 'local').length;
+      
+      // Remove from local files
+      const newFiles = localFiles.filter((_, i) => i !== localFilesBefore);
+      setLocalFiles(newFiles);
+      setBusinessShowCaseFile(newFiles);
+    }
+
+    // Remove from previews
+    const newPreviews = previews.filter((_, i) => i !== index);
     setPreviews(newPreviews);
-    setBusinessShowCaseFile(newFiles);
   };
+
+  const totalImages = cloudImages.length + localFiles.length;
 
   return (
     <section className="space-y-6">
-     
-
-
       {/* Uploaded Images Carousel */}
-      {uploadedFiles.length > 0 && (
+      {previews.length > 0 && (
         <div className="w-full overflow-hidden flex justify-center">
           <Swiper
             spaceBetween={30}
@@ -97,7 +162,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
               },
             }}
           >
-            {previews.map((preview, index) => {
+            {previews.map((imageData, index) => {
               const distance = Math.abs(index - activeIndex);
               
               // Calculate scale and dimensions based on distance from center (desktop only)
@@ -128,6 +193,12 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
                 ? 'opacity-80' 
                 : 'opacity-60';
               
+              // Determine the image source
+              let imgSrc = '';
+              if (typeof imageData.source === 'string') {
+                imgSrc = imageData.source;
+              }
+              
               return (
                 <SwiperSlide
                   key={index}
@@ -140,11 +211,18 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
                     }}
                   >
                     <img
-                      src={preview}
+                      src={imgSrc}
                       alt={`Business showcase ${index + 1}`}
                       className={`w-full h-auto rounded-lg object-cover ${maxHeight}`}
                       style={{
                         aspectRatio: 'auto'
+                      }}
+                      onError={(e) => {
+                        console.error('Image failed to load:', imgSrc);
+                        (e.target as HTMLImageElement).style.background = '#f0f0f0';
+                      }}
+                      onLoad={() => {
+                        console.log('Image loaded successfully:', imgSrc);
                       }}
                     />
                     <button
@@ -174,19 +252,19 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
             multiple
             onChange={handleFileUpload}
             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-            disabled={uploadedFiles.length >= 10}
+            disabled={totalImages >= 10}
           />
         </div>
-        {uploadedFiles.length >= 10 && (
+        {totalImages >= 10 && (
           <p className="mt-2 text-sm text-amber-600">
             Maximum of 10 images allowed
           </p>
         )}
       </div>
 
-      {uploadedFiles.length > 0 && (
+      {totalImages > 0 && (
         <p className="text-center text-sm text-gray-600">
-          {uploadedFiles.length} image{uploadedFiles.length !== 1 ? 's' : ''} uploaded
+          {totalImages} image{totalImages !== 1 ? 's' : ''} uploaded
         </p>
       )}
     </section>

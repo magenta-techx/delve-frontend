@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import ArrowRightIconWhite from '@/assets/icons/ArrowRightIconWhite';
 
@@ -21,6 +21,8 @@ import {
   useUpdateBusinessCategory,
   useUpdateLocationAndContact,
   useCreateServices,
+  useOngoingBusinessOnboarding,
+  useDeleteBusinessImages,
 } from '@/app/(business)/misc/api/business';
 import { Logo } from '@/assets/icons';
 import {
@@ -47,8 +49,13 @@ const BusinessStepForm = (): JSX.Element => {
     setBusinessId,
   } = useBusinessRegistrationStore();
 
+  // Fetch ongoing onboarding data
+  const { data: onboardingData, isLoading: isLoadingOnboarding, refetch: refetchOnboarding } =
+    useOngoingBusinessOnboarding();
+
   // API hooks
   const uploadImagesMutation = useUploadBusinessImages();
+  const deleteImagesMutation = useDeleteBusinessImages();
   const createServicesMutation = useCreateServices();
   const updateAmenitiesMutation = useUpdateBusinessAmenities();
   const updateLocationMutation = useUpdateLocationAndContact();
@@ -56,6 +63,8 @@ const BusinessStepForm = (): JSX.Element => {
 
   const [pageNumber, setPageNumber] = useState(savedStep);
   const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File[]>([]);
+  const [cloudImages, setCloudImages] = useState<{ id: number; image: string; uploaded_at: string }[]>([]);
+  const [initialCloudImages, setInitialCloudImages] = useState<{ id: number; image: string; uploaded_at: string }[]>([]);
   // Combined interface for the API
   interface CombinedContactInfo {
     phone_number: string;
@@ -91,6 +100,58 @@ const BusinessStepForm = (): JSX.Element => {
     currentBusinessId ?? undefined
   );
   const [isIntroFormValid, setIsIntroFormValid] = useState<boolean>(false);
+  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
+
+  // Map onboarding phases to step numbers
+  const phaseToStepMap: Record<string, number> = {
+    introduction: 1,
+    media: 2,
+    categories: 3,
+    amenities: 4,
+    services: 5,
+    location: 6,
+    contact_and_socials: 7,
+  };
+
+  // Initialize form from onboarding data
+  useEffect(() => {
+    if (!isLoadingOnboarding && onboardingData?.data) {
+      const onboarding = onboardingData.data;
+      
+      // Set business ID
+      setLocalBusinessId(onboarding.id);
+      setBusinessId(onboarding.id);
+
+      // Set the current step based on onboarding phase - ONLY on first load
+      if (isFirstLoad) {
+        const stepFromPhase = phaseToStepMap[onboarding.onboarding_phase] || 0;
+        setPageNumber(stepFromPhase);
+        setStep(stepFromPhase);
+        setIsFirstLoad(false);
+      }
+
+      // Pre-populate form fields based on available data
+      if (onboarding.category) {
+        setSelectedCategoryId(onboarding.category.id);
+      }
+
+      if (onboarding.subcategories && onboarding.subcategories.length > 0) {
+        setSelectedSubcategoryIds(
+          onboarding.subcategories.map(sub => sub.id)
+        );
+        setSubcategoryCount(onboarding.subcategories.length);
+      }
+
+      // Set cloud images from onboarding
+      if (onboarding.images && onboarding.images.length > 0) {
+        setInitialCloudImages(onboarding.images);
+        setCloudImages(onboarding.images);
+      }
+
+      // Note: Services, images, and other complex data should be handled
+      // by the individual form components that fetch and manage them
+    }
+  }, [onboardingData, isLoadingOnboarding, setBusinessId, setStep]);
 
   // Step 1: Introduction
   const handleIntroductionFormSuccess = (createdBusinessId: number) => {
@@ -104,13 +165,6 @@ const BusinessStepForm = (): JSX.Element => {
   const handleShowCaseFormsSubmission = async (
     values: BusinessShowCaseProps
   ): Promise<void> => {
-    if (!values.images || values.images.length === 0) {
-      setStep(pageNumber + 1);
-      setPageNumber(prev => prev + 1);
-      setIsSubmitting(false);
-      return;
-    }
-
     if (!businessId) {
       toast.error('Error', {
         description:
@@ -120,20 +174,45 @@ const BusinessStepForm = (): JSX.Element => {
     }
 
     try {
-      await uploadImagesMutation.mutateAsync({
-        business_id: businessId,
-        images: values.images,
-      });
+      // Determine which cloud images were deleted
+      // by comparing initial IDs with current IDs
+      const deletedImageIds: number[] = [];
+      const currentImageIds = new Set(cloudImages.map(img => img.id));
+      
+      for (const img of initialCloudImages) {
+        if (!currentImageIds.has(img.id)) {
+          deletedImageIds.push(img.id);
+        }
+      }
+
+      // If there are deletions, call the delete endpoint
+      if (deletedImageIds.length > 0) {
+        await deleteImagesMutation.mutateAsync({
+          image_ids: deletedImageIds,
+        });
+      }
+
+      // Upload new local images
+      if (values.images && values.images.length > 0) {
+        await uploadImagesMutation.mutateAsync({
+          business_id: businessId,
+          images: values.images,
+        });
+      }
 
       toast.success('Step completed!', {
-        description: 'Showcase images uploaded successfully.',
+        description: 'Showcase images saved successfully.',
       });
+
+      // Refetch onboarding data after step change
+      await refetchOnboarding();
+
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
     } catch (error) {
       console.log('Request failed:', error);
       toast.error('Error', {
-        description: `'Error submitting showcase. ${error}.'`,
+        description: `Error submitting showcase. ${error}`,
       });
     }
     setIsSubmitting(false);
@@ -170,6 +249,7 @@ const BusinessStepForm = (): JSX.Element => {
       !selectedCategoryId ||
       selectedSubcategoryIds.length === 0
     ) {
+      await handleStepComplete();
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
       setIsSubmitting(false);
@@ -186,9 +266,11 @@ const BusinessStepForm = (): JSX.Element => {
       toast.success('Step completed!', {
         description: 'Business categories updated successfully.',
       });
+      await handleStepComplete();
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
     } catch (error) {
+      await handleStepComplete();
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
       toast.error('New Error', {
@@ -202,6 +284,7 @@ const BusinessStepForm = (): JSX.Element => {
   const handleAmenitiesFormsSubmission = async (): Promise<void> => {
     try {
       if (selectedAmenities.length === 0 || !businessId) {
+        await handleStepComplete();
         setStep(pageNumber + 1);
         setPageNumber(prev => prev + 1);
         setIsSubmitting(false);
@@ -216,9 +299,11 @@ const BusinessStepForm = (): JSX.Element => {
       toast.success('Step completed!', {
         description: 'Business amenities updated successfully.',
       });
+      await handleStepComplete();
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
     } catch (error) {
+      await handleStepComplete();
       toast.error('New Error', {
         description: `Error updating amenities. ${error}`,
       });
@@ -229,6 +314,7 @@ const BusinessStepForm = (): JSX.Element => {
   // Step 5: Services
   const handleServicesFormsSubmission = async (): Promise<void> => {
     if (!businessId || services.length === 0) {
+      await handleStepComplete();
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
       setIsSubmitting(false);
@@ -251,10 +337,12 @@ const BusinessStepForm = (): JSX.Element => {
       toast.success('Step completed!', {
         description: 'Business services created successfully.',
       });
+      await handleStepComplete();
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
     } catch (error) {
       console.log('Request failed:', error);
+      await handleStepComplete();
       toast.error('Error', {
         description: 'Error creating services. Please try again.',
       });
@@ -350,10 +438,13 @@ const BusinessStepForm = (): JSX.Element => {
         description: 'Business registration completed successfully.',
       });
 
+      await handleStepComplete();
+
       // Registration complete, redirect to business submitted page
       router.push('/business/business-submitted');
     } catch (error) {
       console.log('Request failed:', error);
+      await handleStepComplete();
       toast.error('Error', {
         description: 'Error updating information. Please try again.',
       });
@@ -516,6 +607,13 @@ const BusinessStepForm = (): JSX.Element => {
     }
   };
 
+  // Refetch onboarding data after step changes (but not on initial load)
+  const handleStepComplete = async (): Promise<void> => {
+    if (!isFirstLoad) {
+      await refetchOnboarding();
+    }
+  };
+
   const steps = [
     {
       id: 0,
@@ -538,6 +636,8 @@ const BusinessStepForm = (): JSX.Element => {
       component: (
         <BusinessShowCaseForm
           setBusinessShowCaseFile={setBusinessShowCaseFile}
+          setCloudImages={setCloudImages}
+          initialCloudImages={initialCloudImages}
         />
       ),
     },
@@ -603,54 +703,67 @@ const BusinessStepForm = (): JSX.Element => {
 
   return (
     <div className=''>
-      {/* Progress Bar */}
-      <div className='px-4 py-4 sm:px-6'>
-        <div className='mx-auto max-w-5xl'>
-          <div className='mb-2 flex items-center justify-between text-sm'>
-            <span className='sr-only font-medium text-gray-900'>
-              Step {pageNumber + 1} of {steps.length}
-            </span>
-          </div>
-          <div className='flex gap-2'>
-            {steps.map((_, index) => (
-              <div
-                key={index}
-                className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                  index <= pageNumber ? 'bg-purple-600' : 'bg-gray-200'
-                }`}
-              />
-            ))}
+      {isLoadingOnboarding && (
+        <div className='flex h-screen items-center justify-center'>
+          <div className='text-center'>
+            <div className='mb-4 inline-block'>
+              <Logo textColor={'black'} />
+            </div>
+            <p className='text-gray-600'>Loading your onboarding progress...</p>
           </div>
         </div>
-      </div>
-      <div className='px-4 py-4 sm:px-6'>
-        <div className='mx-auto flex max-w-5xl items-center justify-between'>
-          <Logo textColor={'black'} />
-          <div className='flex items-center gap-4'>
-            {pageNumber > 1 && (
-              <Button
-                variant='black'
-                onClick={handleBack}
-                className='flex items-center font-medium'
-                disabled={isSubmitting}
-                size='xl'
-              >
-                <ArrowLeftIconBlackSm />
-                Back
-              </Button>
-            )}
+      )}
 
-            <Button
-              onClick={handleContinue}
-              disabled={isSubmitting || !isCurrentStepValid()}
-              isloading={isSubmitting}
-              className='flex items-center gap-2 max-md:hidden'
-              size='xl'
-            >
-              {getButtonText()}
-              {!isSubmitting && <ArrowRightIconWhite />}
-            </Button>
+      {!isLoadingOnboarding && (
+        <>
+          {/* Progress Bar */}
+          <div className='px-4 py-4 sm:px-6'>
+            <div className='mx-auto max-w-5xl'>
+              <div className='mb-2 flex items-center justify-between text-sm'>
+                <span className='sr-only font-medium text-gray-900'>
+                  Step {pageNumber + 1} of {steps.length}
+                </span>
+              </div>
+              <div className='flex gap-2'>
+                {steps.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                      index <= pageNumber ? 'bg-purple-600' : 'bg-gray-200'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
+          <div className='px-4 py-4 sm:px-6'>
+            <div className='mx-auto flex max-w-5xl items-center justify-between'>
+              <Logo textColor={'black'} />
+              <div className='flex items-center gap-4'>
+                {pageNumber > 1 && (
+                  <Button
+                    variant='black'
+                    onClick={handleBack}
+                    className='flex items-center font-medium'
+                    disabled={isSubmitting}
+                    size='xl'
+                  >
+                    <ArrowLeftIconBlackSm />
+                    Back
+                  </Button>
+                )}
+
+                <Button
+                  onClick={handleContinue}
+                  disabled={isSubmitting || !isCurrentStepValid()}
+                  isloading={isSubmitting}
+                  className='flex items-center gap-2 max-md:hidden'
+                  size='xl'
+                >
+                  {getButtonText()}
+                  {!isSubmitting && <ArrowRightIconWhite />}
+                </Button>
+              </div>
         </div>
       </div>
       {/* Content */}
@@ -680,6 +793,8 @@ const BusinessStepForm = (): JSX.Element => {
           {!isSubmitting && <ArrowRightIconWhite />}
         </Button>
       </div>
+        </>
+      )}
     </div>
   );
 };
