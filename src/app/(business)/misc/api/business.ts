@@ -15,7 +15,6 @@ import type {
   BusinessService,
 } from '@/types/api';
 import {
-  OngoingBusinessOnboarding,
   OngoingBusinessOnboardingResponse,
 } from '@/types/business/types';
 import { authAwareFetch } from '@/utils/authAwareFetch';

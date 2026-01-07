@@ -45,7 +45,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   const user: UserDetail | null = useMemo(() => {
     if (!shouldFetch) return null;
-    return (currentUserData as any)?.user ?? null;
+    return (currentUserData as { user?: UserDetail })?.user ?? null;
   }, [currentUserData, shouldFetch]);
 
   const value = useMemo(

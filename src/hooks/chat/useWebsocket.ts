@@ -42,7 +42,7 @@ export function useWebsocket(url?: string, onMessage?: MessageHandler) {
     }
   }, [url, onMessage]);
 
-  function send(data: any) {
+  function send(data: unknown) {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return false;
     try {
       wsRef.current.send(typeof data === 'string' ? data : JSON.stringify(data));

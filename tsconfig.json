@@ -52,7 +52,6 @@
     "noPropertyAccessFromIndexSignature": true,
     /* Completeness */
     "skipLibCheck": true,
-    "ignoreDeprecations": "6.0",
     /* Path Mapping */
     "baseUrl": ".",
     "paths": {

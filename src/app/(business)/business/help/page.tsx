@@ -6,7 +6,7 @@ import NavProfileSection from '../../misc/components/layout/NavProfileSection';
 import { useUserContext } from '@/contexts/UserContext';
 import { PremiumUserHelpForm } from '../../misc/components';
 
-const page = () => {
+const Page = () => {
   const { user } = useUserContext();
   const isPremuiumUser = user?.is_premium_plan_active;
   return (
@@ -151,4 +151,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

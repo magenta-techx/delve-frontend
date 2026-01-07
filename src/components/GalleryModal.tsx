@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
+import Image from 'next/image';
 
 interface GalleryModalProps {
   images: string[];
@@ -9,6 +10,9 @@ interface GalleryModalProps {
 
 export const GalleryModal: React.FC<GalleryModalProps> = ({ images, open, initialIndex, onClose }) => {
   const [current, setCurrent] = React.useState(initialIndex);
+
+  const prev = useCallback(() => setCurrent(c => (c === 0 ? images.length - 1 : c - 1)), [images.length]);
+  const next = useCallback(() => setCurrent(c => (c === images.length - 1 ? 0 : c + 1)), [images.length]);
 
   useEffect(() => {
     if (open) setCurrent(initialIndex);
@@ -23,12 +27,9 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({ images, open, initia
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [open, current]);
+  }, [open, current, onClose, prev, next]);
 
   if (!open) return null;
-
-  const prev = () => setCurrent(c => (c === 0 ? images.length - 1 : c - 1));
-  const next = () => setCurrent(c => (c === images.length - 1 ? 0 : c + 1));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -49,11 +50,13 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({ images, open, initia
           >
             <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="#222" strokeWidth="2" strokeLinecap="round"/></svg>
           </button>
-          <img
-            src={images[current]}
+          <Image
+            src={images[current]!}
             alt="Gallery"
             className="object-contain rounded-xl max-h-full max-w-full shadow-xl bg-white"
             style={{ maxHeight: '60vh', maxWidth: '80vw' }}
+            width={800}
+            height={600}
           />
           <button
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 hover:bg-white"
@@ -72,7 +75,7 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({ images, open, initia
               onClick={() => setCurrent(idx)}
               aria-label={`Go to image ${idx + 1}`}
             >
-              <img src={img} alt="Thumb" className="object-cover w-full h-full" />
+              <Image src={img} alt="Thumb" className="object-cover w-full h-full" width={56} height={56} />
             </button>
           ))}
         </div>

@@ -1,11 +1,11 @@
 import { cn } from '@/lib/utils';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 const AnimatedSquares = () => {
-  const [bigIndex, setBigIndex] = useState(1);
+  const [bigIndex, setBigIndex] = React.useState(1);
 
   // Custom order: 1,2,4,3,1,...
-  const order = [1, 3, 2, 0];
+  const order = useMemo(() => [1, 3, 2, 0], []);
   useEffect(() => {
     const interval = setInterval(() => {
       setBigIndex(prev => {
@@ -16,7 +16,7 @@ const AnimatedSquares = () => {
     }, 800);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [order]);
 
   return (
     <div className='relative grid grid-cols-2 items-center justify-center gap-0.5'>

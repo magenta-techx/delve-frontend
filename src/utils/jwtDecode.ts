@@ -1,5 +1,5 @@
 // Simple JWT decode (no verification, just payload extraction)
-export function decodeJwt(token: string): Record<string, any> | null {
+export function decodeJwt(token: string): Record<string, unknown> | null {
   if (!token) return null;
   try {
     const base64Url = token.split('.')[1];
