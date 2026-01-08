@@ -107,16 +107,24 @@ const BusinessStepForm = (): JSX.Element => {
   }
 
   const [selectedAmenities, setSelectedAmenities] = useState<number[]>(
-    onboardingData?.data?.amenities.map(amenity => amenity.id) || []
+    Array.isArray(onboardingData?.data?.amenities) 
+      ? onboardingData.data.amenities.map(amenity => amenity.id) 
+      : []
   );
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     onboardingData?.data?.category?.id || null
   );
   const [selectedSubcategoryIds, setSelectedSubcategoryIds] = useState<
     number[]
-  >(onboardingData?.data?.category.subcategories.map(sub => sub.id) || []);
+  >(
+    Array.isArray(onboardingData?.data?.category?.subcategories)
+      ? onboardingData.data.category.subcategories.map(sub => sub.id)
+      : []
+  );
   const [subcategoryCount, setSubcategoryCount] = useState<number>(
-    onboardingData?.data?.category.subcategories?.length || 0
+    Array.isArray(onboardingData?.data?.category?.subcategories)
+      ? onboardingData.data.category.subcategories.length
+      : 0
   );
 
   // Old services state kept for backward compatibility - combines cloud and local
