@@ -10,7 +10,7 @@ interface ErrorProps {
   reset: () => void;
 }
 
-export default function Error({ error, reset }: ErrorProps): JSX.Element {
+export default function Error({ error }: ErrorProps): JSX.Element {
   useEffect(() => {
     // Log the error to an error reporting service
     console.error('Application error:', error);
