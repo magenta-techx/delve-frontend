@@ -225,7 +225,7 @@ export default function ContactPage() {
 
   // Fetch states
   const { data: statesData, isLoading: statesLoading } = useBusinessStates();
-  const states = statesData || [];
+  const states = statesData?.data || [];
 
   // Mutations
   const updateLocationAndContactMutation = useUpdateLocationAndContact();

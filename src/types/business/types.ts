@@ -14,6 +14,12 @@ export interface BusinessAmenitiesTypeProp {
   name: string;
 }
 
+export interface BusinessAmenity {
+  id: number;
+  name: string;
+  icon_name?: string;
+}
+
 // Onboarding Types
 export type OnboardingPhase =
   | 'introduction'
@@ -40,6 +46,7 @@ export interface BusinessCategory {
   id: number;
   name: string;
   icon_name: string;
+  subcategories: BusinessSubcategory[];
 }
 
 export interface BusinessSubcategory {
@@ -85,6 +92,7 @@ export interface BusinessImage {
   uploaded_at: string;
 }
 
+
 export interface OngoingBusinessOnboarding {
   id: number;
   owner: BusinessOwner;
@@ -99,6 +107,7 @@ export interface OngoingBusinessOnboarding {
   average_review_rating: number;
   category: BusinessCategory;
   subcategories: BusinessSubcategory[];
+  amenities: BusinessAmenity[];
   images: BusinessImage[];
   services: BusinessService[];
   phone_number: string;

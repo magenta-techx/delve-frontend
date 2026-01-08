@@ -54,9 +54,6 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     return 20; // A and E (edges)
   };
 
-  // Calculate total visible width to ensure overflow
-  const totalVisibleWidth = 20 + 25 + 30 + 25 + 20; // 120% for overflow
-
   const handlePrev = () => {
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);

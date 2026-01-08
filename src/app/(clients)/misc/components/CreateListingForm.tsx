@@ -10,10 +10,10 @@ import BusinessAmenities from './CreateListingFormStep4Amenities';
 import BusinessServicesForm from './CreateListingFormStep5Services';
 import BusinessLocationForm from './CreateListingFormStep6Location';
 import BusinessContactAndBusiness from './CreateListingFormStep7Contact';
+import CreateListingFormStep8Success from './CreateListingFormStep8Success';
 import { BusinessShowCaseProps } from '@/types/business/types';
 import { useBusinessRegistrationStore } from '@/stores/businessRegistrationStore';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
-import { useRouter } from 'next/navigation';
 
 import {
   useUploadBusinessImages,
@@ -21,6 +21,7 @@ import {
   useUpdateBusinessCategory,
   useUpdateLocationAndContact,
   useCreateServices,
+  useUpdateService,
   useOngoingBusinessOnboarding,
   useDeleteBusinessImages,
 } from '@/app/(business)/misc/api/business';
@@ -34,14 +35,13 @@ import z from 'zod';
 
 export type CreateListingLocation = z.infer<typeof locationZodSchema>;
 const BusinessStepForm = (): JSX.Element => {
-  type IntroFormHandle = { 
+  type IntroFormHandle = {
     submit: () => Promise<void>;
     isValid: () => boolean;
   };
 
   const introFormRef = useRef<IntroFormHandle | null>(null);
 
-  const router = useRouter();
   const {
     business_registration_step: savedStep,
     business_id: currentBusinessId,
@@ -50,21 +50,51 @@ const BusinessStepForm = (): JSX.Element => {
   } = useBusinessRegistrationStore();
 
   // Fetch ongoing onboarding data
-  const { data: onboardingData, isLoading: isLoadingOnboarding, refetch: refetchOnboarding } =
-    useOngoingBusinessOnboarding();
+  const {
+    data: onboardingData,
+    isLoading: isLoadingOnboarding,
+    refetch: refetchOnboarding,
+  } = useOngoingBusinessOnboarding();
 
   // API hooks
   const uploadImagesMutation = useUploadBusinessImages();
   const deleteImagesMutation = useDeleteBusinessImages();
   const createServicesMutation = useCreateServices();
+  const updateServiceMutation = useUpdateService();
   const updateAmenitiesMutation = useUpdateBusinessAmenities();
   const updateLocationMutation = useUpdateLocationAndContact();
   const updateCategoryMutation = useUpdateBusinessCategory();
 
   const [pageNumber, setPageNumber] = useState(savedStep);
   const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File[]>([]);
-  const [cloudImages, setCloudImages] = useState<{ id: number; image: string; uploaded_at: string }[]>([]);
-  const [initialCloudImages, setInitialCloudImages] = useState<{ id: number; image: string; uploaded_at: string }[]>([]);
+  const [cloudImages, setCloudImages] = useState<
+    { id: number; image: string; uploaded_at: string }[]
+  >([]);
+  const [initialCloudImages, setInitialCloudImages] = useState<
+    { id: number; image: string; uploaded_at: string }[]
+  >([]);
+
+  // Services: Cloud (from onboarding) and Local (newly created)
+  interface CloudService {
+    id: number;
+    title: string;
+    description: string;
+    image: string;
+    uploaded_at: string;
+  }
+
+  interface LocalService {
+    title: string;
+    description?: string;
+    image?: File | null;
+  }
+
+  const [cloudServices, setCloudServices] = useState<CloudService[]>([]);
+  const [initialCloudServices, setInitialCloudServices] = useState<
+    CloudService[]
+  >([]);
+  const [localServices, setLocalServices] = useState<LocalService[]>([]);
+
   // Combined interface for the API
   interface CombinedContactInfo {
     phone_number: string;
@@ -76,14 +106,20 @@ const BusinessStepForm = (): JSX.Element => {
     tiktok_link?: string;
   }
 
-  const [selectedAmenities, setSelectedAmenities] = useState<number[]>([]);
+  const [selectedAmenities, setSelectedAmenities] = useState<number[]>(
+    onboardingData?.data?.amenities.map(amenity => amenity.id) || []
+  );
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null
+    onboardingData?.data?.category?.id || null
   );
   const [selectedSubcategoryIds, setSelectedSubcategoryIds] = useState<
     number[]
-  >([]);
-  const [subcategoryCount, setSubcategoryCount] = useState<number>(0);
+  >(onboardingData?.data?.category.subcategories.map(sub => sub.id) || []);
+  const [subcategoryCount, setSubcategoryCount] = useState<number>(
+    onboardingData?.data?.category.subcategories?.length || 0
+  );
+
+  // Old services state kept for backward compatibility - combines cloud and local
   const [services, setServices] = useState<
     {
       title: string;
@@ -91,6 +127,7 @@ const BusinessStepForm = (): JSX.Element => {
       image?: File | null;
     }[]
   >([]);
+
   const [location, setLocation] = useState<CreateListingLocation | null>(null);
   const [contactInfo, setContactInfo] = useState<CombinedContactInfo | null>(
     null
@@ -116,40 +153,93 @@ const BusinessStepForm = (): JSX.Element => {
   // Initialize form from onboarding data
   useEffect(() => {
     if (!isLoadingOnboarding && onboardingData?.data) {
+      // Check if data is a valid object (not an array or empty)
+      if (Array.isArray(onboardingData.data) || typeof onboardingData.data !== 'object') {
+        // Data is empty or invalid, just mark first load as done
+        if (isFirstLoad) {
+          setIsFirstLoad(false);
+        }
+        return;
+      }
+
       const onboarding = onboardingData.data;
-      
+
       // Set business ID
-      setLocalBusinessId(onboarding.id);
-      setBusinessId(onboarding.id);
+      if (onboarding.id) {
+        setLocalBusinessId(onboarding.id);
+        setBusinessId(onboarding.id);
+      }
 
       // Set the current step based on onboarding phase - ONLY on first load
       if (isFirstLoad) {
-        const stepFromPhase = phaseToStepMap[onboarding.onboarding_phase] || 0;
+        const stepFromPhase = onboarding.onboarding_phase 
+          ? (phaseToStepMap[onboarding.onboarding_phase] ?? 0)
+          : 0;
         setPageNumber(stepFromPhase);
         setStep(stepFromPhase);
         setIsFirstLoad(false);
       }
 
       // Pre-populate form fields based on available data
-      if (onboarding.category) {
+      if (onboarding.category?.id) {
         setSelectedCategoryId(onboarding.category.id);
       }
 
-      if (onboarding.subcategories && onboarding.subcategories.length > 0) {
-        setSelectedSubcategoryIds(
-          onboarding.subcategories.map(sub => sub.id)
-        );
-        setSubcategoryCount(onboarding.subcategories.length);
+      if (Array.isArray(onboarding.category?.subcategories) && onboarding.category.subcategories.length > 0) {
+        setSelectedSubcategoryIds(onboarding.category.subcategories.map(sub => sub.id));
+        setSubcategoryCount(onboarding.category.subcategories.length);
+      }
+
+      // Set amenities from onboarding
+      if (Array.isArray(onboarding.amenities) && onboarding.amenities.length > 0) {
+        setSelectedAmenities(onboarding.amenities.map(amenity => amenity.id));
+      }
+
+      // Set location from onboarding
+      if (onboarding.state || onboarding.address) {
+        setLocation({
+          state: onboarding.state || '',
+          address: onboarding.address || '',
+          operates_without_location: !onboarding.address,
+          latitude: undefined,
+          longitude: undefined,
+        });
+      }
+
+      // Set contact info from onboarding
+      if (
+        onboarding.phone_number ||
+        onboarding.registration_number ||
+        onboarding.social_links
+      ) {
+        setContactInfo({
+          phone_number: onboarding.phone_number || '',
+          registration_number: onboarding.registration_number || '',
+          whatsapp_link: onboarding.social_links?.whatsapp || '',
+          facebook_link: onboarding.social_links?.facebook || '',
+          instagram_link: onboarding.social_links?.instagram || '',
+          twitter_link: onboarding.social_links?.twitter || '',
+          tiktok_link: onboarding.social_links?.tiktok || '',
+        });
       }
 
       // Set cloud images from onboarding
-      if (onboarding.images && onboarding.images.length > 0) {
+      if (Array.isArray(onboarding.images) && onboarding.images.length > 0) {
         setInitialCloudImages(onboarding.images);
         setCloudImages(onboarding.images);
       }
 
+      // Set cloud services from onboarding
+      if (Array.isArray(onboarding.services) && onboarding.services.length > 0) {
+        setInitialCloudServices(onboarding.services);
+        setCloudServices(onboarding.services);
+      }
+
       // Note: Services, images, and other complex data should be handled
       // by the individual form components that fetch and manage them
+    } else if (isFirstLoad && isLoadingOnboarding === false) {
+      // Only mark first load as done if we're not loading and have no data
+      setIsFirstLoad(false);
     }
   }, [onboardingData, isLoadingOnboarding, setBusinessId, setStep]);
 
@@ -178,7 +268,7 @@ const BusinessStepForm = (): JSX.Element => {
       // by comparing initial IDs with current IDs
       const deletedImageIds: number[] = [];
       const currentImageIds = new Set(cloudImages.map(img => img.id));
-      
+
       for (const img of initialCloudImages) {
         if (!currentImageIds.has(img.id)) {
           deletedImageIds.push(img.id);
@@ -230,7 +320,7 @@ const BusinessStepForm = (): JSX.Element => {
       setSubcategoryCount(0);
       return;
     }
-    
+
     // If changing to a different category, clear previous subcategories
     if (categoryId !== selectedCategoryId) {
       setSelectedCategoryId(categoryId);
@@ -313,7 +403,7 @@ const BusinessStepForm = (): JSX.Element => {
 
   // Step 5: Services
   const handleServicesFormsSubmission = async (): Promise<void> => {
-    if (!businessId || services.length === 0) {
+    if (!businessId) {
       await handleStepComplete();
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
@@ -322,20 +412,64 @@ const BusinessStepForm = (): JSX.Element => {
     }
 
     try {
-      // Transform services to ensure description is always present and image is undefined instead of null
-      const servicesWithDescription = services.map(service => ({
-        ...service,
-        description: service.description || '',
-        image: !!service.image ? service.image : null,
-      }));
+      // Determine which cloud services were edited
+      // by comparing initial cloud services with current cloud services
+      const editedCloudServices: typeof cloudServices = [];
 
-      await createServicesMutation.mutateAsync({
-        business_id: businessId,
-        services: servicesWithDescription,
-      });
+      for (const service of cloudServices) {
+        const initialService = initialCloudServices.find(
+          s => s.id === service.id
+        );
+        if (initialService) {
+          // Check if title, description, or image changed
+          const titleChanged = service.title !== initialService.title;
+          const descriptionChanged =
+            service.description !== initialService.description;
+          const imageFileAdded = 'imageFile' in service && service.imageFile;
+
+          if (titleChanged || descriptionChanged || imageFileAdded) {
+            editedCloudServices.push(service);
+          }
+        }
+      }
+
+      // Update edited cloud services
+      if (editedCloudServices.length > 0) {
+        for (const service of editedCloudServices) {
+          const updateData: any = {
+            business_id: businessId,
+            service_id: service.id,
+            service: {
+              title: service.title,
+              description: service.description,
+            },
+          };
+          // If image was changed (has imageFile), include it
+          if ('imageFile' in service && service.imageFile) {
+            updateData.service.image = service.imageFile;
+          }
+
+          await updateServiceMutation.mutateAsync(updateData);
+        }
+      }
+
+      // Create new local services
+      if (localServices.length > 0) {
+        // Transform services to ensure description is always present and image is undefined instead of null
+        const servicesWithDescription = localServices.map(service => ({
+          ...service,
+          description: service.description || '',
+          image: !!service.image ? service.image : null,
+        }));
+
+        await createServicesMutation.mutateAsync({
+          business_id: businessId,
+          services: servicesWithDescription,
+        });
+      }
 
       toast.success('Step completed!', {
-        description: 'Business services created successfully.',
+        description: 'Business services saved successfully.',
       });
       await handleStepComplete();
       setStep(pageNumber + 1);
@@ -344,7 +478,7 @@ const BusinessStepForm = (): JSX.Element => {
       console.log('Request failed:', error);
       await handleStepComplete();
       toast.error('Error', {
-        description: 'Error creating services. Please try again.',
+        description: 'Error saving services. Please try again.',
       });
     }
     setIsSubmitting(false);
@@ -440,8 +574,9 @@ const BusinessStepForm = (): JSX.Element => {
 
       await handleStepComplete();
 
-      // Registration complete, redirect to business submitted page
-      router.push('/business/business-submitted');
+      // Move to success page (step 7)
+      setStep(7);
+      setPageNumber(7);
     } catch (error) {
       console.log('Request failed:', error);
       await handleStepComplete();
@@ -453,13 +588,18 @@ const BusinessStepForm = (): JSX.Element => {
   };
 
   const getButtonText = (): string => {
-    if (pageNumber === steps.length - 1) {
-      return 'Finish 🚀';
+    // Success page (step 7) - don't show button
+    if (pageNumber === 7) {
+      return '';
+    }
+
+    if (pageNumber === 6) {
+      return 'Submit';
     }
 
     if (
       (pageNumber === 3 && selectedAmenities.length === 0) ||
-      (pageNumber === 4 && services.length === 0)
+      (pageNumber === 4 && services.length === 0 && cloudServices.length === 0)
     ) {
       return 'Skip';
     }
@@ -495,6 +635,9 @@ const BusinessStepForm = (): JSX.Element => {
       case 6:
         // Contact - requires phone number
         return !!(contactInfo && contactInfo.phone_number);
+      case 7:
+        // Success page - always valid (no button shown anyway)
+        return true;
       default:
         return true;
     }
@@ -593,13 +736,16 @@ const BusinessStepForm = (): JSX.Element => {
       }
     } catch (error) {
       console.error('Error in form submission:', error);
-      
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleBack = (): void => {
+    // Don't allow going back from success page
+    if (pageNumber === 7) {
+      return;
+    }
     if (pageNumber > 0) {
       const newPageNumber = pageNumber - 1;
       setPageNumber(newPageNumber);
@@ -672,7 +818,13 @@ const BusinessStepForm = (): JSX.Element => {
       subtitle:
         'Showcase your services to attract the right clients and boost bookings.',
       component: (
-        <BusinessServicesForm onServicesChange={e => setServices(e)} />
+        <BusinessServicesForm
+          onServicesChange={e => setServices(e)}
+          onLocalServicesChange={setLocalServices}
+          initialCloudServices={initialCloudServices}
+          cloudServices={cloudServices}
+          onCloudServicesChange={setCloudServices}
+        />
       ),
     },
     {
@@ -697,6 +849,16 @@ const BusinessStepForm = (): JSX.Element => {
         />
       ),
     },
+    {
+      id: 7,
+      title: 'Your business profile has been submitted!',
+      subtitle: '',
+      component: (
+        <CreateListingFormStep8Success
+          businessId={businessId}
+        />
+      ),
+    },
   ];
 
   const currentStep = steps[pageNumber];
@@ -716,83 +878,104 @@ const BusinessStepForm = (): JSX.Element => {
 
       {!isLoadingOnboarding && (
         <>
-          {/* Progress Bar */}
-          <div className='px-4 py-4 sm:px-6'>
-            <div className='mx-auto max-w-5xl'>
-              <div className='mb-2 flex items-center justify-between text-sm'>
-                <span className='sr-only font-medium text-gray-900'>
-                  Step {pageNumber + 1} of {steps.length}
-                </span>
-              </div>
-              <div className='flex gap-2'>
-                {steps.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                      index <= pageNumber ? 'bg-purple-600' : 'bg-gray-200'
-                    }`}
-                  />
-                ))}
+          {/* Progress Bar - Hidden on success page */}
+          {pageNumber !== 7 && (
+            <div className='px-4 py-4 sm:px-6'>
+              <div className='mx-auto max-w-5xl'>
+                <div className='mb-2 flex items-center justify-between text-sm'>
+                  <span className='sr-only font-medium text-gray-900'>
+                    Step {pageNumber + 1} of {steps.length - 1}
+                  </span>
+                </div>
+                <div className='flex gap-2'>
+                  {steps.slice(0, -1).map((_, index) => (
+                    <div
+                      key={index}
+                      className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                        index <= pageNumber ? 'bg-purple-600' : 'bg-gray-200'
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          <div className='px-4 py-4 sm:px-6'>
-            <div className='mx-auto flex max-w-5xl items-center justify-between'>
-              <Logo textColor={'black'} />
-              <div className='flex items-center gap-4'>
-                {pageNumber > 1 && (
-                  <Button
-                    variant='black'
-                    onClick={handleBack}
-                    className='flex items-center font-medium'
-                    disabled={isSubmitting}
-                    size='xl'
-                  >
-                    <ArrowLeftIconBlackSm />
-                    Back
-                  </Button>
-                )}
+          )}
+          {/* Header and Buttons - Hidden on success page */}
+          {pageNumber !== 7 && (
+            <div className='px-4 py-4 sm:px-6'>
+              <div className='mx-auto flex max-w-5xl items-center justify-between'>
+                <Logo textColor={'black'} />
+                <div className='flex items-center gap-4'>
+                  {pageNumber > 1 && (
+                    <Button
+                      variant='black'
+                      onClick={handleBack}
+                      className='flex items-center font-medium'
+                      disabled={isSubmitting}
+                      size='xl'
+                    >
+                      <ArrowLeftIconBlackSm />
+                      Back
+                    </Button>
+                  )}
 
-                <Button
-                  onClick={handleContinue}
-                  disabled={isSubmitting || !isCurrentStepValid()}
-                  isloading={isSubmitting}
-                  className='flex items-center gap-2 max-md:hidden'
-                  size='xl'
-                >
-                  {getButtonText()}
-                  {!isSubmitting && <ArrowRightIconWhite />}
-                </Button>
+                  {getButtonText() && (
+                    <Button
+                      onClick={handleContinue}
+                      disabled={isSubmitting || !isCurrentStepValid()}
+                      isloading={isSubmitting}
+                      className='flex items-center gap-2 max-md:hidden'
+                      size='xl'
+                    >
+                      {getButtonText()}
+                      {!isSubmitting && <ArrowRightIconWhite />}
+                    </Button>
+                  )}
+                </div>
               </div>
-        </div>
-      </div>
-      {/* Content */}
-      <div className='mx-auto px-4 py-8 sm:px-6'>
-        <header className='mx-auto mb-6 max-w-xl lg:mb-12'>
-          <p className='mb-5 font-inter text-sm text-[#4B5565]'>
-            Business account setup
-          </p>
-          <h2 className='font-karma text-2xl font-semibold text-gray-900 lg:text-4xl'>
-            {currentStep?.title}
-          </h2>
-          <p className='mt-2 text-sm text-[#000000]'>{currentStep?.subtitle}</p>
-        </header>
-        {currentStep?.component}
-      </div>
+            </div>
+          )}
+          {/* Logo on success page */}
+          {pageNumber === 7 && (
+            <div className='px-4 py-4 sm:px-6'>
+              <div className='mx-auto max-w-5xl'>
+                <Logo textColor={'black'} />
+              </div>
+            </div>
+          )}
+          {/* Content */}
+          <div className='mx-auto px-4 py-8 sm:px-6'>
+            {pageNumber !== 7 && (
+              <header className='mx-auto mb-6 max-w-xl lg:mb-12'>
+                <p className='mb-5 font-inter text-sm text-[#4B5565]'>
+                  Business account setup
+                </p>
+                <h2 className='font-karma text-2xl font-semibold text-gray-900 lg:text-4xl'>
+                  {currentStep?.title}
+                </h2>
+                <p className='mt-2 text-sm text-[#000000]'>
+                  {currentStep?.subtitle}
+                </p>
+              </header>
+            )}
+            {currentStep?.component}
+          </div>
 
-      {/* Footer Actions */}
-      <div className='mx-auto flex max-w-xl items-center justify-between px-4 py-4 sm:px-6'>
-        <Button
-          onClick={handleContinue}
-          disabled={isSubmitting || !isCurrentStepValid()}
-          isloading={isSubmitting}
-          className='flex w-full items-center gap-2 md:hidden'
-          size='xl'
-        >
-          {getButtonText()}
-          {!isSubmitting && <ArrowRightIconWhite />}
-        </Button>
-      </div>
+          {/* Footer Actions - Hidden on success page */}
+          {pageNumber !== 7 && getButtonText() && (
+            <div className='mx-auto flex max-w-xl items-center justify-between px-4 py-4 sm:px-6'>
+              <Button
+                onClick={handleContinue}
+                disabled={isSubmitting || !isCurrentStepValid()}
+                isloading={isSubmitting}
+                className='flex w-full items-center gap-2 md:hidden'
+                size='xl'
+              >
+                {getButtonText()}
+                {!isSubmitting && <ArrowRightIconWhite />}
+              </Button>
+            </div>
+          )}
         </>
       )}
     </div>

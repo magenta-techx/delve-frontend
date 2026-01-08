@@ -2,9 +2,8 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Input } from '@/components/ui';
-import {
-  TwitterIcon,
-} from '@/assets/icons';
+import { TwitterIcon } from '@/assets/icons';
+import { Label } from '@/components/ui/label';
 
 interface CombinedContactInfo {
   phone_number: string;
@@ -224,7 +223,7 @@ const BusinessContactAndBusiness: React.FC<BusinessContactAndBusinessProps> = ({
 
       {/* Social Media Platforms */}
       <div className='space-y-4'>
-        <div className='grid grid-cols-3 gap-3'>
+        <div className='grid grid-cols-3 gap-3 md:grid-cols-5'>
           {SOCIAL_PLATFORMS.map(platform => (
             <button
               key={platform.id}
@@ -255,30 +254,45 @@ const BusinessContactAndBusiness: React.FC<BusinessContactAndBusinessProps> = ({
           const currentValue = contactInfo[linkField] || '';
 
           return (
-            <div key={platformId} className='space-y-2'>
-              <div className='flex items-center space-x-2'>
-                <span className='text-lg'>{platform.icon}</span>
-                <label
-                  htmlFor={linkField}
-                  className='text-sm font-medium text-purple-600'
-                >
-                  {platform.name}
-                </label>
+            // <div  className='space-y-2'>
+            //   <div className='flex items-center space-x-2'>
+            //     <span className='text-lg'>{platform.icon}</span>
+            //     <label
+            //       htmlFor={linkField}
+            //       className='text-sm font-medium text-purple-600'
+            //     >
+            //       {platform.name}
+            //     </label>
+            //   </div>
+            //   <Input
+            //     className='text-sm'
+            //   />
+            // </div>
+
+            <div key={platformId} className='flex flex-col gap-3 rounded-xl border bg-white p-3 lg:px-5'>
+              <Label className='flex items-center gap-2 text-sm font-normal text-[#697586]'>
+                <span>{platform.icon}</span>
+                {platform.name}
                 <button
                   type='button'
                   onClick={() => toggleSocialPlatform(platformId)}
-                  className='ml-auto p-1 text-gray-400 hover:text-gray-600'
+                  className='flex items-center gap-1 hover:text-red-500 text-[0.75rem] ml-auto p-1 text-gray-400'
                 >
-                  <X size={14} />
+                  remove
+                  <X size={16} />
                 </button>
+              </Label>
+              <div className='flex-1'>
+                <div className='mt-1'>
+                  <Input
+                    id={linkField}
+                    placeholder={`Enter your ${platform.name.toLowerCase()}`}
+                    value={currentValue}
+                    onChange={e => updateSocialLink(platformId, e.target.value)}
+                    //
+                  />
+                </div>
               </div>
-              <Input
-                id={linkField}
-                placeholder={`Enter your ${platform.name.toLowerCase()}`}
-                value={currentValue}
-                onChange={e => updateSocialLink(platformId, e.target.value)}
-                className='text-sm'
-              />
             </div>
           );
         })}
