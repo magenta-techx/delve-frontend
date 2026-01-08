@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Trash, ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
 
 // Mock UploadIcon component
 const UploadIcon = ({ className }: { className?: string }) => (
@@ -44,33 +43,55 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     setCurrentIndex(0);
   }, [initialCloudImages, setBusinessShowCaseFile]);
 
-  // Get slot width percentage - intentionally over 100% for overflow
-  const getSlotWidth = (position: number) => {
-    // Position relative to center (0 = center)
-    const relativePos = position - 2; // -2, -1, 0, 1, 2
+  // Calculate which images are visible based on count and current index
+  const getVisibleSlots = () => {
+    const total = previews.length;
+    if (total === 0) return [];
+    if (total === 1) return [{ index: 0, slot: 'C' }];
+    if (total === 2) return [{ index: 0, slot: 'C' }, { index: 1, slot: 'D' }];
+    if (total === 3) return [{ index: 0, slot: 'B' }, { index: 1, slot: 'C' }, { index: 2, slot: 'D' }];
+    if (total === 4) return [
+      { index: 0, slot: 'A' }, 
+      { index: 1, slot: 'B' }, 
+      { index: 2, slot: 'C' }, 
+      { index: 3, slot: 'D' }
+    ];
     
-    if (relativePos === 0) return 30; // Center slot C
-    if (relativePos === -1 || relativePos === 1) return 25; // B and D
-    return 20; // A and E (edges)
+    // 5 or more items - show 5 slots starting from currentIndex
+    return [
+      { index: currentIndex, slot: 'A' },
+      { index: currentIndex + 1, slot: 'B' },
+      { index: currentIndex + 2, slot: 'C' },
+      { index: currentIndex + 3, slot: 'D' },
+      { index: currentIndex + 4, slot: 'E' },
+    ];
   };
 
-  // Calculate total visible width to ensure overflow
-  const totalVisibleWidth = 20 + 25 + 30 + 25 + 20; // 120% for overflow
+  const visibleSlots = getVisibleSlots();
+  const canGoLeft = previews.length >= 5 && currentIndex > 0;
+  const canGoRight = previews.length >= 5 && currentIndex < previews.length - 5;
 
   const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
+    if (canGoLeft) {
+      setCurrentIndex(prev => Math.max(0, prev - 1));
     }
   };
 
   const handleNext = () => {
-    if (currentIndex < previews.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+    if (canGoRight) {
+      setCurrentIndex(prev => Math.min(previews.length - 5, prev + 1));
     }
   };
 
-  const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < previews.length - 1;
+  // Get slot width percentage
+  const getSlotWidth = (slot: string) => {
+    switch (slot) {
+      case 'A': case 'E': return 20; // (100 - 35 - 20 - 20) / 2
+      case 'B': case 'D': return 25;
+      case 'C': return 30;
+      default: return 25;
+    }
+  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -99,8 +120,10 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
             };
             const updated = [...prev, newItem];
             
-            // Auto-scroll to show the newest item
-            setCurrentIndex(updated.length - 1);
+            // Auto-scroll to show the newest item in slot E if we have 5+ items
+            if (updated.length >= 5) {
+              setCurrentIndex(updated.length - 5);
+            }
             
             return updated;
           });
@@ -139,90 +162,65 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     setPreviews(newPreviews);
     
     // Adjust currentIndex if needed after deletion
-    if (currentIndex >= newPreviews.length && newPreviews.length > 0) {
-      setCurrentIndex(newPreviews.length - 1);
+    if (newPreviews.length >= 5 && currentIndex > newPreviews.length - 5) {
+      setCurrentIndex(Math.max(0, newPreviews.length - 5));
+    } else if (newPreviews.length < 5) {
+      setCurrentIndex(0);
     }
   };
 
   const totalImages = cloudImages.length + localFiles.length;
 
-  // Render carousel items with proper positioning
-  const renderCarouselItems = () => {
-    if (previews.length === 0) return null;
-    
-    return previews.map((imageData, index) => {
-      // Calculate position relative to currentIndex
-      const position = index - currentIndex + 2; // Position in 0-4 range where 2 is center
-      
-      // Only render if within visible range
-      if (position < -1 || position > 5) return null;
-
-      let imgSrc = '';
-      if (typeof imageData.source === 'string') {
-        imgSrc = imageData.source;
-      }
-
-      const widthPercent = getSlotWidth(position);
-      
-      // Calculate the left position by accumulating widths from position 0
-      let leftPercent = 0;
-      for (let i = 0; i < position; i++) {
-        leftPercent += getSlotWidth(i);
-      }
-      
-      // Center the entire carousel strip
-      const centerOffset = (20 + 25 + 30 + 25 + 20) / 2; // Half of total width (60%)
-      leftPercent = leftPercent - centerOffset + 50; // Adjust to center in viewport
-
-      return (
-        <div
-          key={index}
-          style={{
-            position: 'absolute',
-            width: `${widthPercent}%`,
-            aspectRatio: '15 / 10',
-            left: `${leftPercent}%`,
-            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-            zIndex: position === 2 ? 10 : 5,
-          }}
-          className="flex-shrink-0 pr-4 lg:pr-6"
-        >
-          <div className="relative overflow-hidden rounded-lg w-full h-full">
-            <Image
-              src={imgSrc}
-              fill
-              style={{ objectFit: 'cover' }}
-              alt={`Business showcase ${index + 1}`}
-              className="w-full h-full object-cover rounded-lg"
-              onError={(e) => {
-                console.error('Image failed to load:', imgSrc);
-                (e.target as HTMLImageElement).style.background = '#f0f0f0';
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => removeFile(index)}
-              className="absolute left-2 top-2 rounded-md bg-white p-1.5 text-[#BC1B06] shadow-lg hover:bg-red-300 transition-colors z-30"
-            >
-              <Trash size={16} />
-            </button>
-          </div>
-        </div>
-      );
-    });
-  };
-
   return (
     <section className="space-y-6">
-      {/* Custom Carousel with Smooth Transitions */}
+      {/* Custom Carousel with 5 Slots */}
       {previews.length > 0 && (
-        <div className="w-full relative overflow-hidden">
-          <div className="flex items-center relative w-full min-h-96 px-16 py-4 gap-4">
-            {renderCarouselItems()}
+        <div className="w-full relative">
+          <div className="flex items-center justify-center gap-4 px-16 py-4">
+            {visibleSlots.map(({ index, slot }) => {
+              const imageData = previews[index];
+              if (!imageData) return null;
+
+              let imgSrc = '';
+              if (typeof imageData.source === 'string') {
+                imgSrc = imageData.source;
+              }
+
+              const widthPercent = getSlotWidth(slot);
+
+              return (
+                <div
+                  key={`${slot}-${index}`}
+                  style={{
+                    width: `${widthPercent}%`,
+                    aspectRatio: '15 / 10',
+                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
+                  className="relative overflow-hidden rounded-lg flex-shrink-0"
+                >
+                  <img
+                    src={imgSrc}
+                    alt={`Business showcase ${index + 1}`}
+                    className="w-full h-full object-cover rounded-lg"
+                    onError={(e) => {
+                      console.error('Image failed to load:', imgSrc);
+                      (e.target as HTMLImageElement).style.background = '#f0f0f0';
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeFile(index)}
+                    className="absolute left-2 top-2 rounded-md bg-white p-1.5 text-[#BC1B06] shadow-lg hover:bg-red-300 transition-colors z-30"
+                  >
+                    <Trash size={16} />
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
           {/* Navigation Buttons */}
-          {previews.length > 1 && (
+          {previews.length >= 5 && (
             <>
               <button
                 type="button"
@@ -245,10 +243,6 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
               </button>
             </>
           )}
-
-          {/* Edge fade effects */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent pointer-events-none z-20" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent pointer-events-none z-20" />
         </div>
       )}
 

@@ -84,7 +84,7 @@ const BusinessAmenities: React.FC<BusinessAmenitiesProps> = ({
       <div className='relative'>
         <input
           type='text'
-          placeholder='Search amenities...'
+          placeholder='Enter keyword...'
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
           className='w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500'

@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
+import Loader from '@/components/ui/Loader';
 
 const getStartedSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -42,7 +43,7 @@ const GetStartedPage = () => {
     }
   }, [data?.user?.email, setValue]);
 
-  const { mutate } = checkUserByEmail();
+  const { mutate, isPending } = checkUserByEmail();
   const router = useRouter();
   const onSubmit = (formData: GetStartedFormData) => {
     mutate(formData.email, {
@@ -56,9 +57,6 @@ const GetStartedPage = () => {
     });
   };
 
-
-
-  
   return (
     <div
       className='relative flex h-screen w-screen flex-col items-center justify-center'
@@ -95,21 +93,25 @@ const GetStartedPage = () => {
             className='flex size-14 items-center justify-center'
             variant='white'
           >
-            <svg
-              width='18'
-              height='18'
-              viewBox='0 0 18 18'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                d='M2 9H16M16 9L9 2M16 9L9 16'
-                stroke='#9AA4B2'
-                strokeWidth='4'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
+            {isPending ? (
+              <Loader />
+            ) : (
+              <svg
+                width='18'
+                height='18'
+                viewBox='0 0 18 18'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M2 9H16M16 9L9 2M16 9L9 16'
+                  stroke='#9AA4B2'
+                  strokeWidth='4'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+              </svg>
+            )}
           </Button>
         </form>
       </div>

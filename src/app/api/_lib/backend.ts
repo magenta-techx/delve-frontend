@@ -82,6 +82,7 @@ export async function forward(
 
     const url = buildUrl(path, opts.query);
     console.log('Forwarding request to:', method, url);
+    console.log(body, 'request body');
     const fetchOptions: RequestInit = {
       method,
       headers,

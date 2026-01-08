@@ -17,7 +17,8 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
   initialLocation,
 }) => {
   const { data: statesData, isLoading: statesLoading } = useBusinessStates();
-  const states = statesData || [];
+  const states = statesData?.data || [];
+  console.log(statesData, 'statesData');
 
   const googleMapsApiKey = process.env['NEXT_PUBLIC_GOOGLE_MAPS_API_KEY'] || '';
 
@@ -51,13 +52,18 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
   const [isLoadingPredictions, setIsLoadingPredictions] = useState(false);
 
   const createSessionToken = useCallback(() => {
-    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    if (
+      typeof crypto !== 'undefined' &&
+      typeof crypto.randomUUID === 'function'
+    ) {
       return crypto.randomUUID();
     }
     return Math.random().toString(36).slice(2);
   }, []);
 
-  const [sessionToken, setSessionToken] = useState<string>(() => createSessionToken());
+  const [sessionToken, setSessionToken] = useState<string>(() =>
+    createSessionToken()
+  );
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -81,7 +87,10 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
     }
   }, [states, initialLocation?.state, selectedStateId]);
 
-  const updateLocation = (field: keyof CreateListingLocation, value: string | number) => {
+  const updateLocation = (
+    field: keyof CreateListingLocation,
+    value: string | number
+  ) => {
     const newLocation = { ...location, [field]: value };
     setLocalLocation(newLocation);
     setLocation(newLocation);
@@ -129,7 +138,9 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
         setLocation(updatedLocation);
 
         if (resolvedState) {
-          const foundState = states.find(state => state.name.toLowerCase() === resolvedState.toLowerCase());
+          const foundState = states.find(
+            state => state.name.toLowerCase() === resolvedState.toLowerCase()
+          );
           if (foundState) {
             setSelectedStateId(foundState.id.toString());
           }
@@ -165,11 +176,15 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
         });
 
         if (!response.ok) {
-          throw new Error(`Places autocomplete request failed: ${response.status}`);
+          throw new Error(
+            `Places autocomplete request failed: ${response.status}`
+          );
         }
 
         const data = await response.json();
-        const items = Array.isArray(data.predictions) ? (data.predictions as PlacePrediction[]) : [];
+        const items = Array.isArray(data.predictions)
+          ? (data.predictions as PlacePrediction[])
+          : [];
 
         setPredictions(items);
         setShowPredictions(items.length > 0);
@@ -216,7 +231,8 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
   };
 
   const selectPrediction = async (prediction: PlacePrediction) => {
-    const resolvedPlaceId = prediction.place_id ?? prediction.place?.replace(/^places\//, '');
+    const resolvedPlaceId =
+      prediction.place_id ?? prediction.place?.replace(/^places\//, '');
 
     if (!resolvedPlaceId) {
       return;
@@ -244,9 +260,16 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
 
       const updatedLocation: CreateListingLocation = {
         ...location,
-        address: data.formattedAddress ?? prediction.description ?? location.address,
-        latitude: data.latitude === null ? undefined : data.latitude ?? location.latitude,
-        longitude: data.longitude === null ? undefined : data.longitude ?? location.longitude,
+        address:
+          data.formattedAddress ?? prediction.description ?? location.address,
+        latitude:
+          data.latitude === null
+            ? undefined
+            : (data.latitude ?? location.latitude),
+        longitude:
+          data.longitude === null
+            ? undefined
+            : (data.longitude ?? location.longitude),
         state: data.state ?? location.state,
       };
 
@@ -254,7 +277,9 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
       setLocation(updatedLocation);
 
       if (data.state) {
-        const foundState = states.find(state => state.name.toLowerCase() === data.state.toLowerCase());
+        const foundState = states.find(
+          state => state.name.toLowerCase() === data.state.toLowerCase()
+        );
         if (foundState) {
           setSelectedStateId(foundState.id.toString());
         }
@@ -306,7 +331,7 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
         name='state'
         value={selectedStateId}
         onChange={value => handleStateChange(value)}
-        options={states.map(state => ({
+        options={states?.map(state => ({
           value: state.id.toString(),
           label: state.name,
         }))}
@@ -381,20 +406,22 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
                 </div>
               ) : predictions.length > 0 ? (
                 <ul className='max-h-60 overflow-auto'>
-                  {predictions.map((prediction) => (
+                  {predictions.map(prediction => (
                     <li
                       key={prediction.place_id}
                       onClick={() => selectPrediction(prediction)}
-                      className='cursor-pointer border-b border-gray-100 p-3 hover:bg-gray-50 last:border-b-0'
+                      className='cursor-pointer border-b border-gray-100 p-3 last:border-b-0 hover:bg-gray-50'
                     >
                       <div className='flex items-start'>
                         <MapPin size={16} className='mr-2 mt-1 text-gray-400' />
                         <div className='flex-1'>
                           <div className='text-sm font-medium text-gray-900'>
-                            {prediction.structured_formatting?.main_text ?? prediction.description}
+                            {prediction.structured_formatting?.main_text ??
+                              prediction.description}
                           </div>
                           <div className='text-xs text-gray-500'>
-                            {prediction.structured_formatting?.secondary_text ?? ''}
+                            {prediction.structured_formatting?.secondary_text ??
+                              ''}
                           </div>
                         </div>
                       </div>
@@ -411,23 +438,25 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
         </div>
       </div>
 
-      {!operateWithoutLocation && location.address && location.latitude && location.longitude && (
-        <Card className='p-4'>
-          <div className='space-y-2'>           
-            
-            {googleMapsApiKey && location.latitude && location.longitude && (
-              <iframe
-                width='100%'
-                height='200'
-                style={{ border: 0, borderRadius: '0.5rem' }}
-                loading='lazy'
-                allowFullScreen
-                src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${location.latitude},${location.longitude}&zoom=15`}
-              />
-            )}
-          </div>
-        </Card>
-      )}
+      {!operateWithoutLocation &&
+        location.address &&
+        location.latitude &&
+        location.longitude && (
+          <Card className='p-4'>
+            <div className='space-y-2'>
+              {googleMapsApiKey && location.latitude && location.longitude && (
+                <iframe
+                  width='100%'
+                  height='200'
+                  style={{ border: 0, borderRadius: '0.5rem' }}
+                  loading='lazy'
+                  allowFullScreen
+                  src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${location.latitude},${location.longitude}&zoom=15`}
+                />
+              )}
+            </div>
+          </Card>
+        )}
 
       <div className='flex items-center space-x-2'>
         <input
@@ -441,7 +470,8 @@ const BusinessLocationForm: React.FC<BusinessLocationFormProps> = ({
           htmlFor='operateWithoutLocation'
           className='text-sm text-gray-500'
         >
-          I operate without a physical location (mobile or online services only).
+          I operate without a physical location (mobile or online services
+          only).
         </label>
       </div>
     </div>

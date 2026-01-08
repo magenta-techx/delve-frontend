@@ -152,18 +152,21 @@ export function useAmenities(): UseQueryResult<Amenity[], Error> {
 }
 
 export interface BusinessState {
-  id: number;
+ id: number;
   name: string;
+  image: null;
+  number_of_listed_businesses: number;
+  
 }
 
-export function useBusinessStates(): UseQueryResult<BusinessState[], Error> {
+export function useBusinessStates(): UseQueryResult<ApiEnvelope<BusinessState[]>, Error> {
   return useQuery({
     queryKey: ['business-states'],
     queryFn: async () => {
       const res = await authAwareFetch('/api/business/states');
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Failed to fetch states');
-      return data?.data || data;
+      return data;
     },
   });
 }

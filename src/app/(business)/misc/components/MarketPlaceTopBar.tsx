@@ -13,12 +13,12 @@ const MarketPlaceTopBar = () => {
   const NAV_LINKS = [
     {
       name: 'Chats',
-      href: '/chats',
+      href: '/business/messages',
       icon: ChatsIcon,
     },
     {
       name: 'Notifications',
-      href: '/notifications',
+      href: '/business',
       icon: NotificationsIcon,
     },
   ];

@@ -88,12 +88,12 @@ const LandingPageNavbar = () => {
       hasBlackBg: false,
       icon: NotificationsIcon,
     },
-    {
-      name: 'Profile Settings',
-      href: '/profile',
-      hasBlackBg: false,
-      icon: SettingsIcon,
-    },
+    // {
+    //   name: 'Profile Settings',
+    //   href: '/profile',
+    //   hasBlackBg: false,
+    //   icon: SettingsIcon,
+    // },
   ];
   const BUSINESS_LANDING_NAVLINKS = [
     {
@@ -544,6 +544,14 @@ const LandingPageNavbar = () => {
                           </Link>
                         </DropdownMenuItem>
                       ))}
+                      <DropdownMenuItem className='!p-0'>
+                        <Link
+                          href={'profile'}
+                          className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
+                        >
+                          Profile Settings
+                        </Link>
+                      </DropdownMenuItem>
 
                       <div className='mt-2 p-6'>
                         <Button

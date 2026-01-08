@@ -85,7 +85,7 @@ export function AmenitiesModal({
             <div className='mb-6'>
               <Input
                 type='text'
-                placeholder='Search amenities...'
+                placeholder='Enter keyword...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className='w-full'
