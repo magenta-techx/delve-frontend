@@ -261,7 +261,7 @@ const LandingPageNavbar = () => {
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent
                                     className='max-h-[500px] w-[400px] overflow-y-hidden p-0'
-                                    align='end'
+                                    align='start'
                                   >
                                     <NotificationsDropdownContent />
                                   </DropdownMenuContent>

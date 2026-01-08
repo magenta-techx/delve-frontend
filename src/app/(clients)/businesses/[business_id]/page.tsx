@@ -4,7 +4,7 @@ import BusinessDetailsClient from './BusinessDetailsClient';
 import type { ApiEnvelope, BusinessDetail } from '@/types/api';
 
 interface PageProps {
-  params: { business_id: string };
+  params: Promise<{ business_id: string }>;
 }
 
 // Function to fetch business details on the server
@@ -38,7 +38,8 @@ async function getBusinessDetails(
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const business = await getBusinessDetails(params.business_id);
+  const { business_id } = await params;
+  const business = await getBusinessDetails(business_id);
 
   if (!business) {
     return {
@@ -80,7 +81,8 @@ export async function generateMetadata({
 }
 
 export default async function BusinessDetailsPage({ params }: PageProps) {
-  const business = await getBusinessDetails(params.business_id);
+  const { business_id } = await params;
+  const business = await getBusinessDetails(business_id);
 
   if (!business) {
     notFound();
