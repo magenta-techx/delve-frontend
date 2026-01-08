@@ -30,7 +30,6 @@ import {
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import { NotificationsDropdownContent } from './NotificationsDropdown';
 import { useUserContext } from '@/contexts/UserContext';
-import { SettingsIcon } from '@/app/(business)/misc/components/icons';
 
 const LandingPageNavbar = () => {
   const { user, isAuthenticated, isLoading } = useUserContext();
