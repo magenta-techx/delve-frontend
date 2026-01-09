@@ -12,7 +12,7 @@ const FAQ_ITEMS = [
       <svg
         width='28'
         height='29'
-        className="size-3.5 md:size-5"
+        className="size-4 md:size-5"
         viewBox='0 0 28 29'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -35,7 +35,7 @@ const FAQ_ITEMS = [
       <svg
         width='29'
         height='29'
-        className="size-3.5 md:size-5"
+        className="size-4 md:size-5"
         viewBox='0 0 29 29'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -76,7 +76,7 @@ const FAQ_ITEMS = [
       <svg
         width='27'
         height='27'
-        className="size-3.5 md:size-5"
+        className="size-4 md:size-5"
         viewBox='0 0 27 27'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -97,7 +97,7 @@ const FAQ_ITEMS = [
       <svg
         width='29'
         height='29'
-        className="size-3.5 md:size-5"
+        className="size-4 md:size-5"
         viewBox='0 0 29 29'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -138,7 +138,7 @@ const FAQ_ITEMS = [
       <svg
         width='25'
         height='25'
-        className="size-3.5 md:size-5"
+        className="size-4 md:size-5"
         viewBox='0 0 25 25'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
