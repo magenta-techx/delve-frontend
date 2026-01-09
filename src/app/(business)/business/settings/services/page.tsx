@@ -230,12 +230,12 @@ export default function ServicesPage() {
                       value={fieldValues[`${service.id}-description`]?.value as string || ''}
                       onChange={(e) => handleFieldChange(`${service.id}-description`, e.target.value)}
                       placeholder="Service description"
-                      rows={4}
+                      rows={5}
                       className="w-full"
                     />
                   </div>
                 ) : (
-                  <div className="flex-1 p-3 border rounded-xl bg-gray-50 h-[4lh]">
+                  <div className="flex-1 p-3 border rounded-xl bg-gray-50 min-h-[5lh]">
                     <p className="text-sm text-gray-900">{service.description}</p>
                   </div>
                 )}
