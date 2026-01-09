@@ -12,6 +12,7 @@ const FAQ_ITEMS = [
       <svg
         width='28'
         height='29'
+        className="size-3.5 md:size-5"
         viewBox='0 0 28 29'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -34,6 +35,7 @@ const FAQ_ITEMS = [
       <svg
         width='29'
         height='29'
+        className="size-3.5 md:size-5"
         viewBox='0 0 29 29'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -74,6 +76,7 @@ const FAQ_ITEMS = [
       <svg
         width='27'
         height='27'
+        className="size-3.5 md:size-5"
         viewBox='0 0 27 27'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -94,6 +97,7 @@ const FAQ_ITEMS = [
       <svg
         width='29'
         height='29'
+        className="size-3.5 md:size-5"
         viewBox='0 0 29 29'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -134,6 +138,7 @@ const FAQ_ITEMS = [
       <svg
         width='25'
         height='25'
+        className="size-3.5 md:size-5"
         viewBox='0 0 25 25'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
@@ -204,18 +209,18 @@ const CLientsLandingFAQs = (): JSX.Element => {
                 aria-expanded={isActive}
                 className='grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 text-left text-sm font-medium sm:text-base'
               >
-                <span className='flex h-10 w-10 items-center justify-center rounded-full sm:h-12 sm:w-12'>
+                <span className='flex size-10 items-center justify-center rounded-full sm:size-12'>
                   {Icon}
                 </span>
 
-                <span className='border-l-[3px] border-[#E3E8EF] pl-4 sm:pl-6'>
+                <span className='text-sm md:text-base border-l-[3px] border-[#E3E8EF] pl-4 sm:pl-6'>
                   {item.question}
                 </span>
 
                 <motion.span
                   animate={{ rotate: isActive ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
-                  className='flex h-10 w-10 items-center justify-center rounded-full text-[#6E44FF] sm:h-12 sm:w-12'
+                  className='flex size-10 items-center justify-center rounded-full text-[#6E44FF] sm:size-12'
                 >
                   <BaseIcons value='arrow-down-primary' />
                 </motion.span>
@@ -232,14 +237,14 @@ const CLientsLandingFAQs = (): JSX.Element => {
                     className='grid grid-cols-[auto_1fr_auto] items-start gap-4 overflow-hidden'
                   >
                     <span
-                      className='invisible h-10 w-10 sm:h-12 sm:w-12'
+                      className='invisible size-10 sm:size-12'
                       aria-hidden
                     />
-                    <p className='border-l-[3px] border-[#E3E8EF] pb-2 pl-4 pt-4 text-sm text-[#475569] sm:pl-6 sm:text-base'>
+                    <p className='border-l-[3px] border-[#E3E8EF] pb-2 pl-4 pt-4 text-xs sm:text-sm text-[#475569] sm:pl-6 md:text-base'>
                       {item.answer}
                     </p>
                     <span
-                      className='invisible h-10 w-10 sm:h-12 sm:w-12'
+                      className='invisible size-10 sm:size-12'
                       aria-hidden
                     />
                   </motion.div>

@@ -248,8 +248,8 @@ const FeaturedListingCard = ({
                   />
                 </div>
                 <div>
-                  <h3 className='font-semibold truncate max-sm:w-[90%] ' style={{ fontSize: getFluidFontSize(0.675, 1.2, 0.0035) }}>{header}</h3>
-                  <p className='line-clamp-2 max-sm:w-[90%] min-h-[2lh]' style={{ fontSize: getFluidFontSize(0.4, 0.85, 0.0025) }}>{desc}</p>
+                  <h3 className='font-semibold truncate max-sm:w-[90%] ' style={{ fontSize: getFluidFontSize(0.575, 1.2, 0.0035) }}>{header}</h3>
+                  <p className='line-clamp-2 max-sm:w-[90%] min-h-[2lh]' style={{ fontSize: getFluidFontSize(0.3, 0.85, 0.0025) }}>{desc}</p>
                 </div>
               </div>
               <div className='flex items-center gap-4 justify-between pt-2 w-full overflow-hidden'>
@@ -258,11 +258,11 @@ const FeaturedListingCard = ({
 
                     <BaseIcons value='marker-light-red' />
                   </span>
-                  <span className='text-[#FFE6D5] truncate' style={{ fontSize: getFluidFontSize(0.4, 0.85, 0.0025) }}>
+                  <span className='text-[#FFE6D5] truncate' style={{ fontSize: getFluidFontSize(0.3, 0.85, 0.0025) }}>
                     {address}
                   </span>
                 </div>
-                <div className='flex items-center justify-end gap-1 shrink-0 basis-1/5' style={{ fontSize: getFluidFontSize(0.625, 0.875, 0.0025) }}>
+                <div className='flex items-center justify-end gap-1 shrink-0 basis-1/5' style={{ fontSize: getFluidFontSize(0.525, 0.875, 0.0025) }}>
                   <BaseIcons value='star-yellow' />
                   <p>{rating}</p>
                 </div>
