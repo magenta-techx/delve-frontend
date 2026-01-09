@@ -152,7 +152,7 @@ export default function HomePage() {
                       return (
                         <CarouselItem
                           key={category.id}
-                          className='flex basis-[45vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
+                          className='flex basis-[33vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
                         >
                           <CategoryCard
                             title={category.name}
