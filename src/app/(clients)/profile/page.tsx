@@ -201,7 +201,7 @@ const ProfilePage = () => {
 
   return (
     <div className='min-h-screen w-screen overflow-hidden bg-[#F8F7FB] sm:px-6 lg:px-12'>
-      <section className='container  mx-auto p-4 pt-16 md:pt-20'>
+      <section className='container  mx-auto p-4 pt-16 md:pt-24'>
         <header className='flex w-full flex-col gap-2 py-8'>
           <h1 className='flex items-center gap-2 text-xl font-semibold text-[#0F172B]'>
             <svg
@@ -232,7 +232,7 @@ const ProfilePage = () => {
 
         <div className={cn(
           'grid gap-6',
-          isPasswordPanelOpen && !isMobile ? 'lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)]' : ''
+          isPasswordPanelOpen && !isMobile ? 'lg:grid-cols-[minmax(0,1fr)_auto]' : ''
         )}>
           <ProfilePanel
             isLoading={profileLoading && !profileData}
@@ -250,7 +250,7 @@ const ProfilePage = () => {
 
           {/* Password Change Side Panel - Desktop Only */}
           {isPasswordPanelOpen && !isMobile && (
-            <section className='h-max bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] border border-[#E3E8EF] rounded-2xl sm:p-8'>
+            <section className='h-max shadow-[0_20px_60px_rgba(15,23,42,0.06)]'>
               <div className='flex items-center justify-between mb-6'>
                 <h2 className='text-lg font-semibold text-[#0F172B]'>Change Password</h2>
                 <button
