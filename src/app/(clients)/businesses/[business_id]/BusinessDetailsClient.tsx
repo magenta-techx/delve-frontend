@@ -1,16 +1,16 @@
-'use client';
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useMemo, Suspense } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
-import { useCurrentUser } from '@/app/(clients)/misc/api/user';
+import { useCurrentUser, useStartChat, useGetUserChats } from '@/app/(clients)/misc/api/user';
 import { useSession } from 'next-auth/react';
-import { useChatSocket } from '@/hooks/chat/useChatSocket';
 import type { BusinessDetail } from '@/types/api';
 import { useBusinessDetails } from '@/app/(business)/misc/api';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import {
   AccessDeniedModal,
   Button,
@@ -44,6 +44,7 @@ const positions = [
 ];
 
 const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
+  const router = useRouter();
   const { isSaved, toggleSave, setShowLoginAlert, showLoginAlert } =
     useSavedBusinessesContext();
   const params = useSearchParams();
@@ -54,11 +55,13 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
   );
 
   const { data: session } = useSession();
-  const token = session?.user?.accessToken ?? '';
   const hasValidAccessToken = Boolean(
     session?.user?.accessToken && String(session.user.accessToken).length > 0
   );
   const { data: currentUserResp } = useCurrentUser(hasValidAccessToken);
+  const { data: userChatsResp } = useGetUserChats();
+  const startChatMutation = useStartChat();
+  const [isLoadingChat, setIsLoadingChat] = useState(false);
 
   const {
     state: isAccessDeniedModalOpen,
@@ -81,17 +84,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     setSelectedImageIndex(index);
     openImageCarouselModal();
   };
-
-  const { send } = useChatSocket({
-    businessId: String(business.id ?? ''),
-    token: token ?? '',
-    onMessage: (data: unknown) => {
-      console.log('chat socket onMessage', data);
-    },
-    onImages: (data: unknown) => {
-      console.log('chat socket onImages', data);
-    },
-  });
 
   const isOwner = useMemo(() => {
     const currentUserId = currentUserResp?.user?.id;
@@ -135,28 +127,32 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
       return;
     }
 
+    setIsLoadingChat(true);
     try {
-      // Attempt to initiate/start a chat over websocket.
-      // The backend expects JSON messages; send a simple text "init" message
-      // which will create or return the chat associated with this business.
-      const payload = {
-        message_type: 'text',
-        sender_id: currentUserResp?.user?.id,
-        message: 'Hi, I would like to chat about your services.',
-      };
+      // Check if there's an existing chat with this business
+      const existingChat = userChatsResp?.data?.find(
+        chat => chat.business.id === business.id
+      );
 
-      let result = false;
-      try {
-        if (typeof send === 'function') {
-          result = await send(payload);
-        }
-      } catch (err) {
-        console.error('Failed to send chat init over socket', err);
+      if (existingChat) {
+        // If chat exists, navigate to it
+        router.push(`/chats/${existingChat.id}`);
+      } else {
+        // If no existing chat, create a new one
+        const response = await startChatMutation.mutateAsync({
+          business_id: business.id,
+        });
+        
+        // Navigate to the newly created chat
+        router.push(`/chats/${response.data.id}`);
       }
-
-      console.log('startChat socket send result', result);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to start/get chat for business', err);
+      toast.error('Failed to start chat', {
+        description: err?.message || 'Please try again.',
+      });
+    } finally {
+      setIsLoadingChat(false);
     }
   };
 
@@ -223,9 +219,10 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
               ) : (
                 <Button
                   onClick={handleStartChat}
+                  disabled={isLoadingChat}
                   className='mt-10 border border-[#FCFCFD] bg-[#0000006B] !py-6 md:px-20'
                 >
-                  Send us a message
+                  {isLoadingChat ? 'Starting chat...' : 'Send us a message'}
                 </Button>
               )}
             </div>

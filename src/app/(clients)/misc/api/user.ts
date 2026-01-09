@@ -286,3 +286,67 @@ export function useUpdateUser(): UseMutationResult<
     },
   });
 }
+
+// Chat-related hooks
+export interface ChatResponse {
+  status: boolean;
+  message: string;
+  data: {
+    id: number;
+    customer: {
+      id: number;
+      first_name: string;
+      last_name: string;
+      email: string;
+    };
+    business: {
+      id: number;
+      name: string;
+      logo: string;
+    };
+    is_pinned: boolean;
+    last_message_sent_at: string;
+    last_message?: {
+      image: string;
+      content: string;
+      is_image_message: boolean;
+      sender: {
+        id: number;
+        first_name: string;
+        last_name: string;
+        email: string;
+      };
+      is_read: boolean;
+      sent_at: string;
+    };
+  };
+}
+
+export function useStartChat(): UseMutationResult<ChatResponse, Error, { business_id: number }> {
+  return useMutation({
+    mutationFn: async ({ business_id }) => {
+      const res = await apiRequest(`/api/chat/${business_id}/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || data?.message || 'Failed to start chat');
+      return data;
+    },
+  });
+}
+
+export function useGetUserChats(): UseQueryResult<
+  { status: boolean; data: Array<{ id: number; business: { id: number; name: string; logo: string } }> },
+  Error
+> {
+  return useQuery({
+    queryKey: ['user', 'chats'],
+    queryFn: async () => {
+      const res = await apiRequest(`/api/chat/`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to fetch chats');
+      return data;
+    },
+  });
+}
