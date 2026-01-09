@@ -41,7 +41,7 @@ export default function Page() {
     <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 '>
    
       <header className='relative z-10 mt-20 w-full px-4 sm:px-0 md:mt-28'>
-        <div className='mb-6 flex w-full items-center justify-between'>
+        <div className='mb-3 flex w-full items-center justify-between'>
           <h1 className='font-inter text-lg font-semibold text-[#0F0F0F] sm:text-xl md:text-2xl'>
             Saved Businesses
           </h1>
@@ -69,7 +69,7 @@ export default function Page() {
         </div>
 
         {/* Search Bar */}
-        <search className='mb-8 flex w-full flex-col gap-2 md:mb-10 max-w-xl'>
+        <search className='mb-6 flex w-full flex-col gap-2 md:mb-6 max-w-xl'>
           <div className='flex w-full items-center gap-0 overflow-visible rounded-lg border border-[#CDD5DF] bg-white'>
             {/* Search Input */}
             <div className='flex flex-1 items-center gap-2 p-1.5 md:px-4 md:py-3'>
@@ -103,7 +103,7 @@ export default function Page() {
             <div className='relative'>
               <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm'
+                className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm rounded-r-xl'
               >
                 <span>{selectedCategory === 'all' ? 'Category' : convertToTitleCase(selectedCategory)}</span>
                 <svg
@@ -156,7 +156,7 @@ export default function Page() {
               )}
             </div>
 
-            <button className='bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-primary/90 max-md:hidden md:px-8 md:py-3 md:text-sm'>
+            <button className='bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-primary/90 max-md:hidden md:px-8 md:py-3 md:text-sm rounded-r-lg'>
               Search
             </button>
           </div>
@@ -218,7 +218,7 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className='mb-20 flex w-full items-center'>
+              <div className='mb-6 flex w-full items-center'>
                 <Carousel
                   opts={{ align: 'start', loop: false }}
                   className='w-full max-w-full px-2'

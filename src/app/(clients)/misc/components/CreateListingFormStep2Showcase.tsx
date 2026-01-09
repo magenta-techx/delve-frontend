@@ -44,7 +44,6 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     setCurrentIndex(0);
   }, [initialCloudImages, setBusinessShowCaseFile]);
 
-  // Get slot width percentage - intentionally over 100% for overflow
   const getSlotWidth = (position: number) => {
     // Position relative to center (0 = center)
     const relativePos = position - 2; // -2, -1, 0, 1, 2
@@ -169,7 +168,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
       
       // Center the entire carousel strip
       const centerOffset = (20 + 25 + 30 + 25 + 20) / 2; // Half of total width (60%)
-      leftPercent = leftPercent - centerOffset + 50; // Adjust to center in viewport
+      leftPercent = leftPercent - centerOffset + 50; 
 
       return (
         <div

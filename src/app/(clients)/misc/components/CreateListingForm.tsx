@@ -463,12 +463,18 @@ const BusinessStepForm = (): JSX.Element => {
 
       // Create new local services
       if (localServices.length > 0) {
-        // Transform services to ensure description is always present and image is undefined instead of null
-        const servicesWithDescription = localServices.map(service => ({
-          ...service,
-          description: service.description || '',
-          image: !!service.image ? service.image : null,
-        }));
+        // Transform services to ensure description is always present
+        const servicesWithDescription = localServices.map(service => {
+          const serviceData: any = {
+            title: service.title,
+            description: service.description || '',
+          };
+          // Only include image if it exists
+          if (service.image) {
+            serviceData.image = service.image;
+          }
+          return serviceData;
+        });
 
         await createServicesMutation.mutateAsync({
           business_id: businessId,

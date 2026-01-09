@@ -84,7 +84,7 @@ export default function CollaborationFormBusinessSelector({
           </div>
         </div>
 
-        <div className='flex items-center gap-3 px-6 py-4'>
+        <div className='flex items-center gap-3 px-6 py-4 max-w-xl'>
           <div className='flex-1 rounded-xl border px-4 py-2'>
             <input
               value={query}
