@@ -545,7 +545,7 @@ const LandingPageNavbar = () => {
                       ))}
                       <DropdownMenuItem className='!p-0'>
                         <Link
-                          href={'profile'}
+                          href={'/profile'}
                           className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
                         >
                           Profile Settings

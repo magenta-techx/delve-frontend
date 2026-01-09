@@ -191,7 +191,7 @@ const ProfilePage = () => {
       <Button
         type='submit'
         size='dynamic_lg'
-        className='w-full rounded-xl py-3 text-base font-semibold shadow-sm bg-[#551FB9]'
+        className='w-full rounded-2xl py-3 text-base font-semibold shadow-sm bg-[#551FB9]'
         isLoading={updateProfileMutation.isPending}
       >
         Change
@@ -201,7 +201,7 @@ const ProfilePage = () => {
 
   return (
     <div className='min-h-screen w-screen overflow-hidden bg-[#F8F7FB] sm:px-6 lg:px-12'>
-      <section className='container mx-auto p-4 pt-16 md:pt-20'>
+      <section className='container  mx-auto p-4 pt-16 md:pt-20'>
         <header className='flex w-full flex-col gap-2 py-8'>
           <h1 className='flex items-center gap-2 text-xl font-semibold text-[#0F172B]'>
             <svg
@@ -250,7 +250,7 @@ const ProfilePage = () => {
 
           {/* Password Change Side Panel - Desktop Only */}
           {isPasswordPanelOpen && !isMobile && (
-            <section className='h-max bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] border border-[#E3E8EF] rounded-xl sm:p-8'>
+            <section className='h-max bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] border border-[#E3E8EF] rounded-2xl sm:p-8'>
               <div className='flex items-center justify-between mb-6'>
                 <h2 className='text-lg font-semibold text-[#0F172B]'>Change Password</h2>
                 <button
@@ -326,7 +326,7 @@ const ProfilePanel = ({
   }
 
   return (
-    <section className='h-max bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] border border-[#E3E8EF] rounded-xl sm:p-8'>
+    <section className=' !max-w-[853px] h-max bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] border border-[#E3E8EF] rounded-2xl sm:p-8'>
       <div className='flex flex-wrap items-start justify-between gap-5 border-b border-[#F1F5F9] pb-6'>
         <section className='flex flex-col'>
           <div className='flex items-end gap-4'>
@@ -416,7 +416,7 @@ const ProfilePanel = ({
         <Button
           type='submit'
           size='dynamic_lg'
-          className='mt-8 w-full rounded-xl max-w-[400px] py-3 text-base font-semibold shadow-sm bg-[#551FB9]'
+          className='mt-8 w-full rounded-2xl max-w-[400px] py-3 text-base font-semibold shadow-sm bg-[#551FB9]'
           isLoading={isSubmitting}
         >
           Save Changes
