@@ -343,7 +343,7 @@ export function useGetUserChats(): UseQueryResult<
   return useQuery({
     queryKey: ['user', 'chats'],
     queryFn: async () => {
-      const res = await apiRequest(`/api/chat/`);
+      const res = await apiRequest(`/api/chat/user`);
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Failed to fetch chats');
       return data;
