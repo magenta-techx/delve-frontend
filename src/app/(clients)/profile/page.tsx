@@ -232,7 +232,7 @@ const ProfilePage = () => {
 
         <div className={cn(
           'grid gap-6',
-          isPasswordPanelOpen && !isMobile ? 'lg:grid-cols-[minmax(0,1fr)_auto]' : ''
+          isPasswordPanelOpen && !isMobile ? 'lg:grid-cols-[minmax(0,1fr)_0.4fr]' : ''
         )}>
           <ProfilePanel
             isLoading={profileLoading && !profileData}
@@ -250,7 +250,7 @@ const ProfilePage = () => {
 
           {/* Password Change Side Panel - Desktop Only */}
           {isPasswordPanelOpen && !isMobile && (
-            <section className='h-max shadow-[0_20px_60px_rgba(15,23,42,0.06)]'>
+            <section className='h-max shadow-[0_20px_60px_rgba(15,23,42,0.06)] '>
               <div className='flex items-center justify-between mb-6'>
                 <h2 className='text-lg font-semibold text-[#0F172B]'>Change Password</h2>
                 <button
