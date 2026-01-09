@@ -132,6 +132,7 @@ const LandingPageNavbar = () => {
     '/login',
     '/businesses/create-listing',
   ];
+  
 
   if (PAGES_WITHOUT_NAVBAR.includes(pathname)) {
     return null;
@@ -141,12 +142,13 @@ const LandingPageNavbar = () => {
     <nav
       className={cn(
         'relative z-[20] flex h-16 w-full items-center justify-between px-4 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24 xl:h-24',
-
-        pageHasBlackBg
-          ? 'bg-[#00000057] backdrop-blur-lg'
-          : isBusiness || isMobile
-            ? 'bg-white'
-            : 'bg-white'
+        isMobile
+          ? 'bg-white'
+          : pageHasBlackBg
+            ? 'bg-[#00000057] backdrop-blur-lg'
+            : isBusiness || isMobile
+              ? 'bg-white'
+              : 'bg-white'
       )}
     >
       <div className='container mx-auto flex flex-row items-center justify-between'>

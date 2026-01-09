@@ -152,7 +152,7 @@ export default function HomePage() {
                       return (
                         <CarouselItem
                           key={category.id}
-                          className='flex basis-[33vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
+                          className='flex basis-[29vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
                         >
                           <CategoryCard
                             title={category.name}
@@ -203,7 +203,7 @@ export default function HomePage() {
                   ? Array.from({ length: 6 }).map((_, key) => (
                       <CarouselItem
                         key={key}
-                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[30%] xl:px-3.5'
+                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
                       >
                         <ListingCardSkeleton classStyle='w-full sm:w-[300px] xl:w-full !aspect-[342/427]' />
                       </CarouselItem>
@@ -211,7 +211,7 @@ export default function HomePage() {
                   : approved.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[30%] xl:px-3.5'
+                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
                       >
                         <FeaturedListingCard business={business} isBigCard />
                       </CarouselItem>
