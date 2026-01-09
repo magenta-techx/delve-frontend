@@ -325,7 +325,7 @@ export interface ChatResponse {
 export function useStartChat(): UseMutationResult<ChatResponse, Error, { business_id: number }> {
   return useMutation({
     mutationFn: async ({ business_id }) => {
-      const res = await apiRequest(`/api/chat/${business_id}/start`, {
+      const res = await apiRequest(`/api/chat/start/${business_id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });

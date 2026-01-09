@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { forward } from '../../../_lib/backend';
 
-// POST /api/chat/[business_id]/start - Create or retrieve a chat with a business
+// POST /api/chat/start/[business_id] - Create or retrieve a chat with a business
 export async function POST(
   req: NextRequest,
   contextPromise: Promise<{ params: { business_id: string } }>
