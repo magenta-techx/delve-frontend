@@ -498,11 +498,14 @@ export default function CollaborationForm() {
                         <DropdownMenuContent align='end' className='w-40'>
                           <DropdownMenuItem
                             onClick={() =>
+                            {
+console.log('remove member clicked', member);
                               handleRemoveMemberClick(
                                 member.member?.id!,
                                 member.member ? `${member.member.first_name} ${member.member.last_name}` : member.unregistered_user_email || 'this member'
                               )
                             }
+                          }
                           >
                             Remove
                           </DropdownMenuItem>

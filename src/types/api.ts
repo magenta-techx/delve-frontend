@@ -495,8 +495,6 @@ export interface StateItem {
 
 // Collaboration
 
-
-
 export interface CollaborationDetail {
   id: number;
   owner: Owner;
@@ -520,6 +518,7 @@ interface Business {
 }
 
 export interface CollabMember {
+  id: number;
   member: Owner | null;
   unregistered_user_email: null | string;
   priviledge: string;
@@ -533,3 +532,4 @@ interface Owner {
   last_name: string;
   profile_image: string;
 }
+

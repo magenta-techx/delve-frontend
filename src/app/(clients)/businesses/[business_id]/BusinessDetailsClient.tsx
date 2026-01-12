@@ -4,7 +4,11 @@ import React, { useState, useMemo, Suspense } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
-import { useCurrentUser, useStartChat, useGetUserChats } from '@/app/(clients)/misc/api/user';
+import {
+  useCurrentUser,
+  useStartChat,
+  useGetUserChats,
+} from '@/app/(clients)/misc/api/user';
 import { useSession } from 'next-auth/react';
 import type { BusinessDetail } from '@/types/api';
 import { useBusinessDetails } from '@/app/(business)/misc/api';
@@ -143,7 +147,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
         const response = await startChatMutation.mutateAsync({
           business_id: business.id,
         });
-        
+
         // Navigate to the newly created chat
         router.push(`/chats/${response.data.id}`);
       }
@@ -210,6 +214,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                   fill
                 />
               </div>
+              <h2 className='mb-4'>{business.name}</h2>
               {isOwner ? (
                 <LinkButton
                   href='/business/settings/general'
@@ -234,11 +239,11 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             <h2 className='mb-2 font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Get to know us
             </h2>
-            <p className=' text-[0.95rem] leading-7 text-[#000000]'>
+            <p className='text-[0.95rem] leading-7 text-[#000000]'>
               {business.description ||
                 'No description available for this business.'}
             </p>
-            <div className='mt-8 grid grid-cols-3 gap-4 xl:mt-12 xl:gap-8 '>
+            <div className='mt-8 grid grid-cols-3 gap-4 xl:mt-12 xl:gap-8'>
               {business.images?.slice(0, 3).map((image, index) => {
                 const src = typeof image === 'string' ? image : image.image;
                 return (
@@ -487,11 +492,11 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
         <>
           <section
             id='gallery'
-            className='container mx-auto max-w-8xl py-8 md:px-8 xl:py-12'
+            className='max-w-8xl container mx-auto py-8 md:px-8 xl:py-12'
           >
             {business.images && business.images.length > 0 ? (
               <div
-                className='grid gap-2.5 md:gap-5 xl:gap-6 '
+                className='grid gap-2.5 md:gap-5 xl:gap-6'
                 style={{
                   gridTemplateColumns: 'repeat(15, 1fr)',
                   gridTemplateRows: 'repeat(12, minmax(40px, 50px))',
@@ -523,12 +528,48 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                     >
                       {/* Your Gallery overlay */}
                       {index === 1 && src && (
-                        <div className='absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center bg-[#00000099]'>
+                        <div className='absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center bg-[#00000099] gap-4'>
                           <h3 className='font-karma text-3xl font-medium text-white lg:text-4xl'>
                             Gallery
                           </h3>
+                          <p className='text-xs md:text-sm'>
+                            {!!business?.category?.subcategories &&
+                              business?.category?.subcategories
+                                ?.map((sub: { name: any }) => sub.name)
+                                .join(', ')}
+                          </p>
                           <span className='mt-2 flex items-center justify-center text-sm underline'>
-                            {/* ...your SVG... */}
+                            <svg
+                              width='50'
+                              height='50'
+                              viewBox='0 0 50 50'
+                              fill='none'
+                              xmlns='http://www.w3.org/2000/svg'
+                            >
+                              <rect
+                                x='49.5'
+                                y='49.5'
+                                width='49'
+                                height='49'
+                                rx='24.5'
+                                transform='rotate(-180 49.5 49.5)'
+                                fill='black'
+                                fill-opacity='0.28'
+                              />
+                              <rect
+                                x='49.5'
+                                y='49.5'
+                                width='49'
+                                height='49'
+                                rx='24.5'
+                                transform='rotate(-180 49.5 49.5)'
+                                stroke='white'
+                              />
+                              <path
+                                d='M20.8813 33.7133C20.5396 34.055 20.5396 34.609 20.8813 34.9508C21.223 35.2925 21.7771 35.2925 22.1188 34.9507L28.1523 28.9172C30.3164 26.7531 30.3164 23.2443 28.1523 21.0801L22.1188 15.0466C21.7771 14.7049 21.223 14.7049 20.8813 15.0466C20.5396 15.3884 20.5396 15.9424 20.8813 16.2841L26.9148 22.3176C28.3956 23.7983 28.3956 26.1991 26.9148 27.6798L20.8813 33.7133Z'
+                                fill='white'
+                              />
+                            </svg>
                           </span>
                         </div>
                       )}
@@ -571,19 +612,25 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             <h2 className='mb-2 text-center font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Amenities
             </h2>
-            <div className='mx-auto flex  items-center justify-center gap-6 xl:gap-14 text-[0.95rem] leading-7 text-[#000000]'>
+            <div className='mx-auto flex items-center justify-center gap-6 text-[0.95rem] leading-7 text-[#000000] xl:gap-14'>
               {business.amenities?.map((amenity, index) => {
                 console.log(amenity, 'Amenity');
                 return (
-                  <div className='flex flex-col items-center  gap-1' key={index}>
+                  <div className='flex flex-col items-center gap-1' key={index}>
                     <span>
                       {(() => {
                         const Icon =
                           AmenityIcon[amenity.name as keyof typeof AmenityIcon];
-                        return Icon ? <Icon className='!size-8 lg:!size-10' /> : <span className='h-9'></span>;
+                        return Icon ? (
+                          <Icon className='!size-8 lg:!size-10' />
+                        ) : (
+                          <span className='h-9'></span>
+                        );
                       })()}
                     </span>
-                    <span className='text-xs lg:text-[0.9rem] font-medium text-[#0D121C]'>{amenity.name}</span>
+                    <span className='text-xs font-medium text-[#0D121C] lg:text-[0.9rem]'>
+                      {amenity.name}
+                    </span>
                   </div>
                 );
               })}

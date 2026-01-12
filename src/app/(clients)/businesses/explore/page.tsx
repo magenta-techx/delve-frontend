@@ -33,7 +33,7 @@ export default function HomePage(): JSX.Element {
 
   return (
     <main className='relative flex flex-col items-center'>
-      <div className='relative mb-16 flex w-screen flex-col items-start bg-right bg-no-repeat sm:mb-52 sm:min-h-[65vh] sm:bg-[url("/explore/explore-hero.jpg")]'>
+      <div className='relative mb-12 flex w-screen flex-col items-start bg-right bg-no-repeat sm:mb-24 sm:min-h-[65vh] sm:bg-[url("/explore/explore-hero.jpg")]'>
         <div className='absolute hidden w-full bg-gradient-to-t from-black via-black/95 to-transparent sm:flex sm:min-h-[65vh] sm:bg-gradient-to-r'></div>
 
         {/* Mobile hero  */}
