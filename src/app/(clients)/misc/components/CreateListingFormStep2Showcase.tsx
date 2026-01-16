@@ -181,7 +181,8 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
             transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
             zIndex: position === 2 ? 10 : 5,
           }}
-          className="flex-shrink-0 pr-4 lg:pr-6"
+          className="flex-shrink-0 pr-4 lg:pr-6 cursor-pointer"
+          onClick={() => setCurrentIndex(index)}
         >
           <div className="relative overflow-hidden rounded-lg w-full h-full">
             <Image

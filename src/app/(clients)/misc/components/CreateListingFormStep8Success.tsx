@@ -1,25 +1,15 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/ui/Button';
-import { useRouter } from 'next/navigation';
+import { LinkButton } from '@/components/ui';
 
 interface CreateListingFormStep8SuccessProps {
   businessId?: string | number | undefined;
 }
 
 const CreateListingFormStep8Success: React.FC<CreateListingFormStep8SuccessProps> = ({
-  businessId,
 }) => {
-  const router = useRouter();
 
-  const handleViewBusiness = () => {
-    if (businessId) {
-      router.push(`/business/${businessId}`);
-    } else {
-      router.push('/');
-    }
-  };
 
   return (
     <div className='flex min-h-screen flex-col items-center justify-center bg-white px-4 py-8'>
@@ -49,13 +39,13 @@ const CreateListingFormStep8Success: React.FC<CreateListingFormStep8SuccessProps
 
         {/* Action Button */}
         <div className='pt-4'>
-          <Button
-            onClick={handleViewBusiness}
+          <LinkButton
+          href="/business"
             size='xl'
             className='inline-flex items-center gap-2'
           >
             View your business
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </div>

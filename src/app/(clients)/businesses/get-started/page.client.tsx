@@ -94,7 +94,7 @@ const GetStartedPage = () => {
             variant='white'
           >
             {isPending ? (
-              <Loader />
+              <Loader borderColor='border-[#9AA4B2]'  />
             ) : (
               <svg
                 width='18'

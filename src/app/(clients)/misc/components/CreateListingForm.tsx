@@ -22,6 +22,7 @@ import {
   useUpdateLocationAndContact,
   useCreateServices,
   useUpdateService,
+  useDeleteService,
   useOngoingBusinessOnboarding,
   useDeleteBusinessImages,
 } from '@/app/(business)/misc/api/business';
@@ -61,6 +62,7 @@ const BusinessStepForm = (): JSX.Element => {
   const deleteImagesMutation = useDeleteBusinessImages();
   const createServicesMutation = useCreateServices();
   const updateServiceMutation = useUpdateService();
+  const deleteServiceMutation = useDeleteService();
   const updateAmenitiesMutation = useUpdateBusinessAmenities();
   const updateLocationMutation = useUpdateLocationAndContact();
   const updateCategoryMutation = useUpdateBusinessCategory();
@@ -420,8 +422,22 @@ const BusinessStepForm = (): JSX.Element => {
     }
 
     try {
-      // Determine which cloud services were edited
-      // by comparing initial cloud services with current cloud services
+      // 1. Delete removed cloud services
+      const deletedServices = initialCloudServices.filter(
+        initialService => !cloudServices.find(s => s.id === initialService.id)
+      );
+      
+      if (deletedServices.length > 0) {
+        console.log('Deleting services:', deletedServices);
+        for (const service of deletedServices) {
+          await deleteServiceMutation.mutateAsync({
+            business_id: businessId,
+            service_id: service.id,
+          });
+        }
+      }
+
+      // 2. Update edited cloud services
       const editedCloudServices: typeof cloudServices = [];
 
       for (const service of cloudServices) {
@@ -441,7 +457,6 @@ const BusinessStepForm = (): JSX.Element => {
         }
       }
 
-      // Update edited cloud services
       if (editedCloudServices.length > 0) {
         for (const service of editedCloudServices) {
           const updateData: any = {
@@ -461,20 +476,29 @@ const BusinessStepForm = (): JSX.Element => {
         }
       }
 
-      // Create new local services
+      // 3. Create new local services
       if (localServices.length > 0) {
-        // Transform services to ensure description is always present
-        const servicesWithDescription = localServices.map(service => {
-          const serviceData: any = {
+        console.log('Creating new services:', localServices);
+        
+        // Log each service to debug image issue
+        localServices.forEach((service, idx) => {
+          console.log(`Service ${idx}:`, {
             title: service.title,
-            description: service.description || '',
-          };
-          // Only include image if it exists
-          if (service.image) {
-            serviceData.image = service.image;
-          }
-          return serviceData;
+            description: service.description,
+            hasImage: !!service.image,
+            imageType: service.image ? typeof service.image : 'null',
+            isFile: service.image instanceof File,
+          });
         });
+        
+        // Transform services to ensure description is always present and include images
+        const servicesWithDescription = localServices.map(service => ({
+          title: service.title,
+          description: service.description || '',
+          image: service.image || null,
+        }));
+
+        console.log('Services with description (before API call):', servicesWithDescription);
 
         await createServicesMutation.mutateAsync({
           business_id: businessId,

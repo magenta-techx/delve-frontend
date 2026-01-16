@@ -681,6 +681,21 @@ export function useCreateServices(): UseMutationResult<
     }
   >({
     mutationFn: async ({ business_id, services }) => {
+      console.log('=== Creating Services ===');
+      console.log('Services received:', services);
+      console.log('Number of services:', services.length);
+      
+      services.forEach((service, idx) => {
+        console.log(`Service ${idx}:`, {
+          title: service.title,
+          description: service.description,
+          hasImage: !!service.image,
+          imageType: service.image ? typeof service.image : 'null',
+          isFile: service.image instanceof File,
+          imageName: service.image instanceof File ? (service.image as File).name : 'N/A'
+        });
+      });
+
       const formData = new FormData();
       if (services.length === 1) {
         // Single service mode
@@ -688,7 +703,8 @@ export function useCreateServices(): UseMutationResult<
         if (service) {
           formData.append('title', service.title);
           formData.append('description', service.description);
-          if (service.image) {
+          if (service.image && service.image instanceof File) {
+            console.log('Appending single service image');
             formData.append('image_field', service.image);
           }
         }
@@ -700,11 +716,21 @@ export function useCreateServices(): UseMutationResult<
             `services[${index}][description]`,
             service.description
           );
-          if (service.image) {
+          // Only append image if it exists and is a File object
+          if (service.image && service.image instanceof File) {
+            console.log(`Appending image for service ${index}:`, (service.image as File).name);
             formData.append(`services[${index}][image_field]`, service.image);
+          } else {
+            console.log(`No image for service ${index}`);
           }
         });
       }
+
+      console.log('FormData entries:');
+      formData.forEach((value, key) => {
+        console.log(`  ${key}:`, value instanceof File ? `File(${(value as File).name})` : value);
+      });
+
       const res = await authAwareFetch(
         `/api/business/${business_id}/services/`,
         {
@@ -782,9 +808,12 @@ export function useUpdateService(): UseMutationResult<
       const fd = new FormData();
       if (service?.title) fd.append('title', service.title);
       if (service?.description) fd.append('description', service.description);
-      if (service?.image) fd.append('image_field', service.image);
+      // Only append image if it exists and is a File object
+      if (service?.image && service.image instanceof File) {
+        fd.append('image_field', service.image);
+      }
 
-      console.log(service);
+      console.log('Updating service:', { service_id, service });
       const res = await authAwareFetch(
         `/api/business/${business_id}/services/${service_id}/`,
         {

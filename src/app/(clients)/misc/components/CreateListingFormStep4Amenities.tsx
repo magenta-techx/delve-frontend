@@ -16,6 +16,7 @@ const BusinessAmenities: React.FC<BusinessAmenitiesProps> = ({
   const [selectedAmenities, setLocalSelectedAmenities] =
     useState<number[]>(selectedAmenityIds);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const { data: amenities = [], isLoading, error } = useAmenities();
 
   // Filter amenities based on search term
@@ -87,11 +88,13 @@ const BusinessAmenities: React.FC<BusinessAmenitiesProps> = ({
           placeholder='Enter keyword...'
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           className='w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500'
         />
 
         {/* Dropdown Results */}
-        {searchTerm && (
+        {isFocused && (
           <div className='absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg'>
             {filteredAmenities.length > 0 ? (
               filteredAmenities.map(amenity => {
@@ -101,9 +104,9 @@ const BusinessAmenities: React.FC<BusinessAmenitiesProps> = ({
                   <button
                     key={amenity.id}
                     type='button'
-                    onClick={() => {
+                    onMouseDown={(e) => {
+                      e.preventDefault();
                       toggleAmenity(amenity.id);
-                      setSearchTerm('');
                     }}
                     className={cn(
                       'flex w-full items-center justify-between border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50',

@@ -27,7 +27,7 @@ interface EditableCloudService extends CloudService {
 interface CreateServicesProps {
   onServicesChange?: (services: Service[]) => void;
   onLocalServicesChange?: (services: Service[]) => void;
-  onCloudServicesChange?: (services: CloudService[]) => void;
+  onCloudServicesChange?: (services: EditableCloudService[]) => void;
   initialCloudServices?: CloudService[];
   cloudServices?: CloudService[];
   onSubmit?: (services: Service[]) => void;
@@ -43,9 +43,11 @@ const CreateServices: React.FC<CreateServicesProps> = ({
 }) => {
   const [services, setServices] = useState<Service[]>([]);
   const [localCloudServices, setLocalCloudServices] = useState<EditableCloudService[]>(cloudServices);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize cloud services and set default empty service if no cloud services
   useEffect(() => {
+    if (isInitialized) return;
+    
     if (cloudServices && cloudServices.length > 0) {
       setLocalCloudServices(cloudServices.map(s => ({
         ...s,
@@ -58,7 +60,15 @@ const CreateServices: React.FC<CreateServicesProps> = ({
       // Only show default empty service if there are 0 cloud services
       setServices([{ title: '', description: '', image: null }]);
     }
-  }, [cloudServices]);
+    setIsInitialized(true);
+  }, []); // Empty dependency array - runs only once on mount
+
+  // Separately handle updates to cloud services (for editing/deleting existing services)
+  useEffect(() => {
+    if (isInitialized) {
+      setLocalCloudServices(cloudServices);
+    }
+  }, [cloudServices, isInitialized]);
 
   // Helper to update parent whenever services change
   const updateParent = (newServices: Service[]) => {
@@ -89,14 +99,12 @@ const CreateServices: React.FC<CreateServicesProps> = ({
     updateParent(newServices);
   };
 
-  // Get services ready for submission (only complete ones)
   const getValidServices = () => {
     return services.filter(service => 
       service.title.trim() !== '' && service.description.trim() !== ''
     );
   };
 
-  // Submit handler
   const handleSubmit = () => {
     const validServices = getValidServices();
     if (validServices.length > 0) {

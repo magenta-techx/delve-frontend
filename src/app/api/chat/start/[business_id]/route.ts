@@ -7,5 +7,5 @@ export async function POST(
   contextPromise: Promise<{ params: { business_id: string } }>
 ): Promise<NextResponse> {
   const { params } = await contextPromise;
-  return forward(req, 'POST', `/chat/${params.business_id}/start/`, { auth: true });
+  return forward(req, 'POST', `/chat/create/${params.business_id}/`, { auth: true });
 }
