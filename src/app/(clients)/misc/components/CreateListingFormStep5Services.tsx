@@ -122,12 +122,13 @@ const CreateServices: React.FC<CreateServicesProps> = ({
     // Create preview
     const reader = new FileReader();
     reader.onloadend = () => {
-      updateService(index, 'imagePreview', reader.result as string);
+      // Update both image and preview in a single state update
+      const newServices = services.map((service, i) =>
+        i === index ? { ...service, image: file, imagePreview: reader.result as string } : service
+      );
+      updateParent(newServices);
     };
     reader.readAsDataURL(file);
-    
-    // Store the file
-    updateService(index, 'image', file);
   };
 
   const removeCloudService = (serviceId: number) => {
@@ -159,6 +160,7 @@ const CreateServices: React.FC<CreateServicesProps> = ({
     // Create preview
     const reader = new FileReader();
     reader.onloadend = () => {
+      // Update both file and preview in a single state update to avoid race conditions
       const updatedCloudServices = localCloudServices.map(service =>
         service.id === serviceId ? { ...service, imagePreview: reader.result as string, imageFile: file } : service
       ) as EditableCloudService[];

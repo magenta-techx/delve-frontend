@@ -709,7 +709,6 @@ export function useCreateServices(): UseMutationResult<
           }
         }
       } else {
-        // Multiple services mode
         services.forEach((service, index) => {
           formData.append(`services[${index}][title]`, service.title);
           formData.append(
@@ -719,7 +718,7 @@ export function useCreateServices(): UseMutationResult<
           // Only append image if it exists and is a File object
           if (service.image && service.image instanceof File) {
             console.log(`Appending image for service ${index}:`, (service.image as File).name);
-            formData.append(`services[${index}][image_field]`, service.image);
+            formData.append(`services[${index}][image]`, service.image);
           } else {
             console.log(`No image for service ${index}`);
           }
