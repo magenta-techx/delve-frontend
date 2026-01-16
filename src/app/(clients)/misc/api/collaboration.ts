@@ -1,5 +1,5 @@
 "use client";
-import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
 import type { ApiEnvelope, ApiMessage, CollaborationSummary, CollaborationDetail } from "@/types/api";
 import { apiRequest } from '@/utils/apiHandler';
 
@@ -47,17 +47,21 @@ export function useSendInvitation(): UseMutationResult<ApiMessage, Error, { coll
     },
   });
 }
-export function useUpdateInviteStatus(): UseMutationResult<ApiMessage, Error, { member_id: number | string; status: string }> {
+export function useUpdateInviteStatus(): UseMutationResult<ApiMessage, Error, { member_id: number | string; status: string; collab_id: number | string }> {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ member_id, status }) => {
       const res = await apiRequest(`/api/collaboration/invite/${member_id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ invite_status: status }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to update invite status");
       return data;
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["collaboration", variables.collab_id] });
     },
   });
 }

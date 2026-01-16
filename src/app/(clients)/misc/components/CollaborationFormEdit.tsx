@@ -112,10 +112,10 @@ export default function CollaborationForm() {
       setInvitedMembers([]);
 
       // Set all existing members (including pending) from backend (excluding owner)
-      const allMembers =
-        collabData.data.members
-          ?.filter(m => m.priviledge !== 'owner')
-          
+      const allMembers = collabData.data.members?.filter(
+        m => m.priviledge !== 'owner'
+      );
+
       setExistingMembers(allMembers);
     }
   }, [collabData, reset]);
@@ -160,7 +160,9 @@ export default function CollaborationForm() {
             onSuccess: () => {
               toast.success('Member removed from collaboration');
               // Update local state
-              setExistingMembers(prev => prev.filter(m => m.member?.id !== memberId));
+              setExistingMembers(prev =>
+                prev.filter(m => m.member?.id !== memberId)
+              );
               refetch();
               deleteConfirmation.closeConfirmation();
             },
@@ -291,8 +293,11 @@ export default function CollaborationForm() {
 
   return (
     <div className='w-full gap-3 py-8 pt-16 lg:grid lg:h-screen lg:grid-rows-[max-content,1fr] lg:overflow-hidden xl:pb-12 xl:pt-28'>
-      <header className='mx-auto flex w-full container items-center justify-between px-4'>
-        <Link href='/businesses/saved/collaboration' className='flex items-center gap-2'>
+      <header className='container mx-auto flex w-full items-center justify-between px-4'>
+        <Link
+          href='/businesses/saved/collaboration'
+          className='flex items-center gap-2'
+        >
           <ChevronLeft className='size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
           Back
         </Link>
@@ -307,7 +312,7 @@ export default function CollaborationForm() {
           Save Changes
         </Button>
       </header>
-      <section className='mx-auto grid w-full container gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
+      <section className='container mx-auto grid w-full gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
         <form className='custom-scrollbar flex flex-col gap-4 overflow-scroll rounded-lg pl-4 lg:h-full'>
           <h1 className='mb-2 text-base font-semibold md:text-lg'>
             Collaborate With Your Crew
@@ -351,7 +356,7 @@ export default function CollaborationForm() {
 
           <section className='mt-4'>
             <h5 className='mb-2 text-sm font-medium'>Group Members</h5>
-            <div className='custom-scrollbar max-h-[400px] space-y-3 overflow-y-auto '>
+            <div className='custom-scrollbar max-h-[400px] space-y-3 overflow-y-auto'>
               {/* Owner */}
               <div className='flex items-center justify-between rounded-md bg-[#FFFFFF] px-3 py-2'>
                 <div className='flex items-center gap-3'>
@@ -419,11 +424,15 @@ export default function CollaborationForm() {
                         member.member?.profile_image ||
                         '/collaboration/user_1.png'
                       }
-                      alt={member.member ? `${member.member.first_name} ${member.member.last_name}` : member.unregistered_user_email || 'User'}
+                      alt={
+                        member.member
+                          ? `${member.member.first_name} ${member.member.last_name}`
+                          : member.unregistered_user_email || 'User'
+                      }
                       className='size-6 rounded-full object-cover md:size-10'
                     />
                     <span className='text-sm'>
-                      {member.member 
+                      {member.member
                         ? `${member.member.first_name} ${member.member.last_name}`
                         : member.unregistered_user_email || 'Unknown'}
                     </span>
@@ -439,7 +448,10 @@ export default function CollaborationForm() {
                         onChange={e => {
                           const newRole = e.target.value;
                           updateMemberPrivilege(
-                            { member_id: member.member?.id!, privilege: newRole },
+                            {
+                              member_id: member.member?.id!,
+                              privilege: newRole,
+                            },
                             {
                               onSuccess: () => {
                                 toast.success('Member role updated!');
@@ -468,7 +480,13 @@ export default function CollaborationForm() {
                         ? format(new Date(member.accepted_when), 'MM-dd-yyyy')
                         : '-'}
                     </span>
-                    <p className='flex items-center gap-2.5 text-[0.625rem] capitalize lg:text-xs' style={{ color: member.status === 'pending' ? '#9AA4B2' : '#7C3AED' }}>
+                    <p
+                      className='flex items-center gap-2.5 text-[0.625rem] capitalize lg:text-xs'
+                      style={{
+                        color:
+                          member.status === 'pending' ? '#9AA4B2' : '#7C3AED',
+                      }}
+                    >
                       {member.status}
 
                       <DropdownMenu>
@@ -497,17 +515,21 @@ export default function CollaborationForm() {
 
                         <DropdownMenuContent align='end' className='w-40'>
                           <DropdownMenuItem
-                            onClick={() =>
-                            {
-console.log('remove member clicked', member);
+                            onClick={() => {
+                              console.log('remove member clicked', member);
                               handleRemoveMemberClick(
                                 member.member?.id!,
-                                member.member ? `${member.member.first_name} ${member.member.last_name}` : member.unregistered_user_email || 'this member'
-                              )
-                            }
-                          }
+                                member.member
+                                  ? `${member.member.first_name} ${member.member.last_name}`
+                                  : member.unregistered_user_email ||
+                                      'this member'
+                              );
+                            }}
                           >
-                            Remove
+                            Remove{' '}
+                            {member?.member
+                              ? member.member.first_name
+                              : member.unregistered_user_email}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -597,7 +619,7 @@ console.log('remove member clicked', member);
                             toast.success('Pending invitation removed');
                           }}
                         >
-                          Remove
+                          Remove {member?.email}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -837,7 +859,10 @@ console.log('remove member clicked', member);
                 </div>
                 <div className='flex gap-4 max-lg:flex-col lg:grid lg:grid-cols-2'>
                   {selectedSavedBusiness.map(business => (
-                    <div className='max-md:px-8 md:basis-1/2 lg:basis-1/2' key={business.id}>
+                    <div
+                      className='max-md:px-8 md:basis-1/2 lg:basis-1/2'
+                      key={business.id}
+                    >
                       <FeaturedListingCard
                         business={business}
                         isSelectable={true}

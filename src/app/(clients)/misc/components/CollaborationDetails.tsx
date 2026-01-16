@@ -1,5 +1,5 @@
 'use client';
-import { useCollaboration } from '@/app/(clients)/misc/api';
+import { useCollaboration, useUpdateInviteStatus } from '@/app/(clients)/misc/api';
 import { LogoLoadingIcon } from '@/assets/icons';
 import { EmptyState, Button, LinkButton } from '@/components/ui';
 import { EmptyListingIcon } from '../icons';
@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import FeaturedListingCard from './ListingCard';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useUserContext } from '@/contexts/UserContext';
 
 export default function CollaborationDetails({
@@ -17,6 +17,8 @@ export default function CollaborationDetails({
 }) {
   const { data: collabData, isLoading } = useCollaboration(collabId);
   const { user } = useUserContext();
+  const { mutate: updateInviteStatus, isPending: isUpdatingStatus } = useUpdateInviteStatus();
+  const [_statusErrors, setStatusErrors] = useState<string | null>(null);
 
   const isUserOwner = useMemo(
     () =>
@@ -35,6 +37,14 @@ export default function CollaborationDetails({
     () =>
       collabData?.data?.members?.some(
         m => m.priviledge === 'contributor' && m.member?.id === user?.id
+      ),
+    [user, collabData]
+  );
+
+  const currentUserPendingStatus = useMemo(
+    () =>
+      !!collabData?.data?.members?.find(
+        m => m.member?.id === user?.id && m.status === 'pending'
       ),
     [user, collabData]
   );
@@ -70,29 +80,76 @@ export default function CollaborationDetails({
       m.member !== null
   );
   const pendingMembers = members.filter(
-    m => m.status === 'pending' && m.unregistered_user_email
+    m =>
+      m.status === 'pending' &&
+      (m.unregistered_user_email || m.member)
   );
+
+  const handleAcceptInvite = (memberId: number) => {
+    setStatusErrors(null);
+    updateInviteStatus(
+      { member_id: memberId, status: 'active', collab_id: collabId },
+      {
+        onSuccess: () => {
+          setStatusErrors(null);
+        },
+        onError: (error) => {
+          setStatusErrors(error.message);
+        },
+      }
+    );
+  };
+
+  const handleDeclineInvite = (memberId: number) => {
+    setStatusErrors(null);
+    updateInviteStatus(
+      { member_id: memberId, status: 'declined', collab_id: collabId },
+      {
+        onSuccess: () => {
+          setStatusErrors(null);
+        },
+        onError: (error) => {
+          setStatusErrors(error.message);
+        },
+      }
+    );
+  };
 
   return (
     <div className='w-full overflow-hidden py-8 pt-16 lg:h-screen xl:pb-12 xl:pt-28'>
-      <header className='mx-auto mb-2.5 flex h-10 w-full container items-center justify-between px-4'>
-        <Link
-          href='/businesses/saved/collaboration'
-          className='flex items-center gap-2'
-        >
-          <ChevronLeft className='size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
-          Back
-        </Link>
+      <header className='custom-scrollbar container mx-auto mb-2.5 flex h-12 w-full max-w-[1356px] justify-between overflow-y-scroll p-5 px-4 md:px-8'>
+        <div className='flex items-center gap-2'>
+          {(isUserContributor || isUserOwner) && (
+            <LinkButton
+              href={`./${collabId}/edit`}
+              size='md'
+              variant={'light'}
+              className='text-primary hover:text-primary/90'
+            >
+              <span className='md:hidden'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                >
+                  <path d='M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7' />
+                  <path d='M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z' />
+                </svg>
+              </span>
+              <span className='max-md:hidden'>Edit</span>
+            </LinkButton>
+          )}
 
-        <div>
-          {
-            ((isUserContributor || isUserOwner) && (
-              <LinkButton
-                href={`./${collabId}/edit`}
-                size='md'
-                variant={'light'}
-                className='text-primary hover:text-primary/90'
-              >
+          {currentUserPendingStatus ? (
+            <>
+              <Button className='bg-[#551FB9]' size='dynamic_lg'>
+                <span className='max-md:hidden'>Accept invite</span>
                 <span className='md:hidden'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -105,41 +162,68 @@ export default function CollaborationDetails({
                     stroke-linecap='round'
                     stroke-linejoin='round'
                   >
-                    <path d='M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7' />
-                    <path d='M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z' />
+                    <polyline points='20 6 9 17 4 12' />
                   </svg>
                 </span>
-                <span className='max-md:hidden'>Edit</span>
-              </LinkButton>
-            ))}
-          <Button
-            size='md'
-            variant={'unstyled'}
-            className='text-[#E6283C] hover:text-[#E6283C]/90'
-          >
-            <span className='md:hidden'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                stroke-width='2'
-                stroke-linecap='round'
-                stroke-linejoin='round'
-              >
-                <path d='m16 17 5-5-5-5' />
-                <path d='M21 12H9' />
-                <path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4' />
-              </svg>
-            </span>
-            <span className='max-md:hidden'>Exit Group</span>
-          </Button>
+              </Button>
+              <Button size='dynamic_lg' variant={'destructive'}>
+                <span className='max-md:hidden'>Decline</span>
+                <span className='md:hidden'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='24'
+                    height='24'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    stroke-width='2'
+                    stroke-linecap='round'
+                    stroke-linejoin='round'
+                  >
+                    <line x1='18' y1='6' x2='6' y2='18' />
+                    <line x1='6' y1='6' x2='18' y2='18' />
+                  </svg>
+                </span>
+              </Button>
+            </>
+          ) : (
+            <Button
+              size='md'
+              variant={'unstyled'}
+              className='text-[#E6283C] hover:text-[#E6283C]/90'
+            >
+              <span className='md:hidden'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                >
+                  <path d='m16 17 5-5-5-5' />
+                  <path d='M21 12H9' />
+                  <path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4' />
+                </svg>
+              </span>
+              <span className='max-md:hidden'>Exit Group</span>
+            </Button>
+          )}
         </div>
+
+        <Link
+          href='/businesses/saved/collaboration'
+          className='flex items-center gap-2'
+        >
+          <ChevronLeft className='size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
+          Back
+        </Link>
       </header>
 
-      <section className='custom-scrollbar mx-auto h-[calc(100%-40px)] w-full max-w-[1356px] flex-1 overflow-y-scroll rounded-2xl bg-[#FFFFFF] p-5 px-4 md:px-8'>
+      <section className='custom-scrollbar mx-auto h-[calc(100%-48px)] w-full max-w-[1356px] flex-1 overflow-y-scroll rounded-2xl bg-[#FFFFFF] p-5 px-4 md:px-8'>
         <article className=''>
           {/* Preview Header */}
           <div className='mb-6 flex items-center justify-between border-b pb-4'>
@@ -285,19 +369,60 @@ export default function CollaborationDetails({
                   className='flex items-center justify-between rounded-md bg-[#F9FAFB] px-4 py-3'
                 >
                   <div className='flex items-center gap-3'>
-                    <div className='flex size-10 items-center justify-center rounded-full bg-[#E5E7EB] text-xs font-medium text-[#6B7280] md:size-12'>
-                      {member.unregistered_user_email?.charAt(0).toUpperCase()}
-                    </div>
-                    <span className='text-xs font-medium text-[#0D121C] md:text-sm'>
-                      {member.unregistered_user_email}
-                    </span>
+                    {member.member ? (
+                      <>
+                        <img
+                          src={
+                            member.member?.profile_image ||
+                            '/collaboration/user_1.png'
+                          }
+                          alt={`${member.member?.first_name} ${member.member?.last_name}`}
+                          className='size-10 rounded-full object-cover md:size-12'
+                        />
+                        <span className='text-xs font-medium text-[#0D121C] md:text-sm'>
+                          {member.member?.first_name} {member.member?.last_name}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <div className='flex size-10 items-center justify-center rounded-full bg-[#E5E7EB] text-xs font-medium text-[#6B7280] md:size-12'>
+                          {member.unregistered_user_email?.charAt(0).toUpperCase()}
+                        </div>
+                        <span className='text-xs font-medium text-[#0D121C] md:text-sm'>
+                          {member.unregistered_user_email}
+                        </span>
+                      </>
+                    )}
                   </div>
                   <span className='rounded-md bg-[#F3F4F6] px-3 py-1.5 text-xs font-medium text-[#6B7280]'>
                     {member.priviledge}
                   </span>
-                  <span className='text-xs capitalize text-[#9AA4B2]'>
-                    {member.status}
-                  </span>
+
+                  {/* Show accept/decline buttons only for current user's pending invite */}
+                  {member.member?.id === user?.id && member.status === 'pending' ? (
+                    <div className='flex items-center gap-2'>
+                      <Button
+                        onClick={() => handleAcceptInvite(member.id)}
+                        disabled={isUpdatingStatus}
+                        className='bg-[#551FB9] hover:bg-[#551FB9]/90'
+                        size='sm'
+                      >
+                        <span className='text-xs'>Accept</span>
+                      </Button>
+                      <Button
+                        onClick={() => handleDeclineInvite(member.id)}
+                        disabled={isUpdatingStatus}
+                        variant={'destructive'}
+                        size='sm'
+                      >
+                        <span className='text-xs'>Decline</span>
+                      </Button>
+                    </div>
+                  ) : (
+                    <span className='text-xs capitalize text-[#9AA4B2]'>
+                      {member.status}
+                    </span>
+                  )}
                 </div>
               ))}
             </div>

@@ -46,7 +46,7 @@ export default function UserChatsPage({
   }, [chatsToShow, chats]);
 
   return (
-    <div className='flex flex-col h-screen !overflow-hidden container mx-auto bg-[#FCFCFD] pb-4 '>
+    <div className='flex flex-col h-screen !overflow-hidden container mx-auto bg-[#FCFCFD] p-4 pt-0 '>
       <MarketPlaceTopBar />
       <div className='flex gap-x-4 grow '>
         <section
