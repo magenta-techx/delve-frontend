@@ -809,7 +809,7 @@ export function useUpdateService(): UseMutationResult<
       if (service?.description) fd.append('description', service.description);
       // Only append image if it exists and is a File object
       if (service?.image && service.image instanceof File) {
-        fd.append('image_field', service.image);
+        fd.append('image', service.image);
       }
 
       console.log('Updating service:', { service_id, service });

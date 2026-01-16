@@ -66,7 +66,15 @@ const CreateServices: React.FC<CreateServicesProps> = ({
   // Separately handle updates to cloud services (for editing/deleting existing services)
   useEffect(() => {
     if (isInitialized) {
-      setLocalCloudServices(cloudServices);
+      // Preserve imagePreview and imageFile from existing local services if they exist
+      setLocalCloudServices(cloudServices.map(s => {
+        const existing = localCloudServices.find(ls => ls.id === s.id);
+        return {
+          ...s,
+          imagePreview: existing?.imagePreview || s.image,
+          imageFile: existing?.imageFile || null
+        };
+      }));
     }
   }, [cloudServices, isInitialized]);
 
