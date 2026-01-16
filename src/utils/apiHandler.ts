@@ -18,8 +18,8 @@ export interface ApiErrorResponse {
 interface PendingRequest {
   url: string;
   options: RequestInit;
-  token?: string;
-  requestOpts?: { skipAuthRedirect?: boolean };
+  token?: string | undefined;
+  requestOpts?: { skipAuthRedirect?: boolean } | undefined;
   resolve: (value: Response) => void;
   reject: (reason?: unknown) => void;
 }
