@@ -18,7 +18,12 @@ export default function CollaborationDetails({
   const { data: collabData, isLoading } = useCollaboration(collabId);
   const { user } = useUserContext();
   const { mutate: updateInviteStatus, isPending: isUpdatingStatus } = useUpdateInviteStatus();
-  const [_statusErrors, setStatusErrors] = useState<string | null>(null);
+  const [statusErrors, setStatusErrors] = useState<string | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    memberId: number | null;
+    action: 'accept' | 'decline' | null;
+  }>({ isOpen: false, memberId: null, action: null });
 
   const isUserOwner = useMemo(
     () =>
@@ -86,27 +91,23 @@ export default function CollaborationDetails({
   );
 
   const handleAcceptInvite = (memberId: number) => {
-    setStatusErrors(null);
-    updateInviteStatus(
-      { member_id: memberId, status: 'active', collab_id: collabId },
-      {
-        onSuccess: () => {
-          setStatusErrors(null);
-        },
-        onError: (error) => {
-          setStatusErrors(error.message);
-        },
-      }
-    );
+    setConfirmModal({ isOpen: true, memberId, action: 'accept' });
   };
 
   const handleDeclineInvite = (memberId: number) => {
-    setStatusErrors(null);
+    setConfirmModal({ isOpen: true, memberId, action: 'decline' });
+  };
+
+  const handleConfirmAction = () => {
+    if (!confirmModal.memberId || !confirmModal.action) return;
+
+    const status = confirmModal.action === 'accept' ? 'active' : 'declined';
     updateInviteStatus(
-      { member_id: memberId, status: 'declined', collab_id: collabId },
+      { member_id: confirmModal.memberId, status, collab_id: collabId },
       {
         onSuccess: () => {
           setStatusErrors(null);
+          setConfirmModal({ isOpen: false, memberId: null, action: null });
         },
         onError: (error) => {
           setStatusErrors(error.message);
@@ -148,7 +149,17 @@ export default function CollaborationDetails({
 
           {currentUserPendingStatus ? (
             <>
-              <Button className='bg-[#551FB9]' size='dynamic_lg'>
+              <Button
+                onClick={() => {
+                  const pendingMember = pendingMembers.find(
+                    m => m.member?.id === user?.id && m.status === 'pending'
+                  );
+                  if (pendingMember) handleAcceptInvite(pendingMember.id);
+                }}
+                disabled={isUpdatingStatus}
+                className='bg-[#551FB9] hover:bg-[#551FB9]/90'
+                size='dynamic_lg'
+              >
                 <span className='max-md:hidden'>Accept invite</span>
                 <span className='md:hidden'>
                   <svg
@@ -166,7 +177,17 @@ export default function CollaborationDetails({
                   </svg>
                 </span>
               </Button>
-              <Button size='dynamic_lg' variant={'destructive'}>
+              <Button
+                onClick={() => {
+                  const pendingMember = pendingMembers.find(
+                    m => m.member?.id === user?.id && m.status === 'pending'
+                  );
+                  if (pendingMember) handleDeclineInvite(pendingMember.id);
+                }}
+                disabled={isUpdatingStatus}
+                variant={'destructive'}
+                size='dynamic_lg'
+              >
                 <span className='max-md:hidden'>Decline</span>
                 <span className='md:hidden'>
                   <svg
@@ -443,6 +464,79 @@ export default function CollaborationDetails({
           )}
         </article>
       </section>
+
+      {/* Confirmation Modal */}
+      {confirmModal.isOpen && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
+          <div className='relative w-full max-w-sm rounded-lg bg-white p-6 shadow-lg'>
+            <div className='mb-4'>
+              <h3 className='text-lg font-semibold text-[#0D121C]'>
+                {confirmModal.action === 'accept'
+                  ? 'Accept Collaboration Invite'
+                  : 'Decline Collaboration Invite'}
+              </h3>
+              <p className='mt-2 text-sm text-[#6B7280]'>
+                {confirmModal.action === 'accept'
+                  ? 'Are you sure you want to accept this collaboration invite? You will be added to this group.'
+                  : 'Are you sure you want to decline this collaboration invite? You will not be able to participate in this group.'}
+              </p>
+            </div>
+
+            {statusErrors && (
+              <div className='mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700'>
+                {statusErrors}
+              </div>
+            )}
+
+            <div className='flex gap-3'>
+              <Button
+                onClick={() =>
+                  setConfirmModal({ isOpen: false, memberId: null, action: null })
+                }
+                variant='light'
+                className='flex-1'
+                disabled={isUpdatingStatus}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleConfirmAction}
+                disabled={isUpdatingStatus}
+                className={`flex-1 ${
+                  confirmModal.action === 'accept'
+                    ? 'bg-[#551FB9] hover:bg-[#551FB9]/90'
+                    : 'bg-[#E6283C] hover:bg-[#E6283C]/90'
+                }`}
+              >
+                {isUpdatingStatus ? (
+                  <span className='flex items-center gap-2'>
+                    <svg
+                      className='animate-spin'
+                      width='16'
+                      height='16'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                    >
+                      <circle cx='12' cy='12' r='10' opacity='0.25' />
+                      <path
+                        d='M12 2a10 10 0 0 1 10 10'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                      />
+                    </svg>
+                    Processing...
+                  </span>
+                ) : confirmModal.action === 'accept' ? (
+                  'Accept'
+                ) : (
+                  'Decline'
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

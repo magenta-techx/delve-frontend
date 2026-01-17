@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
 import {
   BadgeCheck,
@@ -63,6 +64,11 @@ const notificationVisuals: Record<string, NotificationVisual> = {
     label: 'Business created',
     icon: Store,
     className: '!fill-[#F5F3FF] text-[#6D28D9]',
+  },
+  collab_invite: {
+    label: 'Collaboration invite',
+    icon: BadgeCheck,
+    className: '!fill-[#ECFDF5] text-[#047857]',
   },
 };
 
@@ -195,6 +201,7 @@ const NotificationRow = ({
   onMarkSeen,
   isMarking,
 }: NotificationRowProps) => {
+  const router = useRouter();
   const visual = getNotificationVisual(item);
   const timestamp = formatNotificationDate(
     item.created_when ?? item.created_at
@@ -205,9 +212,29 @@ const NotificationRow = ({
     item.message ?? item.body ?? item.title ?? 'Notification update';
   const canMark = Boolean(item.id && !isSeen);
 
+  const getNavigationPath = (notificationType?: string, objectId?: number | string) => {
+    switch (notificationType) {
+      case 'collab_invite':
+        return `/businesses/saved/collaboration/${objectId}`;
+      case 'free_trial_expiring':
+      case 'subscription_created':
+      case 'payment_received':
+      case 'free_trial_disabled':
+        return '/business/payments';
+      case 'business_created':
+        return '/business';
+      default:
+        return null;
+    }
+  };
+
   const handleClick = () => {
     if (canMark) {
       onMarkSeen(item);
+    }
+    const path = getNavigationPath(item.type, item.attached_object_id);
+    if (path) {
+      router.push(path);
     }
   };
 
@@ -215,14 +242,16 @@ const NotificationRow = ({
     <button
       type='button'
       onClick={handleClick}
-      disabled={!canMark || isMarking}
+      disabled={isMarking}
       className={cn(
         'flex w-full items-center gap-3 px-4 py-3 text-left transition-colors',
         isSeen ? 'bg-white' : 'bg-[#F8F5FF]',
-        canMark && !isMarking
+        !isMarking && getNavigationPath(item.type, item.attached_object_id)
           ? 'cursor-pointer hover:bg-[#F3ECFF]'
-          : 'cursor-default',
-        (!canMark || isMarking) && 'opacity-70'
+          : canMark && !isMarking
+            ? 'cursor-pointer hover:bg-[#F3ECFF]'
+            : 'cursor-default',
+        isMarking && 'opacity-70'
       )}
     >
       <span
