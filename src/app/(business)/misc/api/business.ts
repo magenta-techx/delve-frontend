@@ -704,25 +704,25 @@ export function useCreateServices(): UseMutationResult<
           formData.append('title', service.title);
           formData.append('description', service.description);
           if (service.image && service.image instanceof File) {
-            console.log('Appending single service image');
             formData.append('image_field', service.image);
           }
         }
       } else {
-        services.forEach((service, index) => {
-          formData.append(`services[${index}][title]`, service.title);
-          formData.append(
-            `services[${index}][description]`,
-            service.description
-          );
-          // Only append image if it exists and is a File object
+        // Multiple services mode: send JSON array and images as separate fields
+        const servicesPayload = services.map((service, index) => {
+          const payload = {
+            title: service.title,
+            description: service.description,
+            image_field: service.image ? `image_field_${index}` : undefined,
+          };
           if (service.image && service.image instanceof File) {
-            console.log(`Appending image for service ${index}:`, (service.image as File).name);
-            formData.append(`services[${index}][image]`, service.image);
-          } else {
-            console.log(`No image for service ${index}`);
+            const imageField = `image_field_${index}`;
+            payload.image_field = imageField;
+            formData.append(imageField, service.image);
           }
+          return payload;
         });
+        formData.append('services', JSON.stringify(servicesPayload));
       }
 
       console.log('FormData entries:');
