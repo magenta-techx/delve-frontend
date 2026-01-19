@@ -200,7 +200,7 @@ export interface BusinessDetail {
   instagram_link?: string;
   twitter_link?: string;
   tiktok_link?: string;
-  approved?: boolean;
+  admin_approval_status: "approved" | "unapproved" | "rejected";
   requesting_approval?: boolean;
   status?: string;
   business_hours: Businesshour[];

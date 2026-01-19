@@ -60,7 +60,6 @@ export default function SettingsLayout({
     }
   };
 
-
   if (isLoading) {
     return (
       <div className='flex h-full w-full items-center justify-center'>
@@ -111,24 +110,35 @@ export default function SettingsLayout({
                         Deactivate
                       </Button>
                     )}
-                    <Button
-                      onClick={handleRequestApproval}
-                      disabled={requestApprovalMutation.isPending}
-                      variant='light'
-                      className='md:hidden'
-                      size='sm'
-                    >
-                      {requestApprovalMutation.isPending
-                        ? 'Requesting...'
-                        : 'Request Approval'}
-                    </Button>
+
+                    {currentBusiness?.admin_approval_status === 'approved' ? (
+                      <LinkButton
+                        href={`/businesses/${currentBusiness?.id}`}
+                        size='sm'
+                      >
+                        Preview Business Profile
+                        <BoxedArrow className='ml-2' />
+                      </LinkButton>
+                    ) : currentBusiness?.admin_approval_status ===
+                      'unapproved' ? (
+                      <Button
+                        onClick={handleRequestApproval}
+                        disabled={requestApprovalMutation.isPending}
+                        size='sm'
+                        variant='light'
+                      >
+                        {requestApprovalMutation.isPending
+                          ? 'Requesting...'
+                          : 'Request Approval'}
+                      </Button>
+                    ) : null}
                   </div>
                 </div>
                 <p className='hidden text-balance text-xs text-[#4B5565] lg:block lg:text-sm'>
                   Manage your business details and account settings
                 </p>
               </div>
-              {currentBusiness?.approved ? (
+              {currentBusiness?.admin_approval_status === 'approved' ? (
                 <LinkButton
                   href={`/businesses/${currentBusiness?.id}`}
                   className='bg-primary text-white hover:bg-primary/90 max-md:hidden'
@@ -137,7 +147,7 @@ export default function SettingsLayout({
                   Preview Business Profile
                   <BoxedArrow className='ml-2' />
                 </LinkButton>
-              ) : (
+              ) : currentBusiness?.admin_approval_status === 'unapproved' ? (
                 <Button
                   onClick={handleRequestApproval}
                   disabled={requestApprovalMutation.isPending}
@@ -149,7 +159,7 @@ export default function SettingsLayout({
                     ? 'Requesting...'
                     : 'Request Approval'}
                 </Button>
-              )}
+              ) : null}
             </header>
             {/* Tabs Navigation */}
             <div className='border-border px-4 lg:px-6'>
@@ -171,7 +181,11 @@ export default function SettingsLayout({
                   );
                 })}
                 {currentBusiness?.status === 'archived' ? (
-                  <Button onClick={openActivateModal} variant='green' className='ml-auto'>
+                  <Button
+                    onClick={openActivateModal}
+                    variant='green'
+                    className='ml-auto'
+                  >
                     Activate Business
                   </Button>
                 ) : (
