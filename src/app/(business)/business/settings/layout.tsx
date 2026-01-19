@@ -120,7 +120,7 @@ export default function SettingsLayout({
                         <BoxedArrow className='ml-2' />
                       </LinkButton>
                     ) : currentBusiness?.admin_approval_status ===
-                      'unapproved' ? (
+                      'rejected' ? (
                       <Button
                         onClick={handleRequestApproval}
                         disabled={requestApprovalMutation.isPending}
@@ -147,7 +147,7 @@ export default function SettingsLayout({
                   Preview Business Profile
                   <BoxedArrow className='ml-2' />
                 </LinkButton>
-              ) : currentBusiness?.admin_approval_status === 'unapproved' ? (
+              ) : currentBusiness?.admin_approval_status === 'rejected' ? (
                 <Button
                   onClick={handleRequestApproval}
                   disabled={requestApprovalMutation.isPending}
