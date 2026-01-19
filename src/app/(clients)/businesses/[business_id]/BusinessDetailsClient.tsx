@@ -214,7 +214,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                   fill
                 />
               </div>
-              <h2 className='mb-4'>{business.name}</h2>
+              <h2 className='mb-4 md:text-lg'>{business.name}</h2>
               {isOwner ? (
                 <LinkButton
                   href='/business/settings/general'
