@@ -198,7 +198,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                   );
                 })}
               </div>
-              {business?.approved && (
+              {business?.admin_approval_status =="approved" && (
                 <button className='flex min-w-max shrink-0 items-center gap-1.5 rounded-lg border border-[#D9D6FE] bg-[#F5F3FF] p-1.5 text-[0.625rem] text-[#551FB9] md:rounded-2xl md:px-4 md:py-2 md:text-sm'>
                   <VerifiedIcon className='size-3.5 md:size-5' />
                   Verified By Delve <DelveIcon className='size-3.5 md:size-5' />
