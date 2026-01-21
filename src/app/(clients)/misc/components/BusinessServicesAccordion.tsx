@@ -44,14 +44,14 @@ function ServicesAccordion({ services }: { services: BusinessService[] }) {
                   </p>
                 )}
                 <div className='flex flex-col justify-end relative aspect-video flex-shrink-0'>
-                  <div className='relative h-full max-w-full md:max-h-[200px]'>
+                  <div className='relative h-full max-w-full md:max-h-[175px]'>
                     {service.image && (
                       <Image
                         src={service.image}
                         alt={service.title}
                         objectFit='cover'
                         fill
-                        className='max-h-[200px]'
+                        className='max-h-[175px]'
                       />
                     )}
                   </div>

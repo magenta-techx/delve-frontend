@@ -56,9 +56,9 @@ const LandingPageNavbar = () => {
 
   const VISITORS_LINKS = [
     { name: 'Home', href: '/', hasBlackBg: true },
-    { name: 'Listings', href: '/businesses/search', hasBlackBg: true },
+    { name: 'Listings', href: '/businesses/explore', hasBlackBg: true },
     { name: 'FAQs', href: '/#faqs', hasBlackBg: false },
-    { name: 'Cities', href: '/businesses/search', hasBlackBg: true },
+    { name: 'Cities', href: '/businesses/search', hasBlackBg: false },
     { name: 'Blog', href: '/blog', hasBlackBg: false },
   ];
 

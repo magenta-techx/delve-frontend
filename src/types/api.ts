@@ -200,6 +200,13 @@ export interface BusinessDetail {
   instagram_link?: string;
   twitter_link?: string;
   tiktok_link?: string;
+  social_links?: {
+    whatsapp?: string;
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    tiktok?: string;
+  };
   admin_approval_status: "approved" | "unapproved" | "rejected";
   requesting_approval?: boolean;
   status?: string;

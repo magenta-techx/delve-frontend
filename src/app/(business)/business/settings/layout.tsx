@@ -115,6 +115,7 @@ export default function SettingsLayout({
                       <LinkButton
                         href={`/businesses/${currentBusiness?.id}`}
                         size='sm'
+                        className='md:hidden'
                       >
                         Preview Business Profile
                         <BoxedArrow className='ml-2' />
