@@ -151,7 +151,7 @@ export default function ReviewManagementPage() {
                     {getRelativeTime(reply.added_at)}
                   </span>
                 </div>
-                <p className='text-sm lg:text-base text-[#697586]'>{reply.content}</p>
+                <p className='text-sm text-[#697586]'>{reply.content}</p>
               </div>
             </div>
             {renderReplies(reply.children, depth + 1)}
@@ -520,7 +520,7 @@ const ReviewDetails = ({
           <label className='mb-1.5 block text-xs font-medium uppercase tracking-wide text-[#697586]'>
             Review
           </label>
-          <div className='text-sm lg:text-base text-[#697586]'>
+          <div className='text-sm  text-[#697586]'>
             {selectedReview.content}
           </div>
         </div>

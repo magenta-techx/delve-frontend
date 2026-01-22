@@ -65,9 +65,15 @@ export interface ReviewReplyNode {
   user: {
     id: number;
     email: string;
-    first_name?: string;
-    last_name?: string;
-    profile_image?: string;
+    first_name: string;
+    last_name: string;
+    is_brand_owner: boolean;
+    number_of_owned_businesses: number;
+    is_active: boolean;
+    current_plan: string;
+    is_premium_plan_active: boolean;
+    date_joined: string;
+    profile_image: string;
   };
   content: string;
   added_at: string;
@@ -207,14 +213,13 @@ export interface BusinessDetail {
     twitter?: string;
     tiktok?: string;
   };
-  admin_approval_status: "approved" | "unapproved" | "rejected";
+  admin_approval_status: 'approved' | 'unapproved' | 'rejected';
   requesting_approval?: boolean;
   status?: string;
   business_hours: Businesshour[];
   // The detail response in api.md shows performance embedded in example; usually separate
   performance?: Array<{ date: string; performance_score: number }>;
 }
-
 
 interface Businesshour {
   day: number;
@@ -325,7 +330,6 @@ export interface EventItem {
   date: string;
   location: string;
 }
-
 
 export type NotificationType =
   | 'review_prompt'
@@ -539,4 +543,3 @@ interface Owner {
   last_name: string;
   profile_image: string;
 }
-

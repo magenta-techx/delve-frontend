@@ -10,7 +10,7 @@ import {
   useGetUserChats,
 } from '@/app/(clients)/misc/api/user';
 import { useSession } from 'next-auth/react';
-import type { BusinessDetail } from '@/types/api';
+import type { BusinessDetail, BusinessReviewThread } from '@/types/api';
 import { useBusinessDetails } from '@/app/(business)/misc/api';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -42,6 +42,7 @@ import {
   RatingStars,
   RatingStarsSquare,
 } from '@/app/(business)/misc/components/icons';
+import { ReviewRepliesSheet } from '@/components/ui/ReviewRepliesSheet';
 
 interface BusinessDetailsClientProps {
   business: BusinessDetail;
@@ -175,6 +176,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
 
   // Reviews section state
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedReviewForReplies, setSelectedReviewForReplies] = useState<BusinessReviewThread | null>(null);
   const {
     data: reviewsData,
     isLoading: isReviewsLoading,
@@ -941,6 +943,11 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                       {/* Responses link */}
                       <div className='text-xs'>
                         <span
+                          onClick={() => {
+                            if (review.replies?.length > 0) {
+                              setSelectedReviewForReplies(review);
+                            }
+                          }}
                           className={cn(
                             'flex cursor-pointer items-center gap-1 font-medium underline underline-offset-4',
                             !!review.replies.length
@@ -1056,6 +1063,12 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
         <AccessDeniedModal
           isAccessDeniedModalOpen={showLoginAlert || isAccessDeniedModalOpen}
           closeAccessDeniedModal={closeAccessDeniedModal}
+        />
+        
+        <ReviewRepliesSheet
+          isOpen={!!selectedReviewForReplies}
+          onClose={() => setSelectedReviewForReplies(null)}
+          review={selectedReviewForReplies}
         />
       </main>
     </Suspense>
