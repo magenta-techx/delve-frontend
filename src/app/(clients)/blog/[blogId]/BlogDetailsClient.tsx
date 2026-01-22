@@ -81,7 +81,7 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
   if (isError) {
     return (
       <p className='text-sm text-red-500 sm:text-base'>
-        We couldn't load related blog posts. Please try again shortly.
+        We couldn&apos;t load related blog posts. Please try again shortly.
       </p>
     );
   }
