@@ -25,9 +25,9 @@ const FAQ_ITEMS = [
         />
       </svg>
     ),
-    question: 'Who can list their business on Delve?',
+    question: 'How can I list my business on Delve?',
     answer:
-      'Any registered business that serves customers can create a profile on Delve. Service providers, retailers, freelancers, and local shops all have a place here as long as they uphold our community standards.',
+      'Register as a user and navigate to the "List My Business" page. Follow the steps provided, submit your business information, and wait for approval from our team. Once approved, your business will be live on Delve.',
   },
   {
     id: 2,
@@ -66,9 +66,9 @@ const FAQ_ITEMS = [
         />
       </svg>
     ),
-    question: 'Do I need a physical store to list my business?',
+    question: 'Can I talk to vendors directly on Delve?',
     answer:
-      'You can list your business whether you are fully online, work-from-home, or operate a storefront. Just share accurate contact details so customers know how best to reach you.',
+      'Yes, you can! Delve has a built-in chat feature that enables direct communication between customers and vendors. Simply browse a business profile and start a conversation to discuss your needs.',
   },
   {
     id: 3,
@@ -87,9 +87,9 @@ const FAQ_ITEMS = [
         />
       </svg>
     ),
-    question: 'How do customers find my business on Delve?',
+    question: 'Can I plan with friends or share vendor options?',
     answer:
-      'Customers discover you through category filters, location searches, and curated recommendations. Premium listings receive priority placement to boost visibility.',
+      'Absolutely! Delve has a collaboration feature that allows you and your friends to plan events together. You can collaborate on event planning, share vendor options, and coordinate seamlessly all in one place.',
   },
   {
     id: 4,
@@ -128,9 +128,9 @@ const FAQ_ITEMS = [
         />
       </svg>
     ),
-    question: 'How does Delve verify businesses?',
+    question: 'Is Delve free to use?',
     answer:
-      'We review business registrations, contact details, and customer feedback. Verified businesses earn a badge that reassures shoppers they are engaging with a trusted vendor.',
+      'Yes, Delve is completely free to use! Customers can browse businesses, chat with vendors, and use most features at no cost. We offer premium plans for businesses looking to enhance their visibility and access advanced tools.',
   },
   {
     id: 5,
@@ -176,9 +176,9 @@ const FAQ_ITEMS = [
         />
       </svg>
     ),
-    question: 'What types of media can I add to my profile?',
+    question: 'Do I need to create an account before using Delve?',
     answer:
-      'Upload images, videos, and testimonials that showcase your products or completed work. Clear visuals help customers decide faster and build confidence in your brand.',
+      'You can browse all the businesses on Delve without an account, but you will need to create one to access premium features. An account is required to chat with vendors, save your favorite businesses, create collaborations, and list your own business.',
   },
 ];
 
