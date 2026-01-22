@@ -23,7 +23,7 @@ const BlogCards = ({
 }: BlogCardsProps): JSX.Element => {
   const cardContent = (
     <div
-      className={`flex h-full flex-col overflow-hidden rounded-2xl border border-[#9AA4B2] bg-white transition hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)] ${containerClassStyle}`}
+      className={`flex h-full flex-col overflow-hidden border border-[#9AA4B2] bg-white transition hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(15,23,42,0.08)] ${containerClassStyle}`}
     >
       <div className={`${imageClassStyle} mb-3 overflow-hidden`}>
         <Image
@@ -36,14 +36,14 @@ const BlogCards = ({
         />
       </div>
       <div className='flex flex-1 flex-col px-5'>
-        <h2 className='mb-2 font-inter text-[16px] font-semibold leading-6 text-[#101828] sm:text-[20px]'>
+        <h2 className='mb-2 font-inter text-[0.9rem] font-semibold leading-6 text-[#0F0F0F] sm:text-base'>
           {header}
         </h2>
-        <p className='line-clamp-3 border-b border-[#E4E7EC] pb-4 text-sm text-[#475467] sm:text-base'>
+        <p className='line-clamp-3 text-sm text-[#000000] '>
           {description || "Planning your big day? Here’s what’s trending across weddings this year."}
         </p>
       </div>
-      <div className='flex items-center justify-between px-5 pb-5 pt-3 text-sm text-[#344054]'>
+      <div className='flex items-center justify-between mx-5 pb-3 pt-2 mt-3 border-t border-[#9AA4B2] text-xs text-black'>
         <p>{dateLabel || '25th June, 2025'}</p>
         <BaseIcons value='arrow-right-curve' />
       </div>

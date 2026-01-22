@@ -1,7 +1,7 @@
 'use client';
 
 import UpComingEvents from '@/components/UpComingEvents';
-import BlogCards from '@/components/cards/BlogsCard';
+import BlogCards from '@/app/(clients)/misc/components/BlogsCard';
 import type { JSX } from 'react';
 import { LandingPageNavbar } from '../misc/components';
 import { useAllBlogs } from '../misc/api';
@@ -25,7 +25,7 @@ const formatDateLabel = (dateValue?: string): string => {
   return `${day}${getOrdinal(day)} ${month}, ${year}`;
 };
 
-const getExcerpt = (html?: string, maxLength = 140): string => {
+export const getExcerpt = (html?: string, maxLength = 140): string => {
   if (!html) return '';
   const decoded = html
     .replace(/<[^>]*>/g, ' ')
@@ -66,11 +66,14 @@ const BlogPage = (): JSX.Element => {
     }
 
     return (
-      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
+      <div
+        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:auto-cols-auto"
+        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+      >
         {blogs.map((blog, index) => {
           const dateLabel = formatDateLabel(blog.created_at);
           const description = getExcerpt(blog.content);
-          const href = `/blog/${blog.id ?? index}`;
+          const href = `/blog/${blog.id ?? index + 1}`;
 
           return (
             <BlogCards
@@ -90,26 +93,29 @@ const BlogPage = (): JSX.Element => {
   };
 
   return (
-    <main className='flex min-h-screen flex-col items-center bg-white'>
+    <div className='flex min-h-screen flex-col items-center bg-white'>
       <LandingPageNavbar />
 
-      <section className='w-full max-w-[1440px] px-4 py-12 sm:px-12 sm:py-20'>
-        <header className='mb-12 max-w-[720px]'>
-          <h1 className='mb-4 font-karma text-[28px] font-semibold text-[#111827] sm:text-[48px]'>
-            Tips, Trends & Vendor Stories
-          </h1>
-          <p className='font-inter text-sm text-[#475467] sm:text-lg'>
-            Explore expert tips, trending event ideas, beauty routines, and vendor success stories all curated for you.
-          </p>
-        </header>
+      <div className='relative flex flex-col w-full px-4 md:px-16 md:backdrop-blur-lg lg:py-16 lg:px-24'>
+        <section className='container mx-auto'>
+          <header className='mb-12 max-w-[720px]'>
+            <h1 className='mb-2 font-karma text-2xl font-semibold text-[#111827] sm:text-3xl xl:text-4xl'>
+              Tips, Trends & Vendor Stories
+            </h1>
+            <p className='font-inter text-sm text-[#475467] sm:text-base'>
+              Explore expert tips, trending event ideas, beauty routines, and
+              vendor success stories all curated for you.
+            </p>
+          </header>
 
-        {renderBlogGrid()}
-      </section>
+          {renderBlogGrid()}
+        </section>
+      </div>
 
       <div className='w-full'>
         <UpComingEvents />
       </div>
-    </main>
+    </div>
   );
 };
 

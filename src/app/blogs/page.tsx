@@ -1,4 +1,4 @@
-import BlogCards from '@/components/cards/BlogsCard';
+import BlogCards from '@/app/(clients)/misc/components/BlogsCard';
 
 import UpComingEvents from '@/components/UpComingEvents';
 // import type { Metadata } from 'next';

@@ -1,6 +1,6 @@
 import { Footer, LandingPageNavbar } from '@/app/(clients)/misc/components';
 import { BaseIcons } from '@/assets/icons/base/Icons';
-import BlogCards from '@/components/cards/BlogsCard';
+import BlogCards from '@/app/(clients)/misc/components/BlogsCard';
 
 // import type { Metadata } from 'next';
 import Image from 'next/image';
