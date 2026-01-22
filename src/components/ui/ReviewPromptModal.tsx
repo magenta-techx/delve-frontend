@@ -306,7 +306,22 @@ export function ReviewPromptModal({
                     <SelectValue
                       placeholder='Select the service you used'
                       className='text-black placeholder:text-[#9098A3]'
-                    />
+                    >
+                      {(() => {
+                        if (!selectedServiceValue) return null;
+                        if (selectedServiceValue === CUSTOM_SERVICE_OPTION)
+                          return 'Something else';
+                        if (selectedServiceValue.startsWith('id:')) {
+                          const id = Number(selectedServiceValue.slice(3));
+                          const found = services?.find(s => s.id === id);
+                          return found?.title || '';
+                        }
+                        if (selectedServiceValue.startsWith('text:')) {
+                          return selectedServiceValue.slice(5);
+                        }
+                        return selectedServiceValue;
+                      })()}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {services?.map(service => (

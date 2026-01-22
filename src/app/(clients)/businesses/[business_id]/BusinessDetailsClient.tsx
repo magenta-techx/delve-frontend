@@ -1,6 +1,6 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
-import React, { useState, useMemo, Suspense } from 'react';
+import React, { useState, useMemo, Suspense, useRef } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
@@ -37,8 +37,11 @@ import {
 import { useBusinessReviews } from '@/app/(business)/misc/api/reviews';
 import { ReviewPromptModal } from '@/components/ui/ReviewPromptModal';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Star } from 'lucide-react';
 import { useSubmitBusinessReview } from '../../misc/api';
+import {
+  RatingStars,
+  RatingStarsSquare,
+} from '@/app/(business)/misc/components/icons';
 
 interface BusinessDetailsClientProps {
   business: BusinessDetail;
@@ -54,6 +57,8 @@ const positions = [
 ];
 
 const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
+  // Ref for reviews carousel
+  const reviewsContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { isSaved, toggleSave, setShowLoginAlert, showLoginAlert } =
     useSavedBusinessesContext();
@@ -449,7 +454,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
 
         <section
           id='services'
-          className='container mx-auto grid gap-x-8 gap-y-4 py-8 lg:grid-cols-[1fr,minmax(0,400px)] lg:gap-10 lg:py-12'
+          className='container mx-auto grid gap-x-8 gap-y-4 py-8 lg:grid-cols-[1fr,minmax(0,400px)] lg:gap-4 lg:py-12'
         >
           <div id='about' className='container mx-auto px-4 md:px-10'>
             <h2 className='mb-2 font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
@@ -656,189 +661,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           )}
         </section>
 
-        {/* Reviews Section - Redesigned to match screenshots */}
-        <section
-          id='reviews'
-          className='container mx-auto px-4 py-8 md:px-8 lg:py-16'
-        >
-          <header className='flex items-center justify-between'>
-            <h2 className='w-full text-left font-karma text-2xl font-medium text-black'>
-              Over {reviews.length}
-              {reviews.length > 0 ? (reviews.length > 1 ? '+' : '') : ''}{' '}
-              reviews by
-              <br />
-              Delve Users
-            </h2>
-
-            <nav></nav>
-          </header>
-          <div className='my-12 flex flex-col gap-12 md:flex-row md:items-stretch'>
-            {/* Left: Summary */}
-            <div className='flex flex-col items-center gap-10 md:w-1/3 lg:w-[20rem]'>
-              <div className='flex w-full flex-col items-center'>
-                <span className='font-karma text-5xl font-semibold text-black'>
-                  {averageRating.toFixed(1)}
-                </span>
-                <div className='mb-1 mt-2 flex items-center'>
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={
-                        i < Math.round(averageRating)
-                          ? 'h-7 w-7 fill-yellow-400 text-yellow-400'
-                          : 'h-7 w-7 text-gray-200'
-                      }
-                    />
-                  ))}
-                </div>
-                <span className='text-sm font-medium text-gray-700'>
-                  {reviews.length}
-                  {reviews.length > 1 ? '+' : ''} reviews
-                </span>
-              </div>
-              {/* Avatars */}
-              <div className='flex -space-x-4'>
-                {reviews.slice(0, 5).map(review => (
-                  <Avatar
-                    key={review.id}
-                    className='h-14 w-14 border border-gray-300 ring-2 ring-white'
-                  >
-                    {review.reviewer?.profile_image ? (
-                      <AvatarImage
-                        src={review.reviewer.profile_image}
-                        alt={review.reviewer.first_name || 'User'}
-                      />
-                    ) : (
-                      <AvatarFallback className='bg-gray-200 text-xl text-gray-600'>
-                        {review.reviewer?.first_name?.[0] || 'U'}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: Reviews List */}
-            <div className='flex w-full flex-col gap-6 md:w-2/3'>
-              {isReviewsLoading ? (
-                <div>Loading reviews...</div>
-              ) : reviews.length === 0 ? (
-                <div className='text-center text-lg text-gray-500'>
-                  No reviews yet. Be the first to leave one!
-                </div>
-              ) : (
-                <div className='scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent flex h-full gap-6 divide-x overflow-x-auto pb-2'>
-                  {reviews.map(review => (
-                    <div
-                      key={review.id}
-                      className='relative flex h-full max-w-xs flex-shrink-0 flex-grow-0 basis-80 flex-col rounded-xl pr-5 md:basis-96'
-                      style={{ minWidth: '320px' }}
-                    >
-                      {/* Responses link */}
-                      <div className='absolute right-8 top-6 text-xs'>
-                        <span className='cursor-pointer font-medium text-[#5B21B6]'>
-                          <svg
-                            className='mr-1 inline-block'
-                            width='14'
-                            height='14'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                          >
-                            <path
-                              d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'
-                              fill='#5B21B6'
-                            />
-                          </svg>
-                          View {review.replies?.length || 0} response
-                          {review.replies?.length === 1 ? '' : 's'}
-                        </span>
-                      </div>
-                      {/* Service */}
-                      {review.service_text && (
-                        <div className='mb-2 text-lg font-semibold text-black'>
-                          {review.service_text}
-                        </div>
-                      )}
-                      {/* Review Content */}
-                      <div className='mb-4 whitespace-pre-line text-base text-gray-700'>
-                        {review.content}
-                      </div>
-                      {/* Reviewer Name and Rating */}
-                      <div className='mt-auto flex items-center gap-3'>
-                        <span className='text-base font-semibold text-black'>
-                          {review.reviewer?.first_name || 'Anonymous'}{' '}
-                          {review.reviewer?.last_name || ''}
-                        </span>
-                        <div className='ml-2 flex items-center gap-1'>
-                          {[...Array(5)].map((_, i) => (
-                            <span
-                              key={i}
-                              className={
-                                i < review.rating
-                                  ? 'text-yellow-400'
-                                  : 'text-gray-300'
-                              }
-                            >
-                              ★
-                            </span>
-                          ))}
-                        </div>
-                        <span className='ml-auto text-xs text-gray-500'>
-                          {new Date(review.added_at).toLocaleString('default', {
-                            month: 'short',
-                            year: 'numeric',
-                          })}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <ReviewPromptModal
-              isOpen={isReviewModalOpen}
-              onClose={() => setReviewModalOpen(false)}
-              onSubmit={async payload => {
-                try {
-                  await submitReviewMutation.mutateAsync({
-                    ...payload,
-                    business_id: business.id,
-                  });
-                  await refetchReviews();
-                  setReviewModalOpen(false);
-                  toast.success('Review submitted!');
-                } catch (err) {
-                  toast.error('Failed to submit review', {
-                    description: (err as any)?.message || 'Please try again.',
-                  });
-                }
-              }}
-              businessName={business.name}
-              businessLogo={business.logo ?? '/default-logo.png'}
-              businessId={business.id}
-              services={business.services!}
-              notificationId={''}
-            />
-          </div>
-          <footer>
-            {isOwner ? (
-              <LinkButton
-                href={'/business/review-management'}
-                className='w-full max-w-xs rounded-xl bg-[#5B21B6] py-7 text-base font-medium text-white'
-              >
-                Manage reviews
-              </LinkButton>
-            ) : (
-              <Button
-                onClick={() => setReviewModalOpen(true)}
-                className='mt-2 w-full max-w-xs rounded-xl bg-[#5B21B6] py-7 text-base font-medium text-white'
-              >
-                Leave a review
-              </Button>
-            )}
-          </footer>
-        </section>
-
+       
         <>
           <section
             id='gallery'
@@ -846,7 +669,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           >
             {business.images && business.images.length > 0 ? (
               <div
-                className='grid gap-2.5 md:gap-5 xl:gap-6'
+                className='grid gap-2.5 md:gap-5 xl:gap-8'
                 style={{
                   gridTemplateColumns: 'repeat(15, 1fr)',
                   gridTemplateRows: 'repeat(12, minmax(40px, 50px))',
@@ -977,6 +800,258 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             </div>
           </section>
         </div>
+
+
+
+         {/* Reviews Section - Redesigned to match screenshots */}
+        <section
+          id='reviews'
+          className='container mx-auto px-4 py-8 md:px-8 lg:py-16'
+        >
+          <header className='flex items-center justify-between'>
+            <h2 className='w-full text-left font-karma text-2xl font-medium text-black'>
+              Over {reviews.length}
+              {reviews.length > 0 ? (reviews.length > 1 ? '+' : '') : ''}{' '}
+              reviews by
+              <br />
+              Delve Users
+            </h2>
+
+            <nav></nav>
+          </header>
+          <div className='my-12 flex flex-col gap-12 md:flex-row md:items-stretch'>
+            {/* Left: Summary */}
+            <div className='flex flex-col items-center justify-around gap-10 md:w-1/3 lg:w-[20rem]'>
+              <div className='flex w-full flex-col items-center'>
+                <span className='font-karma text-5xl font-semibold text-black'>
+                  {averageRating.toFixed(1)}
+                </span>
+                <div className='mb-1 mt-2 flex items-center'>
+                  <RatingStars rating={averageRating} />
+                </div>
+                <span className='text-sm font-medium text-gray-700'>
+                  {reviews.length}
+                  {reviews.length > 1 ? '+' : ''}{' '}
+                  {reviews.length > 1 ? 'reviews' : 'review'}
+                </span>
+              </div>
+              {/* Avatars */}
+              <div className='flex -space-x-4'>
+                {reviews.slice(0, 5).map(review => (
+                  <Avatar
+                    key={review.id}
+                    className='h-14 w-14 border border-gray-300 ring-2 ring-white'
+                  >
+                    {review.reviewer?.profile_image ? (
+                      <AvatarImage
+                        src={review.reviewer.profile_image}
+                        alt={review.reviewer.first_name || 'User'}
+                      />
+                    ) : (
+                      <AvatarFallback className='bg-gray-200 text-xl text-gray-600'>
+                        {review.reviewer?.first_name?.[0] || 'U'}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                ))}
+                {/* Fill up to 5 avatars with gray circles */}
+                {Array.from({ length: 5 - Math.min(reviews.length, 5) }).map(
+                  (_, idx) => (
+                    <div
+                      key={`placeholder-${idx}`}
+                      className='h-14 w-14 rounded-full border border-gray-300 bg-gray-200 ring-2 ring-white'
+                    />
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* Right: Reviews List */}
+            <div className='relative flex w-full flex-col gap-6 md:w-2/3'>
+              {/* Carousel Buttons */}
+              {reviews.length > 2 && (
+                <>
+                  <button
+                    className='absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 shadow md:-left-6'
+                    onClick={() => {
+                      if (reviewsContainerRef.current) {
+                        reviewsContainerRef.current.scrollBy({
+                          left: -350,
+                          behavior: 'smooth',
+                        });
+                      }
+                    }}
+                    aria-label='Scroll left'
+                    type='button'
+                  >
+                    <svg width='24' height='24' fill='none'>
+                      <path
+                        d='M15 18l-6-6 6-6'
+                        stroke='#5B21B6'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    className='absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 shadow md:-right-6'
+                    onClick={() => {
+                      if (reviewsContainerRef.current) {
+                        reviewsContainerRef.current.scrollBy({
+                          left: 350,
+                          behavior: 'smooth',
+                        });
+                      }
+                    }}
+                    aria-label='Scroll right'
+                    type='button'
+                  >
+                    <svg width='24' height='24' fill='none'>
+                      <path
+                        d='M9 6l6 6-6 6'
+                        stroke='#5B21B6'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                      />
+                    </svg>
+                  </button>
+                </>
+              )}
+              {/* Reviews List */}
+              {isReviewsLoading ? (
+                <div>Loading reviews...</div>
+              ) : reviews.length === 0 ? (
+                <div className='text-center text-lg text-gray-500'>
+                  No reviews yet. Be the first to leave one!
+                </div>
+              ) : (
+                <div
+                  ref={reviewsContainerRef}
+                  className='scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent flex h-full divide-x overflow-x-auto pb-2'
+                  style={{ scrollBehavior: 'smooth' }}
+                >
+                  {reviews.map(review => (
+                    <div
+                      key={review.id}
+                      className='relative flex h-full max-w-xs flex-shrink-0 flex-grow-0 basis-80 flex-col px-5 md:basis-96 xl:px-7'
+                      style={{ minWidth: '320px' }}
+                    >
+                      {/* Responses link */}
+                      <div className='text-xs'>
+                        <span
+                          className={cn(
+                            'flex cursor-pointer items-center gap-1 font-medium underline underline-offset-4',
+                            !!review.replies.length
+                              ? 'text-[#5B21B6]'
+                              : 'text-[#9AA4B2]'
+                          )}
+                        >
+                          <svg
+                            className=''
+                            width='14'
+                            height='14'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                          >
+                            <path
+                              d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'
+                              fill='currentColor'
+                            />
+                          </svg>
+                          View {review.replies?.length || 0} response
+                          {review.replies?.length === 1 ? '' : 's'}
+                        </span>
+                      </div>
+                      {/* Service */}
+                      {(review.service || review.service_text) && (
+                        <div className='mb-2 mt-5 font-inter text-base font-medium text-[#0F0F0F]'>
+                          {review.service?.title || review.service_text}
+                        </div>
+                      )}
+                      {/* Review Content */}
+                      <div className='font-dm min-h- my-5 mb-4 lg:mb-8 whitespace-pre-line text-[0.9rem] font-normal text-[#514F6E]'>
+                        {review.content}
+                      </div>
+                      {/* Reviewer Name and Rating */}
+                      <div className='mt-auto flex flex-col gap-3'>
+                        <p className='text-base font-semibold text-black'>
+                          {review.reviewer?.first_name || 'Anonymous'}{' '}
+                          {review.reviewer?.last_name || ''}
+                        </p>
+
+                        <div className='flex items-center justify-between'>
+                          <RatingStarsSquare
+                            rating={review.rating}
+                            className='justify-start'
+                          />
+
+                          <span className='ml-auto text-xs text-gray-500'>
+                            {new Date(review.added_at).toLocaleString(
+                              'default',
+                              {
+                                month: 'short',
+                                year: 'numeric',
+                              }
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <ReviewPromptModal
+              isOpen={isReviewModalOpen}
+              onClose={() => setReviewModalOpen(false)}
+              onSubmit={async payload => {
+                try {
+                  await submitReviewMutation.mutateAsync({
+                    ...payload,
+                    business_id: business.id,
+                  });
+                  await refetchReviews();
+                  setReviewModalOpen(false);
+                  toast.success('Review submitted!');
+                } catch (err) {
+                  toast.error('Failed to submit review', {
+                    description: (err as any)?.message || 'Please try again.',
+                  });
+                }
+              }}
+              businessName={business.name}
+              businessLogo={business.logo ?? '/default-logo.png'}
+              businessId={business.id}
+              services={business.services!}
+              notificationId={''}
+            />
+          </div>
+          <footer>
+            {isOwner ? (
+              <LinkButton
+                href={'/business/review-management'}
+                className='w-full max-w-xs rounded-xl bg-[#5B21B6] py-7 text-base font-medium text-white'
+              >
+                Manage reviews
+              </LinkButton>
+            ) : (
+              <Button
+                onClick={() => {
+                  if (!currentUserResp?.user) {
+                    setAccessDeniedModalState(true);
+                    return;
+                  }
+                  setReviewModalOpen(true);
+                }}
+                className='mt-2 w-full max-w-xs rounded-xl bg-[#5B21B6] py-7 text-base font-medium text-white'
+              >
+                Leave a review
+              </Button>
+            )}
+          </footer>
+        </section>
 
         <AccessDeniedModal
           isAccessDeniedModalOpen={showLoginAlert || isAccessDeniedModalOpen}

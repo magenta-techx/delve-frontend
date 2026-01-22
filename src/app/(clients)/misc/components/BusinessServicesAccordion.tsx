@@ -36,7 +36,7 @@ function ServicesAccordion({ services }: { services: BusinessService[] }) {
               </span>
             </button>
             {isOpen && (
-              <div className='flex grid-cols-2 flex-col gap-6 md:flex-row md:px-6 md:pb-8 lg:grid'>
+              <div className='flex grid-cols-2 xl:grid-cols-[1fr_minmax(0,350px)] flex-col gap-6 md:flex-row md:px-6 md:pb-8 lg:grid'>
                 {/* <div className='flex  flex-col justify-center'> */}
                 {service.description && (
                   <p className='self-end text-sm font-medium text-[#4B5565] md:text-base'>
