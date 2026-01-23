@@ -46,8 +46,8 @@ const ThisWeeksTrends = (): JSX.Element => {
                   </div>
 
                   {/* Contact  */}
-                  <div className='my-2 flex items-center justify-between text-sm'>
-                    <div className='flex items-center gap-2'>
+                  <div className='my-2 flex items-center justify-between gap-5 text-sm'>
+                    <div className='flex items-center gap-2 truncate'>
                       <BaseIcons value='marker-light-red' />
                       <span className='truncate text-[0.625rem] text-[#FFE6D5] sm:text-sm'>
                         {data?.data.address || '...'}

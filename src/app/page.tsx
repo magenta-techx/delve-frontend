@@ -179,7 +179,7 @@ export default function HomePage() {
       </div>
 
       {/* featured listings  */}
-      <div className='flex w-full flex-col items-center pt-7 sm:pt-16'>
+      <div className='flex w-full flex-col items-center justify-between px-4 pt-7 sm:pt-16 md:px-16 lg:px-24'>
         <SectionHeader
           header='Trusted by dozens of happy clients. '
           paragraph='Featured Listing'
@@ -196,7 +196,7 @@ export default function HomePage() {
                     : 'start',
                 loop: false,
               }}
-              className='container mx-auto w-[90vw] max-xl:px-2 xl:w-[85vw] '
+              className='container mx-auto w-[90vw] max-xl:px-2 xl:w-[85vw]'
             >
               <CarouselContent className='-ml-2 gap-2 py-4'>
                 {loadingApproved
@@ -315,92 +315,96 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className='container flex w-full flex-col items-center pt-8 pb-14'>
-        <div className='flex items-center justify-between lg:justify-center gap-6 pb-6 mb-20 md:mt-24 md:mb-28 max-sm:px-5 lg:gap-72 w-full '>
-          {STATS.map((stat, key) => {
-            return (
-              <div key={key} className='flex flex-col items-center'>
-                <h1 className='font-karma text-[30px] font-semibold sm:-mb-5 sm:text-[48px]'>
-                  {stat.count}
-                </h1>
-                <small className='text-[#697586]'>{stat.desc}</small>
-              </div>
-            );
-          })}
-        </div>
-
-        <section className='mt:px-0 container relative flex w-full flex-col items-center justify-between'>
-          <header className='flex w-full items-center justify-between px-4 mb-3'>
-            <div className='flex items-center gap-2'>
-              <BaseIcons value='stars-primary' />
-              <h1 className='text-base font-semibold sm:text-2xl'>
-                Listings around you
-              </h1>
-            </div>
-            <div className='flex items-center gap-2 text-primary'>
-              <BaseIcons value='arrows-left-primary' />
-              <Link href={'/businesss/explore'} className='text-[12px] uppercase sm:text-[16px]'>
-                See all listings
-              </Link>
-            </div>
-          </header>
-
-          <div className='mb-20 flex w-full items-center'>
-            <Carousel
-              opts={{ align: 'start', loop: false }}
-              className='w-full max-w-full px-2'
-            >
-              <CarouselContent className='-ml-2 w-full gap-1.5'>
-                {loadingApproved
-                  ? Array.from({ length: 6 }).map((_, key) => (
-                      <CarouselItem
-                        key={key}
-                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[380px] 2xl:px-4'
-                      >
-                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
-                      </CarouselItem>
-                    ))
-                  : approved.map((business, key) => (
-                      <CarouselItem
-                        key={business.id ?? key}
-                        className='basis-[70vw] sm:basis-[300px] xl:basis-[25%] 2xl:px-2.5'
-                      >
-                        <FeaturedListingCard business={business} />
-                      </CarouselItem>
-                    ))}
-              </CarouselContent>
-            </Carousel>
+      <section className='w-full md:px-16 lg:px-24'>
+        <div className='container flex w-full flex-col items-center pb-14 pt-8'>
+          <div className='mb-20 flex w-full items-center justify-between gap-6 pb-6 max-sm:px-5 md:mb-28 md:mt-24 lg:justify-center lg:gap-72'>
+            {STATS.map((stat, key) => {
+              return (
+                <div key={key} className='flex flex-col items-center'>
+                  <h1 className='font-karma text-[30px] font-semibold sm:-mb-5 sm:text-[48px]'>
+                    {stat.count}
+                  </h1>
+                  <small className='text-[#697586]'>{stat.desc}</small>
+                </div>
+              );
+            })}
           </div>
-        </section>
-      </div>
 
-      <div className='container mb-20 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-32 sm:px-0'>
-        <h1 className='font-karma text-2xl max-sm:font-medium sm:text-[44px]'>
-          Tips, Trends & Vendor Stories
-        </h1>
-        <p className='mb-10 font-inter text-[13px] sm:text-[18px]'>
-          Explore expert tips, trending event ideas, beauty routines, and vendor
-          success stories all curated for you.
-        </p>
+          <section className='mt:px-0 container relative flex w-full flex-col items-center justify-between'>
+            <header className='mb-3 flex w-full items-center justify-between px-4'>
+              <div className='flex items-center gap-2'>
+                <BaseIcons value='stars-primary' />
+                <h1 className='text-base font-semibold sm:text-2xl'>
+                  Listings around you
+                </h1>
+              </div>
+              <div className='flex items-center gap-2 text-primary'>
+                <BaseIcons value='arrows-left-primary' />
+                <Link
+                  href={'/businesss/explore'}
+                  className='text-[12px] uppercase sm:text-[16px]'
+                >
+                  See all listings
+                </Link>
+              </div>
+            </header>
 
-        <div className='flex w-full flex-col items-center gap-x-10 lg:flex-row'>
-          <BlogCard
-            imageUrl={'/landingpage/stories-1.jpg'}
-            header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
-            containerClassStyle='w-full h-[422px] sm:h-[740px]  lg:basis-[60%]'
-            imageClassStyle=' sm:h-[440px] w-full'
-          />
-          <BlogCard
-            imageUrl={'/landingpage/stories-2.jpg'}
-            header='Skipping Sunscreen'
-            containerClassStyle=' sm:flex hidden h-[740px]  lg:basis-[40%]'
-            imageClassStyle='  h-[440px] w-full'
-          />
+            <div className='mb-20 flex w-full items-center'>
+              <Carousel
+                opts={{ align: 'start', loop: false }}
+                className='w-full max-w-full px-2'
+              >
+                <CarouselContent className='-ml-2 w-full gap-1.5'>
+                  {loadingApproved
+                    ? Array.from({ length: 6 }).map((_, key) => (
+                        <CarouselItem
+                          key={key}
+                          className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[380px] 2xl:px-4'
+                        >
+                          <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
+                        </CarouselItem>
+                      ))
+                    : approved.map((business, key) => (
+                        <CarouselItem
+                          key={business.id ?? key}
+                          className='basis-[70vw] sm:basis-[300px] xl:basis-[25%] 2xl:px-2.5'
+                        >
+                          <FeaturedListingCard business={business} />
+                        </CarouselItem>
+                      ))}
+                </CarouselContent>
+              </Carousel>
+            </div>
+          </section>
         </div>
-      </div>
 
-        <ThisWeeksTrends />
-  
+        <div className='container mb-20 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-32 sm:px-0'>
+          <h1 className='font-karma text-2xl max-sm:font-medium sm:text-[44px]'>
+            Tips, Trends & Vendor Stories
+          </h1>
+          <p className='mb-10 font-inter text-[13px] sm:text-[18px]'>
+            Explore expert tips, trending event ideas, beauty routines, and
+            vendor success stories all curated for you.
+          </p>
+
+          <div className='flex w-full flex-col items-center gap-x-10 lg:flex-row'>
+            <BlogCard
+              imageUrl={'/landingpage/stories-1.jpg'}
+              header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
+              containerClassStyle='w-full h-[422px] sm:h-[740px]  lg:basis-[60%]'
+              imageClassStyle=' sm:h-[440px] w-full'
+            />
+            <BlogCard
+              imageUrl={'/landingpage/stories-2.jpg'}
+              header='Skipping Sunscreen'
+              containerClassStyle=' sm:flex hidden h-[740px]  lg:basis-[40%]'
+              imageClassStyle='  h-[440px] w-full'
+            />
+          </div>
+        </div>
+      </section>
+
+      <ThisWeeksTrends />
 
       <div className='w-full pt-10' id='faqs'>
         <CLientsLandingFAQs />
@@ -432,11 +436,11 @@ export default function HomePage() {
           <div className='flex w-max animate-marquee items-center'>
             {/* First set of logos */}
             {[
-              "/logo-1.png",
-              "/logo-2.png",
-              "/logo-3.png",
-              "/logo-4.png",
-              "/logo-5.png",
+              '/logo-1.png',
+              '/logo-2.png',
+              '/logo-3.png',
+              '/logo-4.png',
+              '/logo-5.png',
             ]?.map((logo, idx) => (
               <div
                 key={`first-${idx}`}
@@ -452,11 +456,11 @@ export default function HomePage() {
             ))}
             {/* Duplicate set for seamless loop */}
             {[
-              "/logo-1.png",
-              "/logo-2.png",
-              "/logo-3.png",
-              "/logo-4.png",
-              "/logo-5.png",
+              '/logo-1.png',
+              '/logo-2.png',
+              '/logo-3.png',
+              '/logo-4.png',
+              '/logo-5.png',
             ]?.map((logo, idx) => (
               <div
                 key={`first-${idx}`}

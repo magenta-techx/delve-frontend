@@ -1,9 +1,9 @@
 "use client";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { ApiEnvelope, Blog } from "@/types/api";
+import type { ApiEnvelope, BlogDetails, BlogListItem } from "@/types/api";
 import { apiRequest } from '@/utils/apiHandler';
 
-export function useAllBlogs(category?: string): UseQueryResult<ApiEnvelope<Blog[]>, Error> {
+export function useAllBlogs(category?: string): UseQueryResult<ApiEnvelope<BlogListItem[]>, Error> {
   return useQuery({
     queryKey: ["blogs", category],
     queryFn: async () => {
@@ -17,7 +17,7 @@ export function useAllBlogs(category?: string): UseQueryResult<ApiEnvelope<Blog[
   });
 }
 
-export function useBlog(blogId?: number | string): UseQueryResult<ApiEnvelope<Blog>, Error> {
+export function useBlog(blogId?: number | string): UseQueryResult<ApiEnvelope<BlogDetails>, Error> {
   return useQuery({
     queryKey: ["blog", blogId],
     queryFn: async () => {

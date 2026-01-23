@@ -7,18 +7,18 @@ import { Button, Input, Textarea } from '@/components/ui';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import Image from 'next/image';
-import { useUpdateService, useDeleteService } from '@/app/(business)/misc/api/business';
+import {
+  useUpdateService,
+  useDeleteService,
+} from '@/app/(business)/misc/api/business';
 import { UploadIcon } from '@/app/(clients)/misc/icons';
 import { useBooleanStateControl } from '@/hooks/useBooleanStateControl';
 import { AddServiceDialog } from '@/app/(business)/misc/components';
 import ServiceImageUploadDialog from '@/app/(business)/misc/components/ServiceImageUploadDialog';
 import { BusinessService } from '@/types/api';
-import ConfirmationModal, { useConfirmationModal } from '@/components/ui/ConfirmationModal';
-
-
-
-
-
+import ConfirmationModal, {
+  useConfirmationModal,
+} from '@/components/ui/ConfirmationModal';
 
 interface EditableField {
   id: string;
@@ -29,8 +29,11 @@ interface EditableField {
 export default function ServicesPage() {
   const { currentBusiness, refetchBusinesses } = useBusinessContext();
   const [editingField, setEditingField] = useState<string | null>(null);
-  const [fieldValues, setFieldValues] = useState<Record<string, EditableField>>({});
-  const [selectedServiceForImage, setSelectedServiceForImage] = useState<BusinessService | null>(null);
+  const [fieldValues, setFieldValues] = useState<Record<string, EditableField>>(
+    {}
+  );
+  const [selectedServiceForImage, setSelectedServiceForImage] =
+    useState<BusinessService | null>(null);
 
   // Dialog state management
   const addServiceDialog = useBooleanStateControl();
@@ -41,15 +44,17 @@ export default function ServicesPage() {
   const updateServiceMutation = useUpdateService();
   const deleteServiceMutation = useDeleteService();
 
-
-
-  const handleEdit = (serviceId: number, field: string, currentValue: string) => {
+  const handleEdit = (
+    serviceId: number,
+    field: string,
+    currentValue: string
+  ) => {
     setEditingField(`${serviceId}-${field}`);
     setFieldValues({
       [`${serviceId}-${field}`]: {
         id: `${serviceId}-${field}`,
-        value: currentValue
-      }
+        value: currentValue,
+      },
     });
   };
 
@@ -64,8 +69,8 @@ export default function ServicesPage() {
       [fieldKey]: {
         id: fieldKey,
         value: newValue,
-        displayValue: prev[fieldKey]?.displayValue
-      }
+        displayValue: prev[fieldKey]?.displayValue,
+      },
     }));
   };
 
@@ -80,8 +85,8 @@ export default function ServicesPage() {
         business_id: currentBusiness.id,
         service_id: serviceId,
         service: {
-          [field]: newValue
-        }
+          [field]: newValue,
+        },
       });
 
       toast.success('Service updated successfully');
@@ -132,75 +137,87 @@ export default function ServicesPage() {
   };
 
   if (!currentBusiness) {
-    return <div className="py-12 text-center text-muted-foreground">No business selected</div>;
+    return (
+      <div className='py-12 text-center text-muted-foreground'>
+        No business selected
+      </div>
+    );
   }
 
   return (
-    <div className="lg:p-6">
-
-
+    <div className='lg:p-6'>
       {/* Services List */}
-      <div className="space-y-8">
+      <div className='space-y-8'>
         {/* Add New Service */}
-        <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] xl:items-center xl:gap-12 border-b-[0.7px] border-[#E3E8EF] p-4 ">
-          <Label className="text-sm font-medium text-[#0F0F0F]">Add New Service</Label>
+        <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 xl:grid xl:items-center xl:gap-12'>
+          <Label className='text-sm font-medium text-[#0F0F0F]'>
+            Add New Service
+          </Label>
 
-          <div className="flex-1">
-            <span className="text-sm text-gray-600">
+          <div className='flex-1'>
+            <span className='text-sm text-gray-600'>
               Create a new service for your business
             </span>
           </div>
 
-          <div className="flex items-center lg:justify-end lg:self-end mt-2">
+          <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
             <Button
-              size="sm"
+              size='sm'
               onClick={addServiceDialog.setTrue}
-              className="bg-purple-600 hover:bg-purple-700"
+              className='bg-purple-600 hover:bg-purple-700'
             >
-              <Plus size={16} className="mr-1" />
+              <Plus size={16} className='mr-1' />
               Add Service
             </Button>
           </div>
         </section>
 
-        <div className='divide-y-[0.7px] divide-[#E3E8EF] '>
+        <div className='divide-y-[0.7px] divide-[#E3E8EF]'>
           {currentBusiness?.services?.map((service, index) => (
             <div key={service.id || index}>
-
               {/* //////////////////////// */}
               {/* Service Title */}
               {/* //////////////////////// */}
-              <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] xl:items-end xl:gap-12 p-4 ">
-                <Label className="text-sm font-medium text-[#0F0F0F]">Service</Label>
+              <section className='flex grid-cols-[240px,1fr,150px] flex-col p-4 xl:grid xl:items-end xl:gap-12'>
+                <Label className='text-sm font-medium text-[#0F0F0F]'>
+                  Service
+                </Label>
 
                 {editingField === `${service.id}-title` ? (
-                  <div className="flex-1">
+                  <div className='flex-1'>
                     <Input
-                      value={fieldValues[`${service.id}-title`]?.value as string || ''}
-                      onChange={(e) => handleFieldChange(`${service.id}-title`, e.target.value)}
-                      placeholder="Service name"
-                      className="w-full"
+                      value={
+                        (fieldValues[`${service.id}-title`]?.value as string) ||
+                        ''
+                      }
+                      onChange={e =>
+                        handleFieldChange(`${service.id}-title`, e.target.value)
+                      }
+                      placeholder='Service name'
+                      className='w-full'
                     />
                   </div>
                 ) : (
-                  <div className="flex-1 p-3 border rounded-xl bg-gray-50">
-                    <span className="text-sm text-gray-900">{service.title}</span>
+                  <div className='flex-1 rounded-xl border bg-gray-50 p-3'>
+                    <span className='text-sm text-gray-900'>
+                      {service.title}
+                    </span>
                   </div>
                 )}
 
-                <div className="flex items-center lg:justify-end lg:self-end mt-2">
+                <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
                   {editingField === `${service.id}-title` ? (
-                    <div className="flex gap-2">
+                    <div className='flex gap-2'>
                       <Button
-                        size="sm"
+                        size='sm'
                         onClick={() => handleSave(service.id!, 'title')}
                         disabled={updateServiceMutation.isPending}
                       >
                         {updateServiceMutation.isPending ? 'Saving...' : 'Save'}
                       </Button>
                       <Button
-                        size="sm"
-                        variant="outline"
+                        size='sm'
+                        variant='outline'
                         onClick={handleCancel}
                       >
                         Cancel
@@ -208,9 +225,11 @@ export default function ServicesPage() {
                     </div>
                   ) : (
                     <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEdit(service.id!, 'title', service.title)}
+                      size='sm'
+                      variant='outline'
+                      onClick={() =>
+                        handleEdit(service.id!, 'title', service.title)
+                      }
                     >
                       Edit
                     </Button>
@@ -221,38 +240,50 @@ export default function ServicesPage() {
               {/* //////////////////////// */}
               {/* Service Description */}
               {/* //////////////////////// */}
-              <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] lg:items-end xl:gap-12 p-4">
-                <Label className="text-sm font-medium text-[#0F0F0F]">Description</Label>
+              <section className='flex grid-cols-[240px,1fr,150px] flex-col p-4 lg:items-end xl:grid xl:gap-12'>
+                <Label className='text-sm font-medium text-[#0F0F0F]'>
+                  Description
+                </Label>
 
                 {editingField === `${service.id}-description` ? (
-                  <div className="flex-1">
+                  <div className='flex-1'>
                     <Textarea
-                      value={fieldValues[`${service.id}-description`]?.value as string || ''}
-                      onChange={(e) => handleFieldChange(`${service.id}-description`, e.target.value)}
-                      placeholder="Service description"
+                      value={
+                        (fieldValues[`${service.id}-description`]
+                          ?.value as string) || ''
+                      }
+                      onChange={e =>
+                        handleFieldChange(
+                          `${service.id}-description`,
+                          e.target.value
+                        )
+                      }
+                      placeholder='Service description'
                       rows={5}
-                      className="w-full"
+                      className='w-full'
                     />
                   </div>
                 ) : (
-                  <div className="flex-1 p-3 border rounded-xl bg-gray-50 min-h-[5lh]">
-                    <p className="text-sm text-gray-900">{service.description}</p>
+                  <div className='min-h-[5lh] flex-1 rounded-xl border bg-gray-50 p-3'>
+                    <p className='text-sm text-gray-900'>
+                      {service.description}
+                    </p>
                   </div>
                 )}
 
-                <div className="flex items-center lg:justify-end lg:self-end mt-2">
+                <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
                   {editingField === `${service.id}-description` ? (
-                    <div className="flex gap-2">
+                    <div className='flex gap-2'>
                       <Button
-                        size="sm"
+                        size='sm'
                         onClick={() => handleSave(service.id!, 'description')}
                         disabled={updateServiceMutation.isPending}
                       >
                         {updateServiceMutation.isPending ? 'Saving...' : 'Save'}
                       </Button>
                       <Button
-                        size="sm"
-                        variant="outline"
+                        size='sm'
+                        variant='outline'
                         onClick={handleCancel}
                       >
                         Cancel
@@ -260,9 +291,15 @@ export default function ServicesPage() {
                     </div>
                   ) : (
                     <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEdit(service.id!, 'description', service.description || '')}
+                      size='sm'
+                      variant='outline'
+                      onClick={() =>
+                        handleEdit(
+                          service.id!,
+                          'description',
+                          service.description || ''
+                        )
+                      }
                     >
                       Edit
                     </Button>
@@ -273,63 +310,82 @@ export default function ServicesPage() {
               {/* //////////////////////// */}
               {/* Service Image */}
               {/* //////////////////////// */}
-              <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] lg:items-end xl:gap-12 p-4">
-                <Label className="text-sm font-medium text-[#0F0F0F]">Service Image</Label>
+              <section className='flex grid-cols-[240px,1fr,150px] flex-col p-4 lg:items-end xl:grid xl:gap-12'>
+                <Label className='text-sm font-medium text-[#0F0F0F]'>
+                  Service Image
+                </Label>
 
-                <div className="flex-1">
+                <div className='flex-1'>
                   {service.image ? (
-                    <div className="relative w-full aspect-[15/10] max-h-[200px] rounded-lg overflow-hidden border bg-gray-100">
+                    <div className='relative aspect-[15/10] max-h-[200px] w-full overflow-hidden rounded-lg border bg-gray-100'>
                       <Image
                         src={service.image}
                         alt={service.title}
                         fill
-                        className="object-cover"
-                        sizes="128px"
+                        className='object-cover'
+                        sizes='128px'
                       />
                     </div>
                   ) : (
-                    <div className="flex flex-col items-center justify-center gap-2 text-gray-500 w-full aspect-[15/10] max-h-[200px]">
-                      <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center">
-                        <UploadIcon className="w-4 h-4" />
+                    <div className='flex aspect-[15/10] max-h-[200px] w-full flex-col items-center justify-center gap-2 text-gray-500'>
+                      <div className='flex h-6 w-6 items-center justify-center rounded bg-gray-100'>
+                        <UploadIcon className='h-4 w-4' />
                       </div>
-                      <span className="text-sm">No image uploaded</span>
+                      <span className='text-sm'>No image uploaded</span>
+
+                      <div className='space-y-1'>
+                        <p className='text-xs'>Select from files</p>
+                        <Button
+                          size='sm'
+                          variant='outline'
+                          className='border-purple-200 text-purple-600'
+                          onClick={() => handleImageUpload(service)}
+                        >
+                          <UploadIcon className='mr-1 h-4 w-4' />
+                          Upload
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-center lg:justify-start lg:self-end mt-2">
-                  <div className="gap-2">
-                    <p className="text-xs">
-                      Select from files
-                    </p>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="text-purple-600 border-purple-200"
-                      onClick={() => handleImageUpload(service)}
-                    >
-                      <UploadIcon className="w-4 h-4 mr-1" />
-                      Upload
-                    </Button>
-                  </div>
+                <div className='mt-2 flex items-center lg:justify-start lg:self-end'>
+                  {service.image && (
+                    <div className='gap-2'>
+                      <p className='text-xs'>Select from files</p>
+                      <Button
+                        size='sm'
+                        variant='outline'
+                        className='border-purple-200 text-purple-600'
+                        onClick={() => handleImageUpload(service)}
+                      >
+                        <UploadIcon className='mr-1 h-4 w-4' />
+                        Upload
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </section>
 
               {/* Delete Service Section */}
-              <section className="flex flex-col xl:grid grid-cols-[240px,1fr,150px] xl:items-center xl:gap-12 border-b-[0.7px] border-[#E3E8EF] p-4 ">
-                <Label className="text-sm font-medium text-[#0F0F0F] invisible">Delete Service</Label>
+              <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 xl:grid xl:items-center xl:gap-12'>
+                <Label className='invisible text-sm font-medium text-[#0F0F0F]'>
+                  Delete Service
+                </Label>
 
-                <div className="flex-1 invisible">
-                  <span className="text-sm text-gray-600">
+                <div className='invisible flex-1'>
+                  <span className='text-sm text-gray-600'>
                     Remove this service from your business listing
                   </span>
                 </div>
 
-                <div className="flex items-center lg:justify-end lg:self-end mt-2">
+                <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
                   <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => handleDeleteClick(service.id!, service.title)}
+                    size='sm'
+                    variant='destructive'
+                    onClick={() =>
+                      handleDeleteClick(service.id!, service.title)
+                    }
                     disabled={deleteServiceMutation.isPending}
                   >
                     {deleteServiceMutation.isPending ? 'Deleting...' : 'Delete'}
@@ -339,12 +395,11 @@ export default function ServicesPage() {
 
               {/* Spacer between services */}
               {index < (currentBusiness?.services?.length ?? 0) - 1 && (
-                <div className="h-8 border-b-2 border-gray-100"></div>
+                <div className='h-8 border-b-2 border-gray-100'></div>
               )}
             </div>
           ))}
         </div>
-
       </div>
 
       {/* Add Service Dialog */}

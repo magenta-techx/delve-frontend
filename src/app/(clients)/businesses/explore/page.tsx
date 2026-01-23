@@ -62,7 +62,7 @@ export default function HomePage(): JSX.Element {
           </div>
         </div>
 
-        <section className='absolute bottom-16 left-1/2 mx-auto flex w-[90vw] max-w-4xl -translate-x-1/2 justify-center px-5 sm:-bottom-9 sm:px-0 lg:w-full'>
+        <section className='absolute bottom-16 left-1/2 mx-auto flex w-[90vw] max-w-4xl -translate-x-1/2 justify-center px-5 sm:-bottom-9 sm:px-0 lg:w-full z-[200] '>
           <BusinessSearch />
         </section>
       </div>

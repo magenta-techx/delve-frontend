@@ -7,9 +7,8 @@ import type { JSX } from 'react';
 import { LandingPageNavbar } from '../../misc/components';
 import { useAllBlogs } from '../../misc/api';
 import { LogoLoadingIcon } from '@/assets/icons';
-import type { Blog } from '@/types/api';
+import type { BlogDetails } from '@/types/api';
 import { BlogShare } from './BlogShare';
-
 
 const getOrdinal = (day: number): string => {
   if (day > 3 && day < 21) return 'th';
@@ -42,7 +41,7 @@ const getExcerpt = (html?: string, maxLength = 140): string => {
 };
 
 interface BlogDetailsClientProps {
-  blog: Blog;
+  blog: BlogDetails;
 }
 
 const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
@@ -52,12 +51,10 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
     blog: blogItem,
     originalIndex: index,
   }));
-  
+
   const publishedDate = formatDateLabel(blog?.created_at);
   const categoryName =
-    typeof blog?.category === 'string'
-      ? blog?.category
-      : blog?.category?.name;
+    typeof blog?.category === 'string' ? blog?.category : blog?.category?.name;
 
   const relatedBlogs =
     blogEntries.length > 1 ? blogEntries.slice(0, 4) : blogEntries;
@@ -112,7 +109,7 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
               />
             </div>
 
-            <div className='flex-1 text-base leading-7 text-[#374151] max-w-4xl'>
+            <div className='max-w-4xl flex-1 text-base leading-7 text-[#374151]'>
               <div
                 className='blog-content flex flex-col gap-6'
                 dangerouslySetInnerHTML={{ __html: blog.content }}
@@ -132,15 +129,22 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
                   fill
                 />
               </div>
-              <p>
-                {getExcerpt(blog.content) ||
-                  'No introduction available.'}
-              </p>
+              <p>{getExcerpt(blog.content) || 'No introduction available.'}</p>
             </aside>
             <aside className='flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-[#E4E7EC] bg-white p-6 text-center text-sm text-[#475467]'>
               <h2 className='mb-2 font-inter text-[0.9rem] font-bold text-[#101828]'>
                 Label & Key words{' '}
               </h2>
+              <div className='flex flex-col items-center justify-center gap-2'>
+                {blog.labels.map(tag => (
+                  <span
+                    key={tag}
+                    className='mb-2 mr-2 inline-block rounded-full bg-[#F2F4F7] px-3 py-1 text-xs font-medium text-[#475467]'
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </aside>
             <aside className='w-full bg-white text-sm text-[#475467]'>
               <div className='mb-4 border-b border-[#E4E7EC] pb-4'>
@@ -155,7 +159,7 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
                 </h2>
                 <p>{categoryName || 'Uncategorized'}</p>
               </div>
-              
+
               {/* Replace the old share section with the new BlogShare component */}
               <BlogShare
                 blogTitle={blog.title}
@@ -188,7 +192,7 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
                   key={relatedBlog.id ?? relatedBlog.title ?? originalIndex}
                   imageUrl={relatedBlog.thumbnail}
                   header={relatedBlog.title}
-                  description={getExcerpt(relatedBlog.content)}
+                  description={relatedBlog.excerpt}
                   dateLabel={formatDateLabel(relatedBlog.created_at)}
                   href={`/blog/${relatedBlog.id ?? originalIndex}`}
                   containerClassStyle='w-full'

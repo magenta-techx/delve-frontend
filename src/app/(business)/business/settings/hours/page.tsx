@@ -183,7 +183,7 @@ export default function BusinessHoursPage() {
                   <div
                     className={cn(
                       'flex items-center justify-between gap-8 rounded-xl bg-[#FCFCFD] px-4 py-3 last:border-b-0 hover:bg-[#FAFAFA]',
-                      !hoursWatch[index]?.is_open && 'opacity-50'
+                      !hoursWatch[index]?.is_open && 'opacity-60'
                     )}
                   >
                     <div className='w-24'>
@@ -213,6 +213,8 @@ export default function BusinessHoursPage() {
                               min='1'
                               max='12'
                               placeholder='9'
+                              disabled={!hoursWatch[index]?.is_open}
+                              type='number'
                               className='h-9 w-12 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-sm font-semibold text-[#212121] md:w-14 md:rounded-lg'
                             />
                           )}
@@ -223,6 +225,7 @@ export default function BusinessHoursPage() {
                           render={({ field }) => (
                             <select
                               {...field}
+                              disabled={!hoursWatch[index]?.is_open}
                               className='h-9 rounded border border-[#EEF2F6] bg-white px-2 py-1.5 text-xs text-[#212121] md:rounded-lg'
                             >
                               <option value='AM'>AM</option>
@@ -247,6 +250,7 @@ export default function BusinessHoursPage() {
                               min='1'
                               max='12'
                               placeholder='6'
+                              disabled={!hoursWatch[index]?.is_open}
                               value={field.value ?? ''}
                               className='h-9 w-12 rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-sm font-semibold text-[#212121] md:w-14 md:rounded-lg'
                             />
@@ -258,6 +262,7 @@ export default function BusinessHoursPage() {
                           render={({ field }) => (
                             <select
                               {...field}
+                              disabled={!hoursWatch[index]?.is_open}
                               className='h-9 rounded border border-[#EEF2F6] bg-white px-2 py-1.5 text-xs text-[#212121] md:rounded-lg'
                             >
                               <option value='AM'>AM</option>
@@ -284,7 +289,7 @@ export default function BusinessHoursPage() {
                               ]);
                             }}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              field.value ? 'bg-[#1A73E8]' : 'bg-[#EEF2F6]'
+                              field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
                             }`}
                           >
                             <span

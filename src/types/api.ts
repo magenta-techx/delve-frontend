@@ -19,12 +19,23 @@ export type ApiMessage = {
 };
 
 // Blogs
-export interface Blog {
-  id?: number | string;
+export interface BlogListItem {
+  id: number;
   title: string;
-  category: string | { name?: string };
+  excerpt: string;
+  created_at: string;
+  thumbnail: string;
+}
+export interface BlogDetails {
+  id: number;
+  title: string;
+  category: {
+    id: number;
+    name: string;
+  };
+  labels: string[];
   content: string;
-  created_at: string; // e.g. "2025-08-24"
+  created_at: string;
   thumbnail: string;
 }
 

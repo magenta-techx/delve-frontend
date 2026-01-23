@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { ApiEnvelope, Blog } from '@/types/api';
+import type { ApiEnvelope, BlogDetails } from '@/types/api';
 import BlogDetailsClient from './BlogDetailsClient';
 
 interface PageProps {
@@ -8,7 +8,7 @@ interface PageProps {
 }
 
 // Function to fetch blog details on the server
-async function getBlogs(blogId: string): Promise<Blog | null> {
+async function getBlogs(blogId: string): Promise<BlogDetails | null> {
   try {
     const apiUrl =
       process.env['NEXT_PUBLIC_API_BASE_URL'] || 'https://backend.delve.ng';
@@ -24,7 +24,8 @@ async function getBlogs(blogId: string): Promise<Blog | null> {
       return null;
     }
 
-    const data: ApiEnvelope<Blog> = await res.json();
+    const data: ApiEnvelope<BlogDetails> = await res.json();
+    console.log('fetched blog data:', data);
     return data.data;
   } catch (error) {
     console.error('Error fetching blog details:', error);
