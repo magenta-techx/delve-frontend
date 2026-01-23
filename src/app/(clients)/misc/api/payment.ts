@@ -61,7 +61,7 @@ export function useVerifyPaymentWithPolling(options?: { intervalMs?: number; max
 export function useCancelSubscription(): UseMutationResult<ApiMessage, Error, void> {
   return useMutation({
     mutationFn: async () => {
-      const res = await apiRequest(`/api/payment/subscription/cancel`, { method: "POST" });
+      const res = await apiRequest(`/api/payment/subscription/cancel`, { method: "DELETE" });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to cancel subscription");
       return data;
