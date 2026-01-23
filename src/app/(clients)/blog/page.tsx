@@ -65,6 +65,8 @@ const BlogPage = (): JSX.Element => {
       );
     }
 
+
+    
     return (
       <div
         className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:auto-cols-auto"
@@ -72,7 +74,6 @@ const BlogPage = (): JSX.Element => {
       >
         {blogs.map((blog, index) => {
           const dateLabel = formatDateLabel(blog.created_at);
-          const description = getExcerpt(blog.content);
           const href = `/blog/${blog.id ?? index + 1}`;
 
           return (
@@ -80,7 +81,7 @@ const BlogPage = (): JSX.Element => {
               key={blog.id ?? blog.title ?? index}
               imageUrl={blog.thumbnail}
               header={blog.title}
-              description={description}
+              description={blog.excerpt}
               dateLabel={dateLabel}
               href={href}
               containerClassStyle='w-full'
