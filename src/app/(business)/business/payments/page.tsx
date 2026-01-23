@@ -508,6 +508,7 @@ export default function PaymentsPage() {
         isOpen={isCancelConfirmOpen}
         onClose={closeCancelConfirm}
         onConfirm={handleCancelClick}
+        isLoading={cancelSubMutation.isPending}
       />
 
       <CancelSubscriptionModal

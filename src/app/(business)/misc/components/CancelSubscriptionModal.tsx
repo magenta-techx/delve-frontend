@@ -11,12 +11,14 @@ import {
 interface CancelSubscriptionModalProps {
   variant?: 'confirm' | 'info';
   isOpen: boolean;
+  isLoading?: boolean;
   onClose: () => void;
   onConfirm?: () => void;
 }
 export const CancelSubscriptionModal = ({
   variant = 'confirm',
   isOpen,
+  isLoading,
   onClose,
   onConfirm,
 }: CancelSubscriptionModalProps) => {
@@ -63,6 +65,7 @@ export const CancelSubscriptionModal = ({
           <Button
             className='w-full bg-red-600 text-white hover:bg-red-700'
             onClick={onConfirm}
+            isLoading={isLoading}
           >
             {variant === 'info' ? 'Yes, Cancel Subscription' : 'Yes, Continue'}
           </Button>
