@@ -11,7 +11,7 @@ import {
 } from '@/components/ui';
 import { ChevronDown, MoveRight, Settings } from 'lucide-react';
 import { useBilling, useCurrentUser } from '@/app/(clients)/misc/api';
-import { useChangeCard } from '@/app/(clients)/misc/api/payment';
+import { useCancelSubscription, useChangeCard } from '@/app/(clients)/misc/api/payment';
 import { useBooleanStateControl } from '@/hooks';
 import {
   ReceiptModal,
@@ -33,6 +33,7 @@ import { toast } from 'sonner';
 
 export default function PaymentsPage() {
   const changeCardMutation = useChangeCard();
+  const cancelSubMutation = useCancelSubscription();
   const [selectedReceiptIndex, setSelectedReceiptIndex] = useState<
     number | null
   >(null);
@@ -103,6 +104,19 @@ export default function PaymentsPage() {
   const handleCloseReceipt = () => {
     closeReceiptModal();
     setSelectedReceiptIndex(null);
+  };
+
+  const handleCancelSubscription = () => {
+    cancelSubMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success('Subscription cancelled successfully.');
+        closeCancelInfo()
+      },
+      onError: (error) => {
+        toast.error('Failed to cancel subscription.', { description: error.message || "Something went wrong" as string });
+      }
+    });
+
   };
 
   // Show loading state
@@ -500,7 +514,7 @@ export default function PaymentsPage() {
         variant='info'
         isOpen={isCancelInfoOpen}
         onClose={closeCancelInfo}
-        onConfirm={closeCancelInfo}
+        onConfirm={handleCancelSubscription}
       />
     </div>
   );
