@@ -238,7 +238,7 @@ export default function PaymentsPage() {
                   Upgrade to Premium <MoveRight className='ml-1' />
                 </Button>
               </div>
-            ) : !currentPlan.isPendingCancellation ? (
+            ) : currentPlan.isPendingCancellation ? (
                 <div className='relative pt-6 z-[2]'>
                   <h3 className='mb-3 text-lg font-semibold text-white'>
                     You&apos;ve cancelled your subscription. You still have{' '}
