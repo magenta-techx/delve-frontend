@@ -78,10 +78,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
   const { data: userChatsResp } = useGetUserChats(hasValidAccessToken);
   const startChatMutation = useStartChat();
   const [isLoadingChat, setIsLoadingChat] = useState(false);
-  console.table({
-    hasValidAccessToken,
-    currentUserResp,
-  });
 
   const {
     state: isAccessDeniedModalOpen,
