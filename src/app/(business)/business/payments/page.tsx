@@ -239,20 +239,20 @@ export default function PaymentsPage() {
                 </Button>
               </div>
             ) : currentPlan.isPendingCancellation ? (
-                <div className='relative pt-6 z-[2]'>
-                  <h3 className='mb-3 text-lg font-semibold text-white'>
-                    You&apos;ve cancelled your subscription. You still have{' '}
-                    {currentPlan.daysLeft} days of access left before your
-                    current plan expires. Resubscribe now to keep enjoying Delve
-                    Premium without interruption.
-                  </h3>
-                  <Button
-                    className='w-full border border-white/30 bg-white/20 text-white hover:bg-white/30'
-                    onClick={openPlanSelection}
-                  >
-                    Resubscribe to Premium →
-                  </Button>
-                </div>
+              <div className='relative z-[2] pt-6'>
+                <h3 className='mb-3 text-lg font-semibold text-white'>
+                  You&apos;ve cancelled your subscription. You still have{' '}
+                  {currentPlan.daysLeft} days of access left before your current
+                  plan expires. Resubscribe now to keep enjoying Delve Premium
+                  without interruption.
+                </h3>
+                <Button
+                  className='w-full border border-white/30 bg-white/20 text-white hover:bg-white/30'
+                  onClick={openPlanSelection}
+                >
+                  Resubscribe to Premium →
+                </Button>
+              </div>
             ) : (
               <>
                 {currentPlan.hasPaymentMethod && (
@@ -284,10 +284,13 @@ export default function PaymentsPage() {
                               }
                             }}
                           >
-                            Change Card <PaymentsIcon />
+                            Change Card <PaymentsIcon className='ml-2' />
                           </DropdownMenuItem>
 
-                          <DropdownMenuItem className='p-0'>
+                          <DropdownMenuItem
+                            className='p-0'
+                            onClick={openCancelConfirm}
+                          >
                             <button
                               className='rounded-lg border border-red-600 px-2 py-1.5 text-xs text-[#C62828]'
                               onClick={openCancelConfirm}

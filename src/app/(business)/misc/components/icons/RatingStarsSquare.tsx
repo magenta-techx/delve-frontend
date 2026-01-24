@@ -31,7 +31,10 @@ const RatingStarsSquare = ({
             key={gradientId}
             width='16'
             height='16'
-            className='size-2.5 sm:size-3 lg:size-4'
+            className={cn(
+              'size-2.5 sm:size-3 lg:size-4',
+              starIndex >= rating && 'opacity-0 grayscale'
+            )}
             viewBox='0 0 16 16'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'

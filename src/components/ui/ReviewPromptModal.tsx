@@ -42,7 +42,7 @@ interface ReviewPromptModalProps {
   businessId?: number | string;
   services?: BusinessService[];
   promptMessage?: string;
-  notificationId: string | number;
+  notificationId?: string | number;
 }
 
 const EMOJI_RATINGS = [
@@ -73,7 +73,9 @@ export function ReviewPromptModal({
 
   const { mutate } = useMarkNotificationSeen();
   useEffect(() => {
-    mutate({ notification_id: notificationId });
+    if(!!notificationId){
+      mutate({ notification_id: notificationId });
+    }
   }, [notificationId, mutate]);
 
   const hasServices = useMemo(
@@ -276,12 +278,13 @@ export function ReviewPromptModal({
                 <button
                   key={value}
                   disabled={
-                    isSubmitting ||
-                    (selectedRating !== null && selectedRating !== value)
+                    isSubmitting 
+                    // (selectedRating !== null && selectedRating !== value)
                   }
                   onClick={() => setSelectedRating(value)}
                   className={cn(
-                    'text-4xl transition-transform hover:scale-110 focus:outline-none'
+                    'text-4xl transition-transform hover:scale-110 focus:outline-none ',
+                    (selectedRating !== null && selectedRating !== value) && 'opacity-50 grayscale',
                   )}
                   title={label}
                   type='button'

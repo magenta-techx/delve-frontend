@@ -33,7 +33,11 @@ export function useCurrentUser(
   });
 }
 
-export function checkUserByEmail(): UseMutationResult<UserResponse, Error, string> {
+export function checkUserByEmail(): UseMutationResult<
+  UserResponse,
+  Error,
+  string
+> {
   return useMutation<UserResponse, Error, string>({
     mutationKey: ['user'],
     mutationFn: async (email: string) => {
@@ -322,7 +326,11 @@ export interface ChatResponse {
   };
 }
 
-export function useStartChat(): UseMutationResult<ChatResponse, Error, { business_id: number }> {
+export function useStartChat(): UseMutationResult<
+  ChatResponse,
+  Error,
+  { business_id: number }
+> {
   return useMutation({
     mutationFn: async ({ business_id }) => {
       const res = await apiRequest(`/api/chat/start/${business_id}`, {
@@ -330,18 +338,28 @@ export function useStartChat(): UseMutationResult<ChatResponse, Error, { busines
         headers: { 'Content-Type': 'application/json' },
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || data?.message || 'Failed to start chat');
+      if (!res.ok)
+        throw new Error(data?.error || data?.message || 'Failed to start chat');
       return data;
     },
   });
 }
 
-export function useGetUserChats(): UseQueryResult<
-  { status: boolean; data: Array<{ id: number; business: { id: number; name: string; logo: string } }> },
+export function useGetUserChats(
+  enabled: boolean = true
+): UseQueryResult<
+  {
+    status: boolean;
+    data: Array<{
+      id: number;
+      business: { id: number; name: string; logo: string };
+    }>;
+  },
   Error
 > {
   return useQuery({
     queryKey: ['user', 'chats'],
+    enabled: !!enabled,
     queryFn: async () => {
       const res = await apiRequest(`/api/chat/user`);
       const data = await res.json();

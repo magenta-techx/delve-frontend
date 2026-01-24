@@ -75,9 +75,13 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
     session?.user?.accessToken && String(session.user.accessToken).length > 0
   );
   const { data: currentUserResp } = useCurrentUser(hasValidAccessToken);
-  const { data: userChatsResp } = useGetUserChats();
+  const { data: userChatsResp } = useGetUserChats(hasValidAccessToken);
   const startChatMutation = useStartChat();
   const [isLoadingChat, setIsLoadingChat] = useState(false);
+  console.table({
+    hasValidAccessToken,
+    currentUserResp,
+  });
 
   const {
     state: isAccessDeniedModalOpen,
@@ -176,7 +180,8 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
 
   // Reviews section state
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
-  const [selectedReviewForReplies, setSelectedReviewForReplies] = useState<BusinessReviewThread | null>(null);
+  const [selectedReviewForReplies, setSelectedReviewForReplies] =
+    useState<BusinessReviewThread | null>(null);
   const {
     data: reviewsData,
     isLoading: isReviewsLoading,
@@ -663,7 +668,6 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           )}
         </section>
 
-       
         <>
           <section
             id='gallery'
@@ -803,9 +807,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           </section>
         </div>
 
-
-
-         {/* Reviews Section - Redesigned to match screenshots */}
+        {/* Reviews Section - Redesigned to match screenshots */}
         <section
           id='reviews'
           className='container mx-auto px-4 py-8 md:px-8 lg:py-16'
@@ -978,7 +980,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                         </div>
                       )}
                       {/* Review Content */}
-                      <div className='font-dm min-h- my-5 mb-4 lg:mb-8 whitespace-pre-line text-[0.9rem] font-normal text-[#514F6E]'>
+                      <div className='font-dm min-h- my-5 mb-4 whitespace-pre-line text-[0.9rem] font-normal text-[#514F6E] lg:mb-8'>
                         {review.content}
                       </div>
                       {/* Reviewer Name and Rating */}
@@ -1010,30 +1012,32 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                 </div>
               )}
             </div>
-            <ReviewPromptModal
-              isOpen={isReviewModalOpen}
-              onClose={() => setReviewModalOpen(false)}
-              onSubmit={async payload => {
-                try {
-                  await submitReviewMutation.mutateAsync({
-                    ...payload,
-                    business_id: business.id,
-                  });
-                  await refetchReviews();
-                  setReviewModalOpen(false);
-                  toast.success('Review submitted!');
-                } catch (err) {
-                  toast.error('Failed to submit review', {
-                    description: (err as any)?.message || 'Please try again.',
-                  });
-                }
-              }}
-              businessName={business.name}
-              businessLogo={business.logo ?? '/default-logo.png'}
-              businessId={business.id}
-              services={business.services!}
-              notificationId={''}
-            />
+            {!!hasValidAccessToken && (
+              <ReviewPromptModal
+                isOpen={isReviewModalOpen}
+                onClose={() => setReviewModalOpen(false)}
+                onSubmit={async payload => {
+                  try {
+                    await submitReviewMutation.mutateAsync({
+                      ...payload,
+                      business_id: business.id,
+                    });
+                    await refetchReviews();
+                    setReviewModalOpen(false);
+                    toast.success('Review submitted!');
+                  } catch (err) {
+                    toast.error('Failed to submit review', {
+                      description: (err as any)?.message || 'Please try again.',
+                    });
+                  }
+                }}
+                businessName={business.name}
+                businessLogo={business.logo ?? '/default-logo.png'}
+                businessId={business.id}
+                services={business.services!}
+                notificationId={''}
+              />
+            )}
           </div>
           <footer>
             {isOwner ? (
@@ -1064,7 +1068,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
           isAccessDeniedModalOpen={showLoginAlert || isAccessDeniedModalOpen}
           closeAccessDeniedModal={closeAccessDeniedModal}
         />
-        
+
         <ReviewRepliesSheet
           isOpen={!!selectedReviewForReplies}
           onClose={() => setSelectedReviewForReplies(null)}
