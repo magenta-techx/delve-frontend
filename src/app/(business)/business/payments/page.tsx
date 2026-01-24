@@ -11,7 +11,10 @@ import {
 } from '@/components/ui';
 import { ChevronDown, MoveRight, Settings } from 'lucide-react';
 import { useBilling, useCurrentUser } from '@/app/(clients)/misc/api';
-import { useCancelSubscription, useChangeCard } from '@/app/(clients)/misc/api/payment';
+import {
+  useCancelSubscription,
+  useChangeCard,
+} from '@/app/(clients)/misc/api/payment';
 import { useBooleanStateControl } from '@/hooks';
 import {
   ReceiptModal,
@@ -82,6 +85,7 @@ export default function PaymentsPage() {
       (userData?.current_plan === 'Freemium' ? null : null),
     hasPaymentMethod:
       billingData?.card && Object.keys(billingData.card).length > 0,
+    isPendingCancellation: billingData?.plan.is_pending_cancellation || false,
   };
 
   console.log(billingData);
@@ -110,13 +114,14 @@ export default function PaymentsPage() {
     cancelSubMutation.mutate(undefined, {
       onSuccess: () => {
         toast.success('Subscription cancelled successfully.');
-        closeCancelInfo()
+        closeCancelInfo();
       },
-      onError: (error) => {
-        toast.error('Failed to cancel subscription.', { description: error.message || "Something went wrong" as string });
-      }
+      onError: error => {
+        toast.error('Failed to cancel subscription.', {
+          description: error.message || ('Something went wrong' as string),
+        });
+      },
     });
-
   };
 
   // Show loading state
@@ -161,7 +166,7 @@ export default function PaymentsPage() {
                 <p className='text-[0.55rem] font-semibold uppercase text-muted-foreground'>
                   Billing Cycle
                 </p>
-                <p className='text-sm font-medium text-[#2C2C2C] capitalize'>
+                <p className='text-sm font-medium capitalize text-[#2C2C2C]'>
                   {currentPlan.name === 'Free Trial' && currentPlan.daysLeft
                     ? `${currentPlan.daysLeft} Days`
                     : currentPlan.cycle}
@@ -198,9 +203,9 @@ export default function PaymentsPage() {
                       width:
                         currentPlan.name === 'Free Trial'
                           ? `${((7 - currentPlan.daysLeft!) / 7) * 100}%`
-                          : currentPlan.cycle == "monthly" ?
-                          `${((30 - currentPlan.daysLeft!) / 30) * 100}%`
-                          : `${((365 - currentPlan.daysLeft!) / 365) * 100}%`,
+                          : currentPlan.cycle == 'monthly'
+                            ? `${((30 - currentPlan.daysLeft!) / 30) * 100}%`
+                            : `${((365 - currentPlan.daysLeft!) / 365) * 100}%`,
                     }}
                   />
                 </div>
@@ -233,24 +238,22 @@ export default function PaymentsPage() {
                   Upgrade to Premium <MoveRight className='ml-1' />
                 </Button>
               </div>
+            ) : !currentPlan.isPendingCancellation ? (
+                <div className='relative pt-6 z-[2]'>
+                  <h3 className='mb-3 text-lg font-semibold text-white'>
+                    You&apos;ve cancelled your subscription. You still have{' '}
+                    {currentPlan.daysLeft} days of access left before your
+                    current plan expires. Resubscribe now to keep enjoying Delve
+                    Premium without interruption.
+                  </h3>
+                  <Button
+                    className='w-full border border-white/30 bg-white/20 text-white hover:bg-white/30'
+                    onClick={openPlanSelection}
+                  >
+                    Resubscribe to Premium →
+                  </Button>
+                </div>
             ) : (
-              // <Card className='border-0 bg-gradient-to-br from-purple-600 to-purple-700 text-white'>
-              //   <CardContent className='pt-6'>
-              //     <h3 className='mb-3 text-lg font-bold'>
-              //       You&apos;ve cancelled your subscription. You still have{' '}
-              //       {currentPlan.daysLeft} days of access left before your
-              //       current plan expires. Resubscribe now to keep enjoying Delve
-              //       Premium without interruption.
-              //     </h3>
-              //     <Button
-              //       className='w-full border border-white/30 bg-white/20 text-white hover:bg-white/30'
-              //       onClick={openPlanSelection}
-              //     >
-              //       Resubscribe to Premium →
-              //     </Button>
-              //   </CardContent>
-              // </Card>
-
               <>
                 {currentPlan.hasPaymentMethod && (
                   <div className='relative z-[2] flex h-full flex-col text-white'>
@@ -401,7 +404,7 @@ export default function PaymentsPage() {
                           key={header}
                           className={cn(
                             'py-3 text-left font-inter font-medium text-[#4B5565]',
-                            idx === 0 && 'pl-4 md:pl-8 pr-2',
+                            idx === 0 && 'pl-4 pr-2 md:pl-8',
                             idx !== 0 && idx !== 6 && 'px-2',
                             idx === 6 && 'pl-2 pr-4 md:pr-8'
                           )}
@@ -417,30 +420,38 @@ export default function PaymentsPage() {
                         key={transaction.payment_reference_id}
                         className='group cursor-pointer bg-[#FAFAFA] hover:bg-[#f5f3f3]'
                       >
-                        <td className={cn(
-                          'bg-white py-4 font-inter font-normal',
-                          'pl-4 md:pl-8 pr-2'
-                        )}>
+                        <td
+                          className={cn(
+                            'bg-white py-4 font-inter font-normal',
+                            'pl-4 pr-2 md:pl-8'
+                          )}
+                        >
                           {transaction.plan.name} plan
                         </td>
-                        <td className={cn(
-                          'bg-white py-4 font-inter font-normal',
-                          'px-2'
-                        )}>
+                        <td
+                          className={cn(
+                            'bg-white py-4 font-inter font-normal',
+                            'px-2'
+                          )}
+                        >
                           {transaction.plan.billing_cycle ?? '-'}
                         </td>
-                        <td className={cn(
-                          'bg-white py-4 font-inter font-normal',
-                          'px-2'
-                        )}>
+                        <td
+                          className={cn(
+                            'bg-white py-4 font-inter font-normal',
+                            'px-2'
+                          )}
+                        >
                           ₦{transaction.amount_paid.toLocaleString()}
                         </td>
-                        <td className={cn(
-                          'bg-white py-4 font-inter font-normal',
-                          'px-2'
-                        )}>
+                        <td
+                          className={cn(
+                            'bg-white py-4 font-inter font-normal',
+                            'px-2'
+                          )}
+                        >
                           <span
-                            className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize inline-block ${
+                            className={`inline-block rounded-full px-3 py-1.5 text-xs font-medium capitalize ${
                               transaction.status === 'success'
                                 ? 'bg-[#DAFBD5] text-[#558B2F]'
                                 : 'bg-[#FFE1E1] text-[#C62828]'
@@ -449,29 +460,33 @@ export default function PaymentsPage() {
                             {transaction.status}
                           </span>
                         </td>
-                        <td className={cn(
-                          'bg-white py-4 font-inter font-normal',
-                          'px-2'
-                        )}>
+                        <td
+                          className={cn(
+                            'bg-white py-4 font-inter font-normal',
+                            'px-2'
+                          )}
+                        >
                           {format(
                             new Date(transaction.timestamp),
                             'dd-MM-yyyy'
                           )}
                         </td>
-                        <td className={cn(
-                          'bg-white py-4 font-inter font-normal',
-                          'px-2'
-                        )}>
+                        <td
+                          className={cn(
+                            'bg-white py-4 font-inter font-normal',
+                            'px-2'
+                          )}
+                        >
                           **** {transaction.payment_card_last_4_digits}
                         </td>
-                        <td className={cn(
-                          'bg-white py-4 font-inter font-normal',
-                          'pl-2 pr-4 md:pr-8'
-                        )}>
+                        <td
+                          className={cn(
+                            'bg-white py-4 font-inter font-normal',
+                            'pl-2 pr-4 md:pr-8'
+                          )}
+                        >
                           <button
-                            onClick={() =>
-                              handleSelectTransaction(transaction)
-                            }
+                            onClick={() => handleSelectTransaction(transaction)}
                             className='text-blue-600 hover:underline'
                           >
                             <ReceiptIcon className='h-4 w-4' />

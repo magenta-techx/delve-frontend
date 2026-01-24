@@ -434,6 +434,7 @@ export interface CurrentPlan {
   billing_cycle: string;
   price: number;
   days_left: number;
+  is_pending_cancellation: boolean;
 }
 
 export interface BillingData {
