@@ -854,15 +854,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                     
                   </Avatar>
                 ))}
-                {/* Fill up to 5 avatars with gray circles */}
-                {Array.from({ length: 4 - Math.min(reviews.length, 5) }).map(
-                  (_, idx) => (
-                    <div
-                      key={`placeholder-${idx}`}
-                      className='h-14 w-14 rounded-full border border-gray-300 bg-gray-200 ring-2 ring-white'
-                    />
-                  )
-                )}
+                
               </div>
             </div>
 
