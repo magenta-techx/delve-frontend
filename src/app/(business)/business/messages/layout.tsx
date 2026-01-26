@@ -48,7 +48,7 @@ export default function UserChatsPage({
   return (
     <div className='flex flex-col h-screen !overflow-hidden container mx-auto bg-[#FCFCFD] p-4 pt-0 '>
       <MarketPlaceTopBar />
-      <div className='flex gap-x-4 grow '>
+      <div className='flex gap-x-4 grow overflow-hidden'>
         <section
           className={cn(
             'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:w-80 xl:rounded-3xl'

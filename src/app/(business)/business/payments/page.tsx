@@ -194,8 +194,8 @@ export default function PaymentsPage() {
                     ? `You have ${currentPlan.daysLeft} more days before your next premium payment.`
                     : 'You currently have access to limited features. Upgrade to Premium and unlock full visibility, insights, and tools to grow your business faster.'}
               </p>
-              {((currentPlan.name === 'Free Trial' && currentPlan.daysLeft) ||
-                (currentPlan.name === 'Premium' && currentPlan.daysLeft)) && (
+              {((currentPlan.name === 'Free Trial' && !!currentPlan.daysLeft) ||
+                (currentPlan.name === 'Premium' && !!currentPlan.daysLeft)) && (
                 <div className='h-3.5 w-full overflow-hidden rounded bg-gray-200'>
                   <div
                     className='h-3.5 rounded bg-purple-600'

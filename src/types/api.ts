@@ -403,6 +403,7 @@ export interface UserDetail {
   number_of_owned_businesses: number;
   is_active: boolean;
   current_plan: string;
+  has_paid_for_premium: boolean;
   is_premium_plan_active: boolean;
   date_joined: string;
   profile_image?: string;
