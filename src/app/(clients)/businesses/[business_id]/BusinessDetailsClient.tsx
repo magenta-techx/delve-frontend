@@ -793,7 +793,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                 console.log(amenity, 'Amenity');
                 return (
                   <div className='flex flex-col items-center gap-1' key={index}>
-                    <span className='text-xs font-medium text-[#0D121C] lg:text-[0.9rem]'>
+                    <span className='text-sm font-medium text-[#0D121C] lg:text-base'>
                       {amenity.name}
                     </span>
                   </div>
@@ -976,7 +976,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                         </div>
                       )}
                       {/* Review Content */}
-                      <div className='font-dm min-h- my-5 mb-4 whitespace-pre-line text-[0.9rem] font-normal text-[#514F6E] lg:mb-8'>
+                      <div className='font-dm min-h- my-5 mb-4 whitespace-pre-line text-[0.9rem] font-normal text-[#514F6E] lg:mb-8 line-clamp-5'>
                         {review.content}
                       </div>
                       {/* Reviewer Name and Rating */}

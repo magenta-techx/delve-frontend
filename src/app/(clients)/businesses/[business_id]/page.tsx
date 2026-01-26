@@ -55,8 +55,8 @@ export async function generateMetadata({
   const image = business.logo || business.thumbnail || '/default-og-image.png';
 
   return {
-    title: `${businessName} | Delve`,
-    description: description.slice(0, 160), // Limit to 160 characters
+    title: `${businessName}`,
+    description: description.slice(0, 160),
     openGraph: {
       title: businessName,
       description: description.slice(0, 160),
