@@ -12,7 +12,6 @@ import {
 import { ChevronDown, MoveRight, Settings } from 'lucide-react';
 import { useBilling, useCurrentUser } from '@/app/(clients)/misc/api';
 import {
-  useCancelSubscription,
   useChangeCard,
 } from '@/app/(clients)/misc/api/payment';
 import { useBooleanStateControl } from '@/hooks';
