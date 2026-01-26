@@ -224,20 +224,51 @@ export default function PaymentsPage() {
             {/* Upgrade Banner */}
             {currentPlan.name === 'Free Trial' ||
             currentPlan.name === 'Freemium' ? (
-              <div className='relative z-[2] flex size-full flex-col'>
-                <h3 className='mb-3 flex flex-col justify-between text-balance font-inter font-semibold leading-tight text-white lg:text-xl'>
-                  {currentPlan.name === 'Free Trial'
-                    ? `Enjoying your free ${currentPlan.daysLeft}-day trial? Subscribe today to keep premium features when your trial ends.`
-                    : 'Enjoy full visibility, advanced insights, and a verified badge that builds customer trust.'}
-                </h3>
-                <Button
-                  className='fit-content mt-auto h-10 w-max border border-[#FBFAFF] bg-[#551FB9] text-white'
-                  onClick={openPlanSelection}
-                  variant={'unstyled'}
-                >
-                  Upgrade to Premium <MoveRight className='ml-1' />
-                </Button>
-              </div>
+              <>
+                {!userData?.has_paid_for_premium ? (
+                  <div className='relative z-[2] flex size-full flex-col'>
+                    <h3 className='mb-3 flex flex-col justify-between text-balance font-inter font-semibold leading-tight text-white lg:text-xl'>
+                      {currentPlan.name === 'Free Trial'
+                        ? `Enjoying your free ${currentPlan.daysLeft}-day trial? Subscribe today to keep premium features when your trial ends.`
+                        : 'Enjoy full visibility, advanced insights, and a verified badge that builds customer trust.'}
+                    </h3>
+                    <Button
+                      className='fit-content mt-auto h-10 w-max border border-[#FBFAFF] bg-[#551FB9] text-white'
+                      onClick={openPlanSelection}
+                      variant={'unstyled'}
+                    >
+                      Upgrade to Premium <MoveRight className='ml-1' />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className='relative z-[2] pt-6'>
+                    <h3 className='mb-3 text-lg font-semibold text-white'>
+                      You&apos;ve cancelled your subscription. Resubscribe now to keep enjoying
+                      Delve Premium without interruption.
+                    </h3>
+                    <Button
+                      className='w-full border border-white/30 bg-white/20 text-white hover:bg-white/30'
+                      onClick={openPlanSelection}
+                    >
+                      Resubscribe to Premium →
+                    </Button>
+                  </div>
+                )}
+                <div className='relative z-[2] flex size-full flex-col'>
+                  <h3 className='mb-3 flex flex-col justify-between text-balance font-inter font-semibold leading-tight text-white lg:text-xl'>
+                    {currentPlan.name === 'Free Trial'
+                      ? `Enjoying your free ${currentPlan.daysLeft}-day trial? Subscribe today to keep premium features when your trial ends.`
+                      : 'Enjoy full visibility, advanced insights, and a verified badge that builds customer trust.'}
+                  </h3>
+                  <Button
+                    className='fit-content mt-auto h-10 w-max border border-[#FBFAFF] bg-[#551FB9] text-white'
+                    onClick={openPlanSelection}
+                    variant={'unstyled'}
+                  >
+                    Upgrade to Premium <MoveRight className='ml-1' />
+                  </Button>
+                </div>
+              </>
             ) : currentPlan.isPendingCancellation ? (
               <div className='relative z-[2] pt-6'>
                 <h3 className='mb-3 text-lg font-semibold text-white'>
