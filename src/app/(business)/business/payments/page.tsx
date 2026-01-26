@@ -36,7 +36,6 @@ import { toast } from 'sonner';
 
 export default function PaymentsPage() {
   const changeCardMutation = useChangeCard();
-  const cancelSubMutation = useCancelSubscription();
   const [selectedReceiptIndex, setSelectedReceiptIndex] = useState<
     number | null
   >(null);
@@ -110,19 +109,7 @@ export default function PaymentsPage() {
     setSelectedReceiptIndex(null);
   };
 
-  const handleCancelSubscription = () => {
-    cancelSubMutation.mutate(undefined, {
-      onSuccess: () => {
-        toast.success('Subscription cancelled successfully.');
-        closeCancelInfo();
-      },
-      onError: error => {
-        toast.error('Failed to cancel subscription.', {
-          description: error.message || ('Something went wrong' as string),
-        });
-      },
-    });
-  };
+ 
 
   // Show loading state
   if (billingLoading || userLoading) {
@@ -557,14 +544,12 @@ export default function PaymentsPage() {
         isOpen={isCancelConfirmOpen}
         onClose={closeCancelConfirm}
         onConfirm={handleCancelClick}
-        isLoading={cancelSubMutation.isPending}
       />
 
       <CancelSubscriptionModal
         variant='info'
         isOpen={isCancelInfoOpen}
         onClose={closeCancelInfo}
-        onConfirm={handleCancelSubscription}
       />
     </div>
   );

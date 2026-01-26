@@ -1,3 +1,4 @@
+import { useCancelSubscription } from '@/app/(clients)/misc/api';
 import { Button } from '@/components/ui';
 import {
   Dialog,
@@ -7,6 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 interface CancelSubscriptionModalProps {
   variant?: 'confirm' | 'info';
@@ -22,6 +24,21 @@ export const CancelSubscriptionModal = ({
   onClose,
   onConfirm,
 }: CancelSubscriptionModalProps) => {
+  const cancelSubMutation = useCancelSubscription();
+ const handleCancelSubscription = () => {
+    cancelSubMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success('Subscription cancelled successfully.');
+        onClose();
+      },
+      onError: error => {
+        toast.error('Failed to cancel subscription.', {
+          description: error.message || ('Something went wrong' as string),
+        });
+      },
+    });
+  };
+
   return (
     <Dialog
       open={isOpen}
@@ -36,11 +53,11 @@ export const CancelSubscriptionModal = ({
               ? 'Important Information'
               : 'Cancel Subscription'}
           </DialogTitle>
-          {variant === 'info' && (
+          {/* {variant === 'info' && (
             <div className='mt-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-100'>
               <span className='text-sm font-bold text-red-600'>!</span>
             </div>
-          )}
+          )} */}
         </DialogHeader>
         <DialogDescription>
           {variant === 'info' ? (
@@ -64,9 +81,9 @@ export const CancelSubscriptionModal = ({
         <DialogFooter>
           <Button
             className='w-full bg-red-600 text-white hover:bg-red-700'
-            onClick={onConfirm}
-            disabled={!!isLoading}
-            isLoading={!!isLoading}
+            onClick={variant == 'info' ? handleCancelSubscription : onConfirm}
+            disabled={!!isLoading || cancelSubMutation.isPending}
+            isLoading={!!isLoading || cancelSubMutation.isPending}
           >
             {variant === 'info' ? 'Yes, Cancel Subscription' : 'Yes, Continue'}
           </Button>
