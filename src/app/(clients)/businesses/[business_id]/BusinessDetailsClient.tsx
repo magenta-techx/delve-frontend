@@ -695,7 +695,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                           : index
                       }
                       onClick={() => src && handleImageClick(index)}
-                      className='group relative cursor-pointer overflow-hidden rounded bg-gray-200'
+                      className='group relative cursor-pointer overflow-hidden bg-gray-200'
                       style={{
                         gridColumn: pos?.col,
                         gridRow: pos?.row,

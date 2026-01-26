@@ -69,8 +69,8 @@ export default function PaymentsPage() {
   const filterOptions = ['All time', '2025', '2024', '2023'];
 
   // API calls
-  const { data: billingResponse, isLoading: billingLoading } = useBilling();
-  const { data: userResponse, isLoading: userLoading } = useCurrentUser();
+  const { data: billingResponse, isLoading: billingLoading, refetch: refetchBillingData } = useBilling();
+  const { data: userResponse, isLoading: userLoading, refetch: refetchUserData } = useCurrentUser();
 
   const billingData = billingResponse?.data;
   const userData = userResponse?.user;
@@ -241,20 +241,7 @@ export default function PaymentsPage() {
                     </Button>
                   </div>
                 )}
-                <div className='relative z-[2] flex size-full flex-col'>
-                  <h3 className='mb-3 flex flex-col justify-between text-balance font-inter font-semibold leading-tight text-white lg:text-xl'>
-                    {currentPlan.name === 'Free Trial'
-                      ? `Enjoying your free ${currentPlan.daysLeft}-day trial? Subscribe today to keep premium features when your trial ends.`
-                      : 'Enjoy full visibility, advanced insights, and a verified badge that builds customer trust.'}
-                  </h3>
-                  <Button
-                    className='fit-content mt-auto h-10 w-max border border-[#FBFAFF] bg-[#551FB9] text-white'
-                    onClick={openPlanSelection}
-                    variant={'unstyled'}
-                  >
-                    Upgrade to Premium <MoveRight className='ml-1' />
-                  </Button>
-                </div>
+              
               </>
             ) : currentPlan.isPendingCancellation ? (
               <div className='relative z-[2] pt-6'>
@@ -544,12 +531,19 @@ export default function PaymentsPage() {
         isOpen={isCancelConfirmOpen}
         onClose={closeCancelConfirm}
         onConfirm={handleCancelClick}
+
       />
 
       <CancelSubscriptionModal
         variant='info'
         isOpen={isCancelInfoOpen}
         onClose={closeCancelInfo}
+        reload={
+          ()=>{
+            refetchUserData();
+            refetchBillingData();
+          }
+        }
       />
     </div>
   );

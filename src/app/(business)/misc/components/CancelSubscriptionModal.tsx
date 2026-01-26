@@ -16,6 +16,7 @@ interface CancelSubscriptionModalProps {
   isLoading?: boolean;
   onClose: () => void;
   onConfirm?: () => void;
+  reload?: () => void;
 }
 export const CancelSubscriptionModal = ({
   variant = 'confirm',
@@ -23,6 +24,7 @@ export const CancelSubscriptionModal = ({
   isLoading,
   onClose,
   onConfirm,
+  reload
 }: CancelSubscriptionModalProps) => {
   const cancelSubMutation = useCancelSubscription();
  const handleCancelSubscription = () => {
@@ -30,6 +32,7 @@ export const CancelSubscriptionModal = ({
       onSuccess: () => {
         toast.success('Subscription cancelled successfully.');
         onClose();
+        reload && reload();
       },
       onError: error => {
         toast.error('Failed to cancel subscription.', {
