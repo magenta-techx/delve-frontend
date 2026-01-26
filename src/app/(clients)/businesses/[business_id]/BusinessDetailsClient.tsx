@@ -36,7 +36,7 @@ import {
 
 import { useBusinessReviews } from '@/app/(business)/misc/api/reviews';
 import { ReviewPromptModal } from '@/components/ui/ReviewPromptModal';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useSubmitBusinessReview } from '../../misc/api';
 import {
   RatingStars,
@@ -837,25 +837,25 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
               </div>
               {/* Avatars */}
               <div className='flex -space-x-4'>
-                {reviews.slice(0, 5).map(review => (
+                {[
+                  "/business/reviewer1.jpg",
+                  "/business/reviewer2.jpg",
+                  "/business/reviewer3.jpg",
+                  "/business/reviewer4.jpg",
+                ].slice(0, 4).map((image, index) => (
                   <Avatar
-                    key={review.id}
+                    key={index}
                     className='h-14 w-14 border border-gray-300 ring-2 ring-white'
                   >
-                    {review.reviewer?.profile_image ? (
                       <AvatarImage
-                        src={review.reviewer.profile_image}
-                        alt={review.reviewer.first_name || 'User'}
+                        src={image}
+                        alt={image}
                       />
-                    ) : (
-                      <AvatarFallback className='bg-gray-200 text-xl text-gray-600'>
-                        {review.reviewer?.first_name?.[0] || 'U'}
-                      </AvatarFallback>
-                    )}
+                    
                   </Avatar>
                 ))}
                 {/* Fill up to 5 avatars with gray circles */}
-                {Array.from({ length: 5 - Math.min(reviews.length, 5) }).map(
+                {Array.from({ length: 4 - Math.min(reviews.length, 5) }).map(
                   (_, idx) => (
                     <div
                       key={`placeholder-${idx}`}
