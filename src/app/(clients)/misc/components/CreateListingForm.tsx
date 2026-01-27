@@ -109,8 +109,8 @@ const BusinessStepForm = (): JSX.Element => {
   }
 
   const [selectedAmenities, setSelectedAmenities] = useState<number[]>(
-    Array.isArray(onboardingData?.data?.amenities) 
-      ? onboardingData.data.amenities.map(amenity => amenity.id) 
+    Array.isArray(onboardingData?.data?.amenities)
+      ? onboardingData.data.amenities.map(amenity => amenity.id)
       : []
   );
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
@@ -164,7 +164,10 @@ const BusinessStepForm = (): JSX.Element => {
   useEffect(() => {
     if (!isLoadingOnboarding && onboardingData?.data) {
       // Check if data is a valid object (not an array or empty)
-      if (Array.isArray(onboardingData.data) || typeof onboardingData.data !== 'object') {
+      if (
+        Array.isArray(onboardingData.data) ||
+        typeof onboardingData.data !== 'object'
+      ) {
         // Data is empty or invalid, just mark first load as done
         if (isFirstLoad) {
           setIsFirstLoad(false);
@@ -182,7 +185,7 @@ const BusinessStepForm = (): JSX.Element => {
 
       // Set the current step based on onboarding phase - ONLY on first load
       if (isFirstLoad) {
-        const stepFromPhase = onboarding.onboarding_phase 
+        const stepFromPhase = onboarding.onboarding_phase
           ? (phaseToStepMap[onboarding.onboarding_phase] ?? 0)
           : 0;
         setPageNumber(stepFromPhase);
@@ -195,13 +198,21 @@ const BusinessStepForm = (): JSX.Element => {
         setSelectedCategoryId(onboarding.category.id);
       }
 
-      if (Array.isArray(onboarding.category?.subcategories) && onboarding.category.subcategories.length > 0) {
-        setSelectedSubcategoryIds(onboarding.category.subcategories.map(sub => sub.id));
+      if (
+        Array.isArray(onboarding.category?.subcategories) &&
+        onboarding.category.subcategories.length > 0
+      ) {
+        setSelectedSubcategoryIds(
+          onboarding.category.subcategories.map(sub => sub.id)
+        );
         setSubcategoryCount(onboarding.category.subcategories.length);
       }
 
       // Set amenities from onboarding
-      if (Array.isArray(onboarding.amenities) && onboarding.amenities.length > 0) {
+      if (
+        Array.isArray(onboarding.amenities) &&
+        onboarding.amenities.length > 0
+      ) {
         setSelectedAmenities(onboarding.amenities.map(amenity => amenity.id));
       }
 
@@ -240,7 +251,10 @@ const BusinessStepForm = (): JSX.Element => {
       }
 
       // Set cloud services from onboarding
-      if (Array.isArray(onboarding.services) && onboarding.services.length > 0) {
+      if (
+        Array.isArray(onboarding.services) &&
+        onboarding.services.length > 0
+      ) {
         setInitialCloudServices(onboarding.services);
         setCloudServices(onboarding.services);
       }
@@ -426,7 +440,7 @@ const BusinessStepForm = (): JSX.Element => {
       const deletedServices = initialCloudServices.filter(
         initialService => !cloudServices.find(s => s.id === initialService.id)
       );
-      
+
       if (deletedServices.length > 0) {
         console.log('Deleting services:', deletedServices);
         for (const service of deletedServices) {
@@ -479,7 +493,7 @@ const BusinessStepForm = (): JSX.Element => {
       // 3. Create new local services
       if (localServices.length > 0) {
         console.log('Creating new services:', localServices);
-        
+
         // Log each service to debug image issue
         localServices.forEach((service, idx) => {
           console.log(`Service ${idx}:`, {
@@ -490,7 +504,7 @@ const BusinessStepForm = (): JSX.Element => {
             isFile: service.image instanceof File,
           });
         });
-        
+
         // Transform services to ensure description is always present and include images
         const servicesWithDescription = localServices.map(service => ({
           title: service.title,
@@ -498,7 +512,10 @@ const BusinessStepForm = (): JSX.Element => {
           image: service.image || null,
         }));
 
-        console.log('Services with description (before API call):', servicesWithDescription);
+        console.log(
+          'Services with description (before API call):',
+          servicesWithDescription
+        );
 
         await createServicesMutation.mutateAsync({
           business_id: businessId,
@@ -603,24 +620,31 @@ const BusinessStepForm = (): JSX.Element => {
         }),
       };
 
-      await updateLocationMutation.mutateAsync(combinedData);
+      await updateLocationMutation.mutateAsync(combinedData, {
+        onSuccess: async () => {
+          console.log(
+            '✅ Location and contact information updated successfully'
+          );
+          toast.success('Success!', {
+            description: 'Business registration completed successfully.',
+          });
 
-      console.log('✅ Location and contact information updated successfully');
-      toast.success('Success!', {
-        description: 'Business registration completed successfully.',
+          await handleStepComplete();
+
+          // Move to success page (step 7)
+          setStep(7);
+          setPageNumber(7);
+        },
+
+        onError(error) {
+          toast.error('Error', {
+            description: error.message,
+          });
+        },
       });
-
-      await handleStepComplete();
-
-      // Move to success page (step 7)
-      setStep(7);
-      setPageNumber(7);
     } catch (error) {
       console.log('Request failed:', error);
       await handleStepComplete();
-      toast.error('Error', {
-        description: 'Error updating information. Please try again.',
-      });
     }
     setIsSubmitting(false);
   };
@@ -891,11 +915,7 @@ const BusinessStepForm = (): JSX.Element => {
       id: 7,
       title: 'Your business profile has been submitted!',
       subtitle: '',
-      component: (
-        <CreateListingFormStep8Success
-          businessId={businessId}
-        />
-      ),
+      component: <CreateListingFormStep8Success businessId={businessId} />,
     },
   ];
 
