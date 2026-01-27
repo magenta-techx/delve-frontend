@@ -1,5 +1,6 @@
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
 interface BlogCardProps {
@@ -15,7 +16,8 @@ const BlogCard = ({
   imageClassStyle,
 }: BlogCardProps): JSX.Element => {
   return (
-    <div
+    <Link
+      href='/blog'
       className={`bg-[#F5F5F5] sm:py-8 ${containerClassStyle} flex flex-col items-center rounded-2xl p-4 sm:px-9`}
     >
       <div className={`${imageClassStyle} relative mb-7`}>
@@ -25,7 +27,7 @@ const BlogCard = ({
           width={400}
           height={100}
           className='h-full w-full rounded-xl object-cover'
-          style={{objectFit: 'cover'}}
+          style={{ objectFit: 'cover' }}
         />
       </div>
       <div className='w-[100%] border-b-[1px] border-[#9AA4B2] pb-4 sm:h-[200px] sm:pb-6'>
@@ -42,7 +44,7 @@ const BlogCard = ({
         <p className='font-semibold'>25th June,2025</p>
         <BaseIcons value='arrow-right-curve' />
       </div>
-    </div>
+    </Link>
   );
 };
 
