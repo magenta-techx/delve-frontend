@@ -58,7 +58,7 @@ export default function ProfileSettings() {
   const { data: amenities = [], isLoading: amenitiesLoading } = useAmenities();
 
   // Mutations
-    const { mutate: updateBusiness, isPending: isUpdating } = useUpdateBusiness();
+  const { mutate: updateBusiness, isPending: isUpdating } = useUpdateBusiness();
   const updateCategoryMutation = useUpdateBusinessCategory();
   const updateAmenitiesMutation = useUpdateBusinessAmenities();
 
@@ -100,7 +100,7 @@ export default function ProfileSettings() {
     setShowImageSelector(false);
     setShowSubcategoryModal(false);
     setShowAmenitiesModal(false);
-    
+
     if (currentBusiness?.category?.id) {
       setSelectedCategoryId(currentBusiness.category.id);
     }
@@ -251,7 +251,7 @@ export default function ProfileSettings() {
   if (isLoadingBusinesses) {
     return (
       <div className='flex h-full min-h-[40vh] flex-col items-center justify-center text-center text-muted-foreground'>
-        <LogoLoadingIcon/>
+        <LogoLoadingIcon />
       </div>
     );
   }
@@ -402,10 +402,10 @@ export default function ProfileSettings() {
           </Label>
 
           <div className='flex-1'>
-            {currentBusiness.subcategories &&
-            currentBusiness.subcategories.length > 0 ? (
+            {currentBusiness.category?.subcategories &&
+            currentBusiness.category?.subcategories.length > 0 ? (
               <div className='flex flex-wrap gap-2.5'>
-                {currentBusiness.subcategories.map(subcategory => (
+                {currentBusiness.category?.subcategories.map(subcategory => (
                   <button
                     key={subcategory.id}
                     type='button'
@@ -623,9 +623,7 @@ export default function ProfileSettings() {
           }
         }}
         amenities={amenities}
-        selectedAmenityIds={
-          (fieldValues['amenities']?.value as number[]) || []
-        }
+        selectedAmenityIds={(fieldValues['amenities']?.value as number[]) || []}
         onSelectionChange={ids => handleFieldChange('amenities', ids)}
         onSave={() => handleSave('amenities')}
         isLoading={amenitiesLoading}
@@ -647,25 +645,36 @@ export default function ProfileSettings() {
           </DialogHeader>
 
           <div className='grid grid-cols-3 gap-4'>
-            {getBusinessImages().map((image, index) => (
+            {currentBusiness.images?.map(({ image, id }, index) => (
               <button
                 key={index}
                 onClick={() => {
                   handleFieldChange('profilePicture', image);
                   setShowImageSelector(false);
                   // Find image id from currentBusiness.images
-                  const selectedImageObj = currentBusiness.images?.find(img => (typeof img === 'object' ? img.image : img) === image);
-                  const imageId = typeof selectedImageObj === 'object' ? selectedImageObj.id : undefined;
+                  const selectedImageObj = currentBusiness.images?.find(
+                    img => (typeof img === 'object' ? img.image : img) === image
+                  );
+                  const imageId =
+                    typeof selectedImageObj === 'object'
+                      ? selectedImageObj.id
+                      : undefined;
                   if (imageId && currentBusiness?.id) {
-                    updateBusiness({ business_id: currentBusiness.id, thumbnail_image_id: String(imageId) }, {
-                      onSuccess: () => {
-                        toast.success('Profile picture updated');
-                        refetchBusinesses();
+                    updateBusiness(
+                      {
+                        business_id: currentBusiness.id,
+                        thumbnail_image_id: String(imageId),
                       },
-                      onError: () => {
-                        toast.error('Failed to update profile picture');
+                      {
+                        onSuccess: () => {
+                          toast.success('Profile picture updated');
+                          refetchBusinesses();
+                        },
+                        onError: () => {
+                          toast.error('Failed to update profile picture');
+                        },
                       }
-                    });
+                    );
                   }
                 }}
                 className='group relative aspect-square overflow-hidden rounded-lg border-2 transition-colors hover:border-purple-500'
@@ -676,7 +685,8 @@ export default function ProfileSettings() {
                   fill
                   className='object-cover transition-transform group-hover:scale-105'
                 />
-                {index === 0 && (
+                {(currentBusiness?.current_thumnail_image_id === id ||
+                  index === 0) && (
                   <div className='absolute left-2 top-2 rounded bg-purple-600 px-2 py-1 text-xs text-white'>
                     Default
                   </div>

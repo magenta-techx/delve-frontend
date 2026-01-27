@@ -205,7 +205,7 @@ export interface BusinessDetail {
   category?: CategoryMini;
   subcategories?: Array<{ id: number; name: string }>;
   amenities?: Array<{ id: number; name: string }>;
-  images?: Array<{ id: number; image: string } | string>;
+  images?: Array<{ id: number; image: string }>;
   services?: BusinessService[];
   created_at?: string;
   phone_number?: string;
@@ -227,6 +227,7 @@ export interface BusinessDetail {
   admin_approval_status: 'approved' | 'unapproved' | 'rejected';
   requesting_approval?: boolean;
   status?: string;
+  current_thumnail_image_id?: number;
   business_hours: Businesshour[];
   // The detail response in api.md shows performance embedded in example; usually separate
   performance?: Array<{ date: string; performance_score: number }>;

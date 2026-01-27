@@ -36,7 +36,6 @@ import {
 
 import { useBusinessReviews } from '@/app/(business)/misc/api/reviews';
 import { ReviewPromptModal } from '@/components/ui/ReviewPromptModal';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useSubmitBusinessReview } from '../../misc/api';
 import {
   RatingStars,
@@ -508,13 +507,13 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                           fillRule='evenodd'
                           clipRule='evenodd'
                           d='M13 9C13 11.2091 11.2091 13 9 13C6.79086 13 5 11.2091 5 9C5 6.79086 6.79086 5 9 5C11.2091 5 13 6.79086 13 9ZM11.5 9C11.5 10.3807 10.3807 11.5 9 11.5C7.61929 11.5 6.5 10.3807 6.5 9C6.5 7.61929 7.61929 6.5 9 6.5C10.3807 6.5 11.5 7.61929 11.5 9Z'
-                          fill='#000'
+                          fill='#000000'
                         />
                         <path
                           fillRule='evenodd'
                           clipRule='evenodd'
                           d='M7.52835 19.3518C3.34219 17.2505 0.449096 13.4645 0 9C0 4.02944 4.02944 0 9 0C13.9706 0 18 4.02944 18 9C17.5544 13.4294 14.3295 17.1909 10.4481 19.3019C9.54146 19.7951 8.45077 19.8149 7.52835 19.3518ZM9.73143 17.9842C9.25447 18.2437 8.68285 18.253 8.2013 18.0113C4.43094 16.1186 1.91589 12.7761 1.50036 8.92558C1.54029 4.81772 4.8827 1.5 9 1.5C13.1172 1.5 16.4595 4.8175 16.4996 8.92516C16.0887 12.6886 13.2957 16.0456 9.73143 17.9842Z'
-                          fill='#000'
+                          fill='#000000'
                         />
                       </svg>
                     </span>
@@ -557,7 +556,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                             fillRule='evenodd'
                             clipRule='evenodd'
                             d='M20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10ZM1.5 10C1.5 9.24328 1.59888 8.50965 1.78444 7.81134L2.16582 7.73157L2.20482 7.72354C2.23949 7.71645 2.29122 7.70595 2.35848 7.69252C2.49301 7.66567 2.68956 7.62714 2.93578 7.58082C3.28583 7.51498 3.73568 7.43352 4.25 7.34755V12.6525C3.73568 12.5665 3.28583 12.485 2.93578 12.4192C2.68956 12.3729 2.49301 12.3343 2.35848 12.3075C2.29122 12.2941 2.23949 12.2835 2.20482 12.2765L2.16582 12.2684L1.78444 12.1887C1.59888 11.4903 1.5 10.7567 1.5 10ZM2.6585 6.10668C3.07176 6.02894 3.62055 5.93 4.25 5.82721V3.73994C3.50467 4.42491 2.882 5.24125 2.41871 6.15227C2.49249 6.13809 2.57258 6.12284 2.6585 6.10668ZM9.25 13.2333C8.13402 13.1863 6.8892 13.0461 5.75 12.8846V7.11537C6.8892 6.95393 8.13402 6.81368 9.25 6.76672V13.2333ZM5.75 5.60076C6.87834 5.44519 8.11732 5.31009 9.25 5.26553V1.53263C7.98325 1.64338 6.79615 2.03198 5.75 2.63715V5.60076ZM14.25 12.8846C13.1108 13.0461 11.866 13.1863 10.75 13.2333V6.76672C11.866 6.81368 13.1108 6.95393 14.25 7.11537V12.8846ZM10.75 5.26553C11.8827 5.31009 13.1217 5.44519 14.25 5.60076V2.63715C13.2038 2.03198 12.0167 1.64338 10.75 1.53263V5.26553ZM17.0642 12.4192C16.7142 12.485 16.2643 12.5665 15.75 12.6525V7.34755C16.2643 7.43352 16.7142 7.51498 17.0642 7.58082C17.3104 7.62714 17.507 7.66567 17.6415 7.69252C17.7088 7.70595 17.7605 7.71645 17.7952 7.72354L17.8342 7.73157L17.8437 7.73354L18.2156 7.81134C18.4011 8.50965 18.5 9.24328 18.5 10C18.5 10.7567 18.4011 11.4903 18.2156 12.1887L17.8342 12.2684L17.7952 12.2765C17.7605 12.2835 17.7088 12.2941 17.6415 12.3075C17.507 12.3343 17.3104 12.3729 17.0642 12.4192ZM17.3415 6.10668C17.4274 6.12284 17.5075 6.13809 17.5813 6.15227C17.118 5.24125 16.4953 4.42491 15.75 3.73994V5.82721C16.3794 5.93 16.9282 6.02894 17.3415 6.10668ZM15.75 16.2601C16.4953 15.5751 17.118 14.7587 17.5813 13.8477C17.5075 13.8619 17.4274 13.8772 17.3415 13.8933C16.9282 13.9711 16.3794 14.07 15.75 14.1728V16.2601ZM10.75 14.7345C11.8827 14.6899 13.1217 14.5548 14.25 14.3992V17C14.25 17.1148 14.2758 17.2235 14.3219 17.3208C13.2583 17.95 12.0459 18.3541 10.75 18.4674V14.7345ZM5.75 14.3992C6.87834 14.5548 8.11732 14.6899 9.25 14.7345V18.4674C7.95415 18.3541 6.74165 17.95 5.67812 17.3208C5.72422 17.2235 5.75 17.1148 5.75 17V14.3992ZM2.6585 13.8933C3.07176 13.9711 3.62055 14.07 4.25 14.1728V16.2601C3.50467 15.5751 2.882 14.7587 2.41871 13.8477C2.49249 13.8619 2.57258 13.8772 2.6585 13.8933Z'
-                            fill='#ffffff'
+                            fill='#000'
                           />
                         </svg>
                       </span>
@@ -788,14 +787,16 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             <h2 className='mb-2 text-center font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Amenities
             </h2>
-            <div className='mx-auto flex items-center justify-center gap-6 text-[0.95rem] leading-7 text-[#000000] xl:gap-14'>
+            <div className='mx-auto flex flex-wrap items-center justify-center text-[0.95rem] leading-7 text-[#000000] gap-y-4 md:gap-y-6'>
               {business.amenities?.map((amenity, index) => {
-                console.log(amenity, 'Amenity');
                 return (
-                  <div className='flex flex-col items-center gap-1' key={index}>
-                    <span className='text-sm font-medium text-[#0D121C] lg:text-base'>
+                  <div key={index} className='flex items-center'>
+                    <p className='text-sm text-[#0D121C] lg:text-base'>
                       {amenity.name}
-                    </span>
+                    </p>
+                    {index < (business.amenities?.length ?? 0) - 1 && (
+                      <span className='mx-4 inline-block size-1 lg:size-2 rounded-full bg-[#a6a8ac] lg:mx-8 xl:mx-12' />
+                    )}
                   </div>
                 );
               })}
@@ -819,9 +820,9 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
 
             <nav></nav>
           </header>
-          <div className='my-12 flex flex-col gap-12 md:flex-row md:items-stretch'>
+          <div className='my-12 flex flex-col gap-12 md:flex-row md:items-stretch divide-x-[1.5px]'>
             {/* Left: Summary */}
-            <div className='flex flex-col items-center justify-around gap-10 md:w-1/3 lg:w-[20rem]'>
+            <div className='flex flex-col items-center justify-around md:w-1/3 lg:w-[20rem]'>
               <div className='flex w-full flex-col items-center'>
                 <span className='font-karma text-5xl font-semibold text-black'>
                   {averageRating.toFixed(1)}
@@ -838,22 +839,20 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
               {/* Avatars */}
               <div className='flex -space-x-4'>
                 {[
-                  "/business/reviewer1.jpg",
-                  "/business/reviewer2.jpg",
-                  "/business/reviewer3.jpg",
-                  "/business/reviewer4.jpg",
-                ].slice(0, 4).map((image, index) => (
-                  <Avatar
-                    key={index}
-                    className='h-14 w-14 border border-gray-300 ring-2 ring-white'
-                  >
-                      <AvatarImage
-                        src={image}
-                        alt={image}
-                      />
-                    
-                  </Avatar>
-                ))}
+                  '/business/reviewer1.jpg',
+                  '/business/reviewer2.jpg',
+                  '/business/reviewer3.jpg',
+                  '/business/reviewer4.jpg',
+                ]
+                  .slice(0, 4)
+                  .map((image, index) => (
+                    <div
+                      key={index}
+                      className='relative h-14 w-14 overflow-hidden rounded-full border border-gray-300 ring-1 ring-black'
+                    >
+                      <Image fill objectFit='cover' src={image} alt={image} />
+                    </div>
+                  ))}
                 {/* {Array.from({ length: 4 - Math.min(reviews.length, 5) }).map(
                   (_, idx) => (
                     <div
@@ -975,7 +974,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                         </div>
                       )}
                       {/* Review Content */}
-                      <div className='font-dm min-h- my-5 mb-4 whitespace-pre-line text-[0.9rem] font-normal text-[#514F6E] lg:mb-8 line-clamp-5'>
+                      <div className='font-dm min-h- my-5 mb-4 line-clamp-5 whitespace-pre-line text-[0.9rem] font-normal text-[#514F6E] lg:mb-10'>
                         {review.content}
                       </div>
                       {/* Reviewer Name and Rating */}

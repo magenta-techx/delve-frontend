@@ -149,7 +149,7 @@ export default function ServicesPage() {
       {/* Services List */}
       <div className='space-y-8'>
         {/* Add New Service */}
-        <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 xl:grid xl:items-center xl:gap-12'>
+        <section className='flex grid-cols-[240px,1fr,150px] flex-col p-4 xl:grid xl:items-center xl:gap-12'>
           <Label className='text-sm font-medium text-[#0F0F0F]'>
             Add New Service
           </Label>
@@ -178,7 +178,7 @@ export default function ServicesPage() {
               {/* //////////////////////// */}
               {/* Service Title */}
               {/* //////////////////////// */}
-              <section className='flex grid-cols-[240px,1fr,150px] flex-col p-4 xl:grid xl:items-end xl:gap-12'>
+              <section className='flex grid-cols-[240px,1fr,200px] flex-col p-4 xl:grid xl:items-end xl:gap-8 2xl:grid-cols-[240px,1fr,350px]'>
                 <Label className='text-sm font-medium text-[#0F0F0F]'>
                   Service
                 </Label>
@@ -240,7 +240,7 @@ export default function ServicesPage() {
               {/* //////////////////////// */}
               {/* Service Description */}
               {/* //////////////////////// */}
-              <section className='flex grid-cols-[240px,1fr,150px] flex-col p-4 lg:items-end xl:grid xl:gap-12'>
+              <section className='flex grid-cols-[240px,1fr,200px] flex-col p-4 xl:grid xl:items-end xl:gap-8 2xl:grid-cols-[240px,1fr,350px]'>
                 <Label className='text-sm font-medium text-[#0F0F0F]'>
                   Description
                 </Label>
@@ -310,7 +310,7 @@ export default function ServicesPage() {
               {/* //////////////////////// */}
               {/* Service Image */}
               {/* //////////////////////// */}
-              <section className='flex grid-cols-[240px,1fr,150px] flex-col p-4 lg:items-end xl:grid xl:gap-12'>
+              <section className='flex grid-cols-[240px,1fr,200px] flex-col p-4 xl:grid xl:items-end xl:gap-8 2xl:grid-cols-[240px,1fr,350px]'>
                 <Label className='text-sm font-medium text-[#0F0F0F]'>
                   Service Image
                 </Label>
@@ -368,7 +368,7 @@ export default function ServicesPage() {
               </section>
 
               {/* Delete Service Section */}
-              <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 xl:grid xl:items-center xl:gap-12'>
+              <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 xl:grid xl:items-center xl:gap-8'>
                 <Label className='invisible text-sm font-medium text-[#0F0F0F]'>
                   Delete Service
                 </Label>
@@ -388,15 +388,12 @@ export default function ServicesPage() {
                     }
                     disabled={deleteServiceMutation.isPending}
                   >
-                    {deleteServiceMutation.isPending ? 'Deleting...' : 'Delete'}
+                    {deleteServiceMutation.isPending
+                      ? 'Deleting...'
+                      : 'Delete Service'}
                   </Button>
                 </div>
               </section>
-
-              {/* Spacer between services */}
-              {index < (currentBusiness?.services?.length ?? 0) - 1 && (
-                <div className='h-8 border-b-2 border-gray-100'></div>
-              )}
             </div>
           ))}
         </div>
