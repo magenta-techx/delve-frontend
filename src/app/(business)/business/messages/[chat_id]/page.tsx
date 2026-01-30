@@ -1,6 +1,12 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui';
 import { Image as ImageIcon } from 'lucide-react';
@@ -14,6 +20,8 @@ import { useParams } from 'next/navigation';
 import { useBusinessChats } from '@/app/(business)/misc/api';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { GalleryModal } from '@/components/GalleryModal';
+import { useQueryClient } from '@tanstack/react-query';
+import type { ApiEnvelope, ChatMessage } from '@/types/api';
 
 export default function ChatDetailPage() {
   const { chat_id } = useParams() as { chat_id: string };
@@ -23,19 +31,38 @@ export default function ChatDetailPage() {
   const { data: chats, isLoading: isLoadingChats } = useBusinessChats(
     currentBusiness?.id || ''
   );
+  const queryClient = useQueryClient();
   const { userId } = useUserContext();
-  const {
-    data: messages,
-    isLoading: messagesLoading,
-    refetch: refreshMessages,
-  } = useChatMessages(chat_id);
+  const { data: messages, isLoading: messagesLoading } =
+    useChatMessages(chat_id);
 
   const selectedChat =
     chats?.data.find(c => String(c.id) === String(chat_id)) || null;
 
-  const handleSocketPayload = useCallback(() => {
-    void refreshMessages();
-  }, [refreshMessages]);
+  const handleSocketPayload = useCallback(
+    (payload: any) => {
+      if (payload && typeof payload === 'object') {
+        queryClient.setQueryData(
+          ['chat-messages', chat_id],
+          (old: ApiEnvelope<ChatMessage[]> | undefined) => {
+            if (!old) return old;
+
+            // Avoid duplicate messages
+            const exists = old.data.some(
+              (m: ChatMessage) => m.id === payload.id
+            );
+            if (exists) return old;
+
+            return {
+              ...old,
+              data: [payload, ...old.data],
+            };
+          }
+        );
+      }
+    },
+    [chat_id, queryClient]
+  );
 
   const handleSocketDebug = useCallback((entry: ChatDebugEntry) => {
     console.log('chat debug entry', entry);
@@ -57,7 +84,9 @@ export default function ChatDetailPage() {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [pendingUploads, setPendingUploads] = useState<Array<{ id: string; url: string; status: 'uploading' | 'error' }>>([]);
+  const [pendingUploads, setPendingUploads] = useState<
+    Array<{ id: string; url: string; status: 'uploading' | 'error' }>
+  >([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const shouldAutoScrollRef = useRef(true);
@@ -130,13 +159,20 @@ export default function ChatDetailPage() {
 
     const entries = files.map(file => {
       const url = URL.createObjectURL(file);
-      const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+      const id =
+        typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random()}`;
       return { file, url, id };
     });
 
     setPendingUploads(prev => [
       ...prev,
-      ...entries.map(entry => ({ id: entry.id, url: entry.url, status: 'uploading' as const })),
+      ...entries.map(entry => ({
+        id: entry.id,
+        url: entry.url,
+        status: 'uploading' as const,
+      })),
     ]);
 
     shouldAutoScrollRef.current = true;
@@ -153,9 +189,12 @@ export default function ChatDetailPage() {
       try {
         await addImage(fd);
         removePendingUpload(entry.id);
-        await refreshMessages();
       } catch (err) {
-        setPendingUploads(prev => prev.map(item => (item.id === entry.id ? { ...item, status: 'error' } : item)));
+        setPendingUploads(prev =>
+          prev.map(item =>
+            item.id === entry.id ? { ...item, status: 'error' } : item
+          )
+        );
       }
     }
 
@@ -172,7 +211,6 @@ export default function ChatDetailPage() {
     scrollToBottom(true, true);
     sendText(text);
     setText('');
-    void refreshMessages();
   };
 
   const orderedMessages = useMemo(() => {
@@ -180,15 +218,24 @@ export default function ChatDetailPage() {
     return [...messages.data].reverse();
   }, [messages?.data]);
 
-  const imageGallery = useMemo(() => orderedMessages.filter(msg => msg.is_image_message && msg.image).map(msg => String(msg.image)), [orderedMessages]);
+  const imageGallery = useMemo(
+    () =>
+      orderedMessages
+        .filter(msg => msg.is_image_message && msg.image)
+        .map(msg => String(msg.image)),
+    [orderedMessages]
+  );
 
-  const openLightbox = useCallback((imageUrl: string) => {
-    const index = imageGallery.indexOf(imageUrl);
-    if (index >= 0) {
-      setLightboxIndex(index);
-      setLightboxOpen(true);
-    }
-  }, [imageGallery]);
+  const openLightbox = useCallback(
+    (imageUrl: string) => {
+      const index = imageGallery.indexOf(imageUrl);
+      if (index >= 0) {
+        setLightboxIndex(index);
+        setLightboxOpen(true);
+      }
+    },
+    [imageGallery]
+  );
 
   return (
     <div className='flex h-full flex-1 grid-rows-[auto_1fr_auto] flex-col'>
@@ -198,7 +245,7 @@ export default function ChatDetailPage() {
             <div className='h-6 w-40 animate-pulse rounded bg-gray-200' />
           ) : (
             <h2 className='font-semibold'>
-              {`${(selectedChat?.customer.first_name ?? '')} ${(selectedChat?.customer.last_name ?? '')}`}
+              {`${selectedChat?.customer.first_name ?? ''} ${selectedChat?.customer.last_name ?? ''}`}
             </h2>
           )}
         </div>
@@ -229,51 +276,69 @@ export default function ChatDetailPage() {
         )}
         {messages &&
           orderedMessages.map(msg => (
+            <div
+              key={msg.id}
+              className={`flex ${msg.sender.id === userId ? 'justify-end' : 'justify-start'}`}
+            >
               <div
-                key={msg.id}
-                className={`flex ${msg.sender.id === userId ? 'justify-end' : 'justify-start'}`}
+                className={cn(
+                  'w-max max-w-md rounded-lg px-4 py-2 text-sm font-normal leading-snug',
+                  msg.sender.id === userId
+                    ? 'text-sidebar-primary-foreground bg-[#F8FAFC]'
+                    : 'bg-[#F8FAFC] text-foreground'
+                )}
               >
-                <div
-                  className={cn(
-                    'w-max max-w-md rounded-lg px-4 py-2 text-sm font-normal leading-snug',
-                    msg.sender.id === userId
-                      ? 'text-sidebar-primary-foreground bg-[#F8FAFC]'
-                      : 'bg-[#F8FAFC] text-foreground'
-                  )}
-                >
-                  <p className='text-sm'>{msg.content ?? ''}</p>
-                  {msg.is_image_message && (
-                    <button
-                      type='button'
-                      onClick={() => openLightbox(String(msg.image))}
-                      className='mt-2 block focus:outline-none'
-                    >
-                      <div className='relative h-40 w-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
-                        <Image
-                          src={String(msg.image)}
-                          alt='Chat image'
-                          fill
-                          sizes='160px'
-                          className='object-cover'
-                          onLoadingComplete={() => {
-                            scrollToBottom(false);
-                          }}
-                        />
-                      </div>
-                    </button>
-                  )}
-                </div>
+                <p className='text-sm'>{msg.content ?? ''}</p>
+                {msg.is_image_message && (
+                  <button
+                    type='button'
+                    onClick={() => openLightbox(String(msg.image))}
+                    className='mt-2 block focus:outline-none'
+                  >
+                    <div className='relative h-40 w-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
+                      <Image
+                        src={String(msg.image)}
+                        alt='Chat image'
+                        fill
+                        sizes='160px'
+                        className='object-cover'
+                        onLoadingComplete={() => {
+                          scrollToBottom(false);
+                        }}
+                      />
+                    </div>
+                  </button>
+                )}
               </div>
-            ))}
+            </div>
+          ))}
         {pendingUploads.map(upload => (
           <div key={upload.id} className='flex justify-end'>
-            <div className='w-max max-w-md rounded-lg bg-[#F8FAFC] px-4 py-2 text-sm font-normal leading-snug text-sidebar-primary-foreground'>
+            <div className='text-sidebar-primary-foreground w-max max-w-md rounded-lg bg-[#F8FAFC] px-4 py-2 text-sm font-normal leading-snug'>
               <div className='relative mt-2 h-40 w-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
-                <img src={upload.url} alt='Uploading preview' className='h-full w-full object-cover opacity-70' />
+                <img
+                  src={upload.url}
+                  alt='Uploading preview'
+                  className='h-full w-full object-cover opacity-70'
+                />
                 {upload.status === 'uploading' && (
                   <div className='absolute inset-0 flex items-center justify-center bg-white/60'>
-                    <svg className='h-6 w-6 animate-spin text-[#551FB9]' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' strokeLinecap='round' strokeDasharray='60' strokeDashoffset='20'></circle>
+                    <svg
+                      className='h-6 w-6 animate-spin text-[#551FB9]'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      xmlns='http://www.w3.org/2000/svg'
+                    >
+                      <circle
+                        cx='12'
+                        cy='12'
+                        r='10'
+                        stroke='currentColor'
+                        strokeWidth='4'
+                        strokeLinecap='round'
+                        strokeDasharray='60'
+                        strokeDashoffset='20'
+                      ></circle>
                     </svg>
                   </div>
                 )}

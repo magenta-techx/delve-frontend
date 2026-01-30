@@ -25,7 +25,6 @@ export function useBusinessChats(
       return data;
     },
     enabled: Boolean(businessId),
-    refetchInterval: 15_000,
   });
 }
 
