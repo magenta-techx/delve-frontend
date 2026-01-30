@@ -45,6 +45,7 @@ import { ReviewRepliesSheet } from '@/components/ui/ReviewRepliesSheet';
 
 interface BusinessDetailsClientProps {
   business: BusinessDetail;
+  preview?: boolean;
 }
 
 const positions = [
@@ -56,7 +57,10 @@ const positions = [
   { col: '12/16', row: '6/13' },
 ];
 
-const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
+const BusinessDetailsClient = ({
+  business,
+  preview = false,
+}: BusinessDetailsClientProps) => {
   // Ref for reviews carousel
   const reviewsContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -191,7 +195,12 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
 
   return (
     <Suspense fallback={<div>Loading business details...</div>}>
-      <main className='relative mx-auto py-8 pt-16 lg:pt-20'>
+      <main
+        className={cn(
+          'relative mx-auto py-8 pt-16 lg:pt-20',
+          preview && 'pt-0 lg:pt-0'
+        )}
+      >
         <div
           className={cn(`relative mb-8 overflow-hidden`)}
           style={{
@@ -787,7 +796,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
             <h2 className='mb-2 text-center font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Amenities
             </h2>
-            <div className='mx-auto flex flex-wrap items-center justify-center text-[0.95rem] leading-7 text-[#000000] gap-y-4 md:gap-y-6'>
+            <div className='mx-auto flex flex-wrap items-center justify-center gap-y-4 text-[0.95rem] leading-7 text-[#000000] md:gap-y-6'>
               {business.amenities?.map((amenity, index) => {
                 return (
                   <div key={index} className='flex items-center'>
@@ -795,7 +804,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
                       {amenity.name}
                     </p>
                     {index < (business.amenities?.length ?? 0) - 1 && (
-                      <span className='mx-4 inline-block size-1 lg:size-2 rounded-full bg-[#a6a8ac] lg:mx-8 xl:mx-12' />
+                      <span className='mx-4 inline-block size-1 rounded-full bg-[#a6a8ac] lg:mx-8 lg:size-2 xl:mx-12' />
                     )}
                   </div>
                 );
@@ -820,7 +829,7 @@ const BusinessDetailsClient = ({ business }: BusinessDetailsClientProps) => {
 
             <nav></nav>
           </header>
-          <div className='my-12 flex flex-col gap-12 md:flex-row md:items-stretch divide-x-[1.5px]'>
+          <div className='my-12 flex flex-col gap-12 divide-x-[1.5px] md:flex-row md:items-stretch'>
             {/* Left: Summary */}
             <div className='flex flex-col items-center justify-around md:w-1/3 lg:w-[20rem]'>
               <div className='flex w-full flex-col items-center'>
