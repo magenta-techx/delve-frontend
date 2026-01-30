@@ -111,17 +111,18 @@ export default function SettingsLayout({
                       </Button>
                     )}
 
-                    {currentBusiness?.admin_approval_status === 'approved' ? (
+                    {currentBusiness?.status !== 'rejected' && (
                       <LinkButton
-                        href={`/businesses/${currentBusiness?.id}`}
+                        href={`/business/preview`}
                         size='sm'
                         className='md:hidden'
                       >
                         Preview Business Profile
                         <BoxedArrow className='ml-2' />
                       </LinkButton>
-                    ) : currentBusiness?.admin_approval_status ===
-                      'rejected' ? (
+                    )}
+
+                    {currentBusiness?.admin_approval_status === 'rejected' && (
                       <Button
                         onClick={handleRequestApproval}
                         disabled={requestApprovalMutation.isPending}
@@ -132,35 +133,37 @@ export default function SettingsLayout({
                           ? 'Requesting...'
                           : 'Request Approval'}
                       </Button>
-                    ) : null}
+                    )}
                   </div>
                 </div>
                 <p className='hidden text-balance text-xs text-[#4B5565] lg:block lg:text-sm'>
                   Manage your business details and account settings
                 </p>
               </div>
-              {currentBusiness?.admin_approval_status === 'approved' ? (
-                <LinkButton
-                  href={`/businesses/${currentBusiness?.id}`}
-                  className='bg-primary text-white hover:bg-primary/90 max-md:hidden'
-                  size='lg'
-                >
-                  Preview Business Profile
-                  <BoxedArrow className='ml-2' />
-                </LinkButton>
-              ) : currentBusiness?.admin_approval_status === 'rejected' ? (
-                <Button
-                  onClick={handleRequestApproval}
-                  disabled={requestApprovalMutation.isPending}
-                  size='lg'
-                  variant='light'
-                  className='max-md:hidden'
-                >
-                  {requestApprovalMutation.isPending
-                    ? 'Requesting...'
-                    : 'Request Approval'}
-                </Button>
-              ) : null}
+              <div className='flex items-center gap-3 max-md:hidden'>
+                {currentBusiness?.status !== 'archived' && (
+                  <LinkButton
+                    href={`/business/preview`}
+                    className='bg-primary text-white hover:bg-primary/90'
+                    size='lg'
+                  >
+                    Preview Business Profile
+                    <BoxedArrow className='ml-2' />
+                  </LinkButton>
+                )}
+                {currentBusiness?.admin_approval_status === 'rejected' && (
+                  <Button
+                    onClick={handleRequestApproval}
+                    disabled={requestApprovalMutation.isPending}
+                    size='lg'
+                    variant='light'
+                  >
+                    {requestApprovalMutation.isPending
+                      ? 'Requesting...'
+                      : 'Request Approval'}
+                  </Button>
+                )}
+              </div>
             </header>
             {/* Tabs Navigation */}
             <div className='border-border px-4 lg:px-6'>
