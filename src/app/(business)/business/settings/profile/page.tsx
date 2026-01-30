@@ -255,7 +255,7 @@ export default function ProfileSettings() {
       </div>
     );
   }
-  
+
   if (!currentBusiness) {
     return (
       <div className='py-12 text-center text-muted-foreground'>
@@ -646,7 +646,7 @@ export default function ProfileSettings() {
           </DialogHeader>
 
           <div className='grid grid-cols-3 gap-4'>
-            {currentBusiness.images?.map(({ image, id }, index) => (
+            {currentBusiness.images?.map(({ image, is_thumbnail }, index) => (
               <button
                 key={index}
                 onClick={() => {
@@ -686,8 +686,7 @@ export default function ProfileSettings() {
                   fill
                   className='object-cover transition-transform group-hover:scale-105'
                 />
-                {(currentBusiness?.current_thumnail_image_id === id ||
-                  index === 0) && (
+                {is_thumbnail && (
                   <div className='absolute left-2 top-2 rounded bg-purple-600 px-2 py-1 text-xs text-white'>
                     Default
                   </div>

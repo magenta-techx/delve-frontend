@@ -88,6 +88,7 @@ export default function BusinessHoursPage() {
     handleSubmit,
     clearErrors,
     watch,
+    trigger,
     formState: { errors },
     reset,
   } = useForm<BusinessHoursInput>({
@@ -216,6 +217,10 @@ export default function BusinessHoursPage() {
                               disabled={!hoursWatch[index]?.is_open}
                               type='number'
                               className='h-9 w-12 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-sm font-semibold text-[#212121] md:w-14 md:rounded-lg'
+                              onChange={e => {
+                                field.onChange(e);
+                                trigger(`hours.${index}.close_hour`);
+                              }}
                             />
                           )}
                         />
@@ -225,6 +230,13 @@ export default function BusinessHoursPage() {
                           render={({ field }) => (
                             <select
                               {...field}
+                              onChange={e => {
+                                field.onChange(e);
+                                trigger([
+                                  `hours.${index}.open_hour`,
+                                  `hours.${index}.close_hour`,
+                                ]);
+                              }}
                               disabled={!hoursWatch[index]?.is_open}
                               className='h-9 rounded border border-[#EEF2F6] bg-white px-2 py-1.5 text-xs text-[#212121] md:rounded-lg'
                             >
@@ -253,6 +265,10 @@ export default function BusinessHoursPage() {
                               disabled={!hoursWatch[index]?.is_open}
                               value={field.value ?? ''}
                               className='h-9 w-12 rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-sm font-semibold text-[#212121] md:w-14 md:rounded-lg'
+                              onChange={e => {
+                                field.onChange(e);
+                                trigger(`hours.${index}.open_hour`);
+                              }}
                             />
                           )}
                         />
@@ -262,6 +278,13 @@ export default function BusinessHoursPage() {
                           render={({ field }) => (
                             <select
                               {...field}
+                              onChange={e => {
+                                field.onChange(e);
+                                trigger([
+                                  `hours.${index}.open_hour`,
+                                  `hours.${index}.close_hour`,
+                                ]);
+                              }}
                               disabled={!hoursWatch[index]?.is_open}
                               className='h-9 rounded border border-[#EEF2F6] bg-white px-2 py-1.5 text-xs text-[#212121] md:rounded-lg'
                             >

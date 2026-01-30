@@ -205,7 +205,7 @@ export interface BusinessDetail {
   category?: CategoryMini;
   subcategories?: Array<{ id: number; name: string }>;
   amenities?: Array<{ id: number; name: string }>;
-  images?: Array<{ id: number; image: string }>;
+  images?: Array<{ id: number; image: string; is_thumbnail: boolean }>;
   services?: BusinessService[];
   created_at?: string;
   phone_number?: string;

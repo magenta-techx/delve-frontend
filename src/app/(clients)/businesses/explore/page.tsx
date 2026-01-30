@@ -43,7 +43,7 @@ export default function HomePage(): JSX.Element {
         </div>
         {/* Desktop Hero section  */}
         <div className='absolute top-[8rem] flex w-full flex-col items-center px-4 sm:top-[14rem] sm:px-8 md:top-[18rem] lg:px-20'>
-          <div className='flex w-full container flex-col'>
+          <div className='container flex w-full flex-col'>
             <div className='flex w-full flex-col sm:max-w-[1000px]'></div>
             <div className='mb-9 flex items-center gap-2 text-white'>
               <ExploreBaseIcons value='listing-white-and-gray-solid' />
@@ -62,7 +62,7 @@ export default function HomePage(): JSX.Element {
           </div>
         </div>
 
-        <section className='absolute bottom-16 left-1/2 mx-auto flex w-[90vw] max-w-4xl -translate-x-1/2 justify-center px-5 sm:-bottom-9 sm:px-0 lg:w-full z-[200] '>
+        <section className='absolute bottom-16 left-1/2 z-[200] mx-auto flex w-[90vw] max-w-4xl -translate-x-1/2 justify-center px-5 sm:-bottom-9 sm:px-0 lg:w-full'>
           <BusinessSearch />
         </section>
       </div>
@@ -77,7 +77,7 @@ export default function HomePage(): JSX.Element {
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
-            <Link href={'/businesses/explore'} className='uppercase'>
+            <Link href={'/businesses/search'} className='uppercase'>
               See all listings
             </Link>
           </div>
@@ -170,7 +170,7 @@ export default function HomePage(): JSX.Element {
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
-            <Link href={'/'} className='uppercase'>
+            <Link href={'/businesses/search'} className='uppercase'>
               See all listings
             </Link>
           </div>
@@ -263,7 +263,7 @@ export default function HomePage(): JSX.Element {
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
-            <Link href={'/'} className='uppercase'>
+            <Link href={'/businesses/search'} className='uppercase'>
               See all listings
             </Link>
           </div>
