@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogClose,
+  // DialogClose,
   EmptyState,
 } from '@/components/ui';
 
@@ -38,7 +38,8 @@ export default function CollaborationFormBusinessSelector({
     const q = query.trim().toLowerCase();
     return savedBusinesses.filter(b => {
       const matchesQuery = q
-        ? (b.name?.toLowerCase().includes(q) || b.description?.toLowerCase().includes(q))
+        ? b.name?.toLowerCase().includes(q) ||
+          b.description?.toLowerCase().includes(q)
         : true;
       // SavedBusiness does not include category info; fallback to all
       const matchesCategory = category === 'all';
@@ -51,13 +52,15 @@ export default function CollaborationFormBusinessSelector({
       open={isBusinessSelectorModalOpen}
       onOpenChange={closeBusinessSelectorModal}
     >
-      <DialogContent className='flex max-h-[85vh] w-full max-w-[1200px] flex-col overflow-hidden rounded-2xl'>
-        <div className='flex items-center justify-between border-b px-6 py-4'>
+      <DialogContent className='flex max-h-[85vh] w-full max-w-[1200px] flex-col overflow-hidden sm:!rounded-3xl sm:border'>
+        <div className='flex items-center justify-between border-b pb-4'>
           <DialogHeader>
-            <DialogTitle className='text-xl font-semibold'>Saved Businesses</DialogTitle>
+            <DialogTitle className='text-xl font-semibold'>
+              Saved Businesses
+            </DialogTitle>
           </DialogHeader>
-          <div className='flex items-center gap-4'>
-            <span className='text-sm text-[#551FB9]'>
+          <div className='flex items-center gap-4 pr-4'>
+            <span className='border-r border-gray-200 px-4 text-sm text-yellow-500'>
               {localListOfSelectedBusinesses.length} selected
             </span>
             <button
@@ -67,48 +70,52 @@ export default function CollaborationFormBusinessSelector({
             >
               Clear
             </button>
-            <button
-              type='button'
-              className='rounded-lg bg-[#551FB9] px-4 py-2 text-sm font-medium text-white'
-              onClick={() => {
-                setSelectedBusinesses(localListOfSelectedBusinesses);
-                closeBusinessSelectorModal();
-              }}
-            >
-              Done
-            </button>
-            <DialogClose className='text-[#0D121C]'>
-              <span className='sr-only'>Close</span>
-              ×
-            </DialogClose>
+
+            {/* <DialogClose className='text-[#0D121C]'>
+              <span className='sr-only'>Close</span>×
+            </DialogClose> */}
           </div>
         </div>
 
-        <div className='flex items-center gap-3 px-6 py-4 max-w-xl'>
-          <div className='flex-1 rounded-xl border px-4 py-2'>
-            <input
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder='Search businesses'
-              className='w-full bg-transparent text-sm outline-none'
-            />
-          </div>
-          <div className='rounded-xl border px-3 py-2'>
-            <select
-              value={category}
-              onChange={e => setCategory(e.target.value as any)}
-              className='bg-transparent text-sm outline-none'
+        <div className='flex items-center gap-3 px-6 py-4'>
+          <div className='flex max-w-xl items-center gap-3'>
+            <div className='flex-1 rounded-xl border px-4 py-2'>
+              <input
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder='Search businesses'
+                className='w-full bg-transparent text-sm outline-none'
+              />
+            </div>
+            <div className='rounded-xl border px-3 py-2'>
+              <select
+                value={category}
+                onChange={e => setCategory(e.target.value as any)}
+                className='bg-transparent text-sm outline-none'
+              >
+                <option value='all'>Category</option>
+                {/* Category options unavailable in SavedBusiness; keep only 'Category' */}
+              </select>
+            </div>
+            <button
+              type='button'
+              className='rounded-xl bg-[#551FB9] px-5 py-2 text-sm font-medium text-white'
+              onClick={() => {
+                /* no-op, filter applies live */
+              }}
             >
-              <option value='all'>Category</option>
-              {/* Category options unavailable in SavedBusiness; keep only 'Category' */}
-            </select>
+              Search
+            </button>
           </div>
           <button
             type='button'
-            className='rounded-xl bg-[#551FB9] px-5 py-2 text-sm font-medium text-white'
-            onClick={() => {/* no-op, filter applies live */}}
+            className='ml-auto rounded-lg bg-[#551FB9] px-4 py-2 text-sm font-medium text-white'
+            onClick={() => {
+              setSelectedBusinesses(localListOfSelectedBusinesses);
+              closeBusinessSelectorModal();
+            }}
           >
-            Search
+            Done
           </button>
         </div>
 

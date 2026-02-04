@@ -98,6 +98,11 @@ export async function forward(
 
     const res = await fetch(url, fetchOptions);
 
+    // Handle 204 No Content responses before body parsing
+    if (res.status === 204) {
+      return new NextResponse(null, { status: 204 });
+    }
+
     const isJson = res.headers
       .get('content-type')
       ?.includes('application/json');
@@ -130,14 +135,6 @@ export async function forward(
         { status: res.status }
       );
     }
-
-    // Handle 204 No Content responses
-    if (res.status === 204) {
-      return new NextResponse(null, { status: 204 });
-    }
-
-    // console.log('Forwarded Success Response:', data);
-    // console.log('url', url);
 
     return NextResponse.json(data, { status: res.status });
   } catch (err) {

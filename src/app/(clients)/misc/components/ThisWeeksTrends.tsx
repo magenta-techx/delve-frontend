@@ -10,7 +10,7 @@ const ThisWeeksTrends = (): JSX.Element => {
 
   return (
     <>
-      {!data && !isLoading ? null : (
+      {(!data && !isLoading) || isLoading ? null : (
         <div className='w-full py-10 sm:mb-10 sm:py-0 md:mb-12'>
           <div className='relative flex w-[100%] flex-col items-center md:h-[30rem] lg:grid lg:h-[35rem] lg:grid-cols-[1.45fr_1fr] xl:grid-cols-[1.6fr_1fr]'>
             <div

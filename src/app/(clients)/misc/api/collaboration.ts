@@ -1,161 +1,239 @@
-"use client";
-import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
-import type { ApiEnvelope, ApiMessage, CollaborationSummary, CollaborationDetail } from "@/types/api";
+'use client';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  type UseQueryResult,
+  type UseMutationResult,
+} from '@tanstack/react-query';
+import type {
+  ApiEnvelope,
+  ApiMessage,
+  CollaborationSummary,
+  CollaborationDetail,
+} from '@/types/api';
 import { apiRequest } from '@/utils/apiHandler';
 
-export function useCollaborations(): UseQueryResult<ApiEnvelope<CollaborationSummary[]>, Error> {
+export function useCollaborations(): UseQueryResult<
+  ApiEnvelope<CollaborationSummary[]>,
+  Error
+> {
   return useQuery({
-    queryKey: ["collaborations"],
+    queryKey: ['collaborations'],
     queryFn: async () => {
       const res = await apiRequest(`/api/collaboration`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to fetch collaborations");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to fetch collaborations');
       return data;
     },
   });
 }
 
-
-
-
-export function useCreateCollaboration(): UseMutationResult<ApiEnvelope<{ id: number; description: string; name: string }>, Error, { name: string; description: string; }> {
+export function useCreateCollaboration(): UseMutationResult<
+  ApiEnvelope<{ id: number; description: string; name: string }>,
+  Error,
+  { name: string; description: string }
+> {
   return useMutation({
-    mutationFn: async (payload) => {
+    mutationFn: async payload => {
       const res = await apiRequest(`/api/collaboration`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to create collaboration");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to create collaboration');
       return data;
     },
   });
 }
 
-export function useSendInvitation(): UseMutationResult<ApiMessage, Error, { collab_id: number | string; email: string }> {
+export function useSendInvitation(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { collab_id: number | string; email: string }
+> {
   return useMutation({
     mutationFn: async ({ collab_id, email }) => {
       const res = await apiRequest(`/api/collaboration/${collab_id}/invite`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to send invite email ");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to send invite email ');
       return data;
     },
   });
 }
-export function useUpdateInviteStatus(): UseMutationResult<ApiMessage, Error, { member_id: number | string; status: string; collab_id: number | string }> {
+export function useUpdateInviteStatus(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { member_id: number | string; status: string; collab_id: number | string }
+> {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ member_id, status }) => {
       const res = await apiRequest(`/api/collaboration/invite/${member_id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ invite_status: status }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to update invite status");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to update invite status');
       return data;
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["collaboration", variables.collab_id] });
+      queryClient.invalidateQueries({
+        queryKey: ['collaboration', variables.collab_id],
+      });
     },
   });
 }
 
-export function useUpdateMemberPrivilege(): UseMutationResult<ApiMessage, Error, { member_id: number | string; privilege: string }> {
+export function useUpdateMemberPrivilege(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { member_id: number | string; privilege: string }
+> {
   return useMutation({
     mutationFn: async ({ member_id, privilege }) => {
-      const res = await apiRequest(`/api/collaboration/member/${member_id}/privilege`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ privilege }),
-      });
+      const res = await apiRequest(
+        `/api/collaboration/member/${member_id}/privilege`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ privilege }),
+        }
+      );
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to update member privilege");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to update member privilege');
       return data;
     },
   });
 }
 
-export function useRemoveCollaborationMember(): UseMutationResult<ApiMessage, Error, { member_id: number | string }> {
+export function useRemoveCollaborationMember(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { member_id: number | string }
+> {
   return useMutation({
     mutationFn: async ({ member_id }) => {
-      const res = await apiRequest(`/api/collaboration/member/${member_id}`, { method: "DELETE" });
+      const res = await apiRequest(`/api/collaboration/member/${member_id}`, {
+        method: 'DELETE',
+      });
+      if (res.status === 204) return { message: 'Member removed successfully' };
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to remove member");
+      if (!res.ok) throw new Error(data?.error || 'Failed to remove member');
       return data;
     },
   });
 }
 
-export function useCollaboration(collab_id?: number | string): UseQueryResult<ApiEnvelope<CollaborationDetail>, Error> {
+export function useCollaboration(
+  collab_id?: number | string
+): UseQueryResult<ApiEnvelope<CollaborationDetail>, Error> {
   return useQuery({
-    queryKey: ["collaboration", collab_id],
+    queryKey: ['collaboration', collab_id],
     queryFn: async () => {
       const res = await apiRequest(`/api/collaboration/${collab_id}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to fetch collaboration");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to fetch collaboration');
       return data;
     },
     enabled: !!collab_id,
   });
 }
 
-export function useReplaceCollaborationBusinesses(): UseMutationResult<ApiMessage, Error, { collab_id: number | string; business_ids: number[] }> {
+export function useReplaceCollaborationBusinesses(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { collab_id: number | string; business_ids: number[] }
+> {
   return useMutation({
     mutationFn: async ({ collab_id, business_ids }) => {
-      const res = await apiRequest(`/api/collaboration/${collab_id}/businesses/replace`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ business_ids }),
-      });
+      const res = await apiRequest(
+        `/api/collaboration/${collab_id}/businesses/replace`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ business_ids }),
+        }
+      );
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to replace businesses");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to replace businesses');
       return data;
     },
   });
 }
 
-export function useRemoveCollaborationBusiness(): UseMutationResult<ApiMessage, Error, { collab_id: number | string; business_id: number }> {
+export function useRemoveCollaborationBusiness(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { collab_id: number | string; business_id: number }
+> {
   return useMutation({
     mutationFn: async ({ collab_id, business_id }) => {
-      const res = await apiRequest(`/api/collaboration/${collab_id}/businesses/remove`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ business_id }),
-      });
+      const res = await apiRequest(
+        `/api/collaboration/${collab_id}/businesses/remove`,
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ business_id }),
+        }
+      );
+      if (res.status === 204)
+        return { message: 'Business removed successfully' };
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to remove business");
+      if (!res.ok) throw new Error(data?.error || 'Failed to remove business');
       return data;
     },
   });
 }
 
-export function useDeleteCollaboration(): UseMutationResult<ApiMessage, Error, { collab_id: number | string }> {
+export function useDeleteCollaboration(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { collab_id: number | string }
+> {
   return useMutation({
     mutationFn: async ({ collab_id }) => {
-      const res = await apiRequest(`/api/collaboration/${collab_id}`, { method: "DELETE" });
+      const res = await apiRequest(`/api/collaboration/${collab_id}`, {
+        method: 'DELETE',
+      });
+      if (res.status === 204)
+        return { message: 'Collaboration deleted successfully' };
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to delete collaboration");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to delete collaboration');
       return data;
     },
   });
 }
 
-export function useUpdateCollaboration(): UseMutationResult<ApiMessage, Error, { collab_id: number | string; name?: string; description?: string }> {
+export function useUpdateCollaboration(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { collab_id: number | string; name?: string; description?: string }
+> {
   return useMutation({
     mutationFn: async ({ collab_id, ...body }) => {
       const res = await apiRequest(`/api/collaboration/${collab_id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to update collaboration");
+      if (!res.ok)
+        throw new Error(data?.error || 'Failed to update collaboration');
       return data;
     },
   });
