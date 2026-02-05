@@ -37,7 +37,7 @@ import {
   groupBusinessHours,
   formatBusinessTime,
   type BusinessHour,
-} from '@/lib/business-hours';
+} from '@/lib/businesshours';
 
 import { useBusinessReviews } from '@/app/(business)/misc/api/reviews';
 import { ReviewPromptModal } from '@/components/ui/ReviewPromptModal';
