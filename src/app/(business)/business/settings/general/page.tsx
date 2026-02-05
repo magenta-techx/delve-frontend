@@ -176,8 +176,8 @@ export default function GeneralPage() {
       </section>
 
       {/* Business Name */}
-      <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:grid lg:py-8 xl:items-center xl:gap-12'>
-        <Label className='text-sm font-medium text-[#0F0F0F]'>
+      <section className='flex flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:grid lg:grid-cols-[240px,1fr,150px] lg:py-8 xl:items-center xl:gap-12'>
+        <Label className='mb-2 text-sm font-medium text-[#0F0F0F] lg:mb-0'>
           Business Name
         </Label>
         <div className='flex-1'>
@@ -202,24 +202,24 @@ export default function GeneralPage() {
           )}
         </div>
 
-        <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
+        <div className='mt-3 flex items-center lg:mt-0 lg:justify-end lg:self-end'>
           {editingField !== 'name' ? (
             <Button
               // onClick={() => handleEdit('name')}
               variant='outline'
               size='sm'
-              className='text-gray-500 hover:text-primary'
+              className='w-full text-gray-500 hover:text-primary md:w-auto'
               disabled
               title='Contact support to change business name'
             >
               Edit
             </Button>
           ) : (
-            <div className='flex gap-2'>
+            <div className='flex w-full gap-2 md:w-auto'>
               <Button
                 onClick={() => handleSave('name', tempValues.name)}
                 disabled={isUpdating || !tempValues.name.trim()}
-                className='bg-primary px-4 py-1.5 text-sm text-white'
+                className='flex-1 bg-primary px-4 py-1.5 text-sm text-white md:flex-none'
                 size={'sm'}
               >
                 {isUpdating ? (
@@ -245,8 +245,8 @@ export default function GeneralPage() {
       </section>
 
       {/* About Business */}
-      <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:grid lg:items-end lg:py-8 xl:gap-12'>
-        <Label className='text-sm font-medium text-[#0F0F0F]'>
+      <section className='flex flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:grid lg:grid-cols-[240px,1fr,150px] lg:items-end lg:py-8 xl:gap-12'>
+        <Label className='mb-2 text-sm font-medium text-[#0F0F0F] lg:mb-0'>
           About Business
         </Label>
         <div className='flex-1'>
@@ -273,25 +273,25 @@ export default function GeneralPage() {
             </div>
           )}
         </div>
-        <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
+        <div className='mt-3 flex items-center lg:mt-0 lg:justify-end lg:self-end'>
           {editingField !== 'description' ? (
             <Button
               onClick={() => handleEdit('description')}
               variant='outline'
               size='sm'
               disabled={isUpdating}
-              className='text-gray-500 hover:text-primary'
+              className='w-full text-gray-500 hover:text-primary md:w-auto'
             >
               Edit
             </Button>
           ) : (
-            <div className='flex gap-2'>
+            <div className='flex w-full gap-2 md:w-auto'>
               <Button
                 onClick={() =>
                   handleSave('description', tempValues.description)
                 }
                 disabled={isUpdating || !tempValues.name.trim()}
-                className='bg-primary px-4 py-1.5 text-sm text-white'
+                className='flex-1 bg-primary px-4 py-1.5 text-sm text-white md:flex-none'
                 size={'sm'}
               >
                 {isUpdating ? (
@@ -317,8 +317,8 @@ export default function GeneralPage() {
       </section>
 
       {/* Website */}
-      <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:grid lg:items-end lg:py-8 xl:gap-12'>
-        <Label className='text-sm font-medium text-[#0F0F0F]'>
+      <section className='flex flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:grid lg:grid-cols-[240px,1fr,150px] lg:items-end lg:py-8 xl:gap-12'>
+        <Label className='mb-2 text-sm font-medium text-[#0F0F0F] lg:mb-0'>
           Website <span className='font-normal text-gray-500'>(Optional)</span>
         </Label>
         <div className='flex-1'>
@@ -339,23 +339,23 @@ export default function GeneralPage() {
           )}
         </div>
 
-        <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
+        <div className='mt-3 flex items-center lg:mt-0 lg:justify-end lg:self-end'>
           {editingField !== 'website' ? (
             <Button
               onClick={() => handleEdit('website')}
               variant='outline'
               size='sm'
-              className='text-gray-500 hover:text-primary'
+              className='w-full text-gray-500 hover:text-primary md:w-auto'
               disabled={isUpdating}
             >
               Edit
             </Button>
           ) : (
-            <div className='flex gap-2'>
+            <div className='flex w-full gap-2 md:w-auto'>
               <Button
                 onClick={() => handleSave('website', tempValues.website)}
                 disabled={isUpdating || !tempValues.website.trim()}
-                className='bg-primary px-4 py-1.5 text-sm text-white'
+                className='flex-1 bg-primary px-4 py-1.5 text-sm text-white md:flex-none'
                 size={'sm'}
               >
                 {isUpdating ? (

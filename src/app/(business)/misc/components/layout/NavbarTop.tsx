@@ -16,6 +16,7 @@ import { navItems, supportItems } from './Sidebar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Notifications } from '../notifications';
 
 interface TopNavProps {
   onNotificationsClick?: () => void;
@@ -23,6 +24,7 @@ interface TopNavProps {
 
 export function NavbarTop({}: TopNavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const pathname = usePathname();
 
   return (
@@ -33,16 +35,51 @@ export function NavbarTop({}: TopNavProps) {
         </div>
 
         {/* Right side - Menu button */}
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-2.5'>
+          <Sheet
+            open={isNotificationsOpen}
+            onOpenChange={setIsNotificationsOpen}
+          >
+            <SheetTrigger asChild>
+              <Button variant='ghost' size='icon'>
+                <svg
+                  width='28'
+                  height='28'
+                  className='!size-6'
+                  viewBox='0 0 28 28'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M15.617 3.41234C15.6441 3.47773 15.6672 3.54456 15.6861 3.61246C15.9471 3.6558 16.2041 3.71118 16.4565 3.778C15.6575 4.61552 15.1669 5.74982 15.1669 6.9987C15.1669 9.57603 17.2562 11.6654 19.8336 11.6654C20.8786 11.6654 21.8435 11.3218 22.6213 10.7416C22.6734 11.12 22.7004 11.5064 22.7004 11.8991V13.4154C22.7004 15.5342 23.222 18.2455 23.7036 20.2975C24.061 21.82 22.9253 23.332 21.3614 23.332H16.3336C16.3336 23.6384 16.2732 23.9419 16.156 24.225C16.0387 24.5081 15.8668 24.7653 15.6502 24.9819C15.4335 25.1986 15.1763 25.3705 14.8932 25.4877C14.6101 25.605 14.3067 25.6654 14.0002 25.6654C13.6938 25.6654 13.3904 25.605 13.1073 25.4877C12.8242 25.3705 12.567 25.1986 12.3503 24.9819C12.1337 24.7653 11.9618 24.5081 11.8445 24.225C11.7273 23.9419 11.6669 23.6384 11.6669 23.332H6.96143C5.30676 23.332 4.15284 21.6478 4.63976 20.0664C5.25927 18.0543 5.90038 15.4747 5.90038 13.4154V11.8991C5.90039 7.95515 8.61843 4.64576 12.2835 3.74242C12.3058 3.62964 12.3392 3.51906 12.3835 3.41234C12.4714 3.20002 12.6003 3.0071 12.7628 2.84459C12.9253 2.68209 13.1182 2.55319 13.3305 2.46524C13.5429 2.3773 13.7704 2.33203 14.0002 2.33203C14.2301 2.33203 14.4576 2.3773 14.6699 2.46524C14.8823 2.55319 15.0752 2.68209 15.2377 2.84459C15.4002 3.0071 15.5291 3.20002 15.617 3.41234Z'
+                    fill='#131316'
+                  />
+                  <path
+                    d='M19.8336 10.4987C21.7666 10.4987 23.3336 8.93169 23.3336 6.9987C23.3336 5.0657 21.7666 3.4987 19.8336 3.4987C17.9006 3.4987 16.3336 5.0657 16.3336 6.9987C16.3336 8.93169 17.9006 10.4987 19.8336 10.4987Z'
+                    fill='#131316'
+                  />
+                </svg>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side='right' className='w-full p-0 sm:max-w-md'>
+              <SheetHeader className='sr-only'>
+                <SheetTitle>Notifications</SheetTitle>
+              </SheetHeader>
+              <div className='h-full overflow-y-auto'>
+                <Notifications />
+              </div>
+            </SheetContent>
+          </Sheet>
+
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
               <Button variant='ghost' size='icon'>
-                <Menu className='size-8' />
+                <Menu className='!size-6' />
               </Button>
             </SheetTrigger>
             <SheetContent side='right' className='w-80'>
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <SheetTitle className='sr-only'>Menu</SheetTitle>
               </SheetHeader>
 
               <nav className='mt-6 flex flex-col gap-2'>
@@ -64,7 +101,7 @@ export function NavbarTop({}: TopNavProps) {
                       href={item.href}
                       onClick={() => setIsMenuOpen(false)}
                       className={cn(
-                        'relative flex items-center gap-3 rounded-lg px-4 py-3 font-inter text-sm transition-colors',
+                        'relative flex items-center gap-3 rounded-lg py-4 font-inter text-sm transition-colors',
                         isActive
                           ? 'bg-[#FBFAFF] font-semibold text-[#5F2EEA]'
                           : 'text-[#4B5565] hover:bg-[#fbfaffcb]'
@@ -76,10 +113,6 @@ export function NavbarTop({}: TopNavProps) {
                         <Icon className='h-5 w-5' />
                       )}
                       {item.name}
-
-                      {isActive && (
-                        <div className='absolute right-0 top-1/2 h-[60%] w-1 -translate-y-1/2 rounded-l-xl bg-primary'></div>
-                      )}
                     </Link>
                   );
                 })}

@@ -46,12 +46,13 @@ export default function UserChatsPage({
   }, [chatsToShow, chats]);
 
   return (
-    <div className='flex flex-col h-screen !overflow-hidden container mx-auto bg-[#FCFCFD] p-4 pt-0 '>
+    <div className='container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] p-4 pt-0'>
       <MarketPlaceTopBar />
-      <div className='flex gap-x-4 grow overflow-hidden'>
+      <div className='flex grow gap-x-4 overflow-hidden'>
         <section
           className={cn(
-            'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:w-80 xl:rounded-3xl'
+            'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:w-80 xl:rounded-3xl',
+            !!current_chat_id && 'max-lg:hidden'
           )}
         >
           <nav className='sticky top-0 flex items-center justify-between border-b border-border bg-white p-2 xl:px-6 xl:py-4'>
@@ -140,13 +141,34 @@ export default function UserChatsPage({
                     <p
                       className={cn(
                         'line-clamp-2 min-h-[2lh] text-xs leading-tight text-[#111927] md:text-[0.825rem]',
-                        chat.last_message?.is_image_message && 'flex items-center gap-1'
+                        chat.last_message?.is_image_message &&
+                          'flex items-center gap-1'
                       )}
                     >
                       {chat.last_message?.is_image_message ? (
                         <>
                           {/* Use a suitable image icon here, e.g. Lucide ImageIcon or your own */}
-                          <svg className='h-3.5 w-3.5' aria-hidden='true' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><rect x='3' y='3' width='18' height='18' rx='2' ry='2'></rect><circle cx='8.5' cy='8.5' r='1.5'></circle><polyline points='21 15 16 10 5 21'></polyline></svg>
+                          <svg
+                            className='h-3.5 w-3.5'
+                            aria-hidden='true'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                          >
+                            <rect
+                              x='3'
+                              y='3'
+                              width='18'
+                              height='18'
+                              rx='2'
+                              ry='2'
+                            ></rect>
+                            <circle cx='8.5' cy='8.5' r='1.5'></circle>
+                            <polyline points='21 15 16 10 5 21'></polyline>
+                          </svg>
                           <span>Image</span>
                         </>
                       ) : (
@@ -163,8 +185,8 @@ export default function UserChatsPage({
         {/* <section className='grid flex-1 grid-rows-[max-content,1fr] bg-background border border-[#ECE9FE] rounded-2xl overflow-hidden'> */}
         <section
           className={cn(
-            'hidden h-full flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:block',
-            !!current_chat_id ? 'max-lg:hidden' : ''
+            'flex flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background max-lg:!rounded-none max-lg:!border-none',
+            !current_chat_id ? 'hidden lg:block' : 'max-lg:flex'
           )}
         >
           {isLoadingChats ? (

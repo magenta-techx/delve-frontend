@@ -195,12 +195,12 @@ export default function ReviewManagementPage() {
               </p>
               <div className='flex flex-col items-start gap-1 md:gap-2'>
                 <div className='flex items-center gap-1 md:items-end md:gap-2'>
-                  <span className='text-xl font-semibold text-[#0F0F0F] max-md:block md:text-2xl lg:text-3xl xl:text-4xl'>
+                  <span className='text-sm font-semibold text-[#0F0F0F] max-md:block md:text-2xl lg:text-3xl xl:text-4xl'>
                     {isLoading ? (
                       '—'
                     ) : (
                       <>
-                        <span className='text-[7px] font-normal text-[#4B5565] md:text-xs'>
+                        <span className='text-[8px] font-normal text-[#4B5565] md:text-xs'>
                           Over{' '}
                         </span>
                         {totalReviews}
@@ -237,8 +237,8 @@ export default function ReviewManagementPage() {
                 <p className='text-[10px] font-normal text-[#697586] md:text-xs lg:text-sm xl:text-lg'>
                   Total rating
                 </p>
-                <div className='flex gap-2 max-sm:flex-col md:items-end md:gap-3'>
-                  <span className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl xl:text-4xl'>
+                <div className='flex gap-1 max-sm:flex-col md:items-end md:gap-3'>
+                  <span className='text-sm font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl xl:text-4xl'>
                     {isLoading ? '—' : averageRating.toFixed(1)}
                   </span>
                   <RatingStars rating={averageRating} />
@@ -348,7 +348,7 @@ export default function ReviewManagementPage() {
                       }}
                       className={cn(
                         'w-full overflow-hidden rounded-2xl border border-[#EEF2F6] bg-[#FFFFFF] text-left transition-colors',
-                        'xl:grid-[0.34fr_1fr] grid grid-cols-[minmax(120px,0.3fr)_1fr] gap-4',
+                        'grid grid-cols-1 md:grid-cols-[minmax(120px,0.3fr)_1fr] lg:gap-4',
                         isActive && 'border-primary/70'
                       )}
                     >
@@ -372,8 +372,8 @@ export default function ReviewManagementPage() {
                         </div>
                       </section>
 
-                      <section className='p-3 max-md:pl-0 md:p-4 xl:p-5'>
-                        <p className='mb-2 text-xs font-medium text-[#0F0F0F] md:mb-4 md:text-[0.9rem]'>
+                      <section className='p-3 md:p-4 md:pl-0 xl:p-5'>
+                        <p className='mb-1.5 text-xs font-medium text-[#0F0F0F] md:mb-4 md:text-[0.9rem]'>
                           {review.service?.title ??
                             review.service_text ??
                             'General Review'}
@@ -520,15 +520,13 @@ const ReviewDetails = ({
           <label className='mb-1.5 block text-xs font-medium uppercase tracking-wide text-[#697586]'>
             Review
           </label>
-          <div className='text-sm  text-[#697586]'>
-            {selectedReview.content}
-          </div>
+          <div className='text-sm text-[#697586]'>{selectedReview.content}</div>
         </div>
 
         {/* Existing Replies */}
         {selectedReview.replies?.length ? (
           <div className='space-y-3'>
-            <h3 className=' text-sm text-[#0A0A0A]'>Replies</h3>
+            <h3 className='text-sm text-[#0A0A0A]'>Replies</h3>
             {renderReplies(selectedReview.replies)}
           </div>
         ) : null}

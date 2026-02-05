@@ -9,6 +9,8 @@ import React, {
 } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui';
+import Link from 'next/link';
+import { useIsMobile } from '@/hooks';
 import { Image as ImageIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useChatSocket, type ChatDebugEntry } from '@/hooks/chat/useChatSocket';
@@ -237,10 +239,31 @@ export default function ChatDetailPage() {
     [imageGallery]
   );
 
+  const { isMobile } = useIsMobile();
+
   return (
     <div className='flex h-full flex-1 grid-rows-[auto_1fr_auto] flex-col'>
-      <nav className='flex h-16 items-center justify-between border-b border-border px-6'>
-        <div>
+      <nav className='flex h-16 items-center justify-between border-b border-border px-4 lg:px-6'>
+        <div className='flex items-center gap-2'>
+          {isMobile && (
+            <Link
+              href='/business/messages'
+              className='mr-1 flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted'
+            >
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <path d='m15 18-6-6 6-6' />
+              </svg>
+            </Link>
+          )}
           {isLoadingChats ? (
             <div className='h-6 w-40 animate-pulse rounded bg-gray-200' />
           ) : (

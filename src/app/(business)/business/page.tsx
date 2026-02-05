@@ -86,15 +86,17 @@ export default function DashboardPage(): JSX.Element {
       <MarketPlaceTopBar />
       <div className='grid flex-1 gap-4 gap-y-5 overflow-y-auto px-3 pt-2 max-md:pb-16 lg:px-5 xl:grid-cols-[1fr,minmax(0,280px)] 2xl:grid-cols-[1fr,minmax(0,350px)]'>
         <section className='w-full overflow-x-hidden'>
-          <article className='relative mb-6 flex flex-col gap-y-3 rounded-2xl bg-[#FEEE95] p-4 lg:p-6'>
-            <h6>🚀 Promote Your Business</h6>
-            <p className='relative z-[2] max-w-md text-balance font-karma text-2xl font-semibold lg:text-3xl 2xl:max-w-2xl 2xl:text-[clamp(2.15rem,2.25vw,2.9rem)] 2xl:leading-snug'>
+          <article className='relative mb-4 flex flex-col gap-y-2 rounded-2xl bg-[#FEEE95] p-4 lg:mb-6 lg:gap-y-3 lg:p-6'>
+            <h6 className='text-xs font-medium md:text-sm'>
+              🚀 Promote Your Business
+            </h6>
+            <p className='relative z-[2] max-w-md text-balance font-karma text-lg font-semibold sm:text-xl md:text-2xl lg:text-3xl 2xl:max-w-2xl 2xl:text-[clamp(2.15rem,2.25vw,2.9rem)] 2xl:leading-snug'>
               Reach more customers with ads and featured spots on Delve.
             </p>
             <LinkButton
               href='/business/promotions'
               size={isMobile ? 'dynamic_lg' : 'xl'}
-              className='relative z-[2] mt-5 w-max rounded-full bg-[#5F2EEA] !p-2 text-sm text-white lg:!pl-4 lg:text-base'
+              className='relative z-[2] mt-2 w-max rounded-full bg-[#5F2EEA] !p-2 text-xs text-white md:mt-5 md:text-sm lg:!pl-4 lg:text-base'
             >
               Promote
               <div className='flex size-6 items-center justify-center rounded-full bg-[#ECE9FE] md:size-9'>
@@ -109,9 +111,9 @@ export default function DashboardPage(): JSX.Element {
                   <path
                     d='M12.8333 7.625L17 12M17 12L12.8333 16.375M17 12L7 12'
                     stroke='black'
-                    stroke-width='2'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
                 </svg>
               </div>
@@ -121,11 +123,11 @@ export default function DashboardPage(): JSX.Element {
             <PromotionBannerStars className='absolute bottom-0 right-0 mt-4 hidden md:block' />
           </article>
 
-          <div className='container grid grid-cols-2 gap-4 xl:grid-cols-3'>
+          <div className='container grid grid-cols-2 gap-3 lg:gap-4 xl:grid-cols-3'>
             {cardsData.map((card, index) => (
               <article
                 key={index}
-                className='flex flex-col gap-1.5 overflow-x-hidden rounded-2xl border border-[#F5F3FF] bg-card p-2.5 text-card-foreground md:gap-3 md:p-4 lg:px-6'
+                className='flex flex-col gap-1.5 overflow-x-hidden rounded-2xl border border-[#F5F3FF] bg-card p-2 text-card-foreground md:gap-3 md:p-4 lg:px-6'
               >
                 <section className='flex items-center gap-2'>
                   <div
@@ -138,11 +140,10 @@ export default function DashboardPage(): JSX.Element {
                     {card.icon}
                   </div>
                   <div>
-                    <h3 className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
+                    <h3 className='text-base font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
                       {card.title_count ?? 0}{' '}
-                      <span className='ml-0.5 text-[0.625rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
+                      <span className='ml-0.5 text-[0.6rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
                         {card.title}
-                        {}
                       </span>
                     </h3>
 

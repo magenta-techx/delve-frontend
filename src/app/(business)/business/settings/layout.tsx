@@ -167,18 +167,19 @@ export default function SettingsLayout({
             </header>
             {/* Tabs Navigation */}
             <div className='border-border px-4 lg:px-6'>
-              <nav className='flex gap-2 lg:gap-5'>
+              <nav className='custom-scrollbar scrollbar-hide flex gap-2 overflow-x-auto pb-2 lg:gap-5 lg:pb-0'>
                 {tabs.map(tab => {
                   const isActive = pathname === tab.href;
                   return (
                     <Link
                       key={tab.href}
                       href={tab.href}
-                      className={`rounded-xl border px-3 py-1.5 font-inter text-[0.8rem] font-normal transition-colors max-lg:w-max md:px-4 md:text-sm ${
+                      className={cn(
+                        'w-max whitespace-nowrap rounded-xl border px-3 py-1.5 font-inter text-[0.8rem] font-normal transition-colors md:px-4 md:text-sm',
                         isActive
                           ? 'border-[#D9D6FE] bg-[#F5F3FF] text-primary'
                           : 'border-[#D9D6FE] text-[#697586]'
-                      }`}
+                      )}
                     >
                       {tab.name}
                     </Link>

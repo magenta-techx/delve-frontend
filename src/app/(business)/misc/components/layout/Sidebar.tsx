@@ -43,7 +43,7 @@ export const navItems = [
     href: '/business/performance',
     icon: PerformanceIcon,
     iconSelected: PerformanceSelectedIcon,
-    exact: false,
+    exact: true,
   },
   {
     name: 'Promotions and Ads',
@@ -118,7 +118,7 @@ export function Sidebar() {
           const Icon = item.icon;
           const IconSelected = item.iconSelected;
           const isActive =
-            pathname === item.href ||
+            (item.exact && pathname === item.href) ||
             (!item.exact &&
               item.href !== '/business' &&
               pathname.startsWith(item.href));
