@@ -54,12 +54,12 @@ interface BusinessDetailsClientProps {
 }
 
 const positions = [
-  { col: '1/5', row: '1/8' },
-  { col: '5/12', row: '2/8' },
-  { col: '12/16', row: '1/6' },
-  { col: '1/4', row: '8/13' },
-  { col: '4/12', row: '8/13' },
-  { col: '12/16', row: '6/13' },
+  { col: 'md:[grid-column:1/5]', row: 'md:[grid-row:1/8]' },
+  { col: 'md:[grid-column:5/12]', row: 'md:[grid-row:2/8]' },
+  { col: 'md:[grid-column:12/16]', row: 'md:[grid-row:1/6]' },
+  { col: 'md:[grid-column:1/4]', row: 'md:[grid-row:8/13]' },
+  { col: 'md:[grid-column:4/12]', row: 'md:[grid-row:8/13]' },
+  { col: 'md:[grid-column:12/16]', row: 'md:[grid-row:6/13]' },
 ];
 
 const BusinessDetailsClient = ({
@@ -760,13 +760,7 @@ const BusinessDetailsClient = ({
             className='max-w-8xl container mx-auto py-8 md:px-8 xl:py-12'
           >
             {business.images && business.images.length > 0 ? (
-              <div
-                className='grid gap-2.5 md:gap-5 xl:gap-8'
-                style={{
-                  gridTemplateColumns: 'repeat(15, 1fr)',
-                  gridTemplateRows: 'repeat(12, minmax(40px, 50px))',
-                }}
-              >
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-[repeat(15,1fr)] md:grid-rows-[repeat(12,minmax(40px,50px))] md:gap-5 xl:gap-8'>
                 {Array.from({ length: 6 }).map((_, index) => {
                   const image = business.images?.[index];
                   const src = image
@@ -785,29 +779,31 @@ const BusinessDetailsClient = ({
                           : index
                       }
                       onClick={() => src && handleImageClick(index)}
-                      className='group relative cursor-pointer overflow-hidden bg-gray-200'
-                      style={{
-                        gridColumn: pos?.col,
-                        gridRow: pos?.row,
-                      }}
+                      className={cn(
+                        'group relative cursor-pointer overflow-hidden bg-gray-200',
+                        'aspect-[4/3] md:aspect-auto', // Aspect ratio for mobile, auto for desktop grid
+                        pos?.col,
+                        pos?.row,
+                        index >= 3 && 'hidden md:block' // Show only 3 images on mobile
+                      )}
                     >
                       {/* Your Gallery overlay */}
                       {index === 1 && src && (
-                        <div className='absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-4 bg-[#00000099]'>
+                        <div className='absolute left-0 top-0 z-10 flex h-full w-full flex-col items-center justify-center gap-2 bg-[#00000099] md:gap-4'>
                           <h3 className='font-karma text-3xl font-medium text-white lg:text-4xl xl:text-5xl 2xl:text-6xl'>
                             Gallery
                           </h3>
-                          <p className='max-w-sm text-center text-xs text-white md:text-sm xl:text-base'>
+                          <p className='max-w-sm px-4 text-center text-xs text-white md:text-sm xl:text-base'>
                             {!!business?.category?.subcategories &&
                               business?.category?.subcategories
                                 ?.map((sub: { name: any }) => sub.name)
                                 .join(', ')}
                           </p>
-                          <span className='mt-2 flex items-center justify-center text-sm underline'>
+                          <span className='mt-1 flex items-center justify-center text-sm underline md:mt-2'>
                             <svg
                               width='50'
                               height='50'
-                              className='size-12 lg:size-16 xl:!size-[4.5rem]'
+                              className='size-10 md:size-12 lg:size-16 xl:!size-[4.5rem]'
                               viewBox='0 0 50 50'
                               fill='none'
                               xmlns='http://www.w3.org/2000/svg'
@@ -820,7 +816,7 @@ const BusinessDetailsClient = ({
                                 rx='24.5'
                                 transform='rotate(-180 49.5 49.5)'
                                 fill='black'
-                                fill-opacity='0.28'
+                                fillOpacity='0.28'
                               />
                               <rect
                                 x='49.5'

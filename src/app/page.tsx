@@ -138,7 +138,7 @@ export default function HomePage() {
                   ? Array.from({ length: 5 }).map((_, idx) => (
                       <CarouselItem
                         key={idx}
-                        className='flex basis-[45vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
+                        className='flex basis-[35vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
                       >
                         <div className='flex flex-col items-center justify-center gap-2'>
                           <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40 xl:size-44'></div>
@@ -152,7 +152,7 @@ export default function HomePage() {
                       return (
                         <CarouselItem
                           key={category.id}
-                          className='flex basis-[29vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
+                          className='flex basis-[35vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
                         >
                           <CategoryCard
                             title={category.name}
@@ -270,7 +270,7 @@ export default function HomePage() {
         <div className='container relative'>
           <SectionHeader header='Sponsored Picks' paragraph='Spotlight' />
 
-          <header className='mb-4 mt-10 flex items-center justify-between font-semibold sm:flex md:text-lg xl:text-xl'>
+          <header className='mb-4 flex items-center justify-between font-semibold sm:flex md:mt-10 md:text-lg xl:text-xl'>
             <h1>Hot deals and events you don&apos;t want to miss</h1>
             <div className='hidden items-center gap-2 sm:flex'>
               <button
@@ -317,7 +317,7 @@ export default function HomePage() {
 
       <section className='w-full md:px-16 lg:px-24'>
         <div className='container flex w-full flex-col items-center pb-14 pt-8'>
-          <div className='mb-20 flex w-full items-center justify-between gap-6 pb-6 max-sm:px-5 md:mb-28 md:mt-24 lg:justify-center lg:gap-72'>
+          <div className='my-20 flex w-full items-center justify-between gap-6 pb-6 max-sm:px-5 md:mb-28 md:mt-24 lg:justify-center lg:gap-72'>
             {STATS.map((stat, key) => {
               return (
                 <div key={key} className='flex flex-col items-center'>

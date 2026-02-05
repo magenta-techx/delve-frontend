@@ -132,7 +132,6 @@ const LandingPageNavbar = () => {
     '/login',
     '/businesses/create-listing',
   ];
-  
 
   if (PAGES_WITHOUT_NAVBAR.includes(pathname)) {
     return null;
@@ -156,11 +155,13 @@ const LandingPageNavbar = () => {
           <Logo
             className='w-20 sm:w-28'
             textColor={
-              pageHasBlackBg
-                ? 'white'
-                : isBusiness || isMobile
-                  ? 'black'
-                  : 'black'
+              isMobile
+                ? 'black'
+                : pageHasBlackBg
+                  ? 'white'
+                  : isBusiness
+                    ? 'black'
+                    : 'black'
             }
           />
           {isBusiness && !isMobile && (

@@ -27,7 +27,7 @@ const FeaturedListingCard = ({
   onSelectToggle,
   isDeletable,
   onDelete,
-  isBigCard
+  isBigCard,
 }: FeaturedListingCardProps): JSX.Element => {
   const { isSaved, toggleSave, showLoginAlert, setShowLoginAlert, isSaving } =
     useSavedBusinessesContext();
@@ -46,47 +46,49 @@ const FeaturedListingCard = ({
     e.stopPropagation();
     try {
       await toggleSave(business.id);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const articleRef = React.useRef<HTMLElement>(null);
   const [articleWidth, setArticleWidth] = React.useState<number>(0);
   React.useEffect(() => {
-
     if (articleRef.current) {
       setArticleWidth(articleRef.current.offsetWidth);
     }
   }, [articleRef.current]);
 
   // Calculate fluid font size based on article width
-  const getFluidFontSize = (minRem: number, maxRem: number, scaleFactor: number = 0.05) => {
+  const getFluidFontSize = (
+    minRem: number,
+    maxRem: number,
+    scaleFactor: number = 0.05
+  ) => {
     if (!articleWidth) return `${minRem}rem`;
-    const calculatedRem = minRem + (articleWidth * scaleFactor);
+    const calculatedRem = minRem + articleWidth * scaleFactor;
     const clampedRem = Math.max(minRem, Math.min(maxRem, calculatedRem));
     return `${clampedRem}rem`;
   };
 
-
-
-
   return (
     <>
       <article
-
         ref={articleRef}
         className={cn(
           'group !aspect-[342/427] rounded-3xl border-2 border-[#FEC601] p-1.5',
           isSelectable && 'cursor-pointer',
-          isBigCard && "xl:rounded-[1.8rem]"
+          isBigCard && 'xl:rounded-[1.8rem]'
         )}
         onClick={() => {
           if (!isSelectable) return;
           onSelectToggle?.(business.id);
         }}
       >
-        <div className={cn('relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2',
-              isBigCard && "xl:rounded-[1.5rem]"
-        )}>
+        <div
+          className={cn(
+            'relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2',
+            isBigCard && 'xl:rounded-[1.5rem]'
+          )}
+        >
           {/* Bookmark  */}
           {isDeletable && onDelete ? (
             <button
@@ -194,7 +196,7 @@ const FeaturedListingCard = ({
           {!isSelectable && (
             <Link
               href={`/businesses/${business.id}`}
-              className='relative z-[15] hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md xl:rounded-lg bg-primary px-4 text-center font-medium text-white group-hover:flex'
+              className='relative z-[15] hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex xl:rounded-lg'
               style={{ fontSize: getFluidFontSize(0.875, 1, 0.003) }}
             >
               <span> View</span>
@@ -235,7 +237,7 @@ const FeaturedListingCard = ({
             className={cn(
               'absolute bottom-0 z-10 flex h-[80%] w-full flex-col gap-2 rounded-b-2xl bg-gradient-to-t from-black to-transparent px-4 text-white transition-opacity duration-300 sm:h-[80%]',
               !isSelectable && 'group-hover:opacity-0',
-              isBigCard && "xl:rounded-b-[1.65rem]"
+              isBigCard && 'xl:rounded-b-[1.65rem]'
             )}
           >
             <div className='mt-auto flex w-full flex-col gap-2 divide-y divide-white pb-3'>
@@ -248,21 +250,36 @@ const FeaturedListingCard = ({
                   />
                 </div>
                 <div>
-                  <h3 className='font-semibold truncate max-sm:w-[90%] ' style={{ fontSize: getFluidFontSize(0.575, 1.1, 0.0035) }}>{header}</h3>
-                  <p className='line-clamp-2 max-sm:w-[90%] min-h-[2lh]' style={{ fontSize: getFluidFontSize(0.3, 0.8, 0.0025) }}>{desc}</p>
+                  <h3
+                    className='truncate font-semibold max-sm:w-[90%]'
+                    style={{ fontSize: getFluidFontSize(0.4, 1.3, 0.0015) }}
+                  >
+                    {header}
+                  </h3>
+                  <p
+                    className='line-clamp-2 min-h-[2lh] max-sm:w-[90%]'
+                    style={{ fontSize: getFluidFontSize(0.3, 1.0, 0.001) }}
+                  >
+                    {desc}
+                  </p>
                 </div>
               </div>
-              <div className='flex items-center gap-4 justify-between pt-2 w-full overflow-hidden'>
-                <div className='flex items-center gap-2 basis-4/5 truncate'>
+              <div className='flex w-full items-center justify-between gap-4 overflow-hidden pt-2'>
+                <div className='flex basis-4/5 items-center gap-2 truncate'>
                   <span className='!shrink-0'>
-
                     <BaseIcons value='marker-light-red' />
                   </span>
-                  <span className='text-[#FFE6D5] truncate' style={{ fontSize: getFluidFontSize(0.3, 0.8, 0.0025) }}>
+                  <span
+                    className='truncate text-[#FFE6D5]'
+                    style={{ fontSize: getFluidFontSize(0.3, 1.0, 0.001) }}
+                  >
                     {address}
                   </span>
                 </div>
-                <div className='flex items-center justify-end gap-1 shrink-0 basis-1/5' style={{ fontSize: getFluidFontSize(0.525, 0.85, 0.0025) }}>
+                <div
+                  className='flex shrink-0 basis-1/5 items-center justify-end gap-1'
+                  style={{ fontSize: getFluidFontSize(0.35, 1.1, 0.0012) }}
+                >
                   <BaseIcons value='star-yellow' />
                   <p>{rating}</p>
                 </div>

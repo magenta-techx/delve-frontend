@@ -13,11 +13,11 @@ const buttonVariants = cva(
           'bg-[#5F2EEA] text-primary-foreground shadow hover:bg-primary/90 disabled:!bg-[#E3E8EF] disabled:text-black/50',
         destructive:
           'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
-          destructive_outline:
+        destructive_outline:
           'border border-destructive text-destructive hover:bg-destructive/10 bg-[#FFF4ED]',
         outline:
           'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:text-primary',
-          colored_outline:
+        colored_outline:
           'border border-[#C3B5FD] bg-[#F5F3FF] text-primary hover:bg-purple-100',
         secondary:
           'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
@@ -36,9 +36,11 @@ const buttonVariants = cva(
         sm: 'h-8 rounded-lg px-3 text-xs',
         md: 'h-10 rounded-lg px-4',
         lg: 'h-12 rounded-xl px-4 text-[0.9rem] font-inter',
-        dynamic_lg: 'h-9 text-xs lg:h-12 rounded-lg lg:rounded-xl px-2 lg:px-6 lg:text-[0.9rem] font-medium',
+        dynamic_lg:
+          'h-9 text-xs lg:h-12 rounded-lg lg:rounded-xl px-2 lg:px-6 lg:text-[0.9rem] font-medium',
         xl: 'h-14 rounded-xl px-6 text-[0.9rem] font-medium',
-        dynamic_xl: 'h-10 lg:h-14 rounded-lg lg:rounded-xl px-3 lg:px-6 text-[0.9rem] font-medium',
+        dynamic_xl:
+          'h-9 lg:h-14 rounded-lg lg:rounded-xl px-3 lg:px-6 text-[0.8rem] lg:text-[0.9rem] font-medium',
         icon: 'h-9 w-9',
       },
     },
@@ -57,7 +59,8 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
