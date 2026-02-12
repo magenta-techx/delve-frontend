@@ -14,7 +14,6 @@ import {
 } from '@/schemas/businessZodSchema';
 import { LogoLoadingIcon } from '@/assets/icons';
 import { cn } from '@/lib/utils';
-import { BusinessPageHeader } from '@/app/(business)/misc/components';
 
 const DAYS_OF_WEEK = [
   { value: 1, label: 'Monday' },
