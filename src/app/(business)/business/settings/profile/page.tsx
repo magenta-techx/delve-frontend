@@ -265,10 +265,11 @@ export default function ProfileSettings() {
   }
 
   return (
-    <div className='space-y-6 p-6'>
+    <div className='flex flex-col'>
+      {/* <div className='space-y-6 p-6'> */}
       <div className='space-y-8'>
         {/* Profile Picture */}
-        <section className='flex grid-cols-[240px,1fr] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:items-end lg:py-8 xl:grid xl:gap-12'>
+        <section className='flex grid-cols-[240px,1fr] flex-col gap-4 border-b-[0.7px] border-[#E3E8EF] p-4 md:gap-6 lg:items-end lg:py-8 xl:grid xl:gap-12'>
           <div className='items-between flex flex-col'>
             <Label className='text-sm font-medium text-[#0F0F0F]'>
               Profile Picture
@@ -291,7 +292,7 @@ export default function ProfileSettings() {
           </div>
 
           <div className='flex items-center gap-4'>
-            <div className='relative flex aspect-[15/5] !max-h-[350px] w-full items-center justify-center overflow-hidden rounded-lg border bg-gray-100'>
+            <div className='relative flex aspect-video !max-h-[350px] w-full items-center justify-center overflow-hidden rounded-lg border bg-gray-100 md:aspect-[15/5]'>
               {getCurrentProfilePicture() ? (
                 <Image
                   src={getCurrentProfilePicture()!}
@@ -318,7 +319,7 @@ export default function ProfileSettings() {
         </section>
 
         {/* Gallery */}
-        <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8 xl:grid xl:items-center xl:gap-12'>
+        <section className='flex grid-cols-[240px,1fr,150px] flex-col gap-4 border-b-[0.7px] border-[#E3E8EF] p-4 md:gap-6 lg:py-8 xl:grid xl:items-center xl:gap-12'>
           <Label className='text-sm font-medium text-[#0F0F0F]'>Gallery</Label>
 
           <LinkButton
@@ -332,7 +333,7 @@ export default function ProfileSettings() {
         </section>
 
         {/* Business Categories */}
-        <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8 xl:grid xl:items-center xl:gap-12'>
+        <section className='flex grid-cols-[240px,1fr,150px] flex-col gap-4 border-b-[0.7px] border-[#E3E8EF] p-4 md:gap-6 lg:py-8 xl:grid xl:items-center xl:gap-12'>
           <Label className='text-sm font-medium text-[#0F0F0F]'>
             Business Category
           </Label>
@@ -359,8 +360,8 @@ export default function ProfileSettings() {
             </div>
           ) : (
             <div className='flex-1'>
-              <div className='rounded-xl border bg-gray-50 p-3'>
-                <span className='text-sm text-gray-900'>
+              <div className='md: rounded-xl border bg-gray-50 p-1.5 md:p-3'>
+                <span className='text-xs text-gray-900 sm:text-sm'>
                   {getCategoryName(currentBusiness.category?.id || null)}
                 </span>
               </div>
@@ -397,7 +398,7 @@ export default function ProfileSettings() {
         </section>
 
         {/* Subcategories */}
-        <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8 xl:grid xl:items-center xl:gap-12'>
+        <section className='md:ga flex grid-cols-[240px,1fr,150px] flex-col gap-4 border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8 xl:grid xl:items-center xl:gap-12'>
           <Label className='text-sm font-medium text-[#0F0F0F]'>
             Subcategories
           </Label>
@@ -411,7 +412,7 @@ export default function ProfileSettings() {
                     key={subcategory.id}
                     type='button'
                     className={cn(
-                      'rounded-lg border px-3 py-2 text-left text-sm transition-all duration-200',
+                      'rounded-lg border p-1.5 text-left text-xs transition-all duration-200 md:px-3 md:py-2 md:text-sm',
                       'border-[#E3E8EF] bg-[#FFFFFF] text-[#697586]'
                     )}
                   >
@@ -460,7 +461,7 @@ export default function ProfileSettings() {
         </section>
 
         {/* Business Amenities */}
-        <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8 xl:grid xl:items-center xl:gap-12'>
+        <section className='md:ga flex grid-cols-[240px,1fr,150px] flex-col gap-4 border-b-[0.7px] border-[#E3E8EF] p-4 lg:py-8 xl:grid xl:items-center xl:gap-12'>
           <Label className='text-sm font-medium text-[#0F0F0F]'>
             Business Amenities
           </Label>
@@ -474,7 +475,7 @@ export default function ProfileSettings() {
                     key={index}
                     type='button'
                     className={cn(
-                      'rounded-lg border px-3 py-2 text-left text-sm transition-all duration-200',
+                      'rounded-lg border p-1.5 text-left text-xs transition-all duration-200 md:px-3 md:py-2 md:text-sm',
                       'border-[#E3E8EF] bg-[#FFFFFF] text-[#697586]'
                     )}
                   >

@@ -22,6 +22,7 @@ import {
   SolidEyeIcon,
 } from '../../misc/components/icons';
 import { LogoLoadingIcon } from '@/assets/icons';
+import { BusinessPageHeader } from '@/app/(business)/misc/components';
 
 type MetricType =
   | 'conversations'
@@ -98,17 +99,17 @@ export default function PerformancePage() {
   ];
 
   return (
-    <div className={cn('h-full w-full overflow-y-scroll md:space-y-8 max-md:pb-16')}>
+    <div
+      className={cn(
+        'h-full w-full overflow-y-scroll max-md:pb-16 md:space-y-8'
+      )}
+    >
+      <BusinessPageHeader
+        title='Performance'
+        description='Effortlessly track your business performance metrics right here.'
+      />
       <header>
-        <div className='mb-3 flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
-          <h1 className='font-inter text-2xl font-semibold lg:text-3xl'>
-            Performance
-            <span className='md:max-w-[30ch] text-balance text-xs font-normal text-[#4B5565] max-lg:block lg:hidden'>
-              Effortlessly track your business performance metrics right here.
-            </span>
-          </h1>
-        </div>
-        <nav className='flex items-center gap-2 px-4 lg:gap-3 lg:px-6 mb-4'>
+        <nav className='mb-4 flex items-center gap-2 px-4 lg:gap-3 lg:px-6'>
           {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
             period => {
               const p = period as
@@ -121,7 +122,7 @@ export default function PerformancePage() {
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(p)}
-                  className={`rounded-xl border p-2 font-inter text-[0.625rem] md:text-xs font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm ${
+                  className={`rounded-xl border p-2 font-inter text-[0.625rem] font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm md:text-xs ${
                     isActive
                       ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
                       : 'border-[#D9D6FE] text-[#697586]'
@@ -135,32 +136,36 @@ export default function PerformancePage() {
         </nav>
       </header>
 
-      <section className='container grid gap-4 px-4 grid-cols-2 lg:grid-cols-2 lg:px-6 xl:grid-cols-4'>
+      <section className='container grid grid-cols-2 gap-4 px-4 lg:grid-cols-2 lg:px-6 xl:grid-cols-4'>
         {cardsData.map((card, index) => (
           <article
             key={index}
-            className='flex flex-col gap-1.5 md:gap-3 overflow-x-hidden rounded-2xl border border-[#CDD5DF] bg-card p-2.5 md:p-4 text-card-foreground lg:px-6'
+            className='flex flex-col gap-1.5 overflow-x-hidden rounded-2xl border border-[#CDD5DF] bg-card p-2.5 text-card-foreground md:gap-3 md:p-4 lg:px-6'
           >
             <section className='flex items-center gap-2'>
               <div
                 className={cn(
                   'flex items-center justify-center',
                   card.icon_bg,
-                  'size-7 md:size-10 rounded-full'
+                  'size-7 rounded-full md:size-10'
                 )}
               >
                 {card.icon}
               </div>
               <div>
-                <h3 className='text-xl md:text-2xl font-semibold text-[#0F0F0F] lg:text-3xl'>
+                <h3 className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
                   {card.title_count ?? 0}{' '}
-                  <span className='ml-0.5 md:ml-1.5 text-[0.625rem] md:text-xs font-normal text-[#697586] md:text-[0.825rem]'>
+                  <span className='ml-0.5 text-[0.625rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
                     {card.title}
                     {}
                   </span>
                 </h3>
-                <p className='text-[0.625rem] text-[#0F0F0F] md:hidden'>{card.mobile_title_desc}</p>
-                <p className='text-xs text-[#0F0F0F] max-md:hidden'>{card.title_desc}</p>
+                <p className='text-[0.625rem] text-[#0F0F0F] md:hidden'>
+                  {card.mobile_title_desc}
+                </p>
+                <p className='text-xs text-[#0F0F0F] max-md:hidden'>
+                  {card.title_desc}
+                </p>
               </div>
             </section>
             <section className={card.text_class}>
@@ -174,18 +179,18 @@ export default function PerformancePage() {
       </section>
 
       {/* Performance Trends Chart Section */}
-      <section className='mt-6 md:mt-8 px-4 lg:px-6'>
+      <section className='mt-6 px-4 md:mt-8 lg:px-6'>
         <Card className='rounded-2xl border border-[#CDD5DF] bg-card'>
           <CardHeader className='!pb-3'>
             <div className='flex items-center justify-between gap-4'>
-              <CardTitle className='text-sm font-normal text-[#697586]'>
+              <CardTitle className='text-xs font-normal text-[#697586] md:text-sm'>
                 Performance Trends Over Time
               </CardTitle>
               <Select
                 value={analyticsType}
                 onValueChange={e => setAnalyticsType(e as MetricType)}
               >
-                <SelectTrigger className='!h-10 border border-[#EEF2F6] bg-[#F8FAFC] !p-1 md:!p-1.5  text-xs w-max md:w-[150px]'>
+                <SelectTrigger className='!h-10 w-max border border-[#EEF2F6] bg-[#F8FAFC] !p-1 text-xs md:w-[150px] md:!p-1.5'>
                   <span className='capitalize text-black max-md:text-[0.625rem]'>
                     {analyticsType.replace(/_/g, ' ')}
                   </span>

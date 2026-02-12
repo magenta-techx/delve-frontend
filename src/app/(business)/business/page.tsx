@@ -14,8 +14,8 @@ import {
 } from '../misc/components/icons';
 import { cn } from '@/lib/utils';
 import {
+  BusinessPageHeader,
   DashboardPerformanceChart,
-  MarketPlaceTopBar,
   Notifications,
   RatingStars,
 } from '../misc/components';
@@ -83,7 +83,7 @@ export default function DashboardPage(): JSX.Element {
 
   return (
     <div className='flex h-screen flex-1 flex-col overflow-hidden'>
-      <MarketPlaceTopBar />
+      <BusinessPageHeader marketPlace={true} />
       <div className='grid flex-1 gap-4 gap-y-5 overflow-y-auto px-3 pt-2 max-md:pb-16 lg:px-5 xl:grid-cols-[1fr,minmax(0,280px)] 2xl:grid-cols-[1fr,minmax(0,350px)]'>
         <section className='w-full overflow-x-hidden'>
           <article className='relative mb-4 flex flex-col gap-y-2 rounded-2xl bg-[#FEEE95] p-4 lg:mb-6 lg:gap-y-3 lg:p-6'>
@@ -140,9 +140,9 @@ export default function DashboardPage(): JSX.Element {
                     {card.icon}
                   </div>
                   <div>
-                    <h3 className='text-base font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
+                    <h3 className='text-lg font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
                       {card.title_count ?? 0}{' '}
-                      <span className='ml-0.5 text-[0.6rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
+                      <span className='ml-0.5 text-[0.725rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
                         {card.title}
                       </span>
                     </h3>

@@ -11,14 +11,13 @@ import {
 } from '@/components/ui';
 import { ChevronDown, MoveRight, Settings } from 'lucide-react';
 import { useBilling, useCurrentUser } from '@/app/(clients)/misc/api';
-import {
-  useChangeCard,
-} from '@/app/(clients)/misc/api/payment';
+import { useChangeCard } from '@/app/(clients)/misc/api/payment';
 import { useBooleanStateControl } from '@/hooks';
 import {
   ReceiptModal,
   PlanSelectionModal,
   CancelSubscriptionModal,
+  BusinessPageHeader,
 } from '@/app/(business)/misc/components';
 import { cn } from '@/lib/utils';
 import {
@@ -68,8 +67,16 @@ export default function PaymentsPage() {
   const filterOptions = ['All time', '2025', '2024', '2023'];
 
   // API calls
-  const { data: billingResponse, isLoading: billingLoading, refetch: refetchBillingData } = useBilling();
-  const { data: userResponse, isLoading: userLoading, refetch: refetchUserData } = useCurrentUser();
+  const {
+    data: billingResponse,
+    isLoading: billingLoading,
+    refetch: refetchBillingData,
+  } = useBilling();
+  const {
+    data: userResponse,
+    isLoading: userLoading,
+    refetch: refetchUserData,
+  } = useCurrentUser();
 
   const billingData = billingResponse?.data;
   const userData = userResponse?.user;
@@ -108,8 +115,6 @@ export default function PaymentsPage() {
     setSelectedReceiptIndex(null);
   };
 
- 
-
   // Show loading state
   if (billingLoading || userLoading) {
     return (
@@ -121,22 +126,16 @@ export default function PaymentsPage() {
 
   return (
     <div className='relative h-full w-full space-y-3 overflow-hidden overflow-y-scroll md:space-y-6 lg:space-y-10'>
-      <header className='sticky top-0 flex items-center bg-[#FCFCFD] p-4 !pb-1 lg:justify-between lg:p-6 lg:pb-2'>
-        <div>
-          <h1 className='font-inter text-xl font-semibold lg:text-3xl'>
-            Payment & Subscription
-          </h1>
-          <p className='text-balance text-xs font-normal text-[#4B5565] max-lg:max-w-[30ch] lg:text-sm'>
-            Effortlessly handle your billing and invoices right here.
-          </p>
-        </div>
-      </header>
+      <BusinessPageHeader
+        title='Payment & Subscription'
+        description='Effortlessly handle your billing and invoices right here.'
+      />
 
       <div className='container grid gap-6 px-4 pb-6 lg:px-6'>
         {/* Current Plan Summary */}
         <section className='grid gap-5 lg:grid-cols-[1fr,minmax(auto,350px)] lg:items-stretch lg:gap-6 xl:grid-cols-[1fr,minmax(auto,470px)]'>
           <article className='flex flex-col gap-5 rounded-2xl border border-[#CDD5DF] bg-card p-4 px-6 text-card-foreground'>
-            <h1 className='font-inter text-lg font-semibold'>
+            <h1 className='font-inter text-base font-semibold md:text-lg'>
               Current Plan Summary
             </h1>
             <div className='grid grid-cols-3 gap-4'>
@@ -144,7 +143,7 @@ export default function PaymentsPage() {
                 <p className='text-[0.55rem] font-semibold uppercase text-muted-foreground'>
                   Plan name
                 </p>
-                <p className='text-sm font-medium text-[#2C2C2C]'>
+                <p className='text-xs font-medium text-[#2C2C2C] sm:text-sm'>
                   {currentPlan.name}
                 </p>
               </div>
@@ -152,7 +151,7 @@ export default function PaymentsPage() {
                 <p className='text-[0.55rem] font-semibold uppercase text-muted-foreground'>
                   Billing Cycle
                 </p>
-                <p className='text-sm font-medium capitalize text-[#2C2C2C]'>
+                <p className='text-xs font-medium capitalize text-[#2C2C2C] sm:text-sm'>
                   {currentPlan.name === 'Free Trial' && currentPlan.daysLeft
                     ? `${currentPlan.daysLeft} Days`
                     : currentPlan.cycle}
@@ -162,7 +161,7 @@ export default function PaymentsPage() {
                 <p className='text-[0.55rem] font-semibold uppercase text-muted-foreground'>
                   Plan Cost
                 </p>
-                <p className='text-sm font-medium text-[#2C2C2C]'>
+                <p className='text-xs font-medium text-[#2C2C2C] sm:text-sm'>
                   {currentPlan.name === 'Free Trial'
                     ? '0.00'
                     : currentPlan.cost > 0
@@ -173,7 +172,7 @@ export default function PaymentsPage() {
             </div>
             <div>
               <p className='mb-2 text-xs text-muted-foreground'>Usage</p>
-              <p className='mb-3 text-balance text-sm font-medium text-[#2C2C2C] lg:pr-6'>
+              <p className='mb-3 text-balance text-xs font-medium text-[#2C2C2C] sm:text-sm lg:pr-6'>
                 {currentPlan.name === 'Free Trial' && currentPlan.daysLeft
                   ? `You have ${currentPlan.daysLeft} more days before your free trial ends`
                   : currentPlan.name === 'Premium' && currentPlan.daysLeft
@@ -229,8 +228,8 @@ export default function PaymentsPage() {
                 ) : (
                   <div className='relative z-[2] pt-6'>
                     <h3 className='mb-3 text-lg font-semibold text-white'>
-                      You&apos;ve cancelled your subscription. Resubscribe now to keep enjoying
-                      Delve Premium without interruption.
+                      You&apos;ve cancelled your subscription. Resubscribe now
+                      to keep enjoying Delve Premium without interruption.
                     </h3>
                     <Button
                       className='w-full border border-white/30 bg-white/20 text-white hover:bg-white/30'
@@ -240,7 +239,6 @@ export default function PaymentsPage() {
                     </Button>
                   </div>
                 )}
-              
               </>
             ) : currentPlan.isPendingCancellation ? (
               <div className='relative z-[2] pt-6'>
@@ -354,7 +352,7 @@ export default function PaymentsPage() {
         {/* Payment History */}
         <section className='relative overflow-hidden rounded-2xl border border-[#E8EAF6] bg-card py-4'>
           <header className='flex flex-row items-center justify-between p-4 pt-0 md:px-6'>
-            <h3 className='font-inter text-lg font-semibold'>
+            <h3 className='font-inter text-base font-semibold md:text-lg'>
               Payment History
             </h3>
             <div className='relative'>
@@ -395,7 +393,7 @@ export default function PaymentsPage() {
               </div>
             ) : (
               <div className='overflow-x-auto'>
-                <table className='w-full text-sm'>
+                <table className='w-full text-xs sm:text-sm'>
                   <thead>
                     <tr className='bg-[#F5F3FF]'>
                       {[
@@ -530,19 +528,16 @@ export default function PaymentsPage() {
         isOpen={isCancelConfirmOpen}
         onClose={closeCancelConfirm}
         onConfirm={handleCancelClick}
-
       />
 
       <CancelSubscriptionModal
         variant='info'
         isOpen={isCancelInfoOpen}
         onClose={closeCancelInfo}
-        reload={
-          ()=>{
-            refetchUserData();
-            refetchBillingData();
-          }
-        }
+        reload={() => {
+          refetchUserData();
+          refetchBillingData();
+        }}
       />
     </div>
   );

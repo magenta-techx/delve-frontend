@@ -14,6 +14,7 @@ import {
 } from '@/schemas/businessZodSchema';
 import { LogoLoadingIcon } from '@/assets/icons';
 import { cn } from '@/lib/utils';
+import { BusinessPageHeader } from '@/app/(business)/misc/components';
 
 const DAYS_OF_WEEK = [
   { value: 1, label: 'Monday' },
@@ -168,35 +169,60 @@ export default function BusinessHoursPage() {
 
   return (
     <div className='relative h-full w-full space-y-3 overflow-hidden overflow-y-scroll md:space-y-6 lg:space-y-10'>
-      <div className='container grid gap-6 px-4 pb-6 lg:px-6'>
+      <div className='container grid gap-6 pb-6 lg:px-6'>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className='space-y-6 rounded-2xl border border-[#E8EAF6] bg-white p-6'
+          className='space-y-4 rounded-2xl border border-[#E8EAF6] bg-white p-3 md:space-y-6 md:p-6'
         >
-          <h1 className='!font-inter text-lg font-semibold lg:text-xl'>
-            Business Opening Hours
-          </h1>
-
           <div className=''>
             <div className='space-y-2.5'>
               {DAYS_OF_WEEK.map((day, index) => (
                 <div key={day.value}>
                   <div
                     className={cn(
-                      'flex items-center justify-between gap-8 rounded-xl bg-[#FCFCFD] px-4 py-3 last:border-b-0 hover:bg-[#FAFAFA]',
+                      'flex items-center justify-between gap-4 rounded-xl bg-[#FCFCFD] px-4 py-3 last:border-b-0 hover:bg-[#FAFAFA] max-md:flex-col md:gap-8',
                       !hoursWatch[index]?.is_open && 'opacity-60'
                     )}
                   >
-                    <div className='w-24'>
-                      <p className='text-sm font-semibold text-[#212121]'>
+                    <div className='flex w-full items-center justify-between md:block md:w-24'>
+                      <p className='text-xs font-semibold text-[#212121] sm:text-sm'>
                         {day.label}
                       </p>
+                      <div className='md:hidden'>
+                        <Controller
+                          name={`hours.${index}.is_open`}
+                          control={control}
+                          render={({ field }) => (
+                            <button
+                              type='button'
+                              onClick={() => {
+                                field.onChange(!field.value);
+                                clearErrors([
+                                  `hours.${index}.open_hour`,
+                                  `hours.${index}.close_hour`,
+                                ]);
+                              }}
+                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                                field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
+                              }`}
+                            >
+                              <span
+                                className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                  field.value
+                                    ? 'translate-x-5'
+                                    : 'translate-x-0.5'
+                                }`}
+                              />
+                            </button>
+                          )}
+                        />
+                      </div>
                     </div>
 
                     {/* Time Inputs */}
                     <div
                       className={cn(
-                        'flex flex-1 items-center justify-center gap-6 md:gap-12'
+                        'flex flex-1 gap-4 max-md:w-full max-md:flex-col md:items-center md:justify-center md:gap-6 lg:gap-12'
                       )}
                     >
                       {/* From */}
@@ -215,8 +241,7 @@ export default function BusinessHoursPage() {
                               max='12'
                               placeholder='9'
                               disabled={!hoursWatch[index]?.is_open}
-                              type='number'
-                              className='h-9 w-12 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-sm font-semibold text-[#212121] md:w-14 md:rounded-lg'
+                              className='h-9 w-12 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-xs font-semibold text-[#212121] sm:text-sm md:w-14 md:rounded-lg'
                               onChange={e => {
                                 field.onChange(e);
                                 trigger(`hours.${index}.close_hour`);
@@ -264,7 +289,7 @@ export default function BusinessHoursPage() {
                               placeholder='6'
                               disabled={!hoursWatch[index]?.is_open}
                               value={field.value ?? ''}
-                              className='h-9 w-12 rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-sm font-semibold text-[#212121] md:w-14 md:rounded-lg'
+                              className='h-9 w-12 rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-xs font-semibold text-[#212121] sm:text-sm md:w-14 md:rounded-lg'
                               onChange={e => {
                                 field.onChange(e);
                                 trigger(`hours.${index}.open_hour`);
@@ -297,7 +322,7 @@ export default function BusinessHoursPage() {
                     </div>
 
                     {/* Toggle and Status */}
-                    <div className='flex items-center gap-2'>
+                    <div className='hidden items-center gap-2 md:flex'>
                       <Controller
                         name={`hours.${index}.is_open`}
                         control={control}

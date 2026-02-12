@@ -15,6 +15,7 @@ import { formatDistanceToNow, isToday } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { RatingStars, RatingStarsSquare } from '../../misc/components/icons';
+import { BusinessPageHeader } from '../../misc/components';
 import { EmptyChatMedia } from '@/app/(clients)/misc/icons';
 import { BusinessReviewThread } from '@/types/api';
 import { useIsMobile } from '@/hooks';
@@ -136,7 +137,7 @@ export default function ReviewManagementPage() {
         {replies.map(reply => (
           <div key={reply.id} className='space-y-2'>
             <div className='flex items-start gap-3'>
-              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary'>
+              <div className='flex size-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary'>
                 {(reply.user.first_name ?? reply.user.email ?? 'U')
                   .slice(0, 1)
                   .toUpperCase()}
@@ -151,7 +152,9 @@ export default function ReviewManagementPage() {
                     {getRelativeTime(reply.added_at)}
                   </span>
                 </div>
-                <p className='text-sm text-[#697586]'>{reply.content}</p>
+                <p className='text-xs text-[#697586] sm:text-sm'>
+                  {reply.content}
+                </p>
               </div>
             </div>
             {renderReplies(reply.children, depth + 1)}
@@ -164,19 +167,20 @@ export default function ReviewManagementPage() {
   const showEmptyState = !isLoading && !isError && reviews.length === 0;
 
   return (
-    <div className={cn('flex-1 overflow-hidden bg-[#FCFCFD]')}>
+    <div
+      className={cn(
+        'flex h-screen flex-1 flex-col overflow-hidden bg-[#FCFCFD]'
+      )}
+    >
+      <BusinessPageHeader title='Review Management' />
       <div
         className={cn(
-          'container size-full grid-cols-[1fr_minmax(300px,0.45fr)] overflow-hidden xl:grid'
+          'container flex-1 grid-cols-[1fr_minmax(300px,0.45fr)] overflow-hidden xl:grid'
         )}
       >
-        <section className='flex max-h-full flex-col gap-y-6 overflow-hidden py-6'>
+        <section className='flex max-h-full flex-col gap-y-6 overflow-hidden py-1 lg:py-4'>
           {/* Header */}
           <div className='flex items-center justify-between px-4 md:px-6'>
-            <h1 className='font-inter text-lg font-medium text-[#0F0F0F] md:text-xl lg:text-2xl'>
-              Review Management
-            </h1>
-
             <Button
               variant='outline'
               className='gap-2 rounded-full border-border text-xs text-[#0F0F0F] hover:bg-muted md:text-sm'
@@ -484,7 +488,7 @@ const ReviewDetails = ({
                   Now
                 </span>
               )}
-              <span className='text-sm text-[#697586]'>
+              <span className='text-xs text-[#697586] sm:text-sm'>
                 {getRelativeTime(selectedReview.added_at)}
               </span>
             </div>
@@ -520,13 +524,15 @@ const ReviewDetails = ({
           <label className='mb-1.5 block text-xs font-medium uppercase tracking-wide text-[#697586]'>
             Review
           </label>
-          <div className='text-sm text-[#697586]'>{selectedReview.content}</div>
+          <div className='text-xs text-[#697586] sm:text-sm'>
+            {selectedReview.content}
+          </div>
         </div>
 
         {/* Existing Replies */}
         {selectedReview.replies?.length ? (
           <div className='space-y-3'>
-            <h3 className='text-sm text-[#0A0A0A]'>Replies</h3>
+            <h3 className='text-xs text-[#0A0A0A] sm:text-sm'>Replies</h3>
             {renderReplies(selectedReview.replies)}
           </div>
         ) : null}
@@ -549,7 +555,7 @@ const ReviewDetails = ({
                 handleReplySubmit();
               }
             }}
-            className='flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm text-[#0F0F0F] placeholder:text-[#697586] focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
+            className='flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-xs text-[#0F0F0F] placeholder:text-[#697586] focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 sm:text-sm'
           />
           <Button
             size='icon'

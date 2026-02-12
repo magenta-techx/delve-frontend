@@ -16,7 +16,7 @@ import { EmptyChatMedia } from '@/app/(clients)/misc/icons';
 import { useBusinessChats } from '../../misc/api';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import React from 'react';
-import { MarketPlaceTopBar } from '../../misc/components';
+import { BusinessPageHeader } from '../../misc/components';
 
 export default function UserChatsPage({
   children,
@@ -46,8 +46,9 @@ export default function UserChatsPage({
   }, [chatsToShow, chats]);
 
   return (
-    <div className='container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] p-4 pt-0'>
-      <MarketPlaceTopBar />
+    <div className='container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] p-2 pt-0 md:p-4'>
+      <BusinessPageHeader marketPlace={true} />
+
       <div className='flex grow gap-x-4 overflow-hidden'>
         <section
           className={cn(
@@ -56,9 +57,9 @@ export default function UserChatsPage({
           )}
         >
           <nav className='sticky top-0 flex items-center justify-between border-b border-border bg-white p-2 xl:px-6 xl:py-4'>
-            <h1 className='font-inter text-lg font-semibold text-[#0F0F0F]'>
-              Messages
-            </h1>
+            <h3 className='font-inter text-lg font-semibold text-[#0F0F0F]'>
+              All Messages
+            </h3>
             <div className='flex items-center gap-4'>
               <button>
                 <svg

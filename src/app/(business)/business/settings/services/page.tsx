@@ -147,7 +147,7 @@ export default function ServicesPage() {
   return (
     <div className='lg:p-6'>
       {/* Services List */}
-      <div className='space-y-8'>
+      <div className='space-y-5 md:space-y-8'>
         {/* Add New Service */}
         <section className='flex grid-cols-[240px,1fr,150px] flex-col p-4 xl:grid xl:items-center xl:gap-12'>
           <Label className='text-sm font-medium text-[#0F0F0F]'>
@@ -162,7 +162,7 @@ export default function ServicesPage() {
 
           <div className='mt-2 flex items-center lg:justify-end lg:self-end'>
             <Button
-              size='sm'
+              size='md'
               onClick={addServiceDialog.setTrue}
               className='bg-purple-600 hover:bg-purple-700'
             >
@@ -199,7 +199,7 @@ export default function ServicesPage() {
                   </div>
                 ) : (
                   <div className='flex-1 rounded-xl border bg-gray-50 p-3'>
-                    <span className='text-sm text-gray-900'>
+                    <span className='text-xs text-gray-900 sm:text-sm'>
                       {service.title}
                     </span>
                   </div>
@@ -265,7 +265,7 @@ export default function ServicesPage() {
                   </div>
                 ) : (
                   <div className='min-h-[5lh] flex-1 rounded-xl border bg-gray-50 p-3'>
-                    <p className='text-sm text-gray-900'>
+                    <p className='text-xs text-gray-900 sm:text-sm'>
                       {service.description}
                     </p>
                   </div>
@@ -369,11 +369,11 @@ export default function ServicesPage() {
 
               {/* Delete Service Section */}
               <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 xl:grid xl:items-center xl:gap-8'>
-                <Label className='invisible text-sm font-medium text-[#0F0F0F]'>
+                <Label className='sr-only text-sm font-medium text-[#0F0F0F]'>
                   Delete Service
                 </Label>
 
-                <div className='invisible flex-1'>
+                <div className='sr-only flex-1'>
                   <span className='text-sm text-gray-600'>
                     Remove this service from your business listing
                   </span>

@@ -9,6 +9,7 @@ import {
   DashboardIcon,
   DashboardSelectedIcon,
   MessagesIcon,
+  MessagesSelectedIcon,
   PaymentsIcon,
   PaymentsSelectedIcon,
   PerformanceIcon,
@@ -35,7 +36,7 @@ export const navItems = [
     name: 'Messages',
     href: '/business/messages',
     icon: MessagesIcon,
-    iconSelected: MessagesIcon,
+    iconSelected: MessagesSelectedIcon,
     exact: false,
   },
   {

@@ -32,6 +32,7 @@ import {
   CampaignAreaChart,
   CreateAdPromoForm,
   PaymentHistoryChart,
+  BusinessPageHeader,
 } from '../../misc/components';
 import { cn } from '@/lib/utils';
 import { Check, Circle } from 'lucide-react';
@@ -90,10 +91,9 @@ export default function PromotionsPage() {
     [advertAnalyticsData?.data?.performance_metrics, advertAnalyticsLoading]
   );
 
-  const activeAdvertCampaign =
-    advertAnalyticsData?.data?.active_campaign as
-      | Record<string, unknown>
-      | undefined;
+  const activeAdvertCampaign = advertAnalyticsData?.data?.active_campaign as
+    | Record<string, unknown>
+    | undefined;
   const activeAdvertId =
     (activeAdvertCampaign?.['advertisement_id'] as
       | number
@@ -125,7 +125,9 @@ export default function PromotionsPage() {
           },
           onError: error => {
             const description =
-              error instanceof Error ? error.message : 'An unexpected error occurred';
+              error instanceof Error
+                ? error.message
+                : 'An unexpected error occurred';
             toast.error('Failed to update advert image', { description });
           },
           onSettled: () => {
@@ -200,17 +202,17 @@ export default function PromotionsPage() {
   }
 
   return (
-    <div className={cn('h-full w-full overflow-y-scroll md:space-y-8 max-md:pb-16')}>
+    <div
+      className={cn(
+        'h-full w-full overflow-y-scroll max-md:pb-16 md:space-y-8'
+      )}
+    >
+      <BusinessPageHeader
+        title='Promotions and Adverts'
+        description='Effortlessly handle your promotions and adverts right here.'
+      />
       {/* Header */}
       <header>
-        <div className='mb-3 flex items-center p-4 !pb-0 lg:justify-between lg:p-6'>
-          <h1 className='font-inter text-xl font-semibold lg:text-3xl'>
-            Promotions and Adverts
-            <span className='max-w-[30ch] text-balance text-xs font-normal text-[#4B5565] max-lg:block lg:hidden'>
-              Effortlessly handle your promotions and adverts right here.
-            </span>
-          </h1>
-        </div>
         <nav className='flex items-center gap-2 px-4 lg:gap-3 lg:px-6'>
           {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
             period => {
@@ -298,7 +300,7 @@ export default function PromotionsPage() {
                   <>
                     {hasActiveAdvertCampaign ? (
                       <div
-                        className='relative  overflow-hidden rounded-2xl bg-[#0F172A]/30 h-full'
+                        className='relative h-full overflow-hidden rounded-2xl bg-[#0F172A]/30'
                         // style={{ aspectRatio: '16 / 9' }}
                       >
                         <Image
@@ -311,7 +313,6 @@ export default function PromotionsPage() {
                           fill
                           objectFit='cover'
                         />
-                       
                       </div>
                     ) : (
                       <div>
@@ -349,7 +350,7 @@ export default function PromotionsPage() {
                           ]
                         }
                         alt='Promotion Campaign Thumbnail'
-                        className='rounded-xl text-[0.6rem] object-cover'
+                        className='rounded-xl object-cover text-[0.6rem]'
                         fill
                         objectFit='cover'
                       />
@@ -428,7 +429,7 @@ export default function PromotionsPage() {
           </section>
 
           <section className='px-4 lg:px-6'>
-            <header className='mb-6 mt-16 md:mt-12 flex max-md:flex-col gap-y-2.5 justify-between md:items-center'>
+            <header className='mb-6 mt-16 flex justify-between gap-y-2.5 max-md:flex-col md:mt-12 md:items-center'>
               <div>
                 <div className='flex gap-2'>
                   <h3 className='font-inter font-semibold text-black lg:text-lg'>
@@ -630,14 +631,18 @@ export default function PromotionsPage() {
                       setSelectedGraphView(e as 'views' | 'clicks')
                     }
                   >
-                    <SelectTrigger className='!h-8 md:!h-10 w-[70px] md:w-[100px] border border-[#EEF2F6] bg-[#F8FAFC] !p-1 md:!py-1.5'>
-                      <span className='text-black text-xs md:text-sm'>
+                    <SelectTrigger className='!h-8 w-[70px] border border-[#EEF2F6] bg-[#F8FAFC] !p-1 md:!h-10 md:w-[100px] md:!py-1.5'>
+                      <span className='text-xs text-black md:text-sm'>
                         {selectedGraphView === 'views' ? 'Views' : 'Clicks'}
                       </span>
                     </SelectTrigger>
                     <SelectContent className='max-w-max'>
-                      <SelectItem className='!text-xs' value='views'>Views</SelectItem>
-                      <SelectItem className='!text-xs' value='clicks'>Clicks</SelectItem>
+                      <SelectItem className='!text-xs' value='views'>
+                        Views
+                      </SelectItem>
+                      <SelectItem className='!text-xs' value='clicks'>
+                        Clicks
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -649,7 +654,9 @@ export default function PromotionsPage() {
                   </p>
                   <p className='mb-3 mt-1 text-xs text-green-600'>
                     <span className='text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
-                      { selectedGraphView == "clicks" ? totalClicks.toLocaleString() : totalViews.toLocaleString()}
+                      {selectedGraphView == 'clicks'
+                        ? totalClicks.toLocaleString()
+                        : totalViews.toLocaleString()}
                     </span>{' '}
                     This month
                   </p>
