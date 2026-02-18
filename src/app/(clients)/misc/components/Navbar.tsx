@@ -533,7 +533,7 @@ const LandingPageNavbar = () => {
                         isMobile={isMobile}
                         pageHasBlackBg={pageHasBlackBg}
                         VISITORS_LINKS={VISITORS_LINKS}
-                        userIsLoggedIn={userIsloggedIn}
+                        userIsLoggedIn={false}
                       />
                     </div>
                     <LinkButton
@@ -610,26 +610,27 @@ const MobileMenu = ({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-72'>
-        <div className='flex w-full items-center justify-center bg-[#F8FAFC] px-8 py-5'>
-          {user?.is_brand_owner ? (
-            <LinkButton
-              href='/business'
-              className='w-full bg-[#551FB9]'
-              size={'dynamic_lg'}
-            >
-              Business Dashboard
-            </LinkButton>
-          ) : (
-            <LinkButton
-              href='/businesses'
-              className='w-full bg-[#551FB9]'
-              size={'dynamic_lg'}
-            >
-              List your business
-            </LinkButton>
-          )}
-        </div>
-
+        {userIsLoggedIn && (
+          <div className='flex w-full items-center justify-center bg-[#F8FAFC] px-8 py-5'>
+            {user?.is_brand_owner ? (
+              <LinkButton
+                href='/business'
+                className='w-full bg-[#551FB9]'
+                size={'dynamic_lg'}
+              >
+                Business Dashboard
+              </LinkButton>
+            ) : (
+              <LinkButton
+                href='/businesses'
+                className='w-full bg-[#551FB9]'
+                size={'dynamic_lg'}
+              >
+                List your business
+              </LinkButton>
+            )}
+          </div>
+        )}
         {VISITORS_LINKS.map((link, key) => (
           <DropdownMenuItem key={key} className='!p-0'>
             <Link
@@ -641,25 +642,30 @@ const MobileMenu = ({
             </Link>
           </DropdownMenuItem>
         ))}
-        <DropdownMenuItem className='!p-0'>
-          <Link
-            href={'/profile'}
-            className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
-          >
-            Profile Settings
-          </Link>
-        </DropdownMenuItem>
+        userIsLoggedIn &&
+        {
+          <>
+            <DropdownMenuItem className='!p-0'>
+              <Link
+                href={'/profile'}
+                className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
+              >
+                Profile Settings
+              </Link>
+            </DropdownMenuItem>
 
-        <div className='mt-2 p-6'>
-          <Button
-            variant='light'
-            size='lg'
-            className='w-full'
-            onClick={() => signOut({ callbackUrl: '/' })}
-          >
-            Logout
-          </Button>
-        </div>
+            <div className='mt-2 p-6'>
+              <Button
+                variant='light'
+                size='lg'
+                className='w-full'
+                onClick={() => signOut({ callbackUrl: '/' })}
+              >
+                Logout
+              </Button>
+            </div>
+          </>
+        }
       </DropdownMenuContent>
     </DropdownMenu>
   );
