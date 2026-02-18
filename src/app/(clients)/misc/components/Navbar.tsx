@@ -642,8 +642,7 @@ const MobileMenu = ({
             </Link>
           </DropdownMenuItem>
         ))}
-        userIsLoggedIn &&
-        {
+        {userIsLoggedIn && (
           <>
             <DropdownMenuItem className='!p-0'>
               <Link
@@ -665,7 +664,7 @@ const MobileMenu = ({
               </Button>
             </div>
           </>
-        }
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
