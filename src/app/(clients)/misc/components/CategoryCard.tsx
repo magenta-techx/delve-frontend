@@ -33,7 +33,9 @@ const CategoryCard = ({
         alt={title}
         width={200}
         height={200}
-        className={cn('absolute h-full w-full rounded-full [filter:grayscale(100%)] transition-all duration-500 group-hover:grayscale-0')}
+        className={cn(
+          'absolute h-full w-full rounded-full transition-all duration-500 group-hover:grayscale-0 md:[filter:grayscale(100%)]'
+        )}
       />
       <div className='absolute h-full w-full rounded-full transition-all duration-500 group-hover:bg-transparent sm:bg-black/50'></div>
       <div className='relative z-10 flex h-full flex-col items-center justify-center p-4 transition-all duration-500 sm:group-hover:hidden'>

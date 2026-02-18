@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { useBusinessCategories, useBusinessStates } from '../api/metadata';
+import { CaretDown } from '@/assets/icons';
 
 type SelectOption = {
   id: string;
@@ -116,11 +117,14 @@ const BusinessSearch = (): JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit} className='w-full'>
-      <div className='flex w-full flex-col rounded-xl bg-white shadow-sm sm:flex-row max-md:!w-[80vw]'>
+      <div className='flex w-full flex-col rounded-xl bg-white shadow-sm max-md:!w-[90vw] max-md:max-w-[600px] sm:flex-row'>
         <div className='flex flex-col divide-y divide-[#E3E8EF] sm:flex-1 sm:flex-row sm:divide-x sm:divide-y-0'>
           <div className='flex items-center gap-3 px-5 py-4 sm:flex-1 md:p-5'>
             <span className='hidden sm:flex'>
               <BaseIcons value='search-black' />
+            </span>
+            <span className='sm:hidden'>
+              <BaseIcons value='stars-primary' />
             </span>
             <input
               type='text'
@@ -130,85 +134,14 @@ const BusinessSearch = (): JSX.Element => {
               className='w-full border-none bg-transparent font-inter text-sm font-normal text-[#0F172B] outline-none placeholder:text-[#0F0F0F] sm:text-base'
               aria-label='Search text'
             />
-          </div>
 
-          <div ref={categoryRef} className='relative'>
             <button
-              type='button'
-              onClick={() => {
-                setCategoryOpen(prev => !prev);
-                setLocationOpen(false);
-              }}
-              className='flex w-full items-center justify-between gap-2 px-5 py-4 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
-              aria-haspopup='listbox'
-              aria-expanded={categoryOpen}
+              type='submit'
+              className='flex items-center justify-center gap-2 rounded-full bg-[#6E44FF] px-2.5 py-1.5 text-[0.8rem] font-medium text-white transition-colors hover:bg-[#5B36D4] sm:px-8 sm:text-base md:hidden md:p-5 lg:px-8 xl:px-10'
             >
-              <span className='truncate text-[#0F172B]'>
-                {selectedCategory?.label ?? 'Category'}
-              </span>
-              <motion.span
-                animate={{ rotate: categoryOpen ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-                className='text-[#6E44FF]'
-              >
-                <BaseIcons value='arrow-down-primary' />
-              </motion.span>
+              <BaseIcons value='search-white' />
+              Search
             </button>
-
-            <AnimatePresence>
-              {categoryOpen && (
-                <motion.ul
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2 }}
-                  role='listbox'
-                  className='absolute left-0 right-0 top-full z-20 mt-2 max-h-56 overflow-y-auto rounded-2xl border border-[#E3E8EF] bg-white py-2 shadow-lg'
-                >
-                  {categoriesLoading && (
-                    <li className='px-4 py-2 text-sm text-[#64748B]'>
-                      Loading categories…
-                    </li>
-                  )}
-                  {categoriesError && (
-                    <li className='px-4 py-2 text-sm text-red-500'>
-                      Unable to load categories
-                    </li>
-                  )}
-                  {!categoriesLoading &&
-                    !categoriesError &&
-                    categoryOptions.length === 0 && (
-                      <li className='px-4 py-2 text-sm text-[#64748B]'>
-                        No categories available
-                      </li>
-                    )}
-                  {!categoriesLoading &&
-                    !categoriesError &&
-                    categoryOptions.map(option => (
-                      <li key={option.id}>
-                        <button
-                          type='button'
-                          role='option'
-                          className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm sm:text-base ${
-                            selectedCategory?.id === option.id
-                              ? 'text-[#6E44FF]'
-                              : 'text-[#0F172B]'
-                          } hover:bg-[#F4F3FF]`}
-                          onClick={() => {
-                            setSelectedCategory(option);
-                            setCategoryOpen(false);
-                          }}
-                        >
-                          <span className='truncate'>{option.label}</span>
-                          {selectedCategory?.id === option.id && (
-                            <BaseIcons value='arrow-right-black' />
-                          )}
-                        </button>
-                      </li>
-                    ))}
-                </motion.ul>
-              )}
-            </AnimatePresence>
           </div>
 
           <div ref={locationRef} className='relative'>
@@ -218,7 +151,7 @@ const BusinessSearch = (): JSX.Element => {
                 setLocationOpen(prev => !prev);
                 setCategoryOpen(false);
               }}
-              className='flex w-full items-center justify-between gap-2 px-5 py-4 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
+              className='flex w-full items-center justify-between gap-2 p-5 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
               aria-haspopup='listbox'
               aria-expanded={locationOpen}
             >
@@ -235,7 +168,13 @@ const BusinessSearch = (): JSX.Element => {
                 transition={{ duration: 0.2 }}
                 className='text-[#6E44FF]'
               >
-                <BaseIcons value='arrow-down-primary' />
+                <span className='hidden md:flex'>
+                  <BaseIcons value='search-white' />
+                  Search
+                </span>
+                <span className='flex md:hidden'>
+                  <CaretDown className='size-4' />
+                </span>
               </motion.span>
             </button>
 
@@ -294,11 +233,96 @@ const BusinessSearch = (): JSX.Element => {
               )}
             </AnimatePresence>
           </div>
+
+          <div ref={categoryRef} className='relative'>
+            <button
+              type='button'
+              onClick={() => {
+                setCategoryOpen(prev => !prev);
+                setLocationOpen(false);
+              }}
+              className='flex w-full items-center justify-between gap-2 p-5 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
+              aria-haspopup='listbox'
+              aria-expanded={categoryOpen}
+            >
+              <span className='truncate text-[#0F172B]'>
+                {selectedCategory?.label ?? 'Category'}
+              </span>
+              <motion.span
+                animate={{ rotate: categoryOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+                className='text-[#6E44FF]'
+              >
+                <span className='hidden md:flex'>
+                  <BaseIcons value='search-white' />
+                  Search
+                </span>
+                <span className='flex md:hidden'>
+                  <CaretDown className='size-4' />
+                </span>
+              </motion.span>
+            </button>
+
+            <AnimatePresence>
+              {categoryOpen && (
+                <motion.ul
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  role='listbox'
+                  className='absolute left-0 right-0 top-full z-20 mt-2 max-h-56 overflow-y-auto rounded-2xl border border-[#E3E8EF] bg-white py-2 shadow-lg'
+                >
+                  {categoriesLoading && (
+                    <li className='px-4 py-2 text-sm text-[#64748B]'>
+                      Loading categories…
+                    </li>
+                  )}
+                  {categoriesError && (
+                    <li className='px-4 py-2 text-sm text-red-500'>
+                      Unable to load categories
+                    </li>
+                  )}
+                  {!categoriesLoading &&
+                    !categoriesError &&
+                    categoryOptions.length === 0 && (
+                      <li className='px-4 py-2 text-sm text-[#64748B]'>
+                        No categories available
+                      </li>
+                    )}
+                  {!categoriesLoading &&
+                    !categoriesError &&
+                    categoryOptions.map(option => (
+                      <li key={option.id}>
+                        <button
+                          type='button'
+                          role='option'
+                          className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm sm:text-base ${
+                            selectedCategory?.id === option.id
+                              ? 'text-[#6E44FF]'
+                              : 'text-[#0F172B]'
+                          } hover:bg-[#F4F3FF]`}
+                          onClick={() => {
+                            setSelectedCategory(option);
+                            setCategoryOpen(false);
+                          }}
+                        >
+                          <span className='truncate'>{option.label}</span>
+                          {selectedCategory?.id === option.id && (
+                            <BaseIcons value='arrow-right-black' />
+                          )}
+                        </button>
+                      </li>
+                    ))}
+                </motion.ul>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         <button
           type='submit'
-          className='flex items-center justify-center rounded-b-xl gap-2 bg-[#6E44FF] px-5 py-4 text-sm font-semibold text-white transition-colors hover:bg-[#5B36D4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B36D4] sm:rounded-b-none sm:rounded-l-none sm:rounded-r-lg sm:px-8 sm:text-base md:p-5 lg:px-8 xl:px-10'
+          className='hidden items-center justify-center gap-2 rounded-b-xl bg-[#6E44FF] px-5 py-4 text-sm font-semibold text-white transition-colors hover:bg-[#5B36D4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B36D4] sm:rounded-b-none sm:rounded-l-none sm:rounded-r-lg sm:px-8 sm:text-base md:flex md:p-5 lg:px-8 xl:px-10'
         >
           <BaseIcons value='search-white' />
           Search

@@ -102,7 +102,7 @@ export default function HomePage() {
         <LandingPageNavbar />
         <section />
         {/* Mobile hero  */}
-        <div className='relative flex h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
+        <div className='relative flex h-screen min-h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
         </div>
 
@@ -110,8 +110,8 @@ export default function HomePage() {
         <div className='insert-0 absolute hidden w-full rounded-2xl bg-[#000000B8] sm:top-0 sm:flex sm:h-[85vh] sm:rounded-none'></div>
 
         {/* Hero section  */}
-        <div className='absolute top-[20.5rem] flex w-full flex-col items-center sm:top-[22.8rem]'>
-          <h1 className='text-balance text-center font-karma text-4xl font-bold text-white sm:text-5xl'>
+        <div className='absolute top-[50%] flex w-full flex-col items-center sm:top-[22.8rem]'>
+          <h1 className='text-balance text-center font-karma text-2xl font-bold text-white sm:text-5xl'>
             Great experiences start here.
           </h1>
           <p className='px-14 text-center font-inter text-[14px] text-white sm:-mt-2 sm:text-[19px]'>
@@ -130,7 +130,7 @@ export default function HomePage() {
           paragraph='category'
         />
 
-        <div className='container mb-20 mt-10 flex w-full items-center gap-14 px-2 sm:px-0 lg:max-2xl:px-12'>
+        <div className='container mb-14 mt-10 flex w-full items-center gap-14 px-2 sm:px-0 md:mb-20 lg:max-2xl:px-12'>
           <div className='relative w-full'>
             <Carousel opts={{ align: 'start', loop: false }} className='w-full'>
               <CarouselContent className='-ml-2'>
@@ -196,7 +196,7 @@ export default function HomePage() {
                     : 'start',
                 loop: false,
               }}
-              className='container mx-auto w-[90vw] max-xl:px-2 xl:w-[85vw]'
+              className='container mx-auto w-[90vw] xl:w-[85vw]'
             >
               <CarouselContent className='-ml-2 gap-2 py-4'>
                 {loadingApproved
@@ -226,9 +226,9 @@ export default function HomePage() {
         {/* Serch By location  */}
         <div className='container mb-10 lg:max-xl:px-12'>
           <header className='flex items-center justify-between'>
-            <h1 className='px-4 font-inter text-xl font-bold md:text-2xl'>
+            <h2 className='text-base font-semibold sm:text-2xl'>
               Search by location
-            </h1>
+            </h2>
 
             <div className='flex items-center gap-2 text-primary'>
               <BaseIcons value='arrows-left-primary' />
@@ -236,12 +236,12 @@ export default function HomePage() {
                 href={'/businesses/search'}
                 className='text-[12px] uppercase sm:text-[16px]'
               >
-                See all locations
+                See all
               </Link>
             </div>
           </header>
 
-          <div className='mb-4 flex w-full items-center gap-10 px-2 sm:mb-20 sm:px-0'>
+          <div className='mb-4 flex w-full items-center gap-10 sm:mb-20 sm:px-0 md:px-2'>
             <div className='relative w-full'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
@@ -344,7 +344,7 @@ export default function HomePage() {
                   href={'/businesss/search'}
                   className='text-[12px] uppercase sm:text-[16px]'
                 >
-                  See all listings
+                  See all
                 </Link>
               </div>
             </header>
@@ -367,7 +367,7 @@ export default function HomePage() {
                     : approved.map((business, key) => (
                         <CarouselItem
                           key={business.id ?? key}
-                          className='basis-[70vw] sm:basis-[300px] xl:basis-[25%] 2xl:px-2.5'
+                          className='basis-[75vw] sm:basis-[300px] xl:basis-[25%] 2xl:px-2.5'
                         >
                           <FeaturedListingCard business={business} />
                         </CarouselItem>

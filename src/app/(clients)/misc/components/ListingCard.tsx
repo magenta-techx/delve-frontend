@@ -74,7 +74,7 @@ const FeaturedListingCard = ({
       <article
         ref={articleRef}
         className={cn(
-          'group !aspect-[342/427] rounded-3xl border-2 border-[#FEC601] p-1.5',
+          'group !aspect-[15/13] rounded-2xl border-2 border-[#FEC601] p-1 sm:!aspect-[342/427] md:rounded-3xl md:p-1.5',
           isSelectable && 'cursor-pointer',
           isBigCard && 'xl:rounded-[1.8rem]'
         )}
@@ -161,6 +161,7 @@ const FeaturedListingCard = ({
                 <svg
                   width='25'
                   height='28'
+                  className='size-5 md:size-6'
                   viewBox='0 0 25 28'
                   fill='none'
                   xmlns='http://www.w3.org/2000/svg'
@@ -177,6 +178,7 @@ const FeaturedListingCard = ({
                 <svg
                   width='25'
                   height='28'
+                  className='size-5 md:size-6'
                   viewBox='0 0 25 28'
                   fill='none'
                   xmlns='http://www.w3.org/2000/svg'
@@ -252,13 +254,13 @@ const FeaturedListingCard = ({
                 <div>
                   <h3
                     className='truncate font-semibold max-sm:w-[90%]'
-                    style={{ fontSize: getFluidFontSize(0.4, 1.3, 0.0015) }}
+                    style={{ fontSize: getFluidFontSize(0.5, 1.3, 0.0015) }}
                   >
                     {header}
                   </h3>
                   <p
                     className='line-clamp-2 min-h-[2lh] max-sm:w-[90%]'
-                    style={{ fontSize: getFluidFontSize(0.3, 1.0, 0.001) }}
+                    style={{ fontSize: getFluidFontSize(0.4, 1.0, 0.001) }}
                   >
                     {desc}
                   </p>

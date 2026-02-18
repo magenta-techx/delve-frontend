@@ -30,6 +30,7 @@ import {
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import { NotificationsDropdownContent } from './NotificationsDropdown';
 import { useUserContext } from '@/contexts/UserContext';
+import MenuBarIcon from '@/assets/icons/MenuBarIcon';
 
 const LandingPageNavbar = () => {
   const { user, isAuthenticated, isLoading } = useUserContext();
@@ -186,14 +187,33 @@ const LandingPageNavbar = () => {
         {isBusiness ? (
           <section>
             {!userIsloggedIn && (
-              <LinkButton
-                size='dynamic_xl'
-                variant={isMobile ? 'default' : 'ghost'}
-                href='/signin'
-                className={cn('mr-2', pageHasBlackBg && 'text-white')}
-              >
-                Log in / Sign up
-              </LinkButton>
+              <>
+                {isMobile ? (
+                  <LinkButton
+                    size='dynamic_xl'
+                    variant={'ghost'}
+                    href='/signin'
+                    className={cn(
+                      'mr-2 md:hidden',
+                      pageHasBlackBg && 'text-white'
+                    )}
+                  >
+                    Sign in
+                  </LinkButton>
+                ) : (
+                  <LinkButton
+                    size='dynamic_xl'
+                    variant={'ghost'}
+                    href='/signin'
+                    className={cn(
+                      'mr-2 max-md:hidden',
+                      pageHasBlackBg && 'text-white'
+                    )}
+                  >
+                    Log in / Sign up
+                  </LinkButton>
+                )}
+              </>
             )}
             <LinkButton
               size='dynamic_xl'
@@ -484,99 +504,38 @@ const LandingPageNavbar = () => {
                   />
                 )}
                 {userIsloggedIn ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        className={cn(
-                          'flex !cursor-pointer items-center gap-1 rounded-full',
-                          isMobile ? '' : 'px-2 py-1',
-                          !isMobile && pageHasBlackBg
-                            ? 'text-white hover:bg-white/20'
-                            : 'text-black hover:bg-gray-200'
-                        )}
-                      >
-                        {isMobile ? (
-                          <span className='flex size-8 items-center justify-center rounded-full bg-purple-800 text-base font-semibold text-white'>
-                            {getInitials(
-                              `${user?.first_name} ${user?.last_name}` || 'US'
-                            )}
-                          </span>
-                        ) : (
-                          <>
-                            {!!user?.first_name && (
-                              <p className='ml-1 w-max max-w-36 truncate text-left font-semibold capitalize'>
-                                {`${user?.first_name} ${user?.last_name}`}
-                              </p>
-                            )}
-                          </>
-                        )}
-                        {/* <BaseIcons value='user-logged-in-white' /> */}
-                        <CaretDown className='max-md:size-5' />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align='end' className='w-72'>
-                      <div className='flex w-full items-center justify-center bg-[#F8FAFC] px-8 py-5'>
-                        {user?.is_brand_owner ? (
-                          <LinkButton
-                            href='/business'
-                            className='w-full bg-[#551FB9]'
-                            size={'dynamic_lg'}
-                          >
-                            Business Dashboard
-                          </LinkButton>
-                        ) : (
-                          <LinkButton
-                            href='/businesses'
-                            className='w-full bg-[#551FB9]'
-                            size={'dynamic_lg'}
-                          >
-                            List your business
-                          </LinkButton>
-                        )}
-                      </div>
-
-                      {VISITORS_LINKS.map((link, key) => (
-                        <DropdownMenuItem key={key} className='!p-0'>
-                          <Link
-                            key={key}
-                            href={link.href}
-                            className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
-                          >
-                            {link.name}
-                          </Link>
-                        </DropdownMenuItem>
-                      ))}
-                      <DropdownMenuItem className='!p-0'>
-                        <Link
-                          href={'/profile'}
-                          className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
-                        >
-                          Profile Settings
-                        </Link>
-                      </DropdownMenuItem>
-
-                      <div className='mt-2 p-6'>
-                        <Button
-                          variant='light'
-                          size='lg'
-                          className='w-full'
-                          onClick={() => signOut({ callbackUrl: '/' })}
-                        >
-                          Logout
-                        </Button>
-                      </div>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <>
+                    <MobileMenu
+                      isMobile={isMobile}
+                      pageHasBlackBg={pageHasBlackBg}
+                      VISITORS_LINKS={VISITORS_LINKS}
+                      userIsLoggedIn={userIsloggedIn}
+                    />
+                  </>
                 ) : (
-                  <section>
+                  <section className='flex items-center gap-3'>
                     <LinkButton
-                      size='lg'
-                      variant={isMobile ? 'default' : 'ghost'}
+                      size='dynamic_lg'
+                      variant={'ghost'}
                       href='/signin'
-                      className={cn('mr-2', pageHasBlackBg && 'text-white')}
+                      className={cn(
+                        '',
+                        isMobile
+                          ? 'text-black max-md:text-base'
+                          : pageHasBlackBg && 'text-white'
+                      )}
                     >
-                      Log in / Sign up
+                      <span className='md:hidden'>Sign In</span>
+                      <span className='hidden md:block'>Log in / Sign up</span>
                     </LinkButton>
+                    <div className='md:hidden'>
+                      <MobileMenu
+                        isMobile={isMobile}
+                        pageHasBlackBg={pageHasBlackBg}
+                        VISITORS_LINKS={VISITORS_LINKS}
+                        userIsLoggedIn={userIsloggedIn}
+                      />
+                    </div>
                     <LinkButton
                       size='lg'
                       href='/businesses'
@@ -596,3 +555,112 @@ const LandingPageNavbar = () => {
 };
 
 export default LandingPageNavbar;
+
+const MobileMenu = ({
+  pageHasBlackBg,
+  isMobile,
+  VISITORS_LINKS,
+  userIsLoggedIn,
+}: {
+  pageHasBlackBg: boolean;
+  isMobile: boolean;
+  userIsLoggedIn: boolean;
+  VISITORS_LINKS: {
+    name: string;
+    href: string;
+    hasBlackBg: boolean;
+  }[];
+}) => {
+  const { user } = useUserContext();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className={cn(
+            'flex !cursor-pointer items-center gap-1 rounded-full',
+            isMobile ? '' : 'px-2 py-1',
+            !isMobile && pageHasBlackBg
+              ? 'text-white hover:bg-white/20'
+              : 'text-black hover:bg-gray-200'
+          )}
+        >
+          {isMobile ? (
+            <>
+              {userIsLoggedIn ? (
+                <span className='flex size-8 items-center justify-center rounded-full bg-purple-800 text-base font-semibold text-white'>
+                  {getInitials(
+                    `${user?.first_name} ${user?.last_name}` || 'US'
+                  )}
+                </span>
+              ) : (
+                <MenuBarIcon />
+              )}
+            </>
+          ) : (
+            <>
+              {!!user?.first_name && (
+                <p className='ml-1 w-max max-w-36 truncate text-left font-semibold capitalize'>
+                  {`${user?.first_name} ${user?.last_name}`}
+                </p>
+              )}
+              <CaretDown className='max-md:size-5' />
+            </>
+          )}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align='end' className='w-72'>
+        <div className='flex w-full items-center justify-center bg-[#F8FAFC] px-8 py-5'>
+          {user?.is_brand_owner ? (
+            <LinkButton
+              href='/business'
+              className='w-full bg-[#551FB9]'
+              size={'dynamic_lg'}
+            >
+              Business Dashboard
+            </LinkButton>
+          ) : (
+            <LinkButton
+              href='/businesses'
+              className='w-full bg-[#551FB9]'
+              size={'dynamic_lg'}
+            >
+              List your business
+            </LinkButton>
+          )}
+        </div>
+
+        {VISITORS_LINKS.map((link, key) => (
+          <DropdownMenuItem key={key} className='!p-0'>
+            <Link
+              key={key}
+              href={link.href}
+              className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
+            >
+              {link.name}
+            </Link>
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuItem className='!p-0'>
+          <Link
+            href={'/profile'}
+            className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
+          >
+            Profile Settings
+          </Link>
+        </DropdownMenuItem>
+
+        <div className='mt-2 p-6'>
+          <Button
+            variant='light'
+            size='lg'
+            className='w-full'
+            onClick={() => signOut({ callbackUrl: '/' })}
+          >
+            Logout
+          </Button>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
