@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import CancleIcon from './CancelIcon';
-import { Button } from '@/components/ui/Button';
 
 interface MenuItemsProps {
   showMobileMenuItems?: boolean;

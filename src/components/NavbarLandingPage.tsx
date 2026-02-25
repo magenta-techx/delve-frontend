@@ -83,6 +83,7 @@ const NavbarLandingPage = ({
             <MenuBarIcon
               showMobileMenuItems={showMobileMenuItems}
               setShowMobileMenuItems={setShowMobileMenuItems}
+              whiteText={false}
             />
           </div>
         </div>
