@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Logo } from '@/assets/icons';
 import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
@@ -132,6 +132,22 @@ const LandingPageNavbar = () => {
     return OTHER_PAGES_WITH_TRANSPARENTBG.includes(pathname) && isMobile;
   }, [pathname, isMobile]);
 
+  const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const vh = window.innerHeight;
+      const threshold = Math.min(768, vh);
+      setIsScrolledPastHero(window.scrollY > threshold);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const effectiveTransparentBg = pageHasTransparentBg && !isScrolledPastHero;
+
   const PAGES_WITHOUT_NAVBAR = [
     '/signup',
     '/login',
@@ -145,8 +161,8 @@ const LandingPageNavbar = () => {
   return (
     <nav
       className={cn(
-        'relative z-[20] flex h-16 w-full items-center justify-between px-4 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24 xl:h-24',
-        pageHasTransparentBg
+        'relative z-[20] transition-colors duration-300 flex h-16 w-full items-center justify-between px-4 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24 xl:h-24',
+        effectiveTransparentBg
           ? 'bg-transparent rounded-t-none'
           :
           isMobile
@@ -163,7 +179,7 @@ const LandingPageNavbar = () => {
           <Logo
             className='w-20 sm:w-28'
             textColor={
-              pageHasTransparentBg
+              effectiveTransparentBg
                 ? 'white'
                 :
                 isMobile
@@ -518,7 +534,7 @@ const LandingPageNavbar = () => {
                     <MobileMenu
                       isMobile={isMobile}
                       pageHasBlackBg={pageHasBlackBg}
-                      pageHasTransparentBg={pageHasTransparentBg}
+                      pageHasTransparentBg={effectiveTransparentBg}
                       VISITORS_LINKS={VISITORS_LINKS}
                       userIsLoggedIn={userIsloggedIn}
                     />
@@ -532,7 +548,7 @@ const LandingPageNavbar = () => {
                       className={cn(
                         '',
                         isMobile
-                          ? 'text-white max-md:text-base'
+                          ? (effectiveTransparentBg ? 'text-white max-md:text-base' : 'text-black max-md:text-base')
                           : pageHasBlackBg && 'text-white'
                       )}
                     >
@@ -543,7 +559,7 @@ const LandingPageNavbar = () => {
                       <MobileMenu
                         isMobile={isMobile}
                         pageHasBlackBg={pageHasBlackBg}
-                        pageHasTransparentBg={pageHasTransparentBg}
+                        pageHasTransparentBg={effectiveTransparentBg}
                         VISITORS_LINKS={VISITORS_LINKS}
                         userIsLoggedIn={false}
                       />
