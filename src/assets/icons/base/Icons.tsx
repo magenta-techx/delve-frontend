@@ -73,9 +73,10 @@ export type IconsType =
   | 'folder-yellow';
 type Type = {
   value: IconsType;
+  className?: string;
 };
 
-export const BaseIcons = ({ value }: Type): JSX.Element => {
+export const BaseIcons = ({ value, className }: Type): JSX.Element => {
   if (value === 'people-outlined-white') {
     return (
       <svg
@@ -1631,6 +1632,7 @@ export const BaseIcons = ({ value }: Type): JSX.Element => {
         viewBox='0 0 32 36'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
+        className={className}
       >
         <path
           fillRule='evenodd'
@@ -1809,6 +1811,7 @@ export const BaseIcons = ({ value }: Type): JSX.Element => {
         viewBox='0 0 16 16'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
+        className={className}
       >
         <path
           d='M11.6951 11.7792L14.3 14.2992M7.54995 4.39922C9.04112 4.39922 10.25 5.60805 10.25 7.09922M13.46 7.57922C13.46 10.8267 10.8274 13.4592 7.57995 13.4592C4.33252 13.4592 1.69995 10.8267 1.69995 7.57922C1.69995 4.33178 4.33252 1.69922 7.57995 1.69922C10.8274 1.69922 13.46 4.33178 13.46 7.57922Z'
@@ -1827,6 +1830,7 @@ export const BaseIcons = ({ value }: Type): JSX.Element => {
         viewBox='0 0 20 20'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
+        className={className}
       >
         <path
           d='M12.5 10C12.5 11.3807 11.3807 12.5 10 12.5C8.61929 12.5 7.5 11.3807 7.5 10C7.5 8.61929 8.61929 7.5 10 7.5C11.3807 7.5 12.5 8.61929 12.5 10Z'

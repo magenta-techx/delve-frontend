@@ -1,12 +1,21 @@
+'use client'
 import { ReactNode } from 'react';
 import { LandingPageNavbar, Footer } from './misc/components';
 import { UserNotificationsProvider } from '@/contexts/UserNotificationsContext';
+import { useIsMobile } from '@/hooks';
+import { ClientNavbarBottom } from './misc/components/ClientNavbarBottom';
+import { useUserContext } from '@/contexts/UserContext';
 
 interface UserLayoutProps {
   children: ReactNode;
 }
 
 export default function UserLayout({ children }: UserLayoutProps) {
+  const { isMobile, isLoading } = useIsMobile();
+  const { user, isAuthenticated, isLoading: isLoadingUser } = useUserContext();
+  const userIsloggedIn = !isLoading && isAuthenticated && Boolean(user);
+
+
   return (
     <UserNotificationsProvider>
       <div className='min-h-screen bg-gray-50'>
@@ -19,6 +28,9 @@ export default function UserLayout({ children }: UserLayoutProps) {
         </main>
 
         <Footer />
+
+        {!isLoading && !isLoadingUser && isMobile && userIsloggedIn && <ClientNavbarBottom />}
+
       </div>
     </UserNotificationsProvider>
   );

@@ -15,16 +15,16 @@ import {
   Footer,
   LandingPageNavbar,
   FeaturedListingCard,
-} from './(clients)/misc/components';
+} from './misc/components';
 import { useBusinessCategories } from '@/app/(clients)/misc/api/metadata';
 import {
   BusinessCategoryIcons,
   BusinessCategoriesIconsType as CategoryIconType,
 } from '@/assets/icons/business/BusinessCategoriesIcon';
 import LocationCard from '@/components/cards/LocationCard';
-import { useSponsoredAds } from './(clients)/misc/api/sponsored';
-import { useApprovedBusinesses, useEvents } from './(clients)/misc/api';
-import SponsoredAdsCard from './(clients)/misc/components/SponsoredCard';
+import { useSponsoredAds } from './misc/api/sponsored';
+import { useApprovedBusinesses, useEvents } from './misc/api';
+import SponsoredAdsCard from './misc/components/SponsoredCard';
 import {
   Carousel,
   CarouselContent,
@@ -33,7 +33,7 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui';
-import ListingCardSkeleton from './(clients)/misc/components/ListingCardSkeleton';
+import ListingCardSkeleton from './misc/components/ListingCardSkeleton';
 import { useIsMobile } from '@/hooks';
 import { useEffect, useState } from 'react';
 import { LogoIcon } from '@/assets/icons';
@@ -94,7 +94,7 @@ export default function HomePage() {
   ];
 
   const { data: sponsoredAds } = useSponsoredAds();
-  const {} = useEvents('Lagos');
+  const { } = useEvents('Lagos');
 
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
@@ -102,8 +102,8 @@ export default function HomePage() {
         <LandingPageNavbar />
         <section />
         {/* Mobile hero  */}
-        <div className='relative flex h-screen min-h-[756px] w-full rounded-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
-          <div className='insert-0 absolute top-0 flex h-full w-full rounded-2xl bg-black/60 sm:rounded-none'></div>
+        <div className='relative flex h-screen min-h-[756px] w-full rounded-b-2xl -top-16 bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
+          <div className='insert-0 absolute top-0 flex h-full w-full rounded-b-xl bg-black/60 sm:rounded-none'></div>
         </div>
 
         {/* Desktop Hero  */}
@@ -114,7 +114,7 @@ export default function HomePage() {
           <h1 className='text-balance text-center font-karma text-2xl font-bold text-white sm:text-5xl'>
             Great experiences start here.
           </h1>
-          <p className='px-14 text-center font-inter text-[14px] text-white sm:-mt-2 sm:text-[19px]'>
+          <p className='px-14 text-center font-inter text-xs text-white sm:-mt-2 sm:text-[19px]'>
             Delve helps you find reliable vendors who turn plans into beautiful
             memories.
           </p>
@@ -136,40 +136,40 @@ export default function HomePage() {
               <CarouselContent className='-ml-2'>
                 {loadingCategories
                   ? Array.from({ length: 5 }).map((_, idx) => (
-                      <CarouselItem
-                        key={idx}
-                        className='flex basis-[35vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
-                      >
-                        <div className='flex flex-col items-center justify-center gap-2'>
-                          <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40 xl:size-44'></div>
-                        </div>
-                      </CarouselItem>
-                    ))
+                    <CarouselItem
+                      key={idx}
+                      className='flex basis-[35vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
+                    >
+                      <div className='flex flex-col items-center justify-center gap-2'>
+                        <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40 xl:size-44'></div>
+                      </div>
+                    </CarouselItem>
+                  ))
                   : categories.map(category => {
-                      const iconName = category.name
-                        ?.split(' ')[0]
-                        ?.toLowerCase() as CategoryIconType;
-                      return (
-                        <CarouselItem
-                          key={category.id}
-                          className='flex basis-[35vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
-                        >
-                          <CategoryCard
-                            title={category.name}
-                            imageSrc={`/categories/${iconName}.jpg`}
-                            icon={
-                              <BusinessCategoryIcons
-                                className='size-12 text-white'
-                                value={iconName}
-                              />
-                            }
-                            hoverIcon={
-                              <BusinessCategoryIcons value={iconName} />
-                            }
-                          />
-                        </CarouselItem>
-                      );
-                    })}
+                    const iconName = category.name
+                      ?.split(' ')[0]
+                      ?.toLowerCase() as CategoryIconType;
+                    return (
+                      <CarouselItem
+                        key={category.id}
+                        className='flex basis-[35vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
+                      >
+                        <CategoryCard
+                          title={category.name}
+                          imageSrc={`/categories/${iconName}.jpg`}
+                          icon={
+                            <BusinessCategoryIcons
+                              className='size-12 text-white'
+                              value={iconName}
+                            />
+                          }
+                          hoverIcon={
+                            <BusinessCategoryIcons value={iconName} />
+                          }
+                        />
+                      </CarouselItem>
+                    );
+                  })}
               </CarouselContent>
               <CarouselPrevious className='absolute bottom-0 left-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex' />
               <CarouselNext className='absolute bottom-0 right-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex' />
@@ -201,21 +201,21 @@ export default function HomePage() {
               <CarouselContent className='-ml-2 gap-2 py-4'>
                 {loadingApproved
                   ? Array.from({ length: 6 }).map((_, key) => (
-                      <CarouselItem
-                        key={key}
-                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
-                      >
-                        <ListingCardSkeleton classStyle='w-full sm:w-[300px] xl:w-full !aspect-[342/427]' />
-                      </CarouselItem>
-                    ))
+                    <CarouselItem
+                      key={key}
+                      className='basis-[80vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
+                    >
+                      <ListingCardSkeleton classStyle='w-full sm:w-[300px] xl:w-full !aspect-[342/427]' />
+                    </CarouselItem>
+                  ))
                   : approved.map((business, key) => (
-                      <CarouselItem
-                        key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
-                      >
-                        <FeaturedListingCard business={business} isBigCard />
-                      </CarouselItem>
-                    ))}
+                    <CarouselItem
+                      key={business.id ?? key}
+                      className='basis-[80vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
+                    >
+                      <FeaturedListingCard business={business} isBigCard />
+                    </CarouselItem>
+                  ))}
               </CarouselContent>
               <CarouselPrevious className='absolute -left-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-left-10' />
               <CarouselNext className='absolute -right-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-right-10' />
@@ -357,21 +357,21 @@ export default function HomePage() {
                 <CarouselContent className='-ml-2 w-full gap-1.5'>
                   {loadingApproved
                     ? Array.from({ length: 6 }).map((_, key) => (
-                        <CarouselItem
-                          key={key}
-                          className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[380px] 2xl:px-4'
-                        >
-                          <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
-                        </CarouselItem>
-                      ))
+                      <CarouselItem
+                        key={key}
+                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[380px] 2xl:px-4'
+                      >
+                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
+                      </CarouselItem>
+                    ))
                     : approved.map((business, key) => (
-                        <CarouselItem
-                          key={business.id ?? key}
-                          className='basis-[75vw] sm:basis-[300px] xl:basis-[25%] 2xl:px-2.5'
-                        >
-                          <FeaturedListingCard business={business} />
-                        </CarouselItem>
-                      ))}
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='basis-[75vw] sm:basis-[300px] xl:basis-[25%] 2xl:px-2.5'
+                      >
+                        <FeaturedListingCard business={business} />
+                      </CarouselItem>
+                    ))}
                 </CarouselContent>
               </Carousel>
             </div>

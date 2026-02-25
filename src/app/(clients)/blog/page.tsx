@@ -66,7 +66,7 @@ const BlogPage = (): JSX.Element => {
     }
 
 
-    
+
     return (
       <div
         className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:auto-cols-auto"
@@ -97,7 +97,7 @@ const BlogPage = (): JSX.Element => {
     <div className='flex min-h-screen flex-col items-center bg-white'>
       <LandingPageNavbar />
 
-      <div className='relative flex flex-col w-full px-4 md:px-16 md:backdrop-blur-lg lg:py-16 lg:px-24'>
+      <div className='relative flex flex-col w-full px-4 md:px-16 pb-20 md:backdrop-blur-lg lg:py-16 lg:px-24'>
         <section className='container mx-auto'>
           <header className='mb-12 max-w-[720px]'>
             <h1 className='mb-2 font-karma text-2xl font-semibold text-[#111827] sm:text-3xl xl:text-4xl'>

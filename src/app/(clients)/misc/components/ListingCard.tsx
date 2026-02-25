@@ -46,7 +46,7 @@ const FeaturedListingCard = ({
     e.stopPropagation();
     try {
       await toggleSave(business.id);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const articleRef = React.useRef<HTMLElement>(null);
@@ -74,9 +74,9 @@ const FeaturedListingCard = ({
       <article
         ref={articleRef}
         className={cn(
-          'group !aspect-[15/13] rounded-2xl border-2 border-[#FEC601] p-1 sm:!aspect-[342/427] md:rounded-3xl md:p-1.5',
+          'group  rounded-2xl border-2 border-[#FEC601] p-1 sm:!aspect-[342/427] md:rounded-3xl md:p-1.5',
           isSelectable && 'cursor-pointer',
-          isBigCard && 'xl:rounded-[1.8rem]'
+          isBigCard ? 'xl:rounded-[1.8rem] aspect-[342/427] ' : '!aspect-[15/13]'
         )}
         onClick={() => {
           if (!isSelectable) return;
@@ -198,7 +198,7 @@ const FeaturedListingCard = ({
           {!isSelectable && (
             <Link
               href={`/businesses/${business.id}`}
-              className='relative z-[15] hidden h-14 w-[120px] items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex xl:rounded-lg'
+              className='relative z-[15] text-xs md:text-base hidden h-9 w-24 md:h-14 md:w-36 items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex xl:rounded-lg'
               style={{ fontSize: getFluidFontSize(0.875, 1, 0.003) }}
             >
               <span> View</span>

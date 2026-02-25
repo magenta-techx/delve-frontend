@@ -7,10 +7,12 @@ import { Button } from '@/components/ui/Button';
 interface MenuItemsProps {
   showMobileMenuItems?: boolean;
   setShowMobileMenuItems?: (value: boolean) => void;
+  whiteText: boolean;
 }
 const MenuBarIcon = ({
   showMobileMenuItems,
   setShowMobileMenuItems,
+  whiteText,
 }: MenuItemsProps): JSX.Element => {
   const MOBILE_MENU_ITEMS = [
     {
@@ -37,12 +39,11 @@ const MenuBarIcon = ({
 
   return (
     <div className=''>
-      <Button
+      <button
         onClick={() => {
           console.log('Clicked');
           setShowMobileMenuItems?.(!showMobileMenuItems);
         }}
-        variant='ghost'
       >
         {showMobileMenuItems ? (
           <CancleIcon />
@@ -56,13 +57,13 @@ const MenuBarIcon = ({
           >
             <path
               d='M17 13H1M17 7H1M17 1H1'
-              stroke='#0F0F0F'
+              stroke={whiteText ? '#fff' : '#0F0F0F'}
               strokeWidth='2'
               strokeLinecap='round'
             />
           </svg>
         )}
-      </Button>
+      </button>
 
       {/* Mobile menu bar  */}
       <div className='sm:hidden'>

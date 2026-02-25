@@ -22,7 +22,6 @@ import {
 } from '@/components/ui';
 import { LinkButton } from '@/components/ui';
 import { CaretDown } from '@/assets/icons';
-import { getInitials } from '@/utils/strings';
 import { useBusinessCategories, useBusinessStates } from '../api/metadata';
 import {
   BusinessCategoryIcons,
@@ -111,6 +110,7 @@ const LandingPageNavbar = () => {
   ];
 
   const OTHER_PAGES_WITH_BLACKBG = ['/businesses/get-started'];
+  const OTHER_PAGES_WITH_TRANSPARENTBG = ['/', '/businesses/explore'];
 
   const pageHasBlackBg = useMemo(() => {
     if (userIsloggedIn) {
@@ -128,6 +128,10 @@ const LandingPageNavbar = () => {
     );
   }, [pathname, userIsloggedIn, isMobile]);
 
+  const pageHasTransparentBg = useMemo(() => {
+    return OTHER_PAGES_WITH_TRANSPARENTBG.includes(pathname) && isMobile;
+  }, [pathname, isMobile]);
+
   const PAGES_WITHOUT_NAVBAR = [
     '/signup',
     '/login',
@@ -142,13 +146,16 @@ const LandingPageNavbar = () => {
     <nav
       className={cn(
         'relative z-[20] flex h-16 w-full items-center justify-between px-4 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24 xl:h-24',
-        isMobile
-          ? 'bg-white'
-          : pageHasBlackBg
-            ? 'bg-[#00000057] backdrop-blur-lg'
-            : isBusiness || isMobile
-              ? 'bg-white'
-              : 'bg-white'
+        pageHasTransparentBg
+          ? 'bg-transparent rounded-t-none'
+          :
+          isMobile
+            ? 'bg-white'
+            : pageHasBlackBg
+              ? 'bg-[#00000057] backdrop-blur-lg'
+              : isBusiness || isMobile
+                ? 'bg-white'
+                : 'bg-white'
       )}
     >
       <div className='container mx-auto flex flex-row items-center justify-between'>
@@ -156,13 +163,16 @@ const LandingPageNavbar = () => {
           <Logo
             className='w-20 sm:w-28'
             textColor={
-              isMobile
-                ? 'black'
-                : pageHasBlackBg
-                  ? 'white'
-                  : isBusiness
-                    ? 'black'
-                    : 'black'
+              pageHasTransparentBg
+                ? 'white'
+                :
+                isMobile
+                  ? 'black'
+                  : pageHasBlackBg
+                    ? 'white'
+                    : isBusiness
+                      ? 'black'
+                      : 'black'
             }
           />
           {isBusiness && !isMobile && (
@@ -251,247 +261,247 @@ const LandingPageNavbar = () => {
                   >
                     {userIsloggedIn
                       ? AUTHENTICATED_USER_LINKS.map(link => {
-                          const isActive =
-                            pathname === link.href ||
-                            pathname.startsWith(link.href + '/');
+                        const isActive =
+                          pathname === link.href ||
+                          pathname.startsWith(link.href + '/');
 
-                          // Notifications should be a dropdown
-                          if (link.name === 'Notifications') {
-                            return (
-                              <li key={link.name}>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <button
-                                      className={cn(
-                                        'flex size-[2.75rem] items-center justify-center rounded-full',
-                                        isActive
-                                          ? 'bg-[#ECE9FE]'
-                                          : pageHasBlackBg
-                                            ? 'bg-[#FFFFFF4D]'
-                                            : 'bg-[#F8FAFC]',
-                                        isActive
-                                          ? 'text-primary-600'
-                                          : pageHasBlackBg
-                                            ? 'hover:text-primary-400 text-white'
-                                            : 'hover:text-primary-600 text-black'
-                                      )}
-                                    >
-                                      <link.icon className='' />
-                                      <span className='sr-only'>
-                                        {link.name}
-                                      </span>
-                                    </button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent
-                                    className='max-h-[500px] w-[400px] overflow-y-hidden p-0'
-                                    align='start'
-                                  >
-                                    <NotificationsDropdownContent />
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </li>
-                            );
-                          }
-
+                        // Notifications should be a dropdown
+                        if (link.name === 'Notifications') {
                           return (
-                            <li key={link.name} className=''>
-                              <Link
-                                href={link.href}
-                                className={cn(
-                                  'flex size-[2.75rem] items-center justify-center rounded-full',
-                                  isActive
-                                    ? 'bg-[#ECE9FE]'
-                                    : pageHasBlackBg
-                                      ? 'bg-[#FFFFFF4D]'
-                                      : 'bg-[#F8FAFC]',
-                                  isActive
-                                    ? 'text-primary-600'
-                                    : pageHasBlackBg
-                                      ? 'hover:text-primary-400 text-white'
-                                      : 'hover:text-primary-600 text-black'
-                                )}
-                              >
-                                <link.icon className='' />
-                                <span className='sr-only'>{link.name}</span>
-                              </Link>
+                            <li key={link.name}>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button
+                                    className={cn(
+                                      'flex size-[2.75rem] items-center justify-center rounded-full',
+                                      isActive
+                                        ? 'bg-[#ECE9FE]'
+                                        : pageHasBlackBg
+                                          ? 'bg-[#FFFFFF4D]'
+                                          : 'bg-[#F8FAFC]',
+                                      isActive
+                                        ? 'text-primary-600'
+                                        : pageHasBlackBg
+                                          ? 'hover:text-primary-400 text-white'
+                                          : 'hover:text-primary-600 text-black'
+                                    )}
+                                  >
+                                    <link.icon className='' />
+                                    <span className='sr-only'>
+                                      {link.name}
+                                    </span>
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  className='max-h-[500px] w-[400px] overflow-y-hidden p-0'
+                                  align='start'
+                                >
+                                  <NotificationsDropdownContent />
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </li>
                           );
-                        })
-                      : VISITORS_LINKS.map(link => {
-                          // Listings and Cities get dropdown menus
-                          if (link.name === 'Listings') {
-                            return (
-                              <li key={link.name}>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <button
-                                      className={cn(
-                                        'flex items-center gap-1 px-4',
-                                        pageHasBlackBg
-                                          ? 'text-white'
-                                          : 'text-black'
-                                      )}
-                                    >
-                                      {link.name}
-                                      <CaretDown className='h-3 w-3' />
-                                    </button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent
-                                    className='max-h-[600px] w-[880px] overflow-y-auto p-6'
-                                    align='start'
-                                  >
-                                    <div className='mb-3'>
-                                      <p className='mb-1 text-xs text-gray-600'>
-                                        Discover a world of businesses and
-                                        services across lifestyle, wellness,
-                                        fashion, food, tech, and more
-                                      </p>
-                                      <Link
-                                        href='/businesses/explore'
-                                        className='text-primary-600 flex items-center gap-1 text-sm hover:underline'
-                                      >
-                                        Explore all category →
-                                      </Link>
-                                    </div>
+                        }
 
-                                    <h3 className='mb-6 text-2xl font-bold'>
-                                      Browse Category
-                                    </h3>
-
-                                    <div className='grid grid-cols-4 gap-4'>
-                                      {categories.map(category => {
-                                        const iconName = category.name
-                                          ?.split(' ')[0]
-                                          ?.toLowerCase() as CategoryIconType;
-
-                                        return (
-                                          <Link
-                                            key={category.id}
-                                            href={`/businesses/search?category=${encodeURIComponent(category.name)}`}
-                                            className='group flex items-start gap-2.5 hover:!text-primary'
-                                          >
-                                            <BusinessCategoryIcons
-                                              className='text-primary-600 group-hover:!fill-primary-600 group-hover:!stroke-primary-600 size-5 !shrink-0 group-hover:!text-primary'
-                                              value={iconName}
-                                            />
-                                            <div className='group-hover:!fill-primary-600 group-hover:!stroke-primary-600 mb-0.5 group-hover:!text-primary'>
-                                              <h4 className='flex items-center gap-2 text-[0.825rem] font-semibold capitalize group-hover:!text-primary'>
-                                                {category.name}
-                                              </h4>
-                                              {category.subcategories &&
-                                                category.subcategories.length >
-                                                  0 && (
-                                                  <p className='text-[0.675rem] text-gray-600 group-hover:!text-primary'>
-                                                    {category.subcategories
-                                                      .slice(0, 3)
-                                                      .map(sub => sub.name)
-                                                      .join(', ')}
-                                                    {category.subcategories
-                                                      .length > 3 && '...'}
-                                                  </p>
-                                                )}
-                                            </div>
-                                          </Link>
-                                        );
-                                      })}
-                                    </div>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </li>
-                            );
-                          }
-
-                          if (link.name === 'Cities') {
-                            return (
-                              <li key={link.name}>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <button
-                                      className={cn(
-                                        'flex items-center gap-1 px-4',
-                                        pageHasBlackBg
-                                          ? 'text-white'
-                                          : 'text-black'
-                                      )}
-                                    >
-                                      {link.name}
-                                      <CaretDown className='h-3 w-3' />
-                                    </button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent
-                                    className='w-[880px] p-8'
-                                    align='start'
-                                  >
-                                    <div className='mb-3'>
-                                      <p className='mb-1 text-xs text-gray-600'>
-                                        Discover a world of businesses and
-                                        services across lifestyle, wellness,
-                                        fashion, food, tech, and more
-                                      </p>
-                                      <Link
-                                        href='/businesses/search'
-                                        className='text-primary-600 flex items-center gap-1 text-sm hover:underline'
-                                      >
-                                        Explore all Cities →
-                                      </Link>
-                                    </div>
-
-                                    <h3 className='mb-6 text-2xl font-bold'>
-                                      Browse by City
-                                    </h3>
-
-                                    <div className='mb-6'>
-                                      <h4 className='mb-3 flex items-center gap-2 text-sm font-semibold'>
-                                        <span>🔥</span> Popular
-                                      </h4>
-                                      <div className='flex flex-wrap gap-3'>
-                                        {popularStates.map(state => (
-                                          <Link
-                                            key={state.name}
-                                            href={`/businesses/search?state=${encodeURIComponent(state.name)}`}
-                                            className='rounded-full bg-black px-6 py-2 text-white transition-colors hover:bg-gray-800'
-                                          >
-                                            {state.name}
-                                          </Link>
-                                        ))}
-                                      </div>
-                                    </div>
-
-                                    <div>
-                                      <h4 className='mb-4 text-base font-bold'>
-                                        Others
-                                      </h4>
-                                      <div className='flex flex-wrap gap-3'>
-                                        {otherStates.map(state => (
-                                          <Link
-                                            key={state.name}
-                                            href={`/businesses/search?state=${encodeURIComponent(state.name)}`}
-                                            className='rounded-full bg-gray-100 px-6 py-2 text-black transition-colors hover:bg-gray-200'
-                                          >
-                                            {state.name}
-                                          </Link>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </li>
-                            );
-                          }
-
-                          // Regular links (Home, Explore, Blog, FAQs)
-                          return (
-                            <li
-                              key={link.name}
+                        return (
+                          <li key={link.name} className=''>
+                            <Link
+                              href={link.href}
                               className={cn(
-                                'px-4',
-                                pageHasBlackBg ? 'text-white' : ''
+                                'flex size-[2.75rem] items-center justify-center rounded-full',
+                                isActive
+                                  ? 'bg-[#ECE9FE]'
+                                  : pageHasBlackBg
+                                    ? 'bg-[#FFFFFF4D]'
+                                    : 'bg-[#F8FAFC]',
+                                isActive
+                                  ? 'text-primary-600'
+                                  : pageHasBlackBg
+                                    ? 'hover:text-primary-400 text-white'
+                                    : 'hover:text-primary-600 text-black'
                               )}
                             >
-                              <Link href={link.href}>{link.name}</Link>
+                              <link.icon className='' />
+                              <span className='sr-only'>{link.name}</span>
+                            </Link>
+                          </li>
+                        );
+                      })
+                      : VISITORS_LINKS.map(link => {
+                        // Listings and Cities get dropdown menus
+                        if (link.name === 'Listings') {
+                          return (
+                            <li key={link.name}>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button
+                                    className={cn(
+                                      'flex items-center gap-1 px-4',
+                                      pageHasBlackBg
+                                        ? 'text-white'
+                                        : 'text-black'
+                                    )}
+                                  >
+                                    {link.name}
+                                    <CaretDown className='h-3 w-3' />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  className='max-h-[600px] w-[880px] overflow-y-auto p-6'
+                                  align='start'
+                                >
+                                  <div className='mb-3'>
+                                    <p className='mb-1 text-xs text-gray-600'>
+                                      Discover a world of businesses and
+                                      services across lifestyle, wellness,
+                                      fashion, food, tech, and more
+                                    </p>
+                                    <Link
+                                      href='/businesses/explore'
+                                      className='text-primary-600 flex items-center gap-1 text-sm hover:underline'
+                                    >
+                                      Explore all category →
+                                    </Link>
+                                  </div>
+
+                                  <h3 className='mb-6 text-2xl font-bold'>
+                                    Browse Category
+                                  </h3>
+
+                                  <div className='grid grid-cols-4 gap-4'>
+                                    {categories.map(category => {
+                                      const iconName = category.name
+                                        ?.split(' ')[0]
+                                        ?.toLowerCase() as CategoryIconType;
+
+                                      return (
+                                        <Link
+                                          key={category.id}
+                                          href={`/businesses/search?category=${encodeURIComponent(category.name)}`}
+                                          className='group flex items-start gap-2.5 hover:!text-primary'
+                                        >
+                                          <BusinessCategoryIcons
+                                            className='text-primary-600 group-hover:!fill-primary-600 group-hover:!stroke-primary-600 size-5 !shrink-0 group-hover:!text-primary'
+                                            value={iconName}
+                                          />
+                                          <div className='group-hover:!fill-primary-600 group-hover:!stroke-primary-600 mb-0.5 group-hover:!text-primary'>
+                                            <h4 className='flex items-center gap-2 text-[0.825rem] font-semibold capitalize group-hover:!text-primary'>
+                                              {category.name}
+                                            </h4>
+                                            {category.subcategories &&
+                                              category.subcategories.length >
+                                              0 && (
+                                                <p className='text-[0.675rem] text-gray-600 group-hover:!text-primary'>
+                                                  {category.subcategories
+                                                    .slice(0, 3)
+                                                    .map(sub => sub.name)
+                                                    .join(', ')}
+                                                  {category.subcategories
+                                                    .length > 3 && '...'}
+                                                </p>
+                                              )}
+                                          </div>
+                                        </Link>
+                                      );
+                                    })}
+                                  </div>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </li>
                           );
-                        })}
+                        }
+
+                        if (link.name === 'Cities') {
+                          return (
+                            <li key={link.name}>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button
+                                    className={cn(
+                                      'flex items-center gap-1 px-4',
+                                      pageHasBlackBg
+                                        ? 'text-white'
+                                        : 'text-black'
+                                    )}
+                                  >
+                                    {link.name}
+                                    <CaretDown className='h-3 w-3' />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  className='w-[880px] p-8'
+                                  align='start'
+                                >
+                                  <div className='mb-3'>
+                                    <p className='mb-1 text-xs text-gray-600'>
+                                      Discover a world of businesses and
+                                      services across lifestyle, wellness,
+                                      fashion, food, tech, and more
+                                    </p>
+                                    <Link
+                                      href='/businesses/search'
+                                      className='text-primary-600 flex items-center gap-1 text-sm hover:underline'
+                                    >
+                                      Explore all Cities →
+                                    </Link>
+                                  </div>
+
+                                  <h3 className='mb-6 text-2xl font-bold'>
+                                    Browse by City
+                                  </h3>
+
+                                  <div className='mb-6'>
+                                    <h4 className='mb-3 flex items-center gap-2 text-sm font-semibold'>
+                                      <span>🔥</span> Popular
+                                    </h4>
+                                    <div className='flex flex-wrap gap-3'>
+                                      {popularStates.map(state => (
+                                        <Link
+                                          key={state.name}
+                                          href={`/businesses/search?state=${encodeURIComponent(state.name)}`}
+                                          className='rounded-full bg-black px-6 py-2 text-white transition-colors hover:bg-gray-800'
+                                        >
+                                          {state.name}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <h4 className='mb-4 text-base font-bold'>
+                                      Others
+                                    </h4>
+                                    <div className='flex flex-wrap gap-3'>
+                                      {otherStates.map(state => (
+                                        <Link
+                                          key={state.name}
+                                          href={`/businesses/search?state=${encodeURIComponent(state.name)}`}
+                                          className='rounded-full bg-gray-100 px-6 py-2 text-black transition-colors hover:bg-gray-200'
+                                        >
+                                          {state.name}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </li>
+                          );
+                        }
+
+                        // Regular links (Home, Explore, Blog, FAQs)
+                        return (
+                          <li
+                            key={link.name}
+                            className={cn(
+                              'px-4',
+                              pageHasBlackBg ? 'text-white' : ''
+                            )}
+                          >
+                            <Link href={link.href}>{link.name}</Link>
+                          </li>
+                        );
+                      })}
                   </ul>
                 )}
 
@@ -508,6 +518,7 @@ const LandingPageNavbar = () => {
                     <MobileMenu
                       isMobile={isMobile}
                       pageHasBlackBg={pageHasBlackBg}
+                      pageHasTransparentBg={pageHasTransparentBg}
                       VISITORS_LINKS={VISITORS_LINKS}
                       userIsLoggedIn={userIsloggedIn}
                     />
@@ -521,7 +532,7 @@ const LandingPageNavbar = () => {
                       className={cn(
                         '',
                         isMobile
-                          ? 'text-black max-md:text-base'
+                          ? 'text-white max-md:text-base'
                           : pageHasBlackBg && 'text-white'
                       )}
                     >
@@ -532,6 +543,7 @@ const LandingPageNavbar = () => {
                       <MobileMenu
                         isMobile={isMobile}
                         pageHasBlackBg={pageHasBlackBg}
+                        pageHasTransparentBg={pageHasTransparentBg}
                         VISITORS_LINKS={VISITORS_LINKS}
                         userIsLoggedIn={false}
                       />
@@ -558,11 +570,13 @@ export default LandingPageNavbar;
 
 const MobileMenu = ({
   pageHasBlackBg,
+  pageHasTransparentBg,
   isMobile,
   VISITORS_LINKS,
   userIsLoggedIn,
 }: {
   pageHasBlackBg: boolean;
+  pageHasTransparentBg: boolean;
   isMobile: boolean;
   userIsLoggedIn: boolean;
   VISITORS_LINKS: {
@@ -575,26 +589,33 @@ const MobileMenu = ({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild className='p-0'>
         <button
           className={cn(
             'flex !cursor-pointer items-center gap-1 rounded-full',
-            isMobile ? '' : 'px-2 py-1',
-            !isMobile && pageHasBlackBg
-              ? 'text-white hover:bg-white/20'
-              : 'text-black hover:bg-gray-200'
+            isMobile ? '' : 'p-0',
+            (isMobile && pageHasTransparentBg) ? "text-white" :
+              !isMobile && pageHasBlackBg
+                ? 'text-white hover:bg-white/20'
+                : 'text-black hover:bg-gray-200'
           )}
         >
           {isMobile ? (
             <>
               {userIsLoggedIn ? (
-                <span className='flex size-8 items-center justify-center rounded-full bg-purple-800 text-base font-semibold text-white'>
-                  {getInitials(
-                    `${user?.first_name} ${user?.last_name}` || 'US'
-                  )}
-                </span>
+
+                <div className='flex items-center justify-center gap-4 text-white'>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="white" />
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.5309 11.8001C15.2823 11.3697 15.4298 10.8193 15.8603 10.5707L16.6397 10.1207C17.0702 9.8722 17.6206 10.0197 17.8691 10.4502C18.1495 10.9358 18.8505 10.9358 19.1309 10.4502C19.3794 10.0197 19.9298 9.8722 20.3603 10.1207L21.1397 10.5707C21.5702 10.8193 21.7177 11.3697 21.4691 11.8002C21.1888 12.2858 21.5392 12.8928 22.1 12.8928C22.5971 12.8928 23 13.2958 23 13.7928V14.6928C23 15.1899 22.5971 15.5928 22.1 15.5928C21.5392 15.5928 21.1887 16.1999 21.4691 16.6855C21.7177 17.116 21.5702 17.6664 21.1397 17.915L20.3603 18.365C19.9298 18.6135 19.3794 18.466 19.1309 18.0355C18.8505 17.5499 18.1495 17.5499 17.8691 18.0355C17.6206 18.466 17.0702 18.6135 16.6397 18.365L15.8603 17.915C15.4298 17.6664 15.2823 17.116 15.5309 16.6855C15.8113 16.1999 15.4608 15.5928 14.9 15.5928C14.4029 15.5928 14 15.1899 14 14.6928V13.7928C14 13.2958 14.4029 12.8928 14.9 12.8928C15.4608 12.8928 15.8112 12.2858 15.5309 11.8001ZM18.4998 15.9745C19.4557 15.9745 20.2306 15.1996 20.2306 14.2437C20.2306 13.2878 19.4557 12.5129 18.4998 12.5129C17.5439 12.5129 16.769 13.2878 16.769 14.2437C16.769 15.1996 17.5439 15.9745 18.4998 15.9745Z" fill="white" />
+                    <path d="M13.25 13.7928C13.25 13.5337 13.3097 13.2885 13.4162 13.0703C12.9565 13.0241 12.4833 13 12 13C7.58172 13 4 15.0147 4 17.5C4 19.9853 7.58172 22 12 22C15.3724 22 18.2574 20.8262 19.4343 19.1654C19.057 19.0518 18.7194 18.8037 18.5 18.4421C18.036 19.2069 17.0433 19.464 16.2647 19.0145L15.4853 18.5645C14.7067 18.115 14.4331 17.1267 14.8634 16.3424C13.969 16.323 13.25 15.5919 13.25 14.6928V13.7928Z" fill="white" />
+                  </svg>
+
+                  <MenuBarIcon whiteText={pageHasTransparentBg && isMobile} />
+                </div>
+
               ) : (
-                <MenuBarIcon />
+                <MenuBarIcon whiteText={pageHasTransparentBg && isMobile} />
               )}
             </>
           ) : (

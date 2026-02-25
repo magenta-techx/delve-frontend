@@ -117,29 +117,29 @@ const BusinessSearch = (): JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit} className='w-full'>
-      <div className='flex w-full flex-col rounded-xl bg-white shadow-sm max-md:!w-[90vw] max-md:max-w-[600px] sm:flex-row'>
+      <div className='flex w-full flex-col rounded-xl bg-white shadow-sm max-md:!w-[85vw] max-md:max-w-[600px] sm:flex-row'>
         <div className='flex flex-col divide-y divide-[#E3E8EF] sm:flex-1 sm:flex-row sm:divide-x sm:divide-y-0'>
           <div className='flex items-center gap-3 px-5 py-4 sm:flex-1 md:p-5'>
             <span className='hidden sm:flex'>
               <BaseIcons value='search-black' />
             </span>
             <span className='sm:hidden'>
-              <BaseIcons value='stars-primary' />
+              <BaseIcons value='stars-primary' className='!size-4' />
             </span>
             <input
               type='text'
               value={searchText}
               onChange={event => setSearchText(event.target.value)}
               placeholder='What are you looking for?'
-              className='w-full border-none bg-transparent font-inter text-sm font-normal text-[#0F172B] outline-none placeholder:text-[#0F0F0F] sm:text-base'
+              className='w-full border-none bg-transparent font-inter text-[0.8rem] font-normal text-[#0F172B] outline-none placeholder:text-[#0F0F0F] sm:text-base'
               aria-label='Search text'
             />
 
             <button
               type='submit'
-              className='flex items-center justify-center gap-2 rounded-full bg-[#6E44FF] px-2.5 py-1.5 text-[0.8rem] font-medium text-white transition-colors hover:bg-[#5B36D4] sm:px-8 sm:text-base md:hidden md:p-5 lg:px-8 xl:px-10'
+              className='flex items-center justify-center gap-2 rounded-full bg-[#6E44FF] px-2.5 py-1.5 text-[0.7rem] font-medium text-white transition-colors hover:bg-[#5B36D4] sm:px-8 sm:text-base md:hidden md:p-5 lg:px-8 xl:px-10'
             >
-              <BaseIcons value='search-white' />
+              <BaseIcons value='search-white' className='!size-3' />
               Search
             </button>
           </div>
@@ -151,13 +151,13 @@ const BusinessSearch = (): JSX.Element => {
                 setLocationOpen(prev => !prev);
                 setCategoryOpen(false);
               }}
-              className='flex w-full items-center justify-between gap-2 p-5 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
+              className='flex w-full items-center justify-between gap-2 p-5 text-left text-[0.8rem] text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
               aria-haspopup='listbox'
               aria-expanded={locationOpen}
             >
               <span className='flex items-center gap-2 truncate text-[#0F172B]'>
                 <span className='text-[#6E44FF]'>
-                  <BaseIcons value='location-primary' />
+                  <BaseIcons value='location-primary' className='!size-4 md:!size-5' />
                 </span>
                 <span className='truncate'>
                   {selectedLocation?.label ?? 'Current location'}
@@ -212,11 +212,10 @@ const BusinessSearch = (): JSX.Element => {
                         <button
                           type='button'
                           role='option'
-                          className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm sm:text-base ${
-                            selectedLocation?.id === option.id
-                              ? 'text-[#6E44FF]'
-                              : 'text-[#0F172B]'
-                          } hover:bg-[#F4F3FF]`}
+                          className={`flex w-full items-center justify-between px-4 py-2 text-left text-[0.8rem] sm:text-base ${selectedLocation?.id === option.id
+                            ? 'text-[#6E44FF]'
+                            : 'text-[#0F172B]'
+                            } hover:bg-[#F4F3FF]`}
                           onClick={() => {
                             setSelectedLocation(option);
                             setLocationOpen(false);
@@ -297,11 +296,10 @@ const BusinessSearch = (): JSX.Element => {
                         <button
                           type='button'
                           role='option'
-                          className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm sm:text-base ${
-                            selectedCategory?.id === option.id
-                              ? 'text-[#6E44FF]'
-                              : 'text-[#0F172B]'
-                          } hover:bg-[#F4F3FF]`}
+                          className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm sm:text-base ${selectedCategory?.id === option.id
+                            ? 'text-[#6E44FF]'
+                            : 'text-[#0F172B]'
+                            } hover:bg-[#F4F3FF]`}
                           onClick={() => {
                             setSelectedCategory(option);
                             setCategoryOpen(false);

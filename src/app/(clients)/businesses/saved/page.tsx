@@ -33,14 +33,14 @@ export default function Page() {
   const categories = savedBusinessesData?.data.map(item => item.category.name) || [];
 
   // Filter data based on selected category
-  const filteredData = selectedCategory === 'all' 
-    ? savedBusinessesData?.data 
+  const filteredData = selectedCategory === 'all'
+    ? savedBusinessesData?.data
     : savedBusinessesData?.data.filter(item => item.category.name === selectedCategory);
 
   return (
     <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 '>
-   
-      <header className='relative z-10 mt-20 w-full px-4 sm:px-0 md:mt-28'>
+
+      <header className='relative z-10 mt-20 w-full sm:px-4 sm:px-0 md:mt-28'>
         <div className='mb-3 flex w-full items-center justify-between'>
           <h1 className='font-inter text-lg font-semibold text-[#0F0F0F] sm:text-xl md:text-2xl'>
             Saved Businesses
@@ -101,7 +101,7 @@ export default function Page() {
 
             {/* Category Dropdown */}
             <div className='relative'>
-              <button 
+              <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className='flex items-center gap-2 border-l border-[#E3E8EF] px-1.5 py-2 text-xs hover:bg-gray-50 md:px-4 md:py-3 md:text-sm rounded-r-xl'
               >
@@ -126,15 +126,14 @@ export default function Page() {
 
               {/* Dropdown Menu */}
               {isDropdownOpen && (
-                <div className='absolute top-full left-0 mt-1 w-48 bg-white border border-[#E3E8EF] rounded-lg shadow-xl z-[100] max-h-60 overflow-y-auto'>
+                <div className='absolute top-full right-0 mt-1 w-48 bg-white border border-[#E3E8EF] rounded-lg shadow-xl z-[100] max-h-60 overflow-y-auto'>
                   <button
                     onClick={() => {
                       setSelectedCategory('all');
                       setIsDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
-                      selectedCategory === 'all' ? 'bg-purple-50 text-[#551FB9] font-medium' : 'text-gray-700'
-                    }`}
+                    className={`w-full text-left px-4 py-2.5 text-xs sm:text-sm hover:bg-gray-50 transition-colors ${selectedCategory === 'all' ? 'bg-purple-50 text-[#551FB9] font-medium' : 'text-gray-700'
+                      }`}
                   >
                     All Categories
                   </button>
@@ -145,9 +144,8 @@ export default function Page() {
                         setSelectedCategory(category);
                         setIsDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
-                        selectedCategory === category ? 'bg-purple-50 text-[#551FB9] font-medium' : 'text-gray-700'
-                      }`}
+                      className={`w-full text-left px-4 py-2.5 text-xs sm:text-sm hover:bg-gray-50 transition-colors ${selectedCategory === category ? 'bg-purple-50 text-[#551FB9] font-medium' : 'text-gray-700'
+                        }`}
                     >
                       {convertToTitleCase(category)}
                     </button>
@@ -156,12 +154,12 @@ export default function Page() {
               )}
             </div>
 
-            <button className='bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-primary/90 max-md:hidden md:px-8 md:py-3 md:text-sm rounded-r-lg'>
+            <button className='bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-primary/90 max-md:hidden md:px-8 md:py-3 md:text-sm rounded-r-lg '>
               Search
             </button>
           </div>
 
-          <button className='w-full rounded-lg bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-[#551FB9]/90 md:hidden md:px-8 md:py-3 md:text-sm'>
+          <button className='w-full rounded-lg bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-[#551FB9]/90 md:hidden md:px-8 md:py-3 md:text-sm max-w-max ml-auto'>
             Search
           </button>
         </search>
@@ -223,11 +221,11 @@ export default function Page() {
                   opts={{ align: 'start', loop: false }}
                   className='w-full max-w-full px-2'
                 >
-                  <CarouselContent className='-ml-2 gap-4 py-4'>
+                  <CarouselContent className='-ml-2 gap-1 md:gap-4 py-4'>
                     {item.businesses.map((business, key) => (
                       <CarouselItem
                         key={business.id ?? key}
-                        className='basis-[70vw] pl-2 sm:basis-[320px]'
+                        className='basis-[76vw] pl-2 sm:basis-[320px]'
                       >
                         <FeaturedListingCard business={business} />
                       </CarouselItem>
