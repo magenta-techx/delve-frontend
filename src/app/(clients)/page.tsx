@@ -179,7 +179,7 @@ export default function HomePage() {
       </div>
 
       {/* featured listings  */}
-      <div className='flex w-full flex-col items-center justify-between px-4 pt-7 sm:pt-16 md:px-16 lg:px-24'>
+      <div className='flex w-full flex-col items-center justify-between pt-7 sm:pt-16 md:px-16 lg:px-24'>
         <SectionHeader
           header='Trusted by dozens of happy clients. '
           paragraph='Featured Listing'
@@ -196,14 +196,14 @@ export default function HomePage() {
                     : 'start',
                 loop: false,
               }}
-              className='container mx-auto w-[90vw] xl:w-[85vw]'
+              className='container mx-auto w-screen md:w-[90vw] xl:w-[85vw]'
             >
-              <CarouselContent className='-ml-2 gap-2 py-4'>
+              <CarouselContent className='-ml-2 gap-2 max-md:px-4 py-4'>
                 {loadingApproved
                   ? Array.from({ length: 6 }).map((_, key) => (
                     <CarouselItem
                       key={key}
-                      className='basis-[80vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
+                      className='basis-[80vw] md:pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
                     >
                       <ListingCardSkeleton classStyle='w-full sm:w-[300px] xl:w-full !aspect-[342/427]' />
                     </CarouselItem>
@@ -211,7 +211,7 @@ export default function HomePage() {
                   : approved.map((business, key) => (
                     <CarouselItem
                       key={business.id ?? key}
-                      className='basis-[80vw] pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
+                      className='basis-[80vw] md:pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
                     >
                       <FeaturedListingCard business={business} isBigCard />
                     </CarouselItem>
@@ -225,7 +225,7 @@ export default function HomePage() {
 
         {/* Serch By location  */}
         <div className='container mb-10 lg:max-xl:px-12'>
-          <header className='flex items-center justify-between'>
+          <header className='flex items-center justify-between max-md:px-4'>
             <h2 className='text-base font-semibold sm:text-2xl'>
               Search by location
             </h2>
@@ -247,7 +247,7 @@ export default function HomePage() {
                 opts={{ align: 'start', loop: false }}
                 className='w-full'
               >
-                <CarouselContent className='-ml-2 p-2'>
+                <CarouselContent className='-ml-2 p-2 max-md:px-4'>
                   {LOCATIONS.map((location, key) => (
                     <CarouselItem
                       key={key}
@@ -267,7 +267,7 @@ export default function HomePage() {
         </div>
 
         {/* Sponsored picks  */}
-        <div className='container relative'>
+        <div className='container relative max-md:px-4'>
           <SectionHeader header='Sponsored Picks' paragraph='Spotlight' />
 
           <header className='mb-4 flex items-center justify-between font-semibold sm:flex md:mt-10 md:text-lg xl:text-xl'>
@@ -296,7 +296,7 @@ export default function HomePage() {
               className='w-full max-w-full'
               setApi={setSponsoredCarouselApi}
             >
-              <CarouselContent className='-ml-4 sm:gap-x-2'>
+              <CarouselContent className='-ml-4 max-md:px-4 sm:gap-x-2'>
                 {sponsoredAds?.data.map((sponsored, key) => {
                   return (
                     <CarouselItem
@@ -359,7 +359,7 @@ export default function HomePage() {
                     ? Array.from({ length: 6 }).map((_, key) => (
                       <CarouselItem
                         key={key}
-                        className='basis-[70vw] pl-2 sm:basis-[300px] xl:basis-[380px] 2xl:px-4'
+                        className='basis-[70vw] md:pl-2 sm:basis-[300px] xl:basis-[380px] 2xl:px-4'
                       >
                         <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
                       </CarouselItem>

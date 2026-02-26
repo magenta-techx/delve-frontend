@@ -8,11 +8,12 @@ import {
   useBusinessCategories,
   useBusinessStates,
 } from '@/app/(clients)/misc/api/metadata';
-import { Button,  EmptyState, Input, Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui';
+import { Button, EmptyState, Input, Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
 import { cn } from '@/lib/utils';
 import { FeaturedListingCard } from '../../misc/components';
+import EmptyBusinessSearchGraphic from '@/assets/graphics/EmptyBusinessSearchGraphic';
 
 type SearchPatch = {
   searchText?: string | null;
@@ -48,7 +49,7 @@ const FilterChip = ({
   <button
     type='button'
     onClick={onRemove}
-    className='inline-flex items-center gap-2 rounded-full border border-[#E3E8EF] bg-[#F8FAFC] px-3 py-1.5 text-xs font-medium text-[#0F172B] transition hover:border-[#6E44FF] hover:text-[#5B36D4]'
+    className='inline-flex items-center gap-2 rounded-full border border-[#E3E8EF] bg-[#F8FAFC] p-1.5 text-[0.625rem] md:px-3 md:py-1.5 font-medium text-[#0F172B] transition hover:border-[#6E44FF] hover:text-[#5B36D4]'
   >
     <span className='truncate'>{label}</span>
     <span className='text-sm font-semibold text-[#6E44FF]'>x</span>
@@ -76,7 +77,7 @@ const BusinessSearchPage = (): JSX.Element => {
       categories: true,
     }
   );
-  
+
   const toggleSection = useCallback((section: SectionKey) => {
     setOpenSections(prev => ({
       ...prev,
@@ -221,16 +222,22 @@ const BusinessSearchPage = (): JSX.Element => {
       : 'We could not complete the search. Please try again.';
 
   return (
-    <div className='relative mx-auto flex min-h-screen w-full container flex-1 flex-col gap-10 bg-[#F8FAFC] px-4 pb-24 pt-32 lg:flex-row lg:px-6'>
+    <div className='relative mx-auto flex min-h-screen w-full container flex-1 flex-col gap-10 bg-[#F8FAFC] px-4 py-24 md:pt-32 lg:flex-row lg:px-6'>
       {/* Mobile Bottom Sheet */}
       <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
-        <SheetContent side="bottom" className="lg:hidden max-h-[85vh] rounded-t-3xl flex flex-col !p-0">
-          <SheetHeader className="px-4 py-4 border-b border-[#E3E8EF]">
-            <SheetTitle className="text-lg font-semibold text-[#0F172B]">
+        <SheetContent side="left" className="lg:hidden w-screen max-w-screen flex flex-col !p-0" showCloseButton={false}>
+          <SheetHeader className="flex !flex-row justify-between items-center px-4 py-4 border-b border-[#E3E8EF]">
+            <SheetTitle className="text-base font-semibold text-[#0F172B]">
               Filter Search
             </SheetTitle>
+
+            <SheetClose asChild>
+              <button type="button" className="text-[#94A3B8]">
+                Close
+              </button>
+            </SheetClose>
           </SheetHeader>
-          
+
           {/* Scrollable Content */}
           <div className='flex-1 overflow-y-auto px-4 py-6'>
             <div className='flex flex-col gap-6'>
@@ -241,7 +248,7 @@ const BusinessSearchPage = (): JSX.Element => {
                 size='sm'
                 leftIcon={<BaseIcons value='search-black' />}
                 leftIconContainerClass='text-[#94A3B8]'
-                className='h-11 rounded-2xl border-[#E2E8F0] bg-[#FFFFFF] text-sm text-[#0F172B] placeholder:text-[#94A3B8] focus:border-[#6E44FF] focus-visible:border-[#6E44FF]'
+                className='h-10 rounded-2xl border-[#E2E8F0] bg-[#FFFFFF] text-sm text-[#0F172B] placeholder:text-[#94A3B8] focus:border-[#6E44FF] focus-visible:border-[#6E44FF]'
               />
 
               {/* States */}
@@ -408,7 +415,7 @@ const BusinessSearchPage = (): JSX.Element => {
               size='sm'
               leftIcon={<BaseIcons value='search-black' />}
               leftIconContainerClass='text-[#94A3B8]'
-              className='h-11 rounded-2xl border-[#E2E8F0] bg-[#FFFFFF] text-sm text-[#0F172B] placeholder:text-[#94A3B8] focus:border-[#6E44FF] focus-visible:border-[#6E44FF]'
+              className='h-10 rounded-2xl border-[#E2E8F0] bg-[#FFFFFF] text-sm text-[#0F172B] placeholder:text-[#94A3B8] focus:border-[#6E44FF] focus-visible:border-[#6E44FF]'
             />
           </div>
 
@@ -431,7 +438,7 @@ const BusinessSearchPage = (): JSX.Element => {
                 You have not added any filters yet. Use the search bar or quick
                 filters below to start exploring.
               </p>
-            )} 
+            )}
           </div>
 
           <section className=''>
@@ -610,34 +617,36 @@ const BusinessSearchPage = (): JSX.Element => {
 
       <div className='flex-1'>
         {/* Mobile Filter Button - Only visible on mobile */}
-        <div className='mb-4 flex items-center gap-3 lg:hidden'>
+        <div className='mb-4 flex items-stretch gap-3 lg:hidden'>
           <button
             type='button'
             onClick={() => setIsMobileFilterOpen(true)}
-            className='relative flex items-center gap-2 rounded-xl border border-[#E3E8EF] bg-white px-4 py-2.5 text-sm font-medium text-[#0F172B] shadow-sm transition hover:border-[#6E44FF] hover:shadow'
+            className='relative flex items-center gap-2 px-2 text-sm font-medium text-[#0F172B] transition hover:border-[#6E44FF] hover:shadow'
           >
             <BaseIcons value='filter-outlined-black' />
             <span>Filter</span>
             {hasAnyFilter && (
-              <span className='absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#6E44FF] px-1.5 text-xs font-semibold text-white'>
+              <span className='absolute -right-0 -top-0 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#6E44FF]  text-[0.625rem] font-semibold text-white'>
                 {activeFilters.length}
               </span>
             )}
           </button>
-          <div className='h-11 flex-1'>
+          <div className='h-10 flex-1'>
             <Input
               placeholder='Search'
               size='sm'
               leftIcon={<BaseIcons value='search-black' />}
               leftIconContainerClass='text-[#94A3B8]'
-              className='h-full rounded-2xl border-[#E2E8F0] text-sm placeholder:text-[#94A3B8]'
+              containerClassName='h-10'
+              className='h-10 rounded-xl !bg-transparent border-[#E2E8F0] text-sm placeholder:text-[#94A3B8]'
             />
           </div>
         </div>
 
         <div className='flex flex-wrap items-center justify-between gap-4'>
           <div>
-            <h2 className='text-2xl font-semibold text-[#0F172B]'>{heading}</h2>
+
+            <h2 className={cn('text-2xl font-semibold text-[#0F172B]', !searchTextParam && "max-md:hidden")}>{heading}</h2>
             <p className='text-sm text-[#64748B]'>{resultLabel}</p>
           </div>
           {hasAnyFilter ? (
@@ -655,10 +664,11 @@ const BusinessSearchPage = (): JSX.Element => {
         <div className='mt-8'>
           {isError ? (
             <EmptyState
-              title='Something went wrong'
+              title='Oops! No businesses found'
+              media={<EmptyBusinessSearchGraphic />}
               description={errormessage}
               actions={
-                <Button variant='neutral' onClick={() => router.refresh()}>
+                <Button onClick={() => router.refresh()}>
                   Retry search
                 </Button>
               }
@@ -672,9 +682,14 @@ const BusinessSearchPage = (): JSX.Element => {
             </div>
           ) : businesses.length === 0 ? (
             <EmptyState
-              title='No businesses found'
-              description='Try adjusting your filters or searching with a different keyword.'
+              media={<EmptyBusinessSearchGraphic />}
+              title='Oops! No businesses found. Try adjusting your filters or searching with a different keyword'
               className='rounded-3xl border border-[#E3E8EF] bg-white py-16'
+              actions={
+                <Button onClick={handleClearFilters}>
+                  Clear filters
+                </Button>
+              }
             />
           ) : (
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>

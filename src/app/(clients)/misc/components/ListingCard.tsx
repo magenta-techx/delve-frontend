@@ -74,7 +74,7 @@ const FeaturedListingCard = ({
       <article
         ref={articleRef}
         className={cn(
-          'group  rounded-2xl border-2 border-[#FEC601] p-1 sm:!aspect-[342/427] md:rounded-3xl md:p-1.5',
+          'group rounded-[0.9rem] border-[1.5px] md:border-2 border-[#FEC601] p-1 sm:!aspect-[342/427] md:rounded-3xl md:p-1.5',
           isSelectable && 'cursor-pointer',
           isBigCard ? 'xl:rounded-[1.8rem] aspect-[342/427] ' : '!aspect-[15/13]'
         )}
@@ -85,7 +85,7 @@ const FeaturedListingCard = ({
       >
         <div
           className={cn(
-            'relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2',
+            'relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2 max-md:rounded-[11px] max-md:!overflow-clip',
             isBigCard && 'xl:rounded-[1.5rem]'
           )}
         >

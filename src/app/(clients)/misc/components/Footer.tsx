@@ -120,7 +120,7 @@ const Footer = () => {
           <aside className='max-md: flex w-full flex-col gap-8 max-md:px-10 sm:px-6 md:max-w-xl'>
             <Logo textColor='black' className='w-20 sm:w-24 xl:w-28' />
             <div className='flex flex-col items-start gap-4 overflow-hidden rounded-2xl sm:flex-row sm:items-center sm:gap-5 sm:p-6 lg:border lg:border-[#EBEEF5]'>
-              <div className='w-32 sm:mx-0 sm:w-40 md:mx-auto'>
+              <div className='max-w-md:hidden w-32 sm:mx-0 sm:w-40 md:mx-auto'>
                 <NewProductLaunchGraphics />
               </div>
               <div className='flex w-full flex-col items-start gap-2'>

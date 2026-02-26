@@ -9,6 +9,7 @@ import SessionProviderWrapper from '@/contexts/SessionProviderWrapper';
 import QueryProvider from '@/contexts/QueryProvider';
 import { NotificationProvider } from '@/contexts/NotificationProvider';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { Wrapper } from './Wrapper';
 
 
 const AllProvider = async ({ children }: { children: React.ReactNode }) => {
@@ -20,8 +21,10 @@ const AllProvider = async ({ children }: { children: React.ReactNode }) => {
         <UserProvider>
           <SavedBusinessesProvider>
             <NotificationProvider>
-              <Toaster />
-              {children}
+              <Wrapper>
+                <Toaster />
+                {children}
+              </Wrapper>
             </NotificationProvider>
           </SavedBusinessesProvider>
         </UserProvider>

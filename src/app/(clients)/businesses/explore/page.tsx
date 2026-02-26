@@ -71,7 +71,7 @@ export default function HomePage(): JSX.Element {
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
             <BaseIcons value='stars-primary' />
-            <h1 className='text-2xl font-bold'>Listings around you</h1>
+            <h1 className='text-2xl font-semibold'>Listings around you</h1>
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
@@ -104,7 +104,7 @@ export default function HomePage(): JSX.Element {
               ? Array.from({ length: 5 }).map((_, key) => (
                 <ListingCardSkeleton
                   key={key}
-                  classStyle={'!aspect-[5/6] w-full'}
+                  classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
                 />
               ))
               : approved.map((business, key) => (
@@ -119,24 +119,24 @@ export default function HomePage(): JSX.Element {
       </div>
 
       {/* mobile  */}
-      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden px-4 sm:hidden'>
+      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
         <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
-          <h1 className='flex items-center gap-2 font-inter text-[16px] font-bold sm:text-2xl'>
-            <BaseIcons value='stars-primary' />
+          <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
+            <BaseIcons value='stars-primary' className='!size-4' />
             Listings around you
           </h1>
         </div>
         <div className='mb-8 md:mb-20 flex w-full items-center'>
           <Carousel
             opts={{ align: 'start', loop: false }}
-            className='w-full max-w-full px-2'
+            className='w-full max-w-full md:px-2'
           >
-            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4'>
+            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
               {loadingApproved
                 ? Array.from({ length: 4 }).map((_, key) => (
                   <CarouselItem
                     key={key}
-                    className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    className='basis-[80vw] pl-2 sm:basis-[340px]'
                   >
                     <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
                   </CarouselItem>
@@ -144,7 +144,7 @@ export default function HomePage(): JSX.Element {
                 : approved.map((business, key) => (
                   <CarouselItem
                     key={business.id ?? key}
-                    className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    className='basis-[80vw] pl-2 sm:basis-[340px]'
                   >
                     <FeaturedListingCard business={business} />
                   </CarouselItem>
@@ -162,7 +162,7 @@ export default function HomePage(): JSX.Element {
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
             <BaseIcons value='flames-yellow' />
-            <h1 className='text-2xl font-bold'>Featured</h1>
+            <h1 className='text-2xl font-semibold'>Featured</h1>
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
@@ -195,7 +195,7 @@ export default function HomePage(): JSX.Element {
               ? Array.from({ length: 5 }).map((_, key) => (
                 <ListingCardSkeleton
                   key={key}
-                  classStyle={'!aspect-[5/6] w-full'}
+                  classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
                 />
               ))
               : approved.map((business, key) => (
@@ -210,9 +210,9 @@ export default function HomePage(): JSX.Element {
       </div>
 
       {/* mobile  */}
-      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden px-4 sm:hidden'>
+      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
         <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
-          <h1 className='flex items-center gap-2 font-inter text-[16px] font-bold sm:text-2xl'>
+          <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
             <BaseIcons value='flames-yellow' className='!size-4' />
             Featured
           </h1>
@@ -220,14 +220,14 @@ export default function HomePage(): JSX.Element {
         <div className='mb-8 md:mb-20 flex w-full items-center'>
           <Carousel
             opts={{ align: 'start', loop: false }}
-            className='w-full max-w-full px-2'
+            className='w-full max-w-full md:px-2'
           >
-            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4'>
+            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
               {loadingApproved
                 ? Array.from({ length: 4 }).map((_, key) => (
                   <CarouselItem
                     key={key}
-                    className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    className='basis-[80vw] pl-2 sm:basis-[340px]'
                   >
                     <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
                   </CarouselItem>
@@ -235,7 +235,7 @@ export default function HomePage(): JSX.Element {
                 : approved.map((business, key) => (
                   <CarouselItem
                     key={business.id ?? key}
-                    className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    className='basis-[80vw] pl-2 sm:basis-[340px]'
                   >
                     <FeaturedListingCard business={business} />
                   </CarouselItem>
@@ -252,8 +252,8 @@ export default function HomePage(): JSX.Element {
       <div className='container hidden w-full px-8 sm:block'>
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
-            <BaseIcons value='stars-primary' />
-            <h1 className='text-2xl font-bold'>Listings around you</h1>
+            <BaseIcons value='stars-primary' className='!size-4' />
+            <h1 className='text-2xl font-semibold'>Listings around you</h1>
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
@@ -286,7 +286,7 @@ export default function HomePage(): JSX.Element {
               ? Array.from({ length: 5 }).map((_, key) => (
                 <ListingCardSkeleton
                   key={key}
-                  classStyle={'!aspect-[5/6] w-full'}
+                  classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
                 />
               ))
               : approved.map((business, key) => (
@@ -301,24 +301,23 @@ export default function HomePage(): JSX.Element {
       </div>
 
       {/* mobile  */}
-      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden px-4 sm:hidden'>
+      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
         <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
-          <h1 className='flex items-center gap-2 font-inter text-[16px] font-bold sm:text-2xl'>
-            <BaseIcons value='stars-primary' />
+          <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
             Explore
           </h1>
         </div>
         <div className='mb-8 md:mb-20 flex w-full items-center'>
           <Carousel
             opts={{ align: 'start', loop: false }}
-            className='w-full max-w-full px-2'
+            className='w-full max-w-full md:px-2'
           >
-            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4'>
+            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
               {loadingApproved
                 ? Array.from({ length: 4 }).map((_, key) => (
                   <CarouselItem
                     key={key}
-                    className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    className='basis-[80vw] pl-2 sm:basis-[340px]'
                   >
                     <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
                   </CarouselItem>
@@ -326,7 +325,7 @@ export default function HomePage(): JSX.Element {
                 : approved.map((business, key) => (
                   <CarouselItem
                     key={business.id ?? key}
-                    className='basis-[70vw] pl-2 sm:basis-[340px]'
+                    className='basis-[80vw] pl-2 sm:basis-[340px]'
                   >
                     <FeaturedListingCard business={business} />
                   </CarouselItem>

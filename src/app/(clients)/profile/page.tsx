@@ -191,7 +191,7 @@ const ProfilePage = () => {
       <Button
         type='submit'
         size='dynamic_lg'
-        className='w-full rounded-2xl py-3 text-base font-semibold shadow-sm bg-[#551FB9] mt-6 max-w-[180px]'
+        className='w-full rounded-xl md:rounded-2xl py-5 md:py-3 text-base font-semibold shadow-sm bg-[#551FB9] my-8 md:mt-6 md:max-w-[180px]'
         isLoading={updateProfileMutation.isPending}
       >
         Change
@@ -246,6 +246,7 @@ const ProfilePage = () => {
             onImageSelect={handleImageSelect}
             fileInputRef={fileInputRef}
             joinDateLabel={joinDateLabel!}
+            selectedImage={selectedImage}
           />
 
           {/* Password Change Side Panel - Desktop Only */}
@@ -268,10 +269,10 @@ const ProfilePage = () => {
 
       {/* Password Change Bottom Sheet - Mobile Only */}
       <Sheet open={isPasswordPanelOpen && isMobile} onOpenChange={setIsPasswordPanelOpen}>
-        <SheetContent side='bottom' className='rounded-t-2xl px-6 pb-8 pt-4'>
+        <SheetContent side='bottom' className='rounded-t-2xl px-6 pb-4 md:pb-8 pt-4' showCloseButton={false}>
           <SheetHeader className='mb-6'>
             <div className='flex items-center justify-between'>
-              <SheetTitle className='text-lg font-semibold text-[#0F172B]'>
+              <SheetTitle className='text-base md:text-lg font-medium text-[#0F172B]'>
                 Change Password
               </SheetTitle>
               <button
@@ -303,6 +304,7 @@ type ProfilePanelProps = {
   onImageSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   fileInputRef: React.RefObject<HTMLInputElement>;
   joinDateLabel?: string;
+  selectedImage?: File | null;
 };
 
 const ProfilePanel = ({
@@ -317,6 +319,7 @@ const ProfilePanel = ({
   onImageSelect,
   fileInputRef,
   joinDateLabel,
+  selectedImage,
 }: ProfilePanelProps) => {
   const firstName = profileForm.watch('first_name');
   const lastName = profileForm.watch('last_name');
@@ -326,50 +329,47 @@ const ProfilePanel = ({
   }
 
   return (
-    <section className=' !max-w-[853px] h-max bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.06)] border border-[#E3E8EF] rounded-2xl sm:p-8'>
-      <div className='flex flex-wrap items-start justify-between gap-5 border-b border-[#F1F5F9] pb-6'>
-        <section className='flex flex-col'>
-          <div className='flex items-end gap-4'>
-            <div className='relative'>
-              <Avatar className='h-16 w-16 ring-4 ring-[#F2ECFF]'>
-                <AvatarImage src={avatarUrl ?? undefined} alt={displayName} />
-                <AvatarFallback className='bg-[#EEF2FF] text-lg font-semibold text-[#4C1D95]'>
-                  {getInitials(firstName, lastName, displayName)}
-                </AvatarFallback>
-              </Avatar>
-              <input
-                ref={fileInputRef as React.RefObject<HTMLInputElement>}
-                type='file'
-                accept='image/*'
-                className='hidden'
-                onChange={onImageSelect}
-              />
-            </div>
-
-            <Button
-              type='button'
-              variant='colored_outline'
-              size='sm'
-              className='rounded-lg px-4 text-xs font-semibold text-[#5F2EEA]'
-              onClick={() => fileInputRef.current?.click()}
-            >
-              Change profile
-            </Button>
-          </div>
-        </section>
-
-        <Badge className='rounded-2xl bg-[#FFF4ED] px-4 py-1 text-xs font-semibold text-[#4B5565] shadow-sm'>
-          Joined&nbsp;{joinDateLabel}
+    <section className=' !max-w-[853px] h-max md:bg-white p-2 md:p-6 md:shadow-[0_20px_60px_rgba(15,23,42,0.06)] md:border md:border-[#E3E8EF] md:rounded-[32px] sm:p-8'>
+      {/* Top right joined badge */}
+      <div className='flex justify-end mb-2'>
+        <Badge className='rounded-xl bg-[#F8F7FB] px-3 py-1.5 text-[11px] font-medium text-[#8F90A6] shadow-none border-none'>
+          Joined <span className="ml-1.5 text-[#0F172B] font-semibold">{joinDateLabel}</span>
         </Badge>
       </div>
 
+      <div className='flex flex-col items-center gap-4 border-b border-[#F1F5F9] pb-4 md:pb-8'>
+        <div className='relative'>
+          <Avatar className='h-20 w-20 ring-[6px] ring-[#F8F7FB]'>
+            <AvatarImage src={avatarUrl ?? undefined} alt={displayName} />
+            <AvatarFallback className='bg-[#EEF2FF] text-xl font-semibold text-[#4C1D95]'>
+              {getInitials(firstName, lastName, displayName)}
+            </AvatarFallback>
+          </Avatar>
+          <input
+            ref={fileInputRef as React.RefObject<HTMLInputElement>}
+            type='file'
+            accept='image/*'
+            className='hidden'
+            onChange={onImageSelect}
+          />
+        </div>
+
+        <Button
+          type='button'
+          size='sm'
+          className='rounded-xl border border-[#E3E8EF] bg-[#F8F7FB] px-5 py-2 max-md:py-4 hover:bg-[#F8F7FB]/80 text-[13px] font-medium text-[#551FB9] shadow-none'
+          onClick={() => fileInputRef.current?.click()}
+        >
+          Change profile
+        </Button>
+      </div>
+
       <form onSubmit={onSubmit}>
-        <h3 className='mt-6 mb-4 text-base font-semibold text-[#0F172B]'>Account Management</h3>
-        
+        <h3 className='mt-8 mb-4 text-base font-semibold text-[#0F172B]'>Account Management</h3>
+
         <div className='grid gap-5 sm:grid-cols-2'>
           <Input
             label='First name'
-            optional
             placeholder='Enter first name'
             {...profileForm.register('first_name')}
             haserror={!!profileForm.formState.errors.first_name}
@@ -377,7 +377,6 @@ const ProfilePanel = ({
           />
           <Input
             label='Last name'
-            optional
             placeholder='Enter last name'
             {...profileForm.register('last_name')}
             haserror={!!profileForm.formState.errors.last_name}
@@ -386,26 +385,24 @@ const ProfilePanel = ({
           <Input
             label='Email address'
             containerClassName='sm:col-span-2'
-            optional
             value={email}
             readOnly
             disabled
             placeholder='Email address'
           />
-          <div className='flex flex-col gap-2 sm:col-span-2'>
+          <div className='flex flex-col gap-3 sm:col-span-2'>
             <Input
               label='Password'
               containerClassName='w-full'
-              optional
               type='password'
               value='******************'
               readOnly
+              disabled
             />
             <Button
               type='button'
-              variant='outline'
               size='sm'
-              className='w-fit rounded-full border-[#E2E8F0] px-4 text-xs font-semibold text-[#0F172B]'
+              className='w-fit rounded-xl border border-[#E3E8EF] bg-[#F8F7FB] px-5 py-2 hover:bg-[#F8F7FB]/80 text-[13px] font-medium text-[#551FB9] shadow-none'
               onClick={onOpenPasswordPanel}
             >
               Change password
@@ -416,7 +413,13 @@ const ProfilePanel = ({
         <Button
           type='submit'
           size='dynamic_lg'
-          className='mt-8 w-full rounded-2xl max-w-[400px] py-3 text-base font-semibold shadow-sm bg-[#551FB9]'
+          className={cn(
+            'mt-8 w-full rounded-xl md:rounded-2xl max-w-[400px] py-[14px] text-[0.9rem] md:text-base font-medium md:font-semibold shadow-none transition-all',
+            (!profileForm.formState.isDirty && !selectedImage)
+              ? 'bg-[#E3E8EF] text-[#8F90A6] hover:bg-[#E3E8EF]'
+              : 'bg-[#551FB9] text-white hover:bg-[#551FB9]/90'
+          )}
+          disabled={!profileForm.formState.isDirty && !selectedImage}
           isLoading={isSubmitting}
         >
           Save Changes
