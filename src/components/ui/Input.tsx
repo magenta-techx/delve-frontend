@@ -15,7 +15,7 @@ function formFieldVariants({ variant = "default", size = "default" }: { variant?
   };
   const sizes: Record<Size, string> = {
     sm: "h-9 px-3 py-2 text-sm",
-    default: "h-12 px-3 py-3 text-sm",
+    default: "h-11 md:h-12 px-3 py-2.5 md:py-3 text-[0.8rem] md:text-sm",
     lg: "h-14 px-4 py-3 text-lg",
   };
   return [base, variants[variant], sizes[size]].join(" ");
@@ -23,7 +23,7 @@ function formFieldVariants({ variant = "default", size = "default" }: { variant?
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
-    FormFieldVariants {
+  FormFieldVariants {
   haserror?: boolean;
   errormessage?: string | undefined;
   errormessageClass?: string;
@@ -64,7 +64,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={cn("flex flex-col gap-1.5", containerClassName)}>
         {label && (
-          <label className={cn("text-sm text-[#0F172B] font-inter font-medium", labelClassName)} htmlFor={label}>
+          <label className={cn("text-[0.8rem] md:text-sm text-[#0F172B] font-inter font-medium", labelClassName)} htmlFor={label}>
             {label}
             {!optional && <span className="text-red-400 font-medium"> *</span>}
           </label>

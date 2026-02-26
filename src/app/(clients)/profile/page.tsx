@@ -202,13 +202,14 @@ const ProfilePage = () => {
   return (
     <div className='min-h-screen w-screen overflow-hidden bg-[#F8F7FB] sm:px-6 lg:px-12'>
       <section className='container  mx-auto p-4 pt-16 md:pt-24'>
-        <header className='flex w-full flex-col gap-2 py-8'>
-          <h1 className='flex items-center gap-2 text-xl font-semibold text-[#0F172B]'>
+        <header className='flex w-full flex-col gap-2 pt-4 md:py-8'>
+          <h1 className='flex items-center gap-2 text-base md:text-xl font-semibold text-[#0F172B]'>
             <svg
               width='23'
               height='24'
               viewBox='0 0 23 24'
               fill='none'
+              className='size-4 md:size-6'
               xmlns='http://www.w3.org/2000/svg'
             >
               <path
@@ -365,7 +366,7 @@ const ProfilePanel = ({
       </div>
 
       <form onSubmit={onSubmit}>
-        <h3 className='mt-8 mb-4 text-base font-semibold text-[#0F172B]'>Account Management</h3>
+        <h3 className='mt-8 mb-4 text-sm md:text-base font-semibold text-[#0F172B]'>Account Management</h3>
 
         <div className='grid gap-5 sm:grid-cols-2'>
           <Input
@@ -412,9 +413,9 @@ const ProfilePanel = ({
 
         <Button
           type='submit'
-          size='dynamic_lg'
+          size='lg'
           className={cn(
-            'mt-8 w-full rounded-xl md:rounded-2xl max-w-[400px] py-[14px] text-[0.9rem] md:text-base font-medium md:font-semibold shadow-none transition-all',
+            'max-md:mb-12 mt-8 w-full rounded-xl md:rounded-2xl max-w-[400px] py-[14px] text-[0.9rem] md:text-base font-medium md:font-semibold shadow-none transition-all',
             (!profileForm.formState.isDirty && !selectedImage)
               ? 'bg-[#E3E8EF] text-[#8F90A6] hover:bg-[#E3E8EF]'
               : 'bg-[#551FB9] text-white hover:bg-[#551FB9]/90'
