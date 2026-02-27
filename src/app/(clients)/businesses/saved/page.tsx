@@ -2,7 +2,7 @@
 import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
 import { useSavedBusinesses } from '@/app/(clients)/misc/api/user';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -26,16 +26,45 @@ export default function Page() {
     Boolean(session?.user?.accessToken || session?.user?.email)
   );
   const [searchText, setSearchText] = useState('');
+  const [debouncedSearchText, setDebouncedSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchText(searchText);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchText]);
 
   // Get unique categories from the data
   const categories = savedBusinessesData?.data.map(item => item.category.name) || [];
 
-  // Filter data based on selected category
-  const filteredData = selectedCategory === 'all'
-    ? savedBusinessesData?.data
-    : savedBusinessesData?.data.filter(item => item.category.name === selectedCategory);
+  // Filter data based on selected category and search text
+  const filteredData = savedBusinessesData?.data
+    ?.map(item => {
+      if (selectedCategory !== 'all' && item.category.name !== selectedCategory) {
+        return null;
+      }
+
+      const matchingBusinesses = item.businesses.filter(business => {
+        if (!debouncedSearchText.trim()) return true;
+        const query = debouncedSearchText.toLowerCase();
+        return (
+          business.name?.toLowerCase().includes(query) ||
+          business.description?.toLowerCase().includes(query) ||
+          business.address?.toLowerCase().includes(query)
+        );
+      });
+
+      if (matchingBusinesses.length === 0) return null;
+
+      return {
+        ...item,
+        businesses: matchingBusinesses,
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
   return (
     <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 '>
@@ -72,7 +101,7 @@ export default function Page() {
         <search className='mb-6 flex w-full flex-col gap-2 md:mb-6 max-w-xl'>
           <div className='flex w-full items-center gap-0 overflow-visible rounded-lg border border-[#CDD5DF] bg-white'>
             {/* Search Input */}
-            <div className='flex flex-1 items-center gap-2 p-1.5 md:px-4 md:py-3'>
+            <div className='flex flex-1 items-center gap-2 p-2 md:px-4 py-3'>
               <svg
                 width='19'
                 height='19'
@@ -154,14 +183,12 @@ export default function Page() {
               )}
             </div>
 
-            <button className='bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-primary/90 max-md:hidden md:px-8 md:py-3 md:text-sm rounded-r-lg '>
+            <button
+              onClick={() => setDebouncedSearchText(searchText)}
+              className='bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-primary/90 max-md:hidden md:px-8 md:py-3 md:text-sm rounded-r-lg '>
               Search
             </button>
           </div>
-
-          <button className='w-full rounded-lg bg-[#551FB9] px-3 py-2 text-xs font-medium text-white hover:bg-[#551FB9]/90 md:hidden md:px-8 md:py-3 md:text-sm max-w-max ml-auto'>
-            Search
-          </button>
         </search>
       </header>
 
@@ -188,7 +215,7 @@ export default function Page() {
         ) : filteredData && filteredData.length === 0 ? (
           <div className='mt:px-0 container relative flex min-h-[45vh] w-full flex-col items-center justify-center'>
             <EmptyState
-              title='No businesses found in this category'
+              title='No businesses found'
               description=''
               className=''
               headerClassName=''
