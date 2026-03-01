@@ -201,16 +201,14 @@ export default function BusinessHoursPage() {
                                   `hours.${index}.close_hour`,
                                 ]);
                               }}
-                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                                field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
-                              }`}
+                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
+                                }`}
                             >
                               <span
-                                className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                                  field.value
-                                    ? 'translate-x-5'
-                                    : 'translate-x-0.5'
-                                }`}
+                                className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${field.value
+                                  ? 'translate-x-5'
+                                  : 'translate-x-0.5'
+                                  }`}
                               />
                             </button>
                           )}
@@ -240,7 +238,7 @@ export default function BusinessHoursPage() {
                               max='12'
                               placeholder='9'
                               disabled={!hoursWatch[index]?.is_open}
-                              className='h-9 w-12 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-xs font-semibold text-[#212121] sm:text-sm md:w-14 md:rounded-lg'
+                              className='!h-9 w-12 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-xs font-semibold text-[#212121] sm:text-sm md:w-14 md:rounded-lg'
                               onChange={e => {
                                 field.onChange(e);
                                 trigger(`hours.${index}.close_hour`);
@@ -262,7 +260,7 @@ export default function BusinessHoursPage() {
                                 ]);
                               }}
                               disabled={!hoursWatch[index]?.is_open}
-                              className='h-9 rounded border border-[#EEF2F6] bg-white px-2 py-1.5 text-xs text-[#212121] md:rounded-lg'
+                              className='!h-9 !appearance-none rounded border border-[#EEF2F6] bg-white px-2 py-1.5 text-xs text-[#212121] md:rounded-lg'
                             >
                               <option value='AM'>AM</option>
                               <option value='PM'>PM</option>
@@ -335,16 +333,14 @@ export default function BusinessHoursPage() {
                                 `hours.${index}.close_hour`,
                               ]);
                             }}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
-                            }`}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
+                              }`}
                           >
                             <span
-                              className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-                                field.value
-                                  ? 'translate-x-[1.45rem]'
-                                  : 'translate-x-0.5'
-                              }`}
+                              className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${field.value
+                                ? 'translate-x-[1.45rem]'
+                                : 'translate-x-0.5'
+                                }`}
                             />
                           </button>
                         )}
