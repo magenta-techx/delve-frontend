@@ -768,75 +768,61 @@ const MobileMenu = ({
                       <span>{user.first_name} {user.last_name}</span>
                     </div>
                     {VISITORS_LINKS.map((link, key) => (
-                      <SheetClose key={key} asChild>
-                        <Link
-                          href={link.href}
-                          className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
-                        >
-                          {link.name}
-                        </Link>
-                      </SheetClose>
-                    ))}
-                    <div className="h-px w-full bg-gray-200/60 my-1" />
-                    <SheetClose asChild>
                       <Link
-                        href="/profile"
+                        href={link.href}
                         className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
                       >
-                        Profile Settings
+                        {link.name}
                       </Link>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <button
-                        className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors text-left'
-                        onClick={() => signOut({ callbackUrl: '/' })}
-                      >
-                        Logout
-                      </button>
-                    </SheetClose>
+                    ))}
+                    <div className="h-px w-full bg-gray-200/60 my-1" />
+                    <Link
+                      href="/profile"
+                      className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
+                    >
+                      Profile Settings
+                    </Link>
+                    <button
+                      className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors text-left'
+                      onClick={() => signOut({ callbackUrl: '/' })}
+                    >
+                      Logout
+                    </button>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-8">
                     {VISITORS_LINKS.map((link, key) => (
-                      <SheetClose key={key} asChild>
-                        <Link
-                          href={link.href}
-                          className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
-                        >
-                          {link.name}
-                        </Link>
-                      </SheetClose>
+                      <Link
+                        href={link.href}
+                        className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
+                      >
+                        {link.name}
+                      </Link>
                     ))}
                     <div className="h-[1px] w-full bg-gray-200/80 my-1" />
-                    <SheetClose asChild>
-                      <Link
-                        href="/signin"
-                        className='flex items-center gap-3 text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
-                      >
-                        <User className="size-[1.125rem] text-gray-600 fill-current" /> Sign In
-                      </Link>
-                    </SheetClose>
+                    <Link
+                      href="/signin"
+                      className='flex items-center gap-3 text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
+                    >
+                      <User className="size-[1.125rem] text-gray-600 fill-current" /> Sign In
+                    </Link>
                   </div>
                 )}
                 <div className="mt-12">
                   {userIsLoggedIn && user?.is_brand_owner ? (
-                    <SheetClose asChild>
-                      <LinkButton
-                        href='/business'
-                        className='w-full bg-[#551FB9] hover:bg-[#551FB9]/90 text-white font-medium py-[1.6rem] rounded-xl text-[1.05rem] flex items-center justify-center gap-2'
-                      >
-                        Business Dashboard <ArrowUpRight className="size-5" />
-                      </LinkButton>
-                    </SheetClose>
+                    <LinkButton
+                      href='/business'
+                      className='w-full bg-[#551FB9] hover:bg-[#551FB9]/90 text-white font-medium py-[1.6rem] rounded-xl text-[1.05rem] flex items-center justify-center gap-2'
+                    >
+                      Business Dashboard <ArrowUpRight className="size-5" />
+                    </LinkButton>
                   ) : (
-                    <SheetClose asChild>
-                      <LinkButton
-                        href='/businesses'
-                        className='w-full bg-[#551FB9] hover:bg-[#551FB9]/90 text-white font-medium py-[1.6rem] rounded-xl text-[1.05rem] flex items-center justify-center gap-2'
-                      >
-                        List business <ArrowUpRight className="size-5" />
-                      </LinkButton>
-                    </SheetClose>
+                    <LinkButton
+                      href='/businesses'
+                      className='w-full bg-[#551FB9] hover:bg-[#551FB9]/90 text-white font-medium py-[1.6rem] rounded-xl text-[1.05rem] flex items-center justify-center gap-2'
+                    >
+                      List business <ArrowUpRight className="size-5" />
+                    </LinkButton>
                   )}
                 </div>
               </div>
