@@ -762,70 +762,7 @@ const MobileMenu = ({
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-full sm:max-w-72 p-0 flex flex-col bg-[#FAFAFA] border-none">
-              {/* <div className="flex-1 p-8 overflow-y-auto">
-                {userIsLoggedIn && user ? (
-                  <div className="flex flex-col gap-8">
 
-                    {VISITORS_LINKS.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
-                      >
-                        {link.name}
-                      </Link>
-                    ))}
-                    <div className="h-px w-full bg-gray-200/60 my-1" />
-                    <Link
-                      href="/profile"
-                      className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
-                    >
-                      Profile Settings
-                    </Link>
-                    <button
-                      className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors text-left'
-                      onClick={() => signOut({ callbackUrl: '/' })}
-                    >
-                      Logout
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-8">
-                    {VISITORS_LINKS.map((link, key) => (
-                      <Link
-                        href={link.href}
-                        className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
-                      >
-                        {link.name}
-                      </Link>
-                    ))}
-                    <div className="h-[1px] w-full bg-gray-200/80 my-1" />
-                    <Link
-                      href="/signin"
-                      className='flex items-center gap-3 text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
-                    >
-                      <User className="size-[1.125rem] text-gray-600 fill-current" /> Sign In
-                    </Link>
-                  </div>
-                )}
-                <div className="mt-12">
-                  {userIsLoggedIn && user?.is_brand_owner ? (
-                    <LinkButton
-                      href='/business'
-                      className='w-full bg-[#551FB9] hover:bg-[#551FB9]/90 text-white font-medium py-[1.6rem] rounded-xl text-[1.05rem] flex items-center justify-center gap-2'
-                    >
-                      Business Dashboard <ArrowUpRight className="size-5" />
-                    </LinkButton>
-                  ) : (
-                    <LinkButton
-                      href='/businesses'
-                      className='w-full bg-[#551FB9] hover:bg-[#551FB9]/90 text-white font-medium py-[1.6rem] rounded-xl text-[1.05rem] flex items-center justify-center gap-2'
-                    >
-                      List business <ArrowUpRight className="size-5" />
-                    </LinkButton>
-                  )}
-                </div>
-              </div> */}
 
               <div className='flex w-full items-center justify-center bg-[#F8FAFC] px-8 py-5'>
                 {user?.is_brand_owner ? (
