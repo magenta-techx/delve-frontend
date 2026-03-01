@@ -760,15 +760,13 @@ const MobileMenu = ({
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-full sm:max-w-full p-0 flex flex-col bg-[#FAFAFA] border-none">
-              <div className="flex-1 px-8 pt-20 overflow-y-auto">
+              <div className="flex-1 p-8 overflow-y-auto">
                 {userIsLoggedIn && user ? (
                   <div className="flex flex-col gap-8">
-                    <div className="flex items-center gap-3 text-lg font-semibold mb-2">
-                      <User className="size-6 text-gray-500 fill-current" />
-                      <span>{user.first_name} {user.last_name}</span>
-                    </div>
-                    {VISITORS_LINKS.map((link, key) => (
+
+                    {VISITORS_LINKS.map((link) => (
                       <Link
+                        key={link.href}
                         href={link.href}
                         className='block text-[1.1rem] text-gray-600 font-normal hover:text-black transition-colors'
                       >
