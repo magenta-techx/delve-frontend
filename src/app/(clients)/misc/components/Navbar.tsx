@@ -21,6 +21,8 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  DropdownMenuItem,
+  Button,
 } from '@/components/ui';
 import { LinkButton } from '@/components/ui';
 import { CaretDown } from '@/assets/icons';
@@ -759,8 +761,8 @@ const MobileMenu = ({
 
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-full sm:max-w-full p-0 flex flex-col bg-[#FAFAFA] border-none">
-              <div className="flex-1 p-8 overflow-y-auto">
+            <DropdownMenuContent align="end" className="w-full sm:max-w-72 p-0 flex flex-col bg-[#FAFAFA] border-none">
+              {/* <div className="flex-1 p-8 overflow-y-auto">
                 {userIsLoggedIn && user ? (
                   <div className="flex flex-col gap-8">
 
@@ -823,6 +825,49 @@ const MobileMenu = ({
                     </LinkButton>
                   )}
                 </div>
+              </div> */}
+
+              <div className='flex w-full items-center justify-center bg-[#F8FAFC] px-8 py-5'>
+                {user?.is_brand_owner ? (
+                  <LinkButton
+                    href='/business'
+                    className='w-full bg-[#551FB9]'
+                    size={'dynamic_lg'}
+                  >
+                    Business Dashboard
+                  </LinkButton>
+                ) : (
+                  <LinkButton
+                    href='/businesses'
+                    className='w-full bg-[#551FB9]'
+                    size={'dynamic_lg'}
+                  >
+                    List your business
+                  </LinkButton>
+                )}
+              </div>
+
+              {VISITORS_LINKS.map((link, key) => (
+                <DropdownMenuItem key={key} className='!p-0'>
+                  <Link
+                    key={key}
+                    href={link.href}
+                    className='block h-full w-full px-4 py-4 text-sm hover:bg-gray-100'
+                  >
+                    {link.name}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+
+              <div className='mt-2 p-6'>
+                <Button
+                  variant='light'
+                  size='lg'
+                  className='w-full'
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                >
+                  Logout
+                </Button>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
