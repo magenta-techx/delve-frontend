@@ -28,10 +28,10 @@ const ForgotPassword = (): JSX.Element => {
   const handleSendOtp = async (values: ForgotPasswordInput): Promise<void> => {
     try {
       const result = await forgotPasswordMutation.mutateAsync(values);
-      toast.success(`${result.message ?? 'Reset code sent to your email'} - ${values.email}`, {
+      toast(`${result.message ?? 'Reset code sent to your email'} - ${values.email}`, {
         icon: <KeyIcon />,
       });
-    
+
       navigate.push(
         `/password-reset/otp?email=${encodeURIComponent(values.email)}`
       );
@@ -46,32 +46,32 @@ const ForgotPassword = (): JSX.Element => {
   return (
     <FormProvider {...methods}>
       <form className='w-full' onSubmit={handleSubmit(handleSendOtp)}>
-          {/* Header */}
-          <AuthFormheader
-            header={'Forgot password?'}
-            subheader={'Enter your email address to continue'}
-            icon={<FingerPrintIcon />}
-            showMobileSubHeader={true}
+        {/* Header */}
+        <AuthFormheader
+          header={'Forgot password?'}
+          subheader={'Enter your email address to continue'}
+          icon={<FingerPrintIcon />}
+          showMobileSubHeader={true}
+        />
+
+        {/* Fields */}
+        <div className='mb-10 flex w-full flex-col gap-5'>
+          {/* Email Field */}
+          <Input
+            type='email'
+            placeholder='Enter Email'
+            rightIcon={<CancleIcon />}
+            haserror={Boolean(methods.formState.errors.email)}
+            errormessage={methods.formState.errors.email?.message as string | undefined}
+            {...methods.register('email')}
           />
+        </div>
 
-          {/* Fields */}
-          <div className='mb-10 flex w-full flex-col gap-5'>
-            {/* Email Field */}
-            <Input
-              type='email'
-              placeholder='Enter Email'
-              rightIcon={<CancleIcon />}
-              haserror={Boolean(methods.formState.errors.email)}
-              errormessage={methods.formState.errors.email?.message as string | undefined}
-              {...methods.register('email')}
-            />
-          </div>
+        {/* Submit Button */}
 
-          {/* Submit Button */}
-
-          <Button type='submit' disabled={!isValid || isSubmitting} isLoading={isSubmitting || forgotPasswordMutation.isPending}>
-            Send 4-digit code
-          </Button>
+        <Button type='submit' disabled={!isValid || isSubmitting} isLoading={isSubmitting || forgotPasswordMutation.isPending}>
+          Send 6-digit code
+        </Button>
       </form>
     </FormProvider>
   );

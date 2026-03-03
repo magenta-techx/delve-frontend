@@ -190,13 +190,13 @@ export const NotificationsDropdownContent = () => {
   );
 };
 
-type NotificationRowProps = {
+export type NotificationRowProps = {
   item: NotificationItem;
   onMarkSeen: (notification: NotificationItem) => void;
   isMarking: boolean;
 };
 
-const NotificationRow = ({
+export const NotificationRow = ({
   item,
   onMarkSeen,
   isMarking,
@@ -279,7 +279,7 @@ const NotificationRow = ({
   );
 };
 
-const NotificationSkeletonRow = () => (
+export const NotificationSkeletonRow = () => (
   <div className='flex items-center gap-3 px-4 py-3'>
     <div className='h-9 w-9 animate-pulse rounded-full bg-[#E2E8F0]' />
     <div className='flex-1 space-y-1.5'>
@@ -289,7 +289,7 @@ const NotificationSkeletonRow = () => (
   </div>
 );
 
-function buildNotificationKey(item: NotificationItem) {
+export function buildNotificationKey(item: NotificationItem) {
   return String(
     item.id ?? `${item.type}-${item.attached_object_id}-${item.created_when}`
   );

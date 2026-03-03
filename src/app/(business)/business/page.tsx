@@ -190,7 +190,7 @@ export default function DashboardPage(): JSX.Element {
                             />
                           </div>
                           <div className='flex min-w-0 flex-1 flex-col'>
-                            <p className='text-sm font-medium md:text-base'>
+                            <p className='text-[0.8rem] font-medium md:text-base'>
                               {conversation.customer.first_name}{' '}
                               {conversation.customer.last_name}
                             </p>
@@ -200,11 +200,11 @@ export default function DashboardPage(): JSX.Element {
                             <small className='text-end text-xs text-[#697586]'>
                               {conversation.last_message?.sent_at
                                 ? format(
-                                    new Date(
-                                      conversation.last_message?.sent_at || 0
-                                    ),
-                                    'dd MMM, hh:mm a'
-                                  )
+                                  new Date(
+                                    conversation.last_message?.sent_at || 0
+                                  ),
+                                  'dd MMM, hh:mm a'
+                                )
                                 : '--'}
                             </small>
                           </div>

@@ -46,7 +46,7 @@ export default function UserChatsPage({
   }, [chatsToShow, chats]);
 
   return (
-    <div className='container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] p-2 pt-0 md:p-4'>
+    <div className='container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] px-0 pt-14 pb-20 md:p-4'>
       <BusinessPageHeader marketPlace={true} />
 
       <div className='flex grow gap-x-4 overflow-hidden'>
@@ -127,7 +127,7 @@ export default function UserChatsPage({
                     current_chat_id === String(chat.id) && '!bg-[#F5F3FF]'
                   )}
                 >
-                  <div className='relative size-10 overflow-hidden rounded-full md:size-14'>
+                  <div className='relative size-12 overflow-hidden rounded-full md:size-14'>
                     <Image
                       src={chat.customer.profile_image || '/default-avatar.png'}
                       alt={`${chat.customer.first_name} ${chat.customer.last_name}`}
@@ -136,14 +136,14 @@ export default function UserChatsPage({
                     />
                   </div>
                   <div className='flex min-w-0 flex-1 flex-col'>
-                    <p className='text-sm font-medium md:text-base'>
+                    <p className='font-semibold text-sm md:text-base md:font-medium'>
                       {chat.customer.first_name} {chat.customer.last_name}
                     </p>
                     <p
                       className={cn(
                         'line-clamp-2 min-h-[2lh] text-xs leading-tight text-[#111927] md:text-[0.825rem]',
                         chat.last_message?.is_image_message &&
-                          'flex items-center gap-1'
+                        'flex items-center gap-1'
                       )}
                     >
                       {chat.last_message?.is_image_message ? (

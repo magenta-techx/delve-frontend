@@ -168,11 +168,8 @@ const BusinessSearch = (): JSX.Element => {
                 transition={{ duration: 0.2 }}
                 className='text-[#6E44FF]'
               >
-                <span className='hidden md:flex'>
-                  <BaseIcons value='search-white' />
-                  Search
-                </span>
-                <span className='flex md:hidden'>
+
+                <span className='flex'>
                   <CaretDown className='size-4' />
                 </span>
               </motion.span>
@@ -252,11 +249,8 @@ const BusinessSearch = (): JSX.Element => {
                 transition={{ duration: 0.2 }}
                 className='text-[#6E44FF]'
               >
-                <span className='hidden md:flex'>
-                  <BaseIcons value='search-white' />
-                  Search
-                </span>
-                <span className='flex md:hidden'>
+
+                <span className='flex'>
                   <CaretDown className='size-4' />
                 </span>
               </motion.span>

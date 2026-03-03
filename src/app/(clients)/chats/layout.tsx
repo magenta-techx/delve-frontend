@@ -27,48 +27,78 @@ export default function UserChatsPage({
   const current_chat_id = (params?.['chat_id'] as string) || null;
   const [chatsToShow, setChatsToShow] = React.useState('All');
   const [filteredChats, setFilteredChats] = React.useState(chats);
+  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   React.useEffect(() => {
     if (chats) {
-      if (chatsToShow === 'All') {
-        setFilteredChats(chats);
-      } else {
-        setFilteredChats({
-          ...chats,
-          data: chats.data.filter(chat => chat.last_message.is_read),
-        });
+      let filtered = chats.data;
+      if (chatsToShow === 'Unread') {
+        filtered = filtered.filter(chat => !chat.last_message?.is_read);
       }
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(chat => chat.business.name.toLowerCase().includes(query));
+      }
+      setFilteredChats({
+        ...chats,
+        data: filtered,
+      });
     }
-  }, [chatsToShow, chats]);
+  }, [chatsToShow, chats, searchQuery]);
 
   return (
-    <div className='container mx-auto flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] pb-4 md:pt-20 lg:!pt-28'>
+    <div className='container mx-auto flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] px-0 pb-16 md:p-4 md:pt-20 lg:!pt-28'>
       <section
         className={cn(
-          'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:w-80 xl:rounded-3xl'
+          'relative flex w-full flex-col overflow-hidden max-md:rounded-none max-md:border-none border border-[#ECE9FE] bg-background lg:w-80 rounded-2xl xl:rounded-3xl',
+          !!current_chat_id && 'max-lg:hidden'
         )}
       >
-        <nav className='sticky top-0 flex items-center justify-between border-b border-border bg-white p-2 xl:px-6 xl:py-4'>
-          <h1 className='font-inter text-lg font-semibold text-[#0F0F0F]'>
-            Messages
-          </h1>
-          <div className='flex items-center gap-4'>
-            <button>
-              <svg
-                className='size-4'
-                width='19'
-                height='19'
-                viewBox='0 0 19 19'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  fillRule='evenodd'
-                  clipRule='evenodd'
-                  d='M12.8453 14.3663C11.5006 15.3913 9.82137 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 10.0713 15.2128 11.9587 13.9214 13.3794C13.9479 13.3975 13.9736 13.4175 13.9983 13.4394L18.4983 17.4394C18.8079 17.7146 18.8357 18.1887 18.5606 18.4983C18.2854 18.8079 17.8113 18.8357 17.5017 18.5606L13.0017 14.5606C12.9373 14.5033 12.8851 14.4375 12.8453 14.3663ZM14.5 8C14.5 11.5899 11.5899 14.5 8 14.5C4.41015 14.5 1.5 11.5899 1.5 8C1.5 4.41015 4.41015 1.5 8 1.5C11.5899 1.5 14.5 4.41015 14.5 8Z'
-                  fill='#0F0F0F'
-                />
-              </svg>
+        <nav className='sticky h-16 top-0 flex items-center justify-between border-b border-border bg-white p-2 xl:px-6 xl:py-4'>
+          {isSearchOpen ? (
+            <input
+              type='text'
+              autoFocus
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder='Search messages...'
+              className='mr-4 h-9 w-full flex-1 rounded-full bg-gray-100 px-4 text-[0.9rem] outline-none transition-all placeholder:text-gray-500 focus:ring-1 focus:ring-purple-500'
+            />
+          ) : (
+            <h1 className='font-inter text-lg font-semibold text-[#0F0F0F]'>
+              Messages
+            </h1>
+          )}
+          <div className='flex shrink-0 items-center gap-3'>
+            <button
+              onClick={() => {
+                if (isSearchOpen) {
+                  setSearchQuery('');
+                }
+                setIsSearchOpen(!isSearchOpen);
+              }}
+              className='flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-gray-100'
+            >
+              {isSearchOpen ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+              ) : (
+                <svg
+                  className='size-4'
+                  width='19'
+                  height='19'
+                  viewBox='0 0 19 19'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    fillRule='evenodd'
+                    clipRule='evenodd'
+                    d='M12.8453 14.3663C11.5006 15.3913 9.82137 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 10.0713 15.2128 11.9587 13.9214 13.3794C13.9479 13.3975 13.9736 13.4175 13.9983 13.4394L18.4983 17.4394C18.8079 17.7146 18.8357 18.1887 18.5606 18.4983C18.2854 18.8079 17.8113 18.8357 17.5017 18.5606L13.0017 14.5606C12.9373 14.5033 12.8851 14.4375 12.8453 14.3663ZM14.5 8C14.5 11.5899 11.5899 14.5 8 14.5C4.41015 14.5 1.5 11.5899 1.5 8C1.5 4.41015 4.41015 1.5 8 1.5C11.5899 1.5 14.5 4.41015 14.5 8Z'
+                    fill='#0F0F0F'
+                  />
+                </svg>
+              )}
             </button>
 
             <DropdownMenu>
@@ -119,7 +149,7 @@ export default function UserChatsPage({
                   current_chat_id === String(chat.id) && '!bg-[#F5F3FF]'
                 )}
               >
-                <div className='relative size-10 overflow-hidden rounded-full md:size-14'>
+                <div className='relative size-12 overflow-hidden rounded-full md:size-14'>
                   <Image
                     src={chat.business.logo || '/default-avatar.png'}
                     alt={chat.business.name}
@@ -128,7 +158,7 @@ export default function UserChatsPage({
                   />
                 </div>
                 <div className='flex min-w-0 flex-1 flex-col'>
-                  <p className='font-medium'>{chat.business.name}</p>
+                  <p className='font-semibold text-sm md:text-base md:font-medium'>{chat.business.name}</p>
                   <p
                     className={cn(
                       'xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight',
@@ -136,7 +166,7 @@ export default function UserChatsPage({
                         ? 'text-[#551FB9]'
                         : 'text-[#111927]',
                       chat.last_message?.is_image_message &&
-                        'flex items-center gap-1'
+                      'flex items-center gap-1'
                     )}
                   >
                     {chat.last_message?.is_image_message ? (
@@ -158,8 +188,8 @@ export default function UserChatsPage({
       {/* <section className='grid flex-1 grid-rows-[max-content,1fr] bg-background border border-[#ECE9FE] rounded-2xl overflow-hidden'> */}
       <section
         className={cn(
-          'hidden h-full flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:block xl:rounded-3xl',
-          !!current_chat_id ? 'max-lg:hidden' : ''
+          'flex flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background max-lg:!rounded-none max-lg:!border-none xl:rounded-3xl',
+          !current_chat_id ? 'hidden lg:flex' : 'max-lg:flex'
         )}
       >
         {isLoadingChats ? (

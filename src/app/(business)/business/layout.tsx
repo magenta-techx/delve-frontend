@@ -3,10 +3,11 @@
 import type React from 'react';
 import { Sidebar } from '../misc/components/layout/Sidebar';
 import { NavbarTop, NavbarBottom } from '../misc/components';
-import { BusinessProvider } from '@/contexts/BusinessContext';
+import { BusinessProvider, useBusinessContext } from '@/contexts/BusinessContext';
 import { useIsMobile } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { BusinessNotificationsProvider } from '@/contexts/BusinessNotificationsContext';
+import { useUserContext } from '@/contexts/UserContext';
 
 export default function BusinessLayout({
   children,
@@ -14,14 +15,16 @@ export default function BusinessLayout({
   children: React.ReactNode;
 }): React.ReactElement {
   const { isMobile, isLoading: calculatingScreenWidth } = useIsMobile();
-
+  const { user } = useUserContext()
+  const { businesses } = useBusinessContext()
   return (
     <BusinessProvider>
       <BusinessNotificationsProvider>
         <div
           className={cn(
             'flex h-screen bg-background',
-            isMobile && 'grid !h-dvh grid-rows-[auto,1fr,auto]'
+            isMobile && businesses?.length > 0 ? 'grid !h-dvh grid-rows-[auto,1fr,auto' :
+              isMobile ? 'flex !h-dvh flex-col' : ''
           )}
         >
           {calculatingScreenWidth ? null : isMobile ? <NavbarTop /> : <Sidebar />}
@@ -31,7 +34,7 @@ export default function BusinessLayout({
             {children}
           </div>
 
-          {isMobile && <NavbarBottom />}
+          {isMobile && user && user.is_brand_owner && businesses?.length > 0 && <NavbarBottom />}
         </div>
       </BusinessNotificationsProvider>
     </BusinessProvider>

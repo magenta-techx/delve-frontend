@@ -11,7 +11,6 @@ import Image from 'next/image';
 import { Button } from '@/components/ui';
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks';
-import { Image as ImageIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useChatSocket, type ChatDebugEntry } from '@/hooks/chat/useChatSocket';
 import { useAddImage } from '@/hooks/chat/useAddImage';
@@ -107,7 +106,7 @@ export default function ChatDetailPage() {
     } catch (e) {
       try {
         el.scrollTop = el.scrollHeight;
-      } catch {}
+      } catch { }
     }
   }, []);
 
@@ -244,56 +243,52 @@ export default function ChatDetailPage() {
   return (
     <div className='flex h-full flex-1 grid-rows-[auto_1fr_auto] flex-col'>
       <nav className='flex h-16 items-center justify-between border-b border-border px-4 lg:px-6'>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-1.5'>
           {isMobile && (
             <Link
               href='/business/messages'
               className='mr-1 flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted'
             >
-              <svg
-                width='20'
-                height='20'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
+              <svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
                 <path d='m15 18-6-6 6-6' />
               </svg>
             </Link>
           )}
           {isLoadingChats ? (
-            <div className='h-6 w-40 animate-pulse rounded bg-gray-200' />
+            <div className='h-6 w-32 animate-pulse rounded bg-gray-200' />
           ) : (
-            <h2 className='font-semibold'>
-              {`${selectedChat?.customer.first_name ?? ''} ${selectedChat?.customer.last_name ?? ''}`}
+            <h2 className='text-lg font-semibold'>
+              {isMobile ? 'Messages' : `${selectedChat?.customer.first_name ?? ''} ${selectedChat?.customer.last_name ?? ''}`}
             </h2>
           )}
         </div>
-        {/* <div className='flex items-center gap-2'>
-          {isLoadingChats ? (
-            <div className='h-8 w-32 animate-pulse rounded-[0.825rem] bg-gray-200' />
-          ) : (
-            <LinkButton
-              href={`/businesses/${currentBusiness?.id ?? ''}`}
-              className='rounded-[0.825rem] border border-purple-500 py-1.5 text-[#551FB9] hover:!text-[#551FB9]'
-              variant='light'
-              size='md'
-            >
-              View profile
-            </LinkButton>
+        <div className='flex items-center gap-2'>
+          {isMobile && (
+            <button className='flex h-8 w-8 items-center justify-center hover:bg-muted rounded-full'>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" /></svg>
+            </button>
           )}
-        </div> */}
+        </div>
       </nav>
 
       <div
         ref={messagesContainerRef}
-        className='flex flex-1 flex-col space-y-4 overflow-y-auto p-6'
+        className='flex flex-1 flex-col space-y-4 overflow-y-auto p-4 lg:p-6 pb-2 lg:pb-6'
         onScroll={handleScroll}
       >
-        {messagesLoading && <div>Loading messages...</div>}
+        <div className='flex w-full flex-col items-center justify-center pb-6 pt-4'>
+          <div className='relative mb-2 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-black text-white'>
+            {selectedChat?.customer?.profile_image ? (
+              <Image src={selectedChat.customer.profile_image} alt='' fill className="object-cover" />
+            ) : (
+              <span className='text-xl uppercase'>{selectedChat?.customer?.first_name?.[0]}</span>
+            )}
+          </div>
+          <p className='text-sm text-gray-500'>
+            Conversation with <span className='font-semibold text-black'>{selectedChat?.customer?.first_name} {selectedChat?.customer?.last_name}</span>
+          </p>
+        </div>
+        {messagesLoading && <div className="text-center w-full">Loading messages...</div>}
         {messages && messages.data.length === 0 && (
           <div className='py-6 text-center text-gray-500'>No messages yet</div>
         )}
@@ -311,7 +306,7 @@ export default function ChatDetailPage() {
                     : 'bg-[#F8FAFC] text-foreground'
                 )}
               >
-                <p className='text-sm'>{msg.content ?? ''}</p>
+                <p className='text-[0.8rem] md:text-sm'>{msg.content ?? ''}</p>
                 {msg.is_image_message && (
                   <button
                     type='button'
@@ -384,8 +379,8 @@ export default function ChatDetailPage() {
         <div ref={bottomRef} />
       </div>
 
-      <div className='w-full p-3'>
-        <div className='flex w-full items-center rounded-2xl bg-[#F8FAFC] p-1.5'>
+      <div className='w-full p-4 lg:p-6'>
+        <div className='flex w-full items-center rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] md:bg-[#F8FAFC] py-2 pl-4 pr-2 drop-shadow-sm shadow-sm ring-1 ring-gray-100'>
           <textarea
             ref={textareaRef}
             value={text}
@@ -398,10 +393,10 @@ export default function ChatDetailPage() {
               }
             }}
             rows={1}
-            placeholder='Write your message...'
-            className='max-h-[400px] w-full resize-none border-none bg-transparent px-2 py-1 outline-none focus:border-none'
+            placeholder='Write your message..'
+            className='max-h-[200px] text-sm md:text-base w-full resize-none border-none bg-transparent py-1 outline-none placeholder:text-gray-500 focus:border-none'
           />
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-1.5'>
             <input
               ref={fileInputRef}
               type='file'
@@ -410,30 +405,37 @@ export default function ChatDetailPage() {
               onChange={sendFileFromInput}
               className='hidden'
             />
-            <Button
+            <button
               type='button'
-              size='icon'
-              onClick={handleSelectImage}
-              variant='ghost'
+              className='flex h-8 w-8 items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
             >
-              <ImageIcon className='h-4 w-4' />
-            </Button>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" x2="9.01" y1="9" y2="9" /><line x1="15" x2="15.01" y1="9" y2="9" /></svg>
+            </button>
+            <button
+              type='button'
+              onClick={handleSelectImage}
+              className='flex h-8 w-8 items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
+            </button>
             <Button
               size='icon'
               onClick={handleSend}
-              className='bg-[#ECE9FE]'
+              className='h-10 w-10 shrink-0 rounded-full bg-[#FAF5FF] hover:bg-[#F3E8FF] ml-1'
               variant='unstyled'
             >
               <svg
-                width='23'
-                height='22'
-                viewBox='0 0 23 22'
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
-                  d='M4.50998 0.31458L20.7502 8.0073C23.1525 9.14525 23.1525 12.5636 20.7502 13.7016L4.50998 21.3943C1.86889 22.6453 -0.904434 19.9382 0.282464 17.2676L2.56412 12.1339C2.62286 12.0018 2.67206 11.8666 2.71174 11.7293H11.0087C11.492 11.7293 11.8837 11.3376 11.8837 10.8543C11.8837 10.3711 11.492 9.97933 11.0087 9.97933H2.71168C2.67202 9.84216 2.62283 9.70703 2.56412 9.57493L0.282464 4.44121C-0.904433 1.77069 1.86889 -0.93646 4.50998 0.31458Z'
-                  fill={text?.length > 0 ? '#551FB9' : '#9AA4B2'}
+                  d='M22 2L11 13' stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'} strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'
+                />
+                <path
+                  d='M22 2L15 22L11 13L2 9L22 2Z' stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'} strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'
                 />
               </svg>
             </Button>

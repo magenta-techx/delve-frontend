@@ -2,7 +2,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Input, Textarea, Button } from '@/components/ui';
+import { Input, Textarea, Button, Sheet, SheetContent, SheetTrigger } from '@/components/ui';
 import {
   useCreateCollaboration,
   useCurrentUser,
@@ -157,33 +157,237 @@ export default function CollaborationForm() {
     });
   };
 
+  const renderPreview = (isMobile: boolean = false) => (
+    <article className={`custom-scrollbar flex flex-col overflow-y-auto rounded-lg bg-[#FFFFFF] p-5 ${isMobile ? 'h-full' : 'hidden xl:flex xl:h-full'}`}>
+      {/* Preview Header */}
+      <div className='mb-5 flex items-center justify-between border-b pb-3'>
+        <h2 className='text-xl font-bold text-[#0D121C]'>Preview</h2>
+        <button
+          type='button'
+          onClick={() => {
+            setInvitedMembers([]);
+          }}
+          className='text-sm text-[#9AA4B2] hover:text-[#0D121C]'
+        >
+          Clear
+        </button>
+      </div>
+
+      {/* Group Name Section */}
+      <div className='mb-4'>
+        <h3 className='mb-1.5 text-xs font-normal text-[#9AA4B2]'>
+          Group name
+        </h3>
+        {watch('name') ? (
+          <p className='text-base font-semibold text-[#0D121C]'>
+            {watch('name')}
+          </p>
+        ) : (
+          <div className='space-y-2'>
+            <div className='h-4 w-1/2 rounded bg-gray-200'></div>
+          </div>
+        )}
+      </div>
+
+      {/* Group Description Section */}
+      <div className='mb-4'>
+        <h3 className='mb-1.5 text-xs font-normal text-[#9AA4B2]'>
+          Group description
+        </h3>
+        {watch('description') ? (
+          <p className='min-h-16 text-base font-normal leading-relaxed text-[#0D121C]'>
+            {watch('description')}
+          </p>
+        ) : (
+          <div className='space-y-2'>
+            <div className='h-4 w-full rounded bg-gray-200'></div>
+            <div className='h-4 w-full rounded bg-gray-200'></div>
+            <div className='h-4 w-1/2 rounded bg-gray-200'></div>
+          </div>
+        )}
+      </div>
+
+      {/* Group Members Section */}
+      {(currentUser || invitedMembers.length > 0) && (
+        <div className='mb-4'>
+          <h3 className='mb-3 text-xs font-normal text-[#9AA4B2]'>
+            Group Members
+          </h3>
+          <div className='space-y-3'>
+            {/* Owner */}
+            {currentUser && (
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-3'>
+                  <img
+                    src={
+                      currentUser?.user.profile_image ||
+                      '/collaboration/user_1.png'
+                    }
+                    alt={`${currentUser?.user.first_name} ${currentUser?.user.last_name}`}
+                    className='size-6 md:size-10 rounded-full object-cover'
+                  />
+                  <span className='text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
+                    {currentUser?.user.first_name}{' '}
+                    {currentUser?.user.last_name}
+                  </span>
+                </div>
+                <span className='rounded-md bg-[#F8FAFC] px-3 py-2 text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
+                  Owner
+                </span>
+                <span className='text-[0.6125rem] lg:text-xs font-normal text-[#4F5E71]'>
+                  Joined {format(new Date(), 'MM-d-yyyy')}
+                </span>
+                <span className='text-[0.6125rem] lg:text-xs font-normal text-[#7C3AED]'>
+                  Active
+                </span>
+              </div>
+            )}
+            {/* Invited Members */}
+            {invitedMembers.map((member, index) => (
+              <div
+                key={index}
+                className='flex items-center justify-between rounded-md bg-[#F8FAFC] px-3 py-2'
+              >
+                <div className='flex items-center gap-3'>
+                  <img
+                    src='/collaboration/user_1.png'
+                    alt={member.email}
+                    className='size-6 md:size-10 rounded-full object-cover'
+                  />
+                  <span className='text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
+                    {(() => {
+                      const username = member.email.split('@')[0];
+                      return username && username.length > 15
+                        ? username.substring(0, 15) + '...'
+                        : username || member.email;
+                    })()}
+                  </span>
+                </div>
+                <span className='rounded-md bg-white p-1 md:px-2 text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
+                  Member
+                </span>
+                <span className='text-[0.625rem] lg:text-xs font-normal text-[#4F5E71]'>
+                  Joined {format(new Date(), 'MM-d-yyyy')}
+                </span>
+                <span className='text-[0.625rem] lg:text-xs font-normal text-[#9AA4B2]'>
+                  {member.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Group Listings Section */}
+      {Array.isArray(watch('business_ids')) &&
+        (watch('business_ids')?.length ?? 0) > 0 && (
+          <div>
+            <div className='mb-4 flex items-center justify-between'>
+              <h3 className='text-sm font-normal text-[#9AA4B2]'>
+                Group Listings
+              </h3>
+              <div className='flex items-center gap-2'>
+                <button
+                  type='button'
+                  className='text-[#9AA4B2] hover:text-[#0D121C]'
+                >
+                  <svg
+                    width='20'
+                    height='20'
+                    viewBox='0 0 20 20'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d='M12 8L8 12M8 8L12 12'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                    />
+                  </svg>
+                </button>
+                <button
+                  type='button'
+                  className='text-[#9AA4B2] hover:text-[#0D121C]'
+                >
+                  <svg
+                    width='20'
+                    height='20'
+                    viewBox='0 0 20 20'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d='M8 12L12 8M12 12L8 8'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
+              {selectedSavedBusiness.map(business => (
+                <div className=' md:basis-1/2 lg:basis-1/2'>
+                  <FeaturedListingCard
+                    key={business.id}
+                    business={business}
+                    isSelectable={true}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+    </article>
+  );
+
   return (
-    <div className='grid h-screen w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-8 xl:pb-12 xl:pt-28'>
+    <div className='grid h-screen w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-16 md:py-8 xl:pb-12 xl:pt-28'>
       <header className='mx-auto flex w-full container items-center justify-between px-4'>
-        <Link href='/businesses/saved/collaboration' className='flex items-center gap-2'>
-          <ChevronLeft className='size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
+        <Link href='/businesses/saved/collaboration' className='flex items-center gap-2 text-sm md:text-base'>
+          <ChevronLeft className='size-4 md:size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
           Back
         </Link>
 
+        {/* Desktop Save */}
         <Button
           size='dynamic_lg'
           onClick={onSubmit}
           disabled={isSubmitting || !isValid}
-          className='bg-[#551FB9]'
+          className='bg-[#551FB9] hidden xl:flex'
           isLoading={isCreatingColabo || isSendingInvite}
         >
           Save and Create
         </Button>
+
+        {/* Mobile Preview */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size='default'
+              className='bg-[#551FB9] xl:hidden'
+            >
+              Preview
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[90vh] overflow-y-auto px-0 pt-6 sm:max-w-none">
+            <div className="h-full px-4 pb-12">
+              {renderPreview(true)}
+            </div>
+          </SheetContent>
+        </Sheet>
       </header>
       <section className='mx-auto grid w-full container gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
-        <form className='flex flex-col gap-4'>
-          <h1 className='mb-2 text-base font-semibold md:text-lg'>
+        <form className='flex flex-col gap-4 max-md:mt-4'>
+          <h1 className='md:mb-2 text-base font-semibold md:text-lg'>
             Collaborate With Your Crew
           </h1>
           <div>
             <label
               htmlFor='name'
-              className='block text-sm font-medium text-gray-700'
+              className='block text-xs sm:text-sm font-medium text-gray-700'
             >
               Group Name
             </label>
@@ -191,18 +395,18 @@ export default function CollaborationForm() {
               id='name'
               {...register('name')}
               placeholder='Enter group name'
-              className='mt-1'
+              className='mt-1 max-md:text-xs'
               haserror={!!errors.name}
             />
             {errors.name && (
-              <p className='mt-1 text-sm text-red-600'>{errors.name.message}</p>
+              <p className='mt-1 text-xs sm:text-sm text-red-600'>{errors.name.message}</p>
             )}
           </div>
 
           <div>
             <label
               htmlFor='description'
-              className='block text-sm font-medium text-gray-700'
+              className='block text-xs sm:text-sm font-medium text-gray-700'
             >
               Description
             </label>
@@ -211,14 +415,15 @@ export default function CollaborationForm() {
               {...register('description')}
               placeholder='Enter description'
               rows={5}
-              className='mt-1'
+              className='mt-1 max-md:text-xs'
+              size='sm'
               haserror={!!errors.description}
               errormessage={errors.description?.message}
             />
           </div>
 
           <section className='mt-4'>
-            <h5 className='mb-2 text-sm font-medium'>Group Members</h5>
+            <h5 className='mb-2 text-[0.825rem] sm:text-sm font-medium'>Group Members</h5>
             <div className='custom-scrollbar max-h-[400px] space-y-3 overflow-y-auto'>
               {/* Owner */}
               <div className='flex items-center justify-between rounded-md bg-[#FFFFFF] px-3 py-2'>
@@ -238,11 +443,12 @@ export default function CollaborationForm() {
                 <span className='rounded-md bg-[#FEFDF0] px-3 py-2 text-[0.625rem] lg:text-xs font-medium text-yellow-600'>
                   Owner
                 </span>
-                <span className='flex items-center gap-2 text-[0.8rem] text-[#9AA4B2]'>
+                <span className='flex items-center gap-2 text-[0.625rem] sm:text-[0.8rem] text-[#9AA4B2]'>
                   <svg
                     width='15'
                     height='15'
                     viewBox='0 0 15 15'
+                    className="size-2.5 md:size-4"
                     fill='none'
                     xmlns='http://www.w3.org/2000/svg'
                   >
@@ -321,7 +527,7 @@ export default function CollaborationForm() {
               ))}
             </div>
             {isEditingEmailInvite ? (
-              <div className='mt-2.5 flex w-full items-center gap-3 rounded-xl border p-1 pl-2'>
+              <div className='mt-2.5 flex w-full items-center gap-1.5 md:gap-3 rounded-xl border p-1 pl-2'>
                 <button
                   type='button'
                   onClick={() => {
@@ -334,6 +540,7 @@ export default function CollaborationForm() {
                     width='20'
                     height='20'
                     viewBox='0 0 20 20'
+                    className="size-4 md:size-5"
                     fill='none'
                     xmlns='http://www.w3.org/2000/svg'
                   >
@@ -357,7 +564,7 @@ export default function CollaborationForm() {
                 />
                 <Button
                   type='button'
-                  size='default'
+                  size='dynamic_sm'
                   onClick={handleAddInvite}
                   className='flex-shrink-0'
                   disabled={
@@ -398,191 +605,18 @@ export default function CollaborationForm() {
               Add listings
             </Button>
           </section>
+          <Button
+            size='dynamic_lg'
+            onClick={onSubmit}
+            disabled={isSubmitting || !isValid}
+            className='bg-[#551FB9] mt-6 xl:hidden w-full'
+            isLoading={isCreatingColabo || isSendingInvite}
+          >
+            Save and Create
+          </Button>
         </form>
 
-        <article className='custom-scrollbar flex flex-col overflow-y-auto rounded-lg bg-[#FFFFFF] p-5 xl:h-full'>
-          {/* Preview Header */}
-          <div className='mb-5 flex items-center justify-between border-b pb-3'>
-            <h2 className='text-xl font-bold text-[#0D121C]'>Preview</h2>
-            <button
-              type='button'
-              onClick={() => {
-                setInvitedMembers([]);
-              }}
-              className='text-sm text-[#9AA4B2] hover:text-[#0D121C]'
-            >
-              Clear
-            </button>
-          </div>
-
-          {/* Group Name Section */}
-          <div className='mb-4'>
-            <h3 className='mb-1.5 text-xs font-normal text-[#9AA4B2]'>
-              Group name
-            </h3>
-            {watch('name') ? (
-              <p className='text-base font-semibold text-[#0D121C]'>
-                {watch('name')}
-              </p>
-            ) : (
-              <div className='space-y-2'>
-                <div className='h-4 w-1/2 rounded bg-gray-200'></div>
-              </div>
-            )}
-          </div>
-
-          {/* Group Description Section */}
-          <div className='mb-4'>
-            <h3 className='mb-1.5 text-xs font-normal text-[#9AA4B2]'>
-              Group description
-            </h3>
-            {watch('description') ? (
-              <p className='min-h-16 text-base font-normal leading-relaxed text-[#0D121C]'>
-                {watch('description')}
-              </p>
-            ) : (
-              <div className='space-y-2'>
-                <div className='h-4 w-full rounded bg-gray-200'></div>
-                <div className='h-4 w-full rounded bg-gray-200'></div>
-                <div className='h-4 w-1/2 rounded bg-gray-200'></div>
-              </div>
-            )}
-          </div>
-
-          {/* Group Members Section */}
-          {(currentUser || invitedMembers.length > 0) && (
-            <div className='mb-4'>
-              <h3 className='mb-3 text-xs font-normal text-[#9AA4B2]'>
-                Group Members
-              </h3>
-              <div className='space-y-3'>
-                {/* Owner */}
-                {currentUser && (
-                  <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-3'>
-                      <img
-                        src={
-                          currentUser?.user.profile_image ||
-                          '/collaboration/user_1.png'
-                        }
-                        alt={`${currentUser?.user.first_name} ${currentUser?.user.last_name}`}
-                        className='size-6 md:size-10 rounded-full object-cover'
-                      />
-                      <span className='text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
-                        {currentUser?.user.first_name}{' '}
-                        {currentUser?.user.last_name}
-                      </span>
-                    </div>
-                    <span className='rounded-md bg-[#F8FAFC] px-3 py-2 text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
-                      Owner
-                    </span>
-                    <span className='text-[0.6125rem] lg:text-xs font-normal text-[#4F5E71]'>
-                      Joined {format(new Date(), 'MM-d-yyyy')}
-                    </span>
-                    <span className='text-[0.6125rem] lg:text-xs font-normal text-[#7C3AED]'>
-                      Active
-                    </span>
-                  </div>
-                )}
-                {/* Invited Members */}
-                {invitedMembers.map((member, index) => (
-                  <div
-                    key={index}
-                    className='flex items-center justify-between rounded-md bg-[#F8FAFC] px-3 py-2'
-                  >
-                    <div className='flex items-center gap-3'>
-                      <img
-                        src='/collaboration/user_1.png'
-                        alt={member.email}
-                        className='size-6 md:size-10 rounded-full object-cover'
-                      />
-                      <span className='text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
-                        {(() => {
-                          const username = member.email.split('@')[0];
-                          return username && username.length > 15
-                            ? username.substring(0, 15) + '...'
-                            : username || member.email;
-                        })()}
-                      </span>
-                    </div>
-                    <span className='rounded-md bg-white p-1 md:px-2 text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
-                      Member
-                    </span>
-                    <span className='text-[0.625rem] lg:text-xs font-normal text-[#4F5E71]'>
-                      Joined {format(new Date(), 'MM-d-yyyy')}
-                    </span>
-                    <span className='text-[0.625rem] lg:text-xs font-normal text-[#9AA4B2]'>
-                      {member.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Group Listings Section */}
-          {Array.isArray(watch('business_ids')) &&
-            (watch('business_ids')?.length ?? 0) > 0 && (
-              <div>
-                <div className='mb-4 flex items-center justify-between'>
-                  <h3 className='text-sm font-normal text-[#9AA4B2]'>
-                    Group Listings
-                  </h3>
-                  <div className='flex items-center gap-2'>
-                    <button
-                      type='button'
-                      className='text-[#9AA4B2] hover:text-[#0D121C]'
-                    >
-                      <svg
-                        width='20'
-                        height='20'
-                        viewBox='0 0 20 20'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          d='M12 8L8 12M8 8L12 12'
-                          stroke='currentColor'
-                          strokeWidth='2'
-                          strokeLinecap='round'
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      type='button'
-                      className='text-[#9AA4B2] hover:text-[#0D121C]'
-                    >
-                      <svg
-                        width='20'
-                        height='20'
-                        viewBox='0 0 20 20'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          d='M8 12L12 8M12 12L8 8'
-                          stroke='currentColor'
-                          strokeWidth='2'
-                          strokeLinecap='round'
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
-                  {selectedSavedBusiness.map(business => (
-                    <div className='max-md:px-8 md:basis-1/2 lg:basis-1/2'>
-                      <FeaturedListingCard
-                        key={business.id}
-                        business={business}
-                        isSelectable={true}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-        </article>
+        {renderPreview()}
       </section>
 
       <CollaborationFormBusinessSelector

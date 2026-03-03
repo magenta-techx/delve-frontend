@@ -14,11 +14,12 @@ import {
   useUnsaveBusiness,
 } from '@/app/(clients)/misc/api/user';
 import { useSession } from 'next-auth/react';
-import { SavedBusiness } from '@/types/api';
+import { SavedBusiness, SavedBusinessItem } from '@/types/api';
 import { toast } from 'sonner';
 
 export interface SavedBusinessesContextType {
   savedBusinesses: SavedBusiness[];
+  rawCategorizedBusinesses: SavedBusinessItem[];
   isLoading: boolean;
   isSaved: (businessId: number | string) => boolean;
   isSaving: (businessId: number | string) => boolean;
@@ -191,6 +192,7 @@ export function SavedBusinessesProvider({
   const value = useMemo(
     () => ({
       savedBusinesses: flattenedSavedBusinessData,
+      rawCategorizedBusinesses: savedBusinessesData?.data || [],
       isLoading,
       isSaved,
       toggleSave,
@@ -202,6 +204,7 @@ export function SavedBusinessesProvider({
     }),
     [
       flattenedSavedBusinessData,
+      savedBusinessesData?.data,
       isLoading,
       isSaved,
       toggleSave,

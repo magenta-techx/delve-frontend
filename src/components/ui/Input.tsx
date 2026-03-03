@@ -14,7 +14,7 @@ function formFieldVariants({ variant = "default", size = "default" }: { variant?
     ghost: "border-0 bg-transparent focus-visible:border-primary focus-visible:ring-primary/50 focus-visible:ring-[3px]",
   };
   const sizes: Record<Size, string> = {
-    sm: "h-9 px-3 py-2 text-sm",
+    sm: "h-7 md:h-9 px-2 py-1.5 md:px-3 md:py-2 text-xs md:text-sm",
     default: "h-11 md:h-12 px-3 py-2.5 md:py-3 text-[0.8rem] md:text-sm",
     lg: "h-14 px-4 py-3 text-lg",
   };

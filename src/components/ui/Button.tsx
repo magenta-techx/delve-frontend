@@ -36,6 +36,7 @@ const buttonVariants = cva(
         sm: 'h-8 rounded-lg px-3 text-xs',
         md: 'h-10 rounded-lg px-4',
         lg: 'h-12 rounded-xl px-4 text-[0.9rem] font-inter',
+        dynamic_sm: 'h-8 rounded-lg px-3 text-xs md:h-9 md:px-4 md:py-2 md:text-sm md:rounded-lg',
         dynamic_lg:
           'h-9 text-xs lg:h-12 rounded-lg lg:rounded-xl px-2 lg:px-6 lg:text-[0.9rem] font-medium',
         xl: 'h-14 rounded-xl px-6 text-[0.9rem] font-medium',
@@ -60,8 +61,8 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
   isloading?: boolean;
