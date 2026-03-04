@@ -41,7 +41,7 @@ const BusinessLayoutWrapper = ({
     <div
       className={cn(
         'flex h-screen bg-background',
-        isMobile && businesses?.length > 0 ? 'grid !h-dvh grid-rows-[auto,1fr,auto' :
+        isMobile && businesses?.length > 0 ? 'grid !h-dvh grid-rows-[auto,1fr,auto]' :
           isMobile ? 'flex !h-dvh flex-col' : ''
       )}
     >
