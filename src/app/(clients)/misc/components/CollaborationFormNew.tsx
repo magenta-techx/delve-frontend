@@ -381,7 +381,7 @@ export default function CollaborationForm() {
       </header>
       <section className='mx-auto grid w-full container gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
         <form className='flex flex-col gap-4 max-md:mt-4'>
-          <h1 className='md:mb-2 text-base font-semibold md:text-lg'>
+          <h1 className='md:mb-2 text-[1.15rem] font-semibold md:text-lg'>
             Collaborate With Your Crew
           </h1>
           <div>

@@ -154,17 +154,40 @@ const LandingPageNavbar = () => {
   const effectiveTransparentBg = pageHasTransparentBg && !isScrolledPastHero;
 
   const PAGES_WITHOUT_NAVBAR = [
-    '/signup',
-    '/login',
-    '/businesses/create-listing',
-    '/chats', '/chats/[chat_id]'
+    {
+      route: '/signup',
+      onlyOnMobile: false,
+    },
+    {
+      route: '/login',
+      onlyOnMobile: false,
+    },
+    {
+      route: '/businesses/create-listing',
+      onlyOnMobile: false,
+    },
+    {
+      route: '/chats',
+      onlyOnMobile: true,
+    },
+    {
+      route: '/chats/[chat_id]',
+      onlyOnMobile: true,
+    }
   ];
 
-  if (PAGES_WITHOUT_NAVBAR.includes(pathname)
-    || pathname.startsWith('/chats/')
-  ) {
+  const isPageWithoutNavbar = PAGES_WITHOUT_NAVBAR.some(page => page.route === pathname);
+  const isMobilePageWithoutNavbar = PAGES_WITHOUT_NAVBAR.some(page => page.route === pathname && page.onlyOnMobile);
+
+  if (isMobile && (isMobilePageWithoutNavbar || pathname.startsWith('/chats/'))) {
     return null;
   }
+
+  if (!isMobile && isPageWithoutNavbar && !isMobilePageWithoutNavbar) {
+    return null;
+  }
+
+
 
   return (
     <nav

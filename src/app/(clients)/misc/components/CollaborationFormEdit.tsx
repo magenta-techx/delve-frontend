@@ -30,7 +30,7 @@ import React, { useMemo } from 'react';
 import { LogoLoadingIcon, PlusIcon, TrashIcon } from '@/assets/icons';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Info } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import CollaborationFormBusinessSelector from './CollaborationFormBusinessSelector';
 import { useBooleanStateControl } from '@/hooks';
@@ -467,7 +467,7 @@ export default function CollaborationForm() {
   );
 
   return (
-    <div className='w-full gap-3 py-8 pt-16 lg:grid lg:h-screen lg:grid-rows-[max-content,1fr] lg:overflow-hidden xl:pb-12 xl:pt-28'>
+    <div className='w-full gap-3 py-8 pt-16 lg:grid lg:h-screen lg:grid-rows-[max-content,1fr] lg:overflow-hidden py-16 md:py-8 xl:pb-12 xl:pt-28'>
       <header className='container mx-auto flex w-full items-center justify-between px-4'>
         <Link
           href='/businesses/saved/collaboration'
@@ -492,8 +492,8 @@ export default function CollaborationForm() {
         <Sheet>
           <SheetTrigger asChild>
             <Button
-              size='dynamic_lg'
-              className='bg-[#551FB9] xl:hidden'
+              size='md'
+              className='bg-[#551FB9] xl:hidden rounded-xl'
             >
               Preview
             </Button>
@@ -506,8 +506,8 @@ export default function CollaborationForm() {
         </Sheet>
       </header>
       <section className='container mx-auto grid w-full gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
-        <form className='custom-scrollbar flex flex-col gap-4 overflow-scroll rounded-lg pl-4 lg:h-full'>
-          <h1 className='mb-2 text-base font-semibold md:text-lg'>
+        <form className='custom-scrollbar flex flex-col gap-4 overflow-scroll rounded-lg pl-4 lg:h-full max-md:mt-4'>
+          <h1 className='md:mb-2 text-[1.15rem] font-semibold md:text-lg mac-md:mt-4'>
             Collaborate With Your Crew
           </h1>
           <div>
@@ -569,11 +569,12 @@ export default function CollaborationForm() {
                 <span className='rounded-md bg-[#FEFDF0] px-3 py-2 text-[0.625rem] font-medium text-yellow-600 lg:text-xs'>
                   Owner
                 </span>
-                <span className='flex items-center gap-2 text-[0.8rem] text-[#9AA4B2]'>
+                <span className='flex items-center gap-2 text-[0.625rem] sm:text-[0.8rem] text-[#9AA4B2]'>
                   <svg
                     width='15'
                     height='15'
                     viewBox='0 0 15 15'
+                    className="size-2.5 md:size-4"
                     fill='none'
                     xmlns='http://www.w3.org/2000/svg'
                   >
@@ -622,15 +623,17 @@ export default function CollaborationForm() {
                           ? `${member.member.first_name} ${member.member.last_name}`
                           : member.unregistered_user_email || 'User'
                       }
-                      className='size-6 rounded-full object-cover md:size-10'
+                      className='size-6 md:size-10 rounded-full object-cover'
+
                     />
-                    <span className='text-sm'>
+                    <span className='text-[0.625rem] lg:text-xs text-gray-600'>
                       {member.member
                         ? `${member.member.first_name} ${member.member.last_name}`
                         : member.unregistered_user_email || 'Unknown'}
                     </span>
                   </div>
-                  <div className='flex items-center gap-4'>
+
+                  <div className='flex items-center gap-2'>
                     {member.status === 'pending' ? (
                       <span className='rounded-md bg-[#FEFDF0] px-3 py-2 text-[0.625rem] font-medium text-yellow-600 lg:text-xs'>
                         {member.priviledge}
@@ -662,7 +665,7 @@ export default function CollaborationForm() {
                             }
                           );
                         }}
-                        className='rounded border border-gray-300 px-2 py-1 text-[0.625rem] lg:text-xs'
+                        className='rounded border border-gray-300 px-1.5 py-1 md:px-2 md:py-1 text-[0.625rem] lg:text-xs'
                       >
                         <option value='contributor'>Contributor</option>
                         <option value='member'>Member</option>
@@ -680,11 +683,13 @@ export default function CollaborationForm() {
                           member.status === 'pending' ? '#9AA4B2' : '#7C3AED',
                       }}
                     >
-                      {member.status}
+                      <span className='hidden md:inline'>{member.status}</span>
 
                       <DropdownMenu>
-                        <DropdownMenuTrigger>
+                        <DropdownMenuTrigger className='flex items-center'>
+                          <Info className='size-4 md:hidden' />
                           <svg
+                            className='hidden md:block'
                             width='3'
                             height='12'
                             viewBox='0 0 2 12'
@@ -707,6 +712,9 @@ export default function CollaborationForm() {
                         </DropdownMenuTrigger>
 
                         <DropdownMenuContent align='end' className='w-40'>
+                          <DropdownMenuItem className='md:hidden focus:bg-transparent cursor-default'>
+                            Status: {member.status}
+                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => {
                               console.log('remove member clicked', member);
@@ -776,11 +784,13 @@ export default function CollaborationForm() {
                     -
                   </span>
                   <p className='flex items-center gap-2.5 text-[0.625rem] capitalize text-gray-500 lg:text-xs'>
-                    {member.status}
+                    <span className='hidden md:inline'>{member.status}</span>
 
                     <DropdownMenu>
-                      <DropdownMenuTrigger>
+                      <DropdownMenuTrigger className='flex items-center'>
+                        <Info className='size-4 md:hidden' />
                         <svg
+                          className='hidden md:block'
                           width='3'
                           height='12'
                           viewBox='0 0 2 12'
@@ -803,6 +813,9 @@ export default function CollaborationForm() {
                       </DropdownMenuTrigger>
 
                       <DropdownMenuContent align='end' className='w-40'>
+                        <DropdownMenuItem className='md:hidden focus:bg-transparent cursor-default'>
+                          Status: {member.status}
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
                             // Just remove from local state - not sent to backend yet

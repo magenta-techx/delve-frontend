@@ -9,7 +9,7 @@ export default function CollaborationList() {
 
   if (isLoading) {
     return (
-      <div className='grid w-full items-stretch gap-7 md:grid-cols-2 xl:grid-cols-3 2xl:gap-10 z-10 px-4 sm:px-0 '>
+      <div className='grid w-full items-stretch gap-7 md:grid-cols-2 xl:grid-cols-3 2xl:gap-10 z-10'>
         {Array.from({ length: 6 }).map((_, index) => (
           <CollabCardSkeleton key={index} />
         ))}

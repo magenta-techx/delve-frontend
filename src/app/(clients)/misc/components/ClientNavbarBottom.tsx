@@ -57,7 +57,7 @@ export function ClientNavbarBottom() {
                     {mobileItems.map((item) => {
                         const Icon = item.icon;
                         const isActive =
-                            pathname === item.href;
+                            pathname.startsWith(item.href);
 
                         return (
                             <Link

@@ -6,13 +6,11 @@ import CategoryCard from '@/app/(clients)/misc/components/CategoryCard';
 import { CLientsLandingFAQs } from '@/app/(clients)/misc/components';
 import SectionHeader from '@/components/SectionHeader';
 import ThisWeeksTrends from '@/app/(clients)/misc/components/ThisWeeksTrends';
-// import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import {
   BusinessSearch,
-  Footer,
   LandingPageNavbar,
   FeaturedListingCard,
 } from './misc/components';
@@ -37,6 +35,7 @@ import ListingCardSkeleton from './misc/components/ListingCardSkeleton';
 import { useIsMobile } from '@/hooks';
 import { useEffect, useState } from 'react';
 import { LogoIcon } from '@/assets/icons';
+import { cn } from '@/lib/utils';
 
 export default function HomePage() {
   const { data: categoriesResp, isLoading: loadingCategories } =
@@ -130,7 +129,7 @@ export default function HomePage() {
           paragraph='category'
         />
 
-        <div className='container mb-14 mt-10 flex w-full items-center gap-14 px-2 sm:px-0 md:mb-20 lg:max-2xl:px-12'>
+        <div className='container mb-14 mt-10 flex w-full items-center gap-14 px-2 sm:px-0 md:mb-20 '>
           <div className='relative w-full'>
             <Carousel opts={{ align: 'start', loop: false }} className='w-full'>
               <CarouselContent className='-ml-2'>
@@ -224,7 +223,7 @@ export default function HomePage() {
         </div>
 
         {/* Serch By location  */}
-        <div className='container mb-10 lg:max-xl:px-12'>
+        <div className={cn('container', !!sponsoredAds?.data.length && " mb-10")}>
           <header className='flex items-center justify-between max-md:px-4'>
             <h2 className='text-base font-semibold sm:text-2xl'>
               Search by location
@@ -241,7 +240,7 @@ export default function HomePage() {
             </div>
           </header>
 
-          <div className='mb-4 flex w-full items-center gap-10 sm:mb-20 sm:px-0 md:px-2'>
+          <div className={cn('flex w-full items-center gap-10 sm:px-0 md:px-2', !!sponsoredAds?.data.length && "mb-4  sm:mb-20")}>
             <div className='relative w-full'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
@@ -251,7 +250,7 @@ export default function HomePage() {
                   {LOCATIONS.map((location, key) => (
                     <CarouselItem
                       key={key}
-                      className='flex basis-36 items-center justify-center px-1.5 sm:basis-[25%]'
+                      className='flex basis-32 items-center justify-center px-1.5 sm:basis-[25%]'
                     >
                       <LocationCard
                         key={key}
@@ -267,56 +266,59 @@ export default function HomePage() {
         </div>
 
         {/* Sponsored picks  */}
-        <div className='container relative max-md:px-4'>
-          <SectionHeader header='Sponsored Picks' paragraph='Spotlight' />
+        {
+          !!sponsoredAds?.data.length &&
+          <div className='container relative max-md:px-4'>
+            <SectionHeader header='Sponsored Picks' paragraph='Spotlight' />
 
-          <header className='mb-4 flex items-center justify-between font-semibold sm:flex md:mt-10 md:text-lg xl:text-xl'>
-            <h1>Hot deals and events you don&apos;t want to miss</h1>
-            <div className='hidden items-center gap-2 sm:flex'>
-              <button
-                onClick={() => sponsoredCarouselApi?.scrollPrev()}
-                className='rotate-180 rounded-none border-none bg-transparent p-2 disabled:opacity-50'
-                disabled={!canScrollPrev}
+            <header className='mb-4 flex items-center justify-between font-semibold sm:flex md:mt-10 md:text-lg xl:text-xl'>
+              <h1>Hot deals and events you don&apos;t want to miss</h1>
+              <div className='hidden items-center gap-2 sm:flex'>
+                <button
+                  onClick={() => sponsoredCarouselApi?.scrollPrev()}
+                  className='rotate-180 rounded-none border-none bg-transparent p-2 disabled:opacity-50'
+                  disabled={!canScrollPrev}
+                >
+                  <BaseIcons value='arrow-right-solid-black' />
+                </button>
+                <button
+                  onClick={() => sponsoredCarouselApi?.scrollNext()}
+                  className='rounded-none border-none bg-transparent p-2 disabled:opacity-50'
+                  disabled={!canScrollNext}
+                >
+                  <BaseIcons value='arrow-right-solid-black' />
+                </button>
+              </div>
+            </header>
+
+            <div className='flex w-full items-center'>
+              <Carousel
+                opts={{ align: 'start', loop: false }}
+                className='w-full max-w-full'
+                setApi={setSponsoredCarouselApi}
               >
-                <BaseIcons value='arrow-right-solid-black' />
-              </button>
-              <button
-                onClick={() => sponsoredCarouselApi?.scrollNext()}
-                className='rounded-none border-none bg-transparent p-2 disabled:opacity-50'
-                disabled={!canScrollNext}
-              >
-                <BaseIcons value='arrow-right-solid-black' />
-              </button>
+                <CarouselContent className='-ml-4 max-md:px-4 sm:gap-x-2'>
+                  {sponsoredAds?.data.map((sponsored, key) => {
+                    return (
+                      <CarouselItem
+                        key={key}
+                        className='basis-[90vw] pl-0 sm:basis-1/2'
+                      >
+                        <div className='flex w-full items-center justify-center'>
+                          <SponsoredAdsCard ad={sponsored} />
+                        </div>
+                      </CarouselItem>
+                    );
+                  })}
+                </CarouselContent>
+              </Carousel>
             </div>
-          </header>
-
-          <div className='flex w-full items-center'>
-            <Carousel
-              opts={{ align: 'start', loop: false }}
-              className='w-full max-w-full'
-              setApi={setSponsoredCarouselApi}
-            >
-              <CarouselContent className='-ml-4 max-md:px-4 sm:gap-x-2'>
-                {sponsoredAds?.data.map((sponsored, key) => {
-                  return (
-                    <CarouselItem
-                      key={key}
-                      className='basis-[90vw] pl-0 sm:basis-1/2'
-                    >
-                      <div className='flex w-full items-center justify-center'>
-                        <SponsoredAdsCard ad={sponsored} />
-                      </div>
-                    </CarouselItem>
-                  );
-                })}
-              </CarouselContent>
-            </Carousel>
           </div>
-        </div>
+        }
       </div>
 
       <section className='w-full md:px-16 lg:px-24'>
-        <div className='container flex w-full flex-col items-center pb-14 pt-8'>
+        <div className={cn('container flex w-full flex-col items-center pb-14 ', !!sponsoredAds?.data.length && "pt-8")}>
           <div className='my-20 flex w-full items-center justify-between gap-6 pb-6 max-sm:px-5 md:mb-28 md:mt-24 lg:justify-center lg:gap-72'>
             {STATS.map((stat, key) => {
               return (
@@ -477,7 +479,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      <Footer />
     </main>
   );
 }

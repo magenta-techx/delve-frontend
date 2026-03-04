@@ -67,9 +67,8 @@ export default function Page() {
     .filter((item): item is NonNullable<typeof item> => item !== null);
 
   return (
-    <main className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 '>
-
-      <header className='relative z-10 mt-20 w-full sm:px-4 sm:px-0 md:mt-28'>
+    <div className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 pb-10 lg:pb-16'>
+      <header className='relative z-10 mt-20 w-full md:mt-28'>
         <div className='mb-3 flex w-full items-center justify-between'>
           <h1 className='font-inter text-lg font-semibold text-[#0F0F0F] sm:text-xl md:text-2xl'>
             Saved Businesses
@@ -270,6 +269,6 @@ export default function Page() {
           ))
         )}
       </div>
-    </main>
+    </div>
   );
 }
