@@ -98,9 +98,7 @@ export default function HomePage() {
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[85vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
-        <LandingPageNavbar />
         <section />
-        {/* Mobile hero  */}
         <div className='relative flex h-screen min-h-[756px] w-full rounded-b-2xl -top-16 bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-b-xl bg-black/60 sm:rounded-none'></div>
         </div>
@@ -380,7 +378,7 @@ export default function HomePage() {
           </section>
         </div>
 
-        <div className='container mb-20 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-32 sm:px-0'>
+        <div className='container mb-12 sm:mb-20 md:mb-32 flex w-full flex-col items-center px-4 sm:-mt-0 sm:px-0'>
           <h1 className='font-karma text-2xl max-sm:font-medium sm:text-[44px]'>
             Tips, Trends & Vendor Stories
           </h1>

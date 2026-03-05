@@ -4,14 +4,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { navItems } from './Sidebar';
+import { useIsMobile } from '@/hooks';
 
 export function NavbarBottom() {
   const pathname = usePathname();
+  const { isMobile } = useIsMobile()
 
   // Show different number of items based on screen size
   // Mobile: 3 items, Tablet+: 5 items
-  const mobileItems = navItems.slice(0, 4);
+  const mobileItems = navItems.slice(0, 5);
   const tabletItems = navItems.slice(0, 5);
+
+
+  if (isMobile && pathname.startsWith("/business/messages/")) {
+    return null
+  }
 
   return (
     <>
@@ -22,7 +29,7 @@ export function NavbarBottom() {
             const Icon = item.icon;
             const IconSelected = item.iconSelected;
             const isActive =
-              pathname === item.href || 
+              pathname === item.href ||
               (!item.exact &&
                 item.href !== '/business' &&
                 pathname.startsWith(item.href));
@@ -71,7 +78,7 @@ export function NavbarBottom() {
                 className={cn(
                   'flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-0 flex-1',
                   isActive
-                    ? 'text-[#5F2EEA]'
+                    ? 'text-[#5F2EEA] bg-[#602eea47]'
                     : 'text-gray-500 hover:text-gray-700'
                 )}
               >

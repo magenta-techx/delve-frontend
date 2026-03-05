@@ -17,15 +17,22 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Notifications } from '../notifications';
+import { useIsMobile } from '@/hooks';
 
 interface TopNavProps {
   onNotificationsClick?: () => void;
 }
 
-export function NavbarTop({}: TopNavProps) {
+export function NavbarTop({ }: TopNavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const pathname = usePathname();
+
+
+  const { isMobile } = useIsMobile();
+  if (isMobile && pathname.startsWith("/business/messages")) {
+    return null
+  }
 
   return (
     <div className='border-b border-border bg-background'>
@@ -86,7 +93,7 @@ export function NavbarTop({}: TopNavProps) {
                 <div className='mb-2 text-xs font-semibold uppercase opacity-50'>
                   Overview
                 </div>
-                {navItems.map(item => {
+                {navItems.slice(5, 12).map(item => {
                   const Icon = item.icon;
                   const IconSelected = item.iconSelected;
                   const isActive =

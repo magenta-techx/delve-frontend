@@ -173,7 +173,7 @@ const CLientsLandingFAQs = (): JSX.Element => {
   };
 
   return (
-    <section className='mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-12 text-[#0F172B] sm:py-16'>
+    <section className='mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-6 sm:py-12 text-[#0F172B] md:py-16'>
       <h2 className='text-balance text-center font-karma text-2xl font-medium sm:text-3xl lg:text-5xl'>
         We are here to help with your questions
       </h2>

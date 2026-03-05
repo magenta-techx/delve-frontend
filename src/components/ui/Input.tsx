@@ -86,8 +86,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               formFieldVariants({ variant, size }),
               type === "password" && "pr-12",
-              Boolean(leftIcon) && "pl-12",
-              Boolean(rightIcon) && "pr-12",
+              !!leftIcon && "!pl-12",
+              !!rightIcon && "!pr-12",
               haserror && "border-destructive focus-visible:border-destructive",
               className
             )}

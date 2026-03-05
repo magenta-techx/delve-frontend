@@ -193,7 +193,7 @@ const BusinessLandingFAQs = ({
   return (
     <section
       className={cn(
-        'mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-12 text-[#0F172B] sm:py-16 xl:py-24',
+        'mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-6 sm:py-12 text-[#0F172B] md:py-16 xl:py-24',
         className
       )}
     >
