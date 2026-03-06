@@ -19,6 +19,10 @@ export function formatRelativeTime(dateString: string | Date | undefined | null)
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
+  if (now.getFullYear() !== date.getFullYear()) {
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
   // You can extend this for older dates if needed (e.g. yesterday, or dd/mm/yyyy)
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }

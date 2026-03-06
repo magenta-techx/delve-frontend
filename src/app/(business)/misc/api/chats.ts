@@ -48,3 +48,22 @@ export function useSendChatImages(): UseMutationResult<
     },
   });
 }
+
+export function usePinBusinessChat(): UseMutationResult<
+  ApiMessage,
+  Error,
+  { chat_id: number | string }
+> {
+  return useMutation({
+    mutationFn: async ({ chat_id }) => {
+      const res = await fetch(`/api/chat/${chat_id}/pin`, {
+        method: 'POST',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok)
+        throw new Error((data as any)?.error || 'Pin chat failed');
+      return data;
+    },
+  });
+}
+

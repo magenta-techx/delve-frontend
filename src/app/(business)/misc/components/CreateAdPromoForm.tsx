@@ -67,11 +67,11 @@ const CreateAdPromoForm = ({
           const found = plans.data.find(plan => plan.duration_in_days === day);
           return found
             ? {
-                label: `${day} Days`,
-                value: day,
-                cost: found.price,
-                plan_id: found.plan_id,
-              }
+              label: `${day} Days`,
+              value: day,
+              cost: found.price,
+              plan_id: found.plan_id,
+            }
             : null;
         })
         .filter(Boolean) as any;
@@ -81,11 +81,11 @@ const CreateAdPromoForm = ({
           const found = plans.data.find(plan => plan.duration_in_days === day);
           return found
             ? {
-                label: `${day} Days`,
-                value: day,
-                cost: found.price,
-                plan_id: found.plan_id,
-              }
+              label: `${day} Days`,
+              value: day,
+              cost: found.price,
+              plan_id: found.plan_id,
+            }
             : null;
         })
         .filter(Boolean) as any;
@@ -123,7 +123,7 @@ const CreateAdPromoForm = ({
             if (data?.checkout_url) router.push(data.checkout_url);
           },
           onError: (err: any) => {
-              toast.error('Failed to create checkout session', {
+            toast.error('Failed to create checkout session', {
               description: err.message,
             });
           },
@@ -159,10 +159,10 @@ const CreateAdPromoForm = ({
   };
 
   return (
-    <div className='flex h-full w-full flex-col overflow-hidden bg-[#FCFCFD]'>
+    <div className='flex h-full w-full flex-col md:overflow-hidden bg-[#FCFCFD] max-md:pb-16'>
       <header className='h-16'></header>
 
-      <div className='mx-auto flex max-w-xl flex-1 flex-col items-center max-lg:px-4 md:max-lg:px-6'>
+      <div className='mx-auto flex max-w-xl flex-1 flex-col items-center max-lg:px-6'>
         {isCloseable && (
           <Button
             size='xl'
@@ -188,12 +188,12 @@ const CreateAdPromoForm = ({
               {
                 key: 'promotion',
                 label: 'Run a Promotion',
-                mobile_label: 'Promotion',
+                mobile_label: 'Run a Promotion',
               },
               {
                 key: 'advert',
                 label: 'Create Advertisement',
-                mobile_label: 'Advert',
+                mobile_label: 'Create Advert',
               },
             ].map(tab => (
               <button
@@ -202,7 +202,7 @@ const CreateAdPromoForm = ({
                 className={cn(
                   'relative rounded-lg border border-[#F8FAFC] bg-[#F8FAFC] px-2.5 py-3 text-xs font-medium text-[#4B5565] !outline-none sm:px-4 sm:py-3.5 sm:text-sm disabled:cursor-not-allowed disabled:opacity-50',
                   selectedTab === tab.key &&
-                    'border-primary bg-white text-[#7839EE] shadow-md'
+                  'border-primary bg-white text-[#7839EE] shadow-md'
                 )}
                 onClick={() =>
                   setSelectedTab(tab.key as 'advert' | 'promotion')
@@ -239,20 +239,20 @@ const CreateAdPromoForm = ({
         ) : (
           <>
             <div className='mx-auto mt-2 w-full max-w-lg lg:px-3'>
-              <h3 className='mb-4 text-sm font-semibold text-black'>
+              <h3 className='mb-2 md:mb-4 text-sm font-semibold text-black'>
                 Set{' '}
                 {selectedTab === 'promotion' ? 'Promotion' : 'Advertisement'}{' '}
                 {isExtension && 'Extension'}{' '}
                 Period
               </h3>
-              <div className='ap-1.5 mb-6 grid grid-cols-4 sm:gap-3'>
+              <div className='gap-2 mb-6 grid grid-cols-4 sm:gap-3'>
                 {durationOptions.map(opt => (
                   <button
                     key={opt.value}
                     className={cn(
-                      'rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] px-2 py-1 text-xs font-normal text-[#4B5565] sm:px-4 sm:py-2 sm:text-sm',
+                      'rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] p-2 text-xs font-normal text-[#4B5565] sm:px-4 sm:py-2 sm:text-sm',
                       selectedDuration === opt.value &&
-                        'border-[#5F2EEA] bg-[#5F2EEA] text-white shadow-md'
+                      'border-[#5F2EEA] bg-[#5F2EEA] text-white shadow-md'
                     )}
                     onClick={() => setSelectedDuration(opt.value)}
                   >
@@ -323,7 +323,7 @@ const CreateAdPromoForm = ({
               )}
 
               <button
-                className='mb-3 w-full rounded-xl bg-[#551FB9] py-4 text-sm font-medium text-white'
+                className='md:mb-3 w-full rounded-xl bg-[#551FB9] py-4 text-sm font-medium text-white'
                 onClick={handleCheckout}
                 disabled={promoCheckoutLoading || advertCheckoutLoading}
               >

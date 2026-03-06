@@ -11,7 +11,6 @@ import Link from 'next/link';
 
 import {
   BusinessSearch,
-  LandingPageNavbar,
   FeaturedListingCard,
 } from './misc/components';
 import { useBusinessCategories } from '@/app/(clients)/misc/api/metadata';

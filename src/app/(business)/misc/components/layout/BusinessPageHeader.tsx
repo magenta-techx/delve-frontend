@@ -48,7 +48,7 @@ export const BusinessPageHeader = ({
             {title}
           </h1>
           {description && (
-            <p className='mt-1 text-balance text-xs font-normal text-[#4B5565] max-lg:max-w-[40ch] lg:text-sm'>
+            <p className='mt-1 md:text-balance text-xs font-normal text-[#4B5565] md:max-lg:max-w-[40ch] lg:text-sm'>
               {description}
             </p>
           )}

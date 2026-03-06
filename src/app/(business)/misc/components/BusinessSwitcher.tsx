@@ -5,8 +5,9 @@ import { useBusinessContext } from '@/contexts/BusinessContext';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { LinkButton } from '@/components/ui';
+import { cn } from '@/lib/utils';
 
-export const BusinessSwitcher = () => {
+export const BusinessSwitcher = ({ collapsed = false }: { collapsed?: boolean }) => {
   const { businesses, currentBusiness, switchBusiness, isLoading } =
     useBusinessContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -31,10 +32,18 @@ export const BusinessSwitcher = () => {
     <div className='relative'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] px-2.5 py-2 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3 xl:rounded-2xl'
+        className={cn(
+          'flex items-center gap-3 px-2.5 py-2 md:px-4 md:py-3 rounded-xl bg-[#1A1A1A] text-white transition-colors hover:bg-[#2A2A2A]',
+          collapsed
+            ? 'w-full justify-center rounded-xl'
+            : 'w-full  md:rounded-xl xl:rounded-2xl'
+        )}
       >
         {/* Business Logo */}
-        <div className='relative size-7 flex-shrink-0 overflow-hidden rounded-full bg-white ring-2 ring-white ring-offset-1 md:size-8 xl:size-12'>
+        <div className={cn(
+          'relative flex-shrink-0 overflow-hidden rounded-full bg-white ring-2 ring-white ring-offset-1 transition-[width]',
+          collapsed ? 'size-10' : 'size-7 md:size-8 xl:size-12'
+        )}>
           {currentBusiness.logo ? (
             <Image
               src={currentBusiness.logo}
@@ -49,38 +58,42 @@ export const BusinessSwitcher = () => {
           )}
         </div>
 
-        {/* Business Info */}
-        <div className='text-left max-md:hidden md:flex-1 w-full overflow-hidden'>
-          <p className='truncate font-inter font-semibold xl:text-[1.1rem]'>
-            {currentBusiness.name}
-          </p>
-          <p className='truncate text-xs text-[#CDD5DF]'>
-            Created on{' '}
-            {currentBusiness.created_at
-              ? format(new Date(currentBusiness.created_at), 'dd/MM/yyyy')
-              : 'N/A'}
-          </p>
-        </div>
+        {/* Business Info - hidden when collapsed */}
+        {!collapsed && (
+          <div className='text-left max-md:hidden md:flex-1 w-full overflow-hidden'>
+            <p className='truncate font-inter font-semibold xl:text-[1.1rem]'>
+              {currentBusiness.name}
+            </p>
+            <p className='truncate text-xs text-[#CDD5DF]'>
+              Created on{' '}
+              {currentBusiness.created_at
+                ? format(new Date(currentBusiness.created_at), 'dd/MM/yyyy')
+                : 'N/A'}
+            </p>
+          </div>
+        )}
 
-        {/* Dropdown Icon */}
-        <div className={`transition-transform`}>
-          <svg
-            width='8'
-            height='12'
-            viewBox='0 0 8 12'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              d='M4.40031 0.183058C4.2831 0.0658477 4.12413 0 3.95837 0C3.79261 0 3.63364 0.0658485 3.51643 0.183059L0.183105 3.51639C-0.060972 3.76047 -0.0609714 4.1562 0.183107 4.40028C0.427184 4.64435 0.822913 4.64435 1.06699 4.40027L3.95837 1.50888L6.84977 4.40028C7.09385 4.64435 7.48958 4.64435 7.73365 4.40028C7.97773 4.1562 7.97773 3.76047 7.73365 3.51639L4.40031 0.183058Z'
-              fill='#D9D6FE'
-            />
-            <path
-              d='M1.06694 6.84985C0.822864 6.60577 0.427135 6.60577 0.183058 6.84985C-0.0610195 7.09393 -0.0610193 7.48966 0.183059 7.73374L3.5164 11.0671C3.63361 11.1843 3.79258 11.2501 3.95834 11.2501C4.1241 11.2501 4.28307 11.1843 4.40028 11.0671L7.73361 7.73374C7.97768 7.48966 7.97768 7.09393 7.73361 6.84985C7.48953 6.60577 7.0938 6.60577 6.84972 6.84985L3.95834 9.74124L1.06694 6.84985Z'
-              fill='#D9D6FE'
-            />
-          </svg>
-        </div>
+        {/* Dropdown Icon - hidden when collapsed */}
+        {!collapsed && (
+          <div className={`transition-transform`}>
+            <svg
+              width='8'
+              height='12'
+              viewBox='0 0 8 12'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path
+                d='M4.40031 0.183058C4.2831 0.0658477 4.12413 0 3.95837 0C3.79261 0 3.63364 0.0658485 3.51643 0.183059L0.183105 3.51639C-0.060972 3.76047 -0.0609714 4.1562 0.183107 4.40028C0.427184 4.64435 0.822913 4.64435 1.06699 4.40027L3.95837 1.50888L6.84977 4.40028C7.09385 4.64435 7.48958 4.64435 7.73365 4.40028C7.97773 4.1562 7.97773 3.76047 7.73365 3.51639L4.40031 0.183058Z'
+                fill='#D9D6FE'
+              />
+              <path
+                d='M1.06694 6.84985C0.822864 6.60577 0.427135 6.60577 0.183058 6.84985C-0.0610195 7.09393 -0.0610193 7.48966 0.183059 7.73374L3.5164 11.0671C3.63361 11.1843 3.79258 11.2501 3.95834 11.2501C4.1241 11.2501 4.28307 11.1843 4.40028 11.0671L7.73361 7.73374C7.97768 7.48966 7.97768 7.09393 7.73361 6.84985C7.48953 6.60577 7.0938 6.60577 6.84972 6.84985L3.95834 9.74124L1.06694 6.84985Z'
+                fill='#D9D6FE'
+              />
+            </svg>
+          </div>
+        )}
       </button>
 
       {/* Dropdown Menu */}

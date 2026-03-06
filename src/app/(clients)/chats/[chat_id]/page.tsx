@@ -337,43 +337,90 @@ export default function ChatDetailPage({
           <div className='py-6 text-center text-gray-500'>No messages yet</div>
         )}
         {messages &&
-          orderedMessages.map(msg => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.sender.id === userId ? 'justify-end' : 'justify-start'}`}
-            >
+          orderedMessages.map(msg => {
+            const isOwn = msg.sender.id === userId;
+            return (
               <div
-                className={cn(
-                  'w-max max-w-md rounded-lg px-4 py-2  font-normal leading-snug',
-                  msg.sender.id === userId
-                    ? 'text-sidebar-primary-foreground bg-[#F8FAFC]'
-                    : 'bg-[#F8FAFC] text-foreground'
-                )}
+                key={msg.id}
+                className={`flex items-center gap-2 ${isOwn ? 'justify-end' : 'justify-start'}`}
               >
-                <p className='text-[0.8rem] md:text-sm'>{msg.content ?? ''}</p>
-                {msg.is_image_message && (
-                  <button
-                    type='button'
-                    onClick={() => openLightbox(String(msg.image))}
-                    className='mt-2 block focus:outline-none'
+                {/* Other person's avatar (left side) */}
+                {!isOwn && (
+                  <div className='relative size-4 md:size-5 shrink-0 overflow-hidden rounded-full bg-gray-200'>
+                    {msg.sender.profile_image ? (
+                      <Image src={msg.sender.profile_image} alt={msg.sender.first_name} fill className='object-cover' />
+                    ) : (
+                      <span className='flex h-full w-full items-center justify-center text-[0.6rem] font-semibold uppercase text-gray-600'>
+                        {msg.sender.first_name?.[0]}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Bubble */}
+                <div className='relative'>
+                  {/* Tail */}
+                  {!isOwn && (
+                    <span
+                      className='absolute -left-[5px] bottom-0 h-0 w-0'
+                      style={{
+                        borderBottom: '6px solid #F8FAFC',
+                        borderLeft: '5px solid transparent',
+                      }}
+                    />
+                  )}
+                  {isOwn && (
+                    <span
+                      className='absolute -right-[5px] top-0 h-0 w-0'
+                      style={{
+                        borderTop: '6px solid #F8FAFC',
+                        borderRight: '5px solid transparent',
+                      }}
+                    />
+                  )}
+                  <div
+                    className={cn(
+                      'w-max max-w-[min(72vw,26rem)] rounded-xl px-3.5 py-2 font-normal leading-snug bg-[#F8FAFC] text-[#0F0F0F]',
+                      isOwn ? 'rounded-tr-none' : 'rounded-bl-none'
+                    )}
                   >
-                    <div className='relative size-32 md:size-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
-                      <Image
-                        src={String(msg.image)}
-                        alt='Chat image'
-                        fill
-                        sizes='160px'
-                        className='object-cover'
-                        onLoadingComplete={() => {
-                          scrollToBottom(false);
-                        }}
-                      />
-                    </div>
-                  </button>
+                    <p className='text-[0.8rem] md:text-sm'>{msg.content ?? ''}</p>
+                    {msg.is_image_message && (
+                      <button
+                        type='button'
+                        onClick={() => openLightbox(String(msg.image))}
+                        className='mt-2 block focus:outline-none'
+                      >
+                        <div className='relative size-32 md:size-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
+                          <Image
+                            src={String(msg.image)}
+                            alt='Chat image'
+                            fill
+                            sizes='160px'
+                            className='object-cover'
+                            onLoadingComplete={() => scrollToBottom(false)}
+                          />
+                        </div>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Own avatar (right side) */}
+                {isOwn && (
+                  <div className='relative size-4 md:size-5 shrink-0 overflow-hidden rounded-full bg-gray-200'>
+                    {msg.sender.profile_image ? (
+                      <Image src={msg.sender.profile_image} alt={msg.sender.first_name} fill className='object-cover' />
+                    ) : (
+                      <span className='flex h-full w-full items-center justify-center text-[0.6rem] font-semibold uppercase text-gray-600'>
+                        {msg.sender.first_name?.[0]}
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         {pendingUploads.map(upload => (
           <div key={upload.id} className='flex justify-end'>
             <div className='text-sidebar-primary-foreground w-max max-w-md rounded-lg bg-[#F8FAFC] px-4 py-2 text-sm font-normal leading-snug'>
@@ -451,21 +498,21 @@ export default function ChatDetailPage({
             />
             <button
               type='button'
-              className='flex h-8 w-8 items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
+              className='flex size-6 md:size-8 items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" x2="9.01" y1="9" y2="9" /><line x1="15" x2="15.01" y1="9" y2="9" /></svg>
             </button>
             <button
               type='button'
               onClick={handleSelectImage}
-              className='flex h-8 w-8 items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
+              className='flex size-6 md:size-8 items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
             </button>
             <Button
               size='icon'
               onClick={handleSend}
-              className='h-10 w-10 shrink-0 rounded-full bg-[#FAF5FF] hover:bg-[#F3E8FF] ml-1'
+              className='h-10 w-12 shrink-0 rounded-xl bg-[#FAF5FF] hover:bg-[#F3E8FF] ml-1'
               variant='unstyled'
               disabled={sending || connectionState !== 'open'}
             >

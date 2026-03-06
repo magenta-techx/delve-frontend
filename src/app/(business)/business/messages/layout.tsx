@@ -8,15 +8,16 @@ import {
   EmptyState,
 } from '@/components/ui';
 import Link from 'next/link';
-import { LogoLoadingIcon } from '@/assets/icons';
+import { LogoLoadingIcon, MessagePin } from '@/assets/icons';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { cn, formatRelativeTime } from '@/lib/utils';
 import { EmptyChatMedia } from '@/app/(clients)/misc/icons';
-import { useBusinessChats } from '../../misc/api';
+import { useBusinessChats, usePinBusinessChat } from '../../misc/api';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import React from 'react';
 import { BusinessPageHeader } from '../../misc/components';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function UserChatsPage({
   children,
@@ -28,11 +29,16 @@ export default function UserChatsPage({
     currentBusiness?.id || ''
   );
   const params = useParams();
+  const pathname = usePathname();
+
   const current_chat_id = (params?.['chat_id'] as string) || null;
   const [chatsToShow, setChatsToShow] = React.useState('All');
   const [filteredChats, setFilteredChats] = React.useState(chats);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [pinConfirm, setPinConfirm] = React.useState<{ id: number; is_pinned: boolean } | null>(null);
+  const pinMutation = usePinBusinessChat();
+  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     if (chats) {
@@ -54,7 +60,7 @@ export default function UserChatsPage({
   }, [chatsToShow, chats, searchQuery]);
 
   return (
-    <div className='container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] px-0 md:pt-14 pb-20 md:p-4'>
+    <div className={cn('container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] px-0 md:pt-14  md:p-4', !pathname.startsWith('/business/messages/') && 'pb-20')}>
       <BusinessPageHeader marketPlace={true} />
 
       <div className='flex grow gap-x-4 overflow-hidden'>
@@ -154,68 +160,99 @@ export default function UserChatsPage({
                   key={chat.id}
                   href={`/business/messages/${chat.id}`}
                   className={cn(
-                    'flex flex-col bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50 md:gap-3',
+                    'flex w-full items-start gap-2 bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50',
                     current_chat_id === String(chat.id) && '!bg-[#F5F3FF]'
                   )}
                 >
-                  <section className="flex w-full items-center gap-2">
-                    <div className='relative size-12 overflow-hidden rounded-full md:size-14'>
-                      <Image
-                        src={chat.customer.profile_image || '/default-avatar.png'}
-                        alt={`${chat.customer.first_name} ${chat.customer.last_name}`}
-                        fill
-                        objectFit='cover'
-                      />
-                    </div>
-                    <div className='flex min-w-0 flex-1 flex-col'>
-                      <p className='font-semibold text-sm md:text-base md:font-medium'>
-                        {chat.customer.first_name} {chat.customer.last_name}
-                      </p>
-                      <p
-                        className={cn(
-                          'line-clamp-2 min-h-[2lh] text-xs leading-tight text-[#111927] md:text-[0.825rem]',
-                          chat.last_message?.is_image_message &&
-                          'flex items-center gap-1'
-                        )}
-                      >
-                        {chat.last_message?.is_image_message ? (
-                          <>
-                            {/* Use a suitable image icon here, e.g. Lucide ImageIcon or your own */}
-                            <svg
-                              className='h-3.5 w-3.5'
-                              aria-hidden='true'
-                              viewBox='0 0 24 24'
-                              fill='none'
-                              stroke='currentColor'
-                              strokeWidth='2'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                            >
-                              <rect
-                                x='3'
-                                y='3'
-                                width='18'
-                                height='18'
-                                rx='2'
-                                ry='2'
-                              ></rect>
-                              <circle cx='8.5' cy='8.5' r='1.5'></circle>
-                              <polyline points='21 15 16 10 5 21'></polyline>
-                            </svg>
-                            <span>Image</span>
-                          </>
-                        ) : (
-                          chat.last_message?.content
-                        )}
-                      </p>
-                    </div>
-                  </section>
-                  <div className='text-xs text-right text-gray-500 whitespace-nowrap'>
-                    {formatRelativeTime(chat.last_message_sent_at)}
+                  <div className='relative size-12 shrink-0 overflow-hidden rounded-full md:size-14'>
+                    <Image
+                      src={chat.customer.profile_image || '/default-avatar.png'}
+                      alt={`${chat.customer.first_name} ${chat.customer.last_name}`}
+                      fill
+                      objectFit='cover'
+                    />
+                  </div>
+                  <div className='flex min-w-0 flex-1 flex-col'>
+                    <p className='font-semibold text-sm md:text-base md:font-medium'>
+                      {chat.customer.first_name} {chat.customer.last_name}
+                    </p>
+                    <p
+                      className={cn(
+                        'line-clamp-2 min-h-[2lh] text-xs leading-tight text-[#111927] md:text-[0.825rem]',
+                        chat.last_message?.is_image_message && 'flex items-center gap-1'
+                      )}
+                    >
+                      {chat.last_message?.is_image_message ? (
+                        <>
+                          <svg className='h-3.5 w-3.5' aria-hidden='true' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+                            <rect x='3' y='3' width='18' height='18' rx='2' ry='2'></rect>
+                            <circle cx='8.5' cy='8.5' r='1.5'></circle>
+                            <polyline points='21 15 16 10 5 21'></polyline>
+                          </svg>
+                          <span>Image</span>
+                        </>
+                      ) : (
+                        chat.last_message?.content
+                      )}
+                    </p>
+                  </div>
+                  <div className='flex shrink-0 flex-col items-end gap-1.5'>
+                    <span className='whitespace-nowrap text-xs text-gray-500'>
+                      {formatRelativeTime(chat.last_message_sent_at)}
+                    </span>
+                    <button
+                      onClick={e => { e.preventDefault(); e.stopPropagation(); setPinConfirm({ id: chat.id, is_pinned: !!chat.is_pinned }); }}
+                      className='p-0.5'
+                      aria-label={chat.is_pinned ? 'Unpin chat' : 'Pin chat'}
+                    >
+                      <MessagePin style={{ color: chat.is_pinned ? '#FF4405' : '#9AA4B2' }} />
+                    </button>
                   </div>
                 </Link>
               );
             })}
+
+            {/* Pin Confirmation Dialog */}
+            {pinConfirm && (
+              <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'>
+                <div className='w-full max-w-xs rounded-2xl bg-white p-5 shadow-xl'>
+                  <h3 className='text-base font-semibold text-[#0F0F0F]'>
+                    {pinConfirm.is_pinned ? 'Unpin conversation?' : 'Pin conversation?'}
+                  </h3>
+                  <p className='mt-1 text-sm text-[#697586]'>
+                    {pinConfirm.is_pinned
+                      ? 'This conversation will be unpinned from the top.'
+                      : 'This conversation will be pinned to the top.'}
+                  </p>
+                  <div className='mt-4 flex gap-3'>
+                    <button
+                      onClick={() => setPinConfirm(null)}
+                      className='flex-1 rounded-xl border border-[#E5E7EB] px-4 py-2 text-sm font-medium text-[#374151] transition-colors hover:bg-gray-50'
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      disabled={pinMutation.isPending}
+                      onClick={() => {
+                        pinMutation.mutate(
+                          { chat_id: pinConfirm.id },
+                          {
+                            onSuccess: () => {
+                              queryClient.invalidateQueries({ queryKey: ['business-chats'] });
+                              setPinConfirm(null);
+                            },
+                            onError: () => setPinConfirm(null),
+                          }
+                        );
+                      }}
+                      className='flex-1 rounded-xl bg-[#5F2EEA] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#5F2EEA]/90 disabled:opacity-60'
+                    >
+                      {pinMutation.isPending ? 'Saving…' : pinConfirm.is_pinned ? 'Unpin' : 'Pin'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 

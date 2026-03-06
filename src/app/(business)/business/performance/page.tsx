@@ -122,11 +122,10 @@ export default function PerformancePage() {
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(p)}
-                  className={`rounded-xl border p-2 font-inter text-[0.625rem] font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-sm md:text-xs ${
-                    isActive
-                      ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
-                      : 'border-[#D9D6FE] text-[#697586]'
-                  }`}
+                  className={`rounded-[0.7rem] md:rounded-xl border p-2 font-inter text-[0.6125rem] font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-xs ${isActive
+                    ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
+                    : 'border-[#D9D6FE] text-[#697586]'
+                    }`}
                 >
                   {period.replace(/_/g, ' ')}
                 </button>
@@ -136,18 +135,18 @@ export default function PerformancePage() {
         </nav>
       </header>
 
-      <section className='container grid grid-cols-2 gap-4 px-4 lg:grid-cols-2 lg:px-6 xl:grid-cols-4'>
+      <section className='container grid grid-cols-2 gap-3 px-4 lg:grid-cols-2 lg:px-6 xl:grid-cols-4'>
         {cardsData.map((card, index) => (
           <article
             key={index}
-            className='flex flex-col gap-1.5 overflow-x-hidden rounded-2xl border border-[#CDD5DF] bg-card p-2.5 text-card-foreground md:gap-3 md:p-4 lg:px-6'
+            className='flex flex-col overflow-x-hidden rounded-2xl border border-[#CDD5DF] bg-card p-2.5 text-card-foreground md:gap-3 md:p-4 lg:px-6'
           >
             <section className='flex items-center gap-2'>
               <div
                 className={cn(
                   'flex items-center justify-center',
                   card.icon_bg,
-                  'size-7 rounded-full md:size-10'
+                  'size-4 rounded-full md:size-10'
                 )}
               >
                 {card.icon}
@@ -157,7 +156,7 @@ export default function PerformancePage() {
                   {card.title_count ?? 0}{' '}
                   <span className='ml-0.5 text-[0.625rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
                     {card.title}
-                    {}
+                    { }
                   </span>
                 </h3>
                 <p className='text-[0.625rem] text-[#0F0F0F] md:hidden'>
@@ -183,29 +182,29 @@ export default function PerformancePage() {
         <Card className='rounded-2xl border border-[#CDD5DF] bg-card'>
           <CardHeader className='!pb-3'>
             <div className='flex items-center justify-between gap-4'>
-              <CardTitle className='text-xs font-normal text-[#697586] md:text-sm'>
+              <CardTitle className='text-xs font-medium md:font-normal text-[#697586] md:text-sm'>
                 Performance Trends Over Time
               </CardTitle>
               <Select
                 value={analyticsType}
                 onValueChange={e => setAnalyticsType(e as MetricType)}
               >
-                <SelectTrigger className='!h-10 w-max border border-[#EEF2F6] bg-[#F8FAFC] !p-1 text-xs md:w-[150px] md:!p-1.5'>
-                  <span className='capitalize text-black max-md:text-[0.625rem]'>
+                <SelectTrigger className='!h-8 w-max border border-[#EEF2F6] bg-[#F8FAFC] !p-1 text-[0.625rem] md:!h-10 md:w-[150px] md:!p-1.5 md:text-xs'>
+                  <span className='capitalize text-black'>
                     {analyticsType.replace(/_/g, ' ')}
                   </span>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem className='text-xs' value='profile_visits'>
+                  <SelectItem className='text-[0.625rem] md:text-xs' value='profile_visits'>
                     Profile Visits
                   </SelectItem>
-                  <SelectItem className='text-xs' value='conversations'>
+                  <SelectItem className='text-[0.625rem] md:text-xs' value='conversations'>
                     Conversations
                   </SelectItem>
-                  <SelectItem className='text-xs' value='reviews'>
+                  <SelectItem className='text-[0.625rem] md:text-xs' value='reviews'>
                     Reviews
                   </SelectItem>
-                  <SelectItem className='text-xs' value='saved_by_users'>
+                  <SelectItem className='text-[0.625rem] md:text-xs' value='saved_by_users'>
                     Saved by Users
                   </SelectItem>
                 </SelectContent>
@@ -213,7 +212,7 @@ export default function PerformancePage() {
             </div>
           </CardHeader>
 
-          <CardContent className='relative'>
+          <CardContent className='relative !p-4 md:!p-6 !pt-0 md:!pt-0 '>
             {isLoading || isFetching ? (
               <div className='z-3 absolute left-0 top-0 flex min-h-[40vh] w-full items-center justify-center bg-white/30 backdrop-blur-lg'>
                 <LogoLoadingIcon />
@@ -221,23 +220,23 @@ export default function PerformancePage() {
             ) : (
               <>
                 <div className='mb-8 lg:mb-10'>
-                  <p className='text-sm font-medium'>
+                  <p className='text-[0.5rem] sm:text-sm font-medium'>
                     Total number of {analyticsType.replace(/_/g, ' ')}
                   </p>
 
                   <p className='mb-3 mt-1 text-xs text-green-600'>
-                    <span className='text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
+                    <span className='text-sm md:text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
                       {analyticsType === 'conversations'
                         ? businessPerformanceData?.data.totals
-                            .total_conversations
+                          .total_conversations
                         : analyticsType === 'reviews'
                           ? businessPerformanceData?.data.totals.total_reviews
                           : analyticsType === 'profile_visits'
                             ? businessPerformanceData?.data.totals
-                                .total_profile_visits
+                              .total_profile_visits
                             : analyticsType === 'saved_by_users'
                               ? businessPerformanceData?.data.totals
-                                  .total_business_saves
+                                .total_business_saves
                               : 0}
                     </span>{' '}
                     This month

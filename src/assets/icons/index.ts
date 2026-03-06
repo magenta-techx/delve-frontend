@@ -14,3 +14,4 @@ export { default as VisaIcon } from './Visa';
 export { default as ReceiptIcon } from './Receipt';
 export { default as TagIcon } from './Tag';
 export { default as PlusIcon } from './Plus';
+export { default as MessagePin } from './MessagePin';

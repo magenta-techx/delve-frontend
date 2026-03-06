@@ -9,6 +9,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
+import { useIsMobile } from '@/hooks';
 
 type Metric = 'saved_by_users' | 'profile_visits' | 'conversations' | 'reviews';
 
@@ -74,13 +75,16 @@ const PerformanceAreaChart: React.FC<PerformanceAreaChartProps> = ({
   };
 
   const color = metric_color[metric] || '#10b981';
+  const { isMobile } = useIsMobile();
+  const tickFs = isMobile ? 8 : 12;
+  const tooltipFs = isMobile ? '10px' : '12px';
 
   return (
     <div style={{ background: '#FDFDFF', borderRadius: 12 }}>
-      <ResponsiveContainer width='100%' height={350}>
+      <ResponsiveContainer width='100%' height={isMobile ? 220 : 350}>
         <AreaChart
           data={data}
-          margin={{ top: 10, right: 24, left: 0, bottom: 0 }}
+          margin={isMobile ? { top: 6, right: 8, left: -10, bottom: 0 } : { top: 10, right: 24, left: 0, bottom: 0 }}
         >
           <defs>
             <linearGradient id='perfGrad' x1='0' y1='0' x2='0' y2='1'>
@@ -90,23 +94,23 @@ const PerformanceAreaChart: React.FC<PerformanceAreaChartProps> = ({
           </defs>
 
           <CartesianGrid strokeDasharray='3 3' stroke='#f0f0f0' />
-          <XAxis dataKey='date' tick={{ fontSize: 12 }} />
+          <XAxis dataKey='date' tick={{ fontSize: tickFs }} />
           <YAxis
-            tick={{ fontSize: 12 }}
+            tick={{ fontSize: tickFs }}
             axisLine={false}
             tickLine={false}
-            width={40}
+            width={isMobile ? 28 : 40}
             type='number'
           />
           <Tooltip
             formatter={(value: number) => `${value.toLocaleString()} ${metric}`}
             contentStyle={{
-              fontSize: '12px',
+              fontSize: tooltipFs,
               padding: '4px 8px',
               borderRadius: '10px',
             }}
-            itemStyle={{ fontSize: '12px' }}
-            labelStyle={{ fontSize: '12px' }}
+            itemStyle={{ fontSize: tooltipFs }}
+            labelStyle={{ fontSize: tooltipFs }}
           />
 
           <Area

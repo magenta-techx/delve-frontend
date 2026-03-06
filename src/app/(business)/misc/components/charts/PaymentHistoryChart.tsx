@@ -9,10 +9,10 @@ export interface CustomPaymentHistoryChartProps {
   }>;
   totalSpending: number;
   selectedPeriod:
-    | 'all_time'
-    | 'this_month'
-    | 'last_6_months'
-    | 'last_12_months';
+  | 'all_time'
+  | 'this_month'
+  | 'last_6_months'
+  | 'last_12_months';
 }
 
 function formatChartData(
@@ -134,7 +134,7 @@ export const CustomPaymentHistoryChart: React.FC<
       const barWidth = 32; // width of each bar
       const gap = 8; // gap between bars (gap-2 = 0.5rem = 8px)
       const scrollPosition = (currentDay - 1) * (barWidth + gap) - (containerRef.current.clientWidth / 2) + (barWidth / 2);
-      
+
       // Use setTimeout to ensure DOM has rendered
       setTimeout(() => {
         containerRef.current?.scrollTo({
@@ -148,18 +148,17 @@ export const CustomPaymentHistoryChart: React.FC<
   return (
     <div className='overflow-hidden'>
       <div className='relative flex w-full flex-col overflow-hidden [scrollbar-width:none_!important]'>
-        <header className='mb-4'>
-          <p className='mb-1 text-sm text-[#0F0F0F]'>Total Spendings</p>
-          <p className='text-3xl font-bold text-gray-900 md:text-4xl'>
+        <header className='mb-2 md:mb-4'>
+          <p className='mb-0 md:mb-1 text-xs md:text-sm text-[#0F0F0F]'>Total Spendings</p>
+          <p className='text-xl font-bold text-gray-900 md:text-4xl'>
             ₦{totalSpending.toLocaleString()}
           </p>
         </header>
         <section ref={sectionRef} className='relative flex-1 overflow-hidden'>
           {/* Vanishing effect overlays + scroll arrows */}
           <div
-            className={`pointer-events-none absolute left-0 top-0 z-20 h-full w-12 transition-opacity duration-200 ${
-              showLeftFade ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`pointer-events-none absolute left-0 top-0 z-20 h-full w-12 transition-opacity duration-200 ${showLeftFade ? 'opacity-100' : 'opacity-0'
+              }`}
           >
             <div className='pointer-events-auto absolute left-2 top-1/2 -translate-y-1/2'>
               <button
@@ -181,9 +180,8 @@ export const CustomPaymentHistoryChart: React.FC<
           </div>
 
           <div
-            className={`pointer-events-none absolute right-0 top-0 z-20 h-full w-12 transition-opacity duration-200 ${
-              showRightFade ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`pointer-events-none absolute right-0 top-0 z-20 h-full w-12 transition-opacity duration-200 ${showRightFade ? 'opacity-100' : 'opacity-0'
+              }`}
           >
             <div className='pointer-events-auto absolute right-2 top-1/2 -translate-y-1/2'>
               <button
@@ -205,7 +203,7 @@ export const CustomPaymentHistoryChart: React.FC<
           </div>
           <div className='flex'>
             {/* Sticky Y Axis */}
-            <div className='sticky left-0 z-10 flex h-[320px] w-12 flex-shrink-0 flex-col justify-between bg-white pr-2 text-xs font-medium text-[#697586]'>
+            <div className='sticky left-0 z-10 flex h-[200px] md:h-[320px] w-8 md:w-12 flex-shrink-0 flex-col justify-between bg-white pr-1 md:pr-2 text-[0.55rem] md:text-xs font-medium text-[#697586]'>
               {[1.2, 1, 0.75, 0.5, 0.25, 0].map((v, i) => (
                 <span key={i} className='whitespace-nowrap'>
                   ₦{formatAmount(Math.round(maxAmount * v))}
@@ -224,89 +222,87 @@ export const CustomPaymentHistoryChart: React.FC<
               {/* Bars */}
               <div
                 className={cn(
-                  'flex min-w-max flex-row items-end gap-2 lg:gap-4',
+                  'flex min-w-max flex-row items-end gap-1 md:gap-2 lg:gap-4 h-[200px] md:h-[320px]',
                   (selectedPeriod === 'last_6_months' ||
                     selectedPeriod === 'last_12_months') &&
-                    'lg:justify-between lg:min-w-full'
+                  'lg:justify-between lg:min-w-full'
                 )}
-                style={{ height: 320 }}
               >
-              {chartData.map((d, idx) => {
-                // Calculate bar height based on tick values
-                // The chart height is 320px, and ticks go from 1.2 to 0
-                // So max bar height should be 320 * (d.amount / (maxAmount * 1.2))
-                const barHeight =
-                  d.amount === 0
-                    ? 8
-                    : Math.max(24, (d.amount / (maxAmount * 1.2)) * 320);
-                return (
-                  <div
-                    key={d.date}
-                    className='flex flex-col items-center justify-end'
-                    style={{ width: 32, height: '100%', cursor: 'pointer' }}
-                    onMouseEnter={e => {
-                      setActiveIndex(idx);
-                      if (sectionRef.current) {
-                        const sectionRect =
-                          sectionRef.current.getBoundingClientRect();
-                        const barElement = e.currentTarget
-                          .children[0] as HTMLDivElement;
-                        const barRect = barElement.getBoundingClientRect();
-                        const left =
-                          barRect.left - sectionRect.left + barRect.width / 2;
-                        const top = barRect.top - sectionRect.top - 8;
-                        setTooltip({
-                          left,
-                          top,
-                          value: d.amount,
-                          date: d.date,
-                        });
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      setActiveIndex(null);
-                      setTooltip(null);
-                    }}
-                    onTouchStart={e => {
-                      setActiveIndex(idx);
-                      if (sectionRef.current) {
-                        const sectionRect =
-                          sectionRef.current.getBoundingClientRect();
-                        const touch = (e as React.TouchEvent).touches?.[0];
-                        if (!touch) return;
-                        const left = touch.clientX - sectionRect.left;
-                        const barElement = e.currentTarget
-                          .children[0] as HTMLDivElement;
-                        const barRect = barElement.getBoundingClientRect();
-                        const top = barRect.top - sectionRect.top - 8;
-                        setTooltip({
-                          left,
-                          top,
-                          value: d.amount,
-                          date: d.date,
-                        });
-                      }
-                      e.stopPropagation();
-                    }}
-                    onTouchEnd={() => {
-                      setTimeout(() => {
+                {chartData.map((d, idx) => {
+                  // Calculate bar height based on tick values
+                  // The chart height is 200px mobile, 320px desktop
+                  // Max bar height should be chartHeight * (d.amount / (maxAmount * 1.2))
+                  const barHeight =
+                    d.amount === 0
+                      ? 8
+                      : Math.max(16, (d.amount / (maxAmount * 1.2)) * 100) + '%';
+                  return (
+                    <div
+                      key={d.date}
+                      className='flex flex-col items-center justify-end w-4 md:w-8 h-full cursor-pointer'
+                      onMouseEnter={e => {
+                        setActiveIndex(idx);
+                        if (sectionRef.current) {
+                          const sectionRect =
+                            sectionRef.current.getBoundingClientRect();
+                          const barElement = e.currentTarget
+                            .children[0] as HTMLDivElement;
+                          const barRect = barElement.getBoundingClientRect();
+                          const left =
+                            barRect.left - sectionRect.left + barRect.width / 2;
+                          const top = barRect.top - sectionRect.top - 8;
+                          setTooltip({
+                            left,
+                            top,
+                            value: d.amount,
+                            date: d.date,
+                          });
+                        }
+                      }}
+                      onMouseLeave={() => {
                         setActiveIndex(null);
                         setTooltip(null);
-                      }, 2000);
-                    }}
-                  >
-                    <div
-                      className={`w-5 rounded-full transition-all duration-200 ${activeIndex === idx ? 'bg-[#7839EE]' : 'bg-[#D9D6FE]'} ${d.amount === 0 ? 'opacity-30' : ''}`}
-                      style={{
-                        height: barHeight,
                       }}
-                    />
-                    <span className='mt-2 whitespace-nowrap text-[0.6rem] font-medium text-[#697586] sm:text-[0.65rem]'>
-                      {d.date}
-                    </span>
-                  </div>
-                );
-              })}
+                      onTouchStart={e => {
+                        setActiveIndex(idx);
+                        if (sectionRef.current) {
+                          const sectionRect =
+                            sectionRef.current.getBoundingClientRect();
+                          const touch = (e as React.TouchEvent).touches?.[0];
+                          if (!touch) return;
+                          const left = touch.clientX - sectionRect.left;
+                          const barElement = e.currentTarget
+                            .children[0] as HTMLDivElement;
+                          const barRect = barElement.getBoundingClientRect();
+                          const top = barRect.top - sectionRect.top - 8;
+                          setTooltip({
+                            left,
+                            top,
+                            value: d.amount,
+                            date: d.date,
+                          });
+                        }
+                        e.stopPropagation();
+                      }}
+                      onTouchEnd={() => {
+                        setTimeout(() => {
+                          setActiveIndex(null);
+                          setTooltip(null);
+                        }, 2000);
+                      }}
+                    >
+                      <div
+                        className={`w-2.5 md:w-5 rounded-full transition-all duration-200 ${activeIndex === idx ? 'bg-[#7839EE]' : 'bg-[#D9D6FE]'} ${d.amount === 0 ? 'opacity-30' : ''}`}
+                        style={{
+                          height: barHeight,
+                        }}
+                      />
+                      <span className='mt-1 md:mt-2 whitespace-nowrap text-[0.45rem] md:text-[0.6rem] font-medium text-[#697586] sm:text-[0.65rem]'>
+                        {d.date}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
