@@ -42,7 +42,7 @@ export default function HomePage(): JSX.Element {
           <div className='absolute bottom-0 flex h-[88%] w-[100%] rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black via-black/100 to-transparent sm:hidden'></div>
         </div>
         {/* Desktop Hero section  */}
-        <div className='absolute top-[15rem] flex w-full flex-col items-center px-4 sm:top-[14rem] sm:px-8 md:top-[18rem] lg:px-20'>
+        <div className='absolute top-[12rem] flex w-full flex-col items-center px-4 sm:top-[14rem] sm:px-8 md:top-[18rem] lg:px-20'>
           <div className='container flex w-full flex-col'>
             <div className='flex w-full flex-col sm:max-w-[1000px]'></div>
             <div className='mb-9 flex items-center gap-2 text-white'>

@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { useBusinessCategories, useBusinessStates } from '../api/metadata';
 import { CaretDown } from '@/assets/icons';
+import { Check } from 'lucide-react';
 
 type SelectOption = {
   id: string;
@@ -119,7 +120,7 @@ const BusinessSearch = (): JSX.Element => {
     <form onSubmit={handleSubmit} className='w-full'>
       <div className='flex w-full flex-col rounded-xl bg-white shadow-sm max-md:!w-[85vw] max-md:max-w-[600px] sm:flex-row'>
         <div className='flex flex-col divide-y divide-[#E3E8EF] sm:flex-1 sm:flex-row sm:divide-x sm:divide-y-0'>
-          <div className='flex items-center gap-3 px-5 py-4 sm:flex-1 md:p-5'>
+          <div className='flex items-center gap-3 px-5 py-3.5 sm:flex-1 md:p-5'>
             <span className='hidden sm:flex'>
               <BaseIcons value='search-black' />
             </span>
@@ -135,13 +136,6 @@ const BusinessSearch = (): JSX.Element => {
               aria-label='Search text'
             />
 
-            <button
-              type='submit'
-              className='flex items-center justify-center gap-2 rounded-full bg-[#6E44FF] px-2.5 py-1.5 text-[0.7rem] font-medium text-white transition-colors hover:bg-[#5B36D4] sm:px-8 sm:text-base md:hidden md:p-5 lg:px-8 xl:px-10'
-            >
-              <BaseIcons value='search-white' className='!size-3' />
-              Search
-            </button>
           </div>
 
           <div ref={locationRef} className='relative'>
@@ -151,7 +145,7 @@ const BusinessSearch = (): JSX.Element => {
                 setLocationOpen(prev => !prev);
                 setCategoryOpen(false);
               }}
-              className='flex w-full items-center justify-between gap-2 p-5 text-left text-[0.8rem] text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
+              className='flex w-full items-center justify-between gap-2 px-5 py-3.5 text-left text-[0.8rem] text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
               aria-haspopup='listbox'
               aria-expanded={locationOpen}
             >
@@ -220,7 +214,7 @@ const BusinessSearch = (): JSX.Element => {
                         >
                           <span className='truncate'>{option.label}</span>
                           {selectedLocation?.id === option.id && (
-                            <BaseIcons value='arrow-right-black' />
+                            <Check />
                           )}
                         </button>
                       </li>
@@ -237,7 +231,7 @@ const BusinessSearch = (): JSX.Element => {
                 setCategoryOpen(prev => !prev);
                 setLocationOpen(false);
               }}
-              className='flex w-full items-center justify-between gap-2 p-5 text-left text-sm text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
+              className='flex w-full items-center justify-between gap-2 px-5 py-3.5 text-left text-[0.8rem] text-[#0F172B] sm:w-[220px] sm:text-base md:p-5'
               aria-haspopup='listbox'
               aria-expanded={categoryOpen}
             >
@@ -290,7 +284,7 @@ const BusinessSearch = (): JSX.Element => {
                         <button
                           type='button'
                           role='option'
-                          className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm sm:text-base ${selectedCategory?.id === option.id
+                          className={`flex w-full items-center justify-between px-4 py-2 text-left text-[0.8rem] sm:text-base ${selectedCategory?.id === option.id
                             ? 'text-[#6E44FF]'
                             : 'text-[#0F172B]'
                             } hover:bg-[#F4F3FF]`}
@@ -301,7 +295,8 @@ const BusinessSearch = (): JSX.Element => {
                         >
                           <span className='truncate'>{option.label}</span>
                           {selectedCategory?.id === option.id && (
-                            <BaseIcons value='arrow-right-black' />
+                            <Check />
+
                           )}
                         </button>
                       </li>
@@ -314,7 +309,7 @@ const BusinessSearch = (): JSX.Element => {
 
         <button
           type='submit'
-          className='hidden items-center justify-center gap-2 rounded-b-xl bg-[#6E44FF] px-5 py-4 text-sm font-semibold text-white transition-colors hover:bg-[#5B36D4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B36D4] sm:rounded-b-none sm:rounded-l-none sm:rounded-r-lg sm:px-8 sm:text-base md:flex md:p-5 lg:px-8 xl:px-10'
+          className='flex items-center justify-center gap-2 rounded-b-xl bg-[#6E44FF] px-5 py-3.5 text-[0.75rem] font-semibold text-white transition-colors hover:bg-[#5B36D4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B36D4] sm:rounded-b-none sm:rounded-l-none sm:rounded-r-lg sm:px-8 sm:text-base md:flex md:p-5 lg:px-8 xl:px-10'
         >
           <BaseIcons value='search-white' />
           Search
