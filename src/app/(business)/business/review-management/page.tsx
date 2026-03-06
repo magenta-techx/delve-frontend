@@ -172,7 +172,7 @@ export default function ReviewManagementPage() {
         'flex h-screen flex-1 flex-col overflow-hidden bg-[#FCFCFD]'
       )}
     >
-      <BusinessPageHeader title='Review Management' />
+      <BusinessPageHeader title='Review Management' containerClassName="max-md:px-6" />
       <div
         className={cn(
           'container flex-1 grid-cols-[1fr_minmax(300px,0.45fr)] overflow-hidden xl:grid'
@@ -180,7 +180,7 @@ export default function ReviewManagementPage() {
       >
         <section className='flex max-h-full flex-col gap-y-6 overflow-hidden py-1 lg:py-4'>
           {/* Header */}
-          <div className='flex items-center justify-between px-4 md:px-6'>
+          <div className='flex items-center justify-between px-6'>
             <Button
               variant='outline'
               className='gap-2 rounded-full border-border text-xs text-[#0F0F0F] hover:bg-muted md:text-sm'
@@ -191,7 +191,7 @@ export default function ReviewManagementPage() {
           </div>
 
           {/* Stats Row */}
-          <section className='mb-4 grid grid-cols-3 items-stretch gap-2 px-2 md:mb-8 md:gap-0 md:px-4 lg:px-6 xl:grid-cols-[0.7fr,1fr,0.7fr] 2xl:grid-cols-[0.5fr,1fr,0.7fr]'>
+          <section className='mb-4 grid grid-cols-3 items-stretch gap-2 md:mb-8 md:gap-0 px-6 xl:grid-cols-[0.7fr,1fr,0.7fr] 2xl:grid-cols-[0.5fr,1fr,0.7fr]'>
             {/* Total Reviews */}
             <div className='relative flex flex-col items-start justify-between gap-1 pl-2 md:gap-4 md:px-0 xl:py-4'>
               <p className='text-[10px] font-normal text-[#697586] md:text-xs lg:text-sm xl:text-lg'>
@@ -313,7 +313,7 @@ export default function ReviewManagementPage() {
 
           {/* Main Content */}
           {!isLoading && !showEmptyState && (
-            <div className='flex flex-1 flex-col gap-6 overflow-y-auto px-4 md:px-6'>
+            <div className='flex flex-1 flex-col gap-6 overflow-y-auto px-6'>
               {isLoading ? (
                 <div className='grid gap-6 lg:grid-cols-[400px_1fr]'>
                   <div className='animate-pulse space-y-3 rounded-2xl border border-border bg-card p-4'>
@@ -395,7 +395,7 @@ export default function ReviewManagementPage() {
           )}
         </section>
 
-        <section className='my-6 hidden h-[calc(100vh-3rem)] flex-col rounded-2xl border border-border bg-card lg:flex'>
+        <section className='my-6 hidden h-[calc(100vh-3rem)] flex-col rounded-2xl border border-border bg-card lg:flex max-md:px-6'>
           {selectedReview ? (
             <ReviewDetails
               selectedReview={selectedReview}
