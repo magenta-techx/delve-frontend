@@ -12,6 +12,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from '@/components/ui';
 import UpComingEvents from '@/components/UpComingEvents';
 import { useApprovedBusinesses } from '@/app/(clients)/misc/api';
@@ -92,28 +94,38 @@ export default function HomePage(): JSX.Element {
             />
           </div>
         ) : (
-          <div
-            className={cn(
-              'mb-20 mt-5 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 2xl:grid-cols-4',
-              approved.length < 4
-                ? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]'
-                : 'grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
-            )}
-          >
-            {loadingApproved
-              ? Array.from({ length: 5 }).map((_, key) => (
-                <ListingCardSkeleton
-                  key={key}
-                  classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
-                />
-              ))
-              : approved.map((business, key) => (
-                <FeaturedListingCard
-                  key={business.id ?? key}
-                  business={business}
-                  group={true}
-                />
-              ))}
+          <div className='relative mb-20 mt-5 w-full'>
+            <Carousel
+              opts={{ align: 'start', loop: false }}
+              className='w-full'
+            >
+              <CarouselContent className='-ml-4'>
+                {loadingApproved
+                  ? Array.from({ length: 5 }).map((_, key) => (
+                    <CarouselItem
+                      key={key}
+                      className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                    >
+                      <ListingCardSkeleton
+                        classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
+                      />
+                    </CarouselItem>
+                  ))
+                  : approved.map((business, key) => (
+                    <CarouselItem
+                      key={business.id ?? key}
+                      className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                    >
+                      <FeaturedListingCard
+                        business={business}
+                        group={true}
+                      />
+                    </CarouselItem>
+                  ))}
+              </CarouselContent>
+              <CarouselPrevious className='hidden xl:flex -left-4' />
+              <CarouselNext className='hidden xl:flex -right-4' />
+            </Carousel>
           </div>
         )}
       </div>
@@ -183,28 +195,38 @@ export default function HomePage(): JSX.Element {
             />
           </div>
         ) : (
-          <div
-            className={cn(
-              'mb-20 mt-5 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 2xl:grid-cols-4',
-              approved.length < 4
-                ? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]'
-                : 'grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
-            )}
-          >
-            {loadingApproved
-              ? Array.from({ length: 5 }).map((_, key) => (
-                <ListingCardSkeleton
-                  key={key}
-                  classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
-                />
-              ))
-              : approved.map((business, key) => (
-                <FeaturedListingCard
-                  key={business.id ?? key}
-                  business={business}
-                  group={true}
-                />
-              ))}
+          <div className='relative mb-20 mt-5 w-full'>
+            <Carousel
+              opts={{ align: 'start', loop: false }}
+              className='w-full'
+            >
+              <CarouselContent className='-ml-4'>
+                {loadingApproved
+                  ? Array.from({ length: 5 }).map((_, key) => (
+                    <CarouselItem
+                      key={key}
+                      className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                    >
+                      <ListingCardSkeleton
+                        classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
+                      />
+                    </CarouselItem>
+                  ))
+                  : approved.map((business, key) => (
+                    <CarouselItem
+                      key={business.id ?? key}
+                      className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                    >
+                      <FeaturedListingCard
+                        business={business}
+                        group={true}
+                      />
+                    </CarouselItem>
+                  ))}
+              </CarouselContent>
+              <CarouselPrevious className='hidden xl:flex -left-4' />
+              <CarouselNext className='hidden xl:flex -right-4' />
+            </Carousel>
           </div>
         )}
       </div>
@@ -253,7 +275,7 @@ export default function HomePage(): JSX.Element {
         <div className='flex justify-between'>
           <div className='flex items-center gap-2'>
             <BaseIcons value='stars-primary' className='!size-4' />
-            <h1 className='text-2xl font-semibold'>Listings around you</h1>
+            <h1 className='text-2xl font-semibold'>Explore</h1>
           </div>
           <div className='flex items-center gap-2 text-primary'>
             <BaseIcons value='arrows-left-primary' />
