@@ -126,7 +126,7 @@ export default function HomePage(): JSX.Element {
             Listings around you
           </h1>
         </div>
-        <div className='mb-8 md:mb-20 flex w-full items-center'>
+        <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
           <Carousel
             opts={{ align: 'start', loop: false }}
             className='w-full max-w-full md:px-2'
@@ -217,7 +217,7 @@ export default function HomePage(): JSX.Element {
             Featured
           </h1>
         </div>
-        <div className='mb-8 md:mb-20 flex w-full items-center'>
+        <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
           <Carousel
             opts={{ align: 'start', loop: false }}
             className='w-full max-w-full md:px-2'
@@ -307,7 +307,7 @@ export default function HomePage(): JSX.Element {
             Explore
           </h1>
         </div>
-        <div className='mb-8 md:mb-20 flex w-full items-center'>
+        <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
           <Carousel
             opts={{ align: 'start', loop: false }}
             className='w-full max-w-full md:px-2'

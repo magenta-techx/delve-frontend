@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HelpCircle, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BusinessSwitcher } from '../BusinessSwitcher';
 import {
   DashboardIcon,
   DashboardSelectedIcon,
+  HelpIcon,
+  HelpSelectedIcon,
   MessagesIcon,
   MessagesSelectedIcon,
   PaymentsIcon,
@@ -84,8 +86,8 @@ export const supportItems = [
   {
     name: 'Help & Contact',
     href: '/business/help',
-    icon: HelpCircle,
-    iconSelected: HelpCircle,
+    icon: HelpIcon,
+    iconSelected: HelpSelectedIcon,
   },
   { name: 'Logout', href: '/logout', icon: LogOut, onClick: logout },
 ];
@@ -165,7 +167,7 @@ export function Sidebar() {
                   key={index + Date.now()}
                   onClick={item.onClick}
                   className={cn(
-                    'relative flex items-center gap-3 px-6 py-3 font-inter text-sm text-[#4B5565] transition-colors',
+                    'relative flex items-center gap-3 md:px-6 py-3 font-inter text-sm text-[#4B5565] transition-colors',
                     isActive
                       ? 'bg-[#FBFAFF] font-semibold text-[#5F2EEA]'
                       : 'hover:bg-[#fbfaffcb]'
@@ -179,7 +181,7 @@ export function Sidebar() {
                   key={index + Date.now()}
                   href={item.href}
                   className={cn(
-                    'relative flex items-center gap-3 px-6 py-3 font-inter text-sm text-[#4B5565] transition-colors',
+                    'relative flex items-center gap-3 md:px-6 py-3 font-inter text-sm text-[#4B5565] transition-colors',
                     isActive
                       ? 'bg-[#FBFAFF] font-semibold text-[#5F2EEA]'
                       : 'hover:bg-[#fbfaffcb]'

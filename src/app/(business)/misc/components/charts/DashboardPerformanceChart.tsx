@@ -117,8 +117,8 @@ const DashboardPerformanceChart: React.FC<DashboardPerformanceChartProps> = ({
             dataKey='score'
             radius={7}
             fill='#A48AFB'
-            maxBarSize={33}
-            width={30}
+            maxBarSize={30}
+            width={28}
           />
         </BarChart>
       </ResponsiveContainer>

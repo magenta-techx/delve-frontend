@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { LogoLoadingIcon } from '@/assets/icons';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { cn, formatRelativeTime } from '@/lib/utils';
 import { EmptyChatMedia } from '@/app/(clients)/misc/icons';
 import { useBusinessChats } from '../../misc/api';
 import { useBusinessContext } from '@/contexts/BusinessContext';
@@ -54,17 +54,17 @@ export default function UserChatsPage({
   }, [chatsToShow, chats, searchQuery]);
 
   return (
-    <div className='container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] px-0 pt-14 pb-20 md:p-4'>
+    <div className='container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] px-0 md:pt-14 pb-20 md:p-4'>
       <BusinessPageHeader marketPlace={true} />
 
       <div className='flex grow gap-x-4 overflow-hidden'>
         <section
           className={cn(
-            'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background lg:w-80 xl:rounded-3xl',
+            'relative flex w-full flex-col overflow-hidden rounded-2xl md:border border-[#ECE9FE] bg-background lg:w-80 xl:rounded-3xl',
             !!current_chat_id && 'max-lg:hidden'
           )}
         >
-          <nav className='sticky h-16 top-0 flex items-center justify-between border-b border-border bg-white p-2 xl:px-6 xl:py-4'>
+          <nav className='sticky h-16 top-0 flex items-center justify-between border-b border-border bg-white py-2 px-4 xl:px-6 xl:py-4'>
             {isSearchOpen ? (
               <input
                 type='text'
@@ -76,7 +76,7 @@ export default function UserChatsPage({
               />
             ) : (
               <h3 className='font-inter text-lg font-semibold text-[#0F0F0F]'>
-                All Messages
+                Messages
               </h3>
             )}
             <div className='flex shrink-0 items-center gap-3'>
@@ -154,59 +154,64 @@ export default function UserChatsPage({
                   key={chat.id}
                   href={`/business/messages/${chat.id}`}
                   className={cn(
-                    'flex w-full items-center gap-2 bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50 md:gap-3',
+                    'flex flex-col bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50 md:gap-3',
                     current_chat_id === String(chat.id) && '!bg-[#F5F3FF]'
                   )}
                 >
-                  <div className='relative size-12 overflow-hidden rounded-full md:size-14'>
-                    <Image
-                      src={chat.customer.profile_image || '/default-avatar.png'}
-                      alt={`${chat.customer.first_name} ${chat.customer.last_name}`}
-                      fill
-                      objectFit='cover'
-                    />
-                  </div>
-                  <div className='flex min-w-0 flex-1 flex-col'>
-                    <p className='font-semibold text-sm md:text-base md:font-medium'>
-                      {chat.customer.first_name} {chat.customer.last_name}
-                    </p>
-                    <p
-                      className={cn(
-                        'line-clamp-2 min-h-[2lh] text-xs leading-tight text-[#111927] md:text-[0.825rem]',
-                        chat.last_message?.is_image_message &&
-                        'flex items-center gap-1'
-                      )}
-                    >
-                      {chat.last_message?.is_image_message ? (
-                        <>
-                          {/* Use a suitable image icon here, e.g. Lucide ImageIcon or your own */}
-                          <svg
-                            className='h-3.5 w-3.5'
-                            aria-hidden='true'
-                            viewBox='0 0 24 24'
-                            fill='none'
-                            stroke='currentColor'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          >
-                            <rect
-                              x='3'
-                              y='3'
-                              width='18'
-                              height='18'
-                              rx='2'
-                              ry='2'
-                            ></rect>
-                            <circle cx='8.5' cy='8.5' r='1.5'></circle>
-                            <polyline points='21 15 16 10 5 21'></polyline>
-                          </svg>
-                          <span>Image</span>
-                        </>
-                      ) : (
-                        chat.last_message?.content
-                      )}
-                    </p>
+                  <section className="flex w-full items-center gap-2">
+                    <div className='relative size-12 overflow-hidden rounded-full md:size-14'>
+                      <Image
+                        src={chat.customer.profile_image || '/default-avatar.png'}
+                        alt={`${chat.customer.first_name} ${chat.customer.last_name}`}
+                        fill
+                        objectFit='cover'
+                      />
+                    </div>
+                    <div className='flex min-w-0 flex-1 flex-col'>
+                      <p className='font-semibold text-sm md:text-base md:font-medium'>
+                        {chat.customer.first_name} {chat.customer.last_name}
+                      </p>
+                      <p
+                        className={cn(
+                          'line-clamp-2 min-h-[2lh] text-xs leading-tight text-[#111927] md:text-[0.825rem]',
+                          chat.last_message?.is_image_message &&
+                          'flex items-center gap-1'
+                        )}
+                      >
+                        {chat.last_message?.is_image_message ? (
+                          <>
+                            {/* Use a suitable image icon here, e.g. Lucide ImageIcon or your own */}
+                            <svg
+                              className='h-3.5 w-3.5'
+                              aria-hidden='true'
+                              viewBox='0 0 24 24'
+                              fill='none'
+                              stroke='currentColor'
+                              strokeWidth='2'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            >
+                              <rect
+                                x='3'
+                                y='3'
+                                width='18'
+                                height='18'
+                                rx='2'
+                                ry='2'
+                              ></rect>
+                              <circle cx='8.5' cy='8.5' r='1.5'></circle>
+                              <polyline points='21 15 16 10 5 21'></polyline>
+                            </svg>
+                            <span>Image</span>
+                          </>
+                        ) : (
+                          chat.last_message?.content
+                        )}
+                      </p>
+                    </div>
+                  </section>
+                  <div className='text-xs text-right text-gray-500 whitespace-nowrap'>
+                    {formatRelativeTime(chat.last_message_sent_at)}
                   </div>
                 </Link>
               );

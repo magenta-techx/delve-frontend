@@ -138,7 +138,7 @@ export function NavbarTop({ }: TopNavProps) {
                       href={item.href}
                       onClick={() => setIsMenuOpen(false)}
                       className={cn(
-                        'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
+                        'flex items-center gap-3 rounded-lg py-3 text-sm font-medium transition-colors',
                         isActive
                           ? 'bg-[#FBFAFF] text-[#5F2EEA]'
                           : 'text-[#4B5565] hover:bg-[#fbfaffcb]'

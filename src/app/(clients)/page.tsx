@@ -183,7 +183,7 @@ export default function HomePage() {
         />
 
         <div className='relative mt-3 flex w-full items-center justify-center xl:mt-9'>
-          <div className='mb-20 flex w-full items-center'>
+          <div className='mb-10 md:mb-20 w-full items-center'>
             <Carousel
               opts={{
                 align: calculatingScreenWidth
@@ -316,7 +316,7 @@ export default function HomePage() {
       </div>
 
       <section className='w-full md:px-16 lg:px-24'>
-        <div className={cn('container flex w-full flex-col items-center pb-14 ', !!sponsoredAds?.data.length && "pt-8")}>
+        <div className={cn('container flex w-full flex-col items-center pb-7 md:pb-14 ', !!sponsoredAds?.data.length && "pt-8")}>
           <div className='my-20 flex w-full items-center justify-between gap-6 pb-6 max-sm:px-5 md:mb-28 md:mt-24 lg:justify-center lg:gap-72'>
             {STATS.map((stat, key) => {
               return (
@@ -349,7 +349,7 @@ export default function HomePage() {
               </div>
             </header>
 
-            <div className='mb-20 flex w-full items-center'>
+            <div className='mb-10 md:mb-20 w-full items-center'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
                 className='w-full max-w-full px-2'
@@ -378,7 +378,7 @@ export default function HomePage() {
           </section>
         </div>
 
-        <div className='container mb-12 sm:mb-20 md:mb-32 flex w-full flex-col items-center px-4 sm:-mt-0 sm:px-0'>
+        <div className='container mb-10 sm:mb-20 md:mb-32 flex w-full flex-col items-center px-4 sm:-mt-0 sm:px-0'>
           <h1 className='font-karma text-2xl max-sm:font-medium sm:text-[44px]'>
             Tips, Trends & Vendor Stories
           </h1>
@@ -406,7 +406,7 @@ export default function HomePage() {
 
       <ThisWeeksTrends />
 
-      <div className='w-full pt-10' id='faqs'>
+      <div className='w-full pt-5 md:pt-10' id='faqs'>
         <CLientsLandingFAQs />
       </div>
 

@@ -1,6 +1,8 @@
 export { default as BookmarkSelectedIcon } from './BookmarkSelected';
 export { default as DashboardIcon } from './Dashboard';
 export { default as DashboardSelectedIcon } from './DashboardSelected';
+export { default as HelpIcon } from './Help';
+export { default as HelpSelectedIcon } from './HelpSelected';
 export { default as MessagesIcon } from './Messages';
 export { default as MessagesSelectedIcon } from './MessagesSelected';
 export { default as PaymentsIcon } from './Payments';

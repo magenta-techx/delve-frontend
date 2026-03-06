@@ -39,9 +39,9 @@ export function NavbarBottom() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-0',
+                  'flex flex-col items-center gap-1 p-2.5 rounded-xl transition-colors min-w-0',
                   isActive
-                    ? 'text-[#5F2EEA]'
+                    ? 'text-[#5F2EEA] bg-[#602eea0b]'
                     : 'text-gray-500 hover:text-gray-700'
                 )}
               >

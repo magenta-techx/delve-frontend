@@ -14,7 +14,7 @@ import { LogoLoadingIcon } from '@/assets/icons';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { EmptyChatMedia } from '../misc/icons';
-import { cn } from '@/lib/utils';
+import { cn, formatRelativeTime } from '@/lib/utils';
 import React from 'react';
 
 export default function UserChatsPage({
@@ -145,39 +145,45 @@ export default function UserChatsPage({
                 key={chat.id}
                 href={`/chats/${chat.id}`}
                 className={cn(
-                  'flex w-full items-center gap-2 bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50 md:gap-3',
+                  'flex flex-col bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50 md:gap-3',
                   current_chat_id === String(chat.id) && '!bg-[#F5F3FF]'
                 )}
               >
-                <div className='relative size-12 overflow-hidden rounded-full md:size-14'>
-                  <Image
-                    src={chat.business.logo || '/default-avatar.png'}
-                    alt={chat.business.name}
-                    fill
-                    objectFit='cover'
-                  />
-                </div>
-                <div className='flex min-w-0 flex-1 flex-col'>
-                  <p className='font-semibold text-sm md:text-base md:font-medium'>{chat.business.name}</p>
-                  <p
-                    className={cn(
-                      'xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight',
-                      current_chat_id === String(chat.id)
-                        ? 'text-[#551FB9]'
-                        : 'text-[#111927]',
-                      chat.last_message?.is_image_message &&
-                      'flex items-center gap-1'
-                    )}
-                  >
-                    {chat.last_message?.is_image_message ? (
-                      <>
-                        <ImageIcon className='h-3.5 w-3.5' aria-hidden='true' />
-                        <span>Image</span>
-                      </>
-                    ) : (
-                      chat.last_message?.content || 'No messages yet'
-                    )}
-                  </p>
+                <section className="flex w-full items-center gap-2">
+                  <div className='relative size-12 overflow-hidden rounded-full md:size-14'>
+                    <Image
+                      src={chat.business.logo || '/default-avatar.png'}
+                      alt={chat.business.name}
+                      fill
+                      objectFit='cover'
+                    />
+                  </div>
+                  <div className='flex min-w-0 flex-1 flex-col'>
+                    <p className='font-semibold text-sm md:text-base md:font-medium'>{chat.business.name}</p>
+                    <p
+                      className={cn(
+                        'xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight',
+                        current_chat_id === String(chat.id)
+                          ? 'text-[#551FB9]'
+                          : 'text-[#111927]',
+                        chat.last_message?.is_image_message &&
+                        'flex items-center gap-1'
+                      )}
+                    >
+                      {chat.last_message?.is_image_message ? (
+                        <>
+                          <ImageIcon className='h-3.5 w-3.5' aria-hidden='true' />
+                          <span>Image</span>
+                        </>
+                      ) : (
+                        chat.last_message?.content || 'No messages yet'
+                      )}
+                    </p>
+                  </div>
+                </section>
+
+                <div className='text-xs text-right text-gray-500 whitespace-nowrap'>
+                  {formatRelativeTime(chat.last_message_sent_at)}
                 </div>
               </Link>
             );

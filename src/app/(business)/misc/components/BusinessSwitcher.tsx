@@ -31,7 +31,7 @@ export const BusinessSwitcher = () => {
     <div className='relative'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] px-3 py-1.5 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3 xl:rounded-2xl'
+        className='flex w-full items-center gap-3 rounded-xl bg-[#1A1A1A] px-2.5 py-2 text-white transition-colors hover:bg-[#2A2A2A] md:rounded-xl md:px-4 md:py-3 xl:rounded-2xl'
       >
         {/* Business Logo */}
         <div className='relative size-7 flex-shrink-0 overflow-hidden rounded-full bg-white ring-2 ring-white ring-offset-1 md:size-8 xl:size-12'>
@@ -105,11 +105,10 @@ export const BusinessSwitcher = () => {
                     switchBusiness(business.id);
                     setIsOpen(false);
                   }}
-                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
-                    business.id === currentBusiness.id
-                      ? 'bg-primary/10 text-primary'
-                      : 'hover:bg-gray-100'
-                  }`}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors ${business.id === currentBusiness.id
+                    ? 'bg-primary/10 text-primary'
+                    : 'hover:bg-gray-100'
+                    }`}
                 >
                   {/* Business Logo */}
                   <div className='relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-gray-100'>
