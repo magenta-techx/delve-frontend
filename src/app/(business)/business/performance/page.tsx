@@ -109,7 +109,7 @@ export default function PerformancePage() {
         description='Effortlessly track your business performance metrics right here.'
       />
       <header>
-        <nav className='mb-4 flex items-center gap-2 px-4 lg:gap-3 lg:px-6'>
+        <nav className='mb-4 flex items-center gap-2 px-4 lg:gap-3 lg:px-6 max-md:mb-4 max-md:mt-1.5'>
           {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
             period => {
               const p = period as

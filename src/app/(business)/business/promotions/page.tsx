@@ -655,7 +655,7 @@ export default function PromotionsPage() {
                         ? totalClicks.toLocaleString()
                         : totalViews.toLocaleString()}
                     </span>{' '}
-                    This month
+                    {selectedPeriod.replace('_', ' ')}
                   </p>
                 </div>
 
