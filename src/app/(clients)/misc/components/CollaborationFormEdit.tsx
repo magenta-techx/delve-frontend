@@ -897,18 +897,24 @@ export default function CollaborationForm() {
             )}
           </section>
           <section className='mt-4'>
-            <h5 className='text-sm font-medium'>Group Listings</h5>
-            <Button
-              size='dynamic_lg'
-              variant='colored_outline'
-              type='button'
-              className='mt-2.5'
-              icon={<PlusIcon className='!size-3' />}
-              onClick={openBusinessSelectorModal}
-              iconPosition='right'
-            >
-              Add listings
-            </Button>
+            <div className="flex gap-4">
+              <h5 className='text-sm font-medium'>Group Listings</h5>
+              <p className='text-xs text-gray-500 md:hidden bg-primary/50 px-2 py-1 rounded-full'>
+                {selectedSavedBusiness?.length || 0} selected
+              </p>
+              <Button
+                size='dynamic_lg'
+                variant='colored_outline'
+                type='button'
+                className='mt-2.5'
+                icon={<PlusIcon className='!size-3' />}
+                onClick={openBusinessSelectorModal}
+                iconPosition='right'
+              >
+                Add listings
+              </Button>
+
+            </div>
           </section>
           <Button
             size='dynamic_lg'

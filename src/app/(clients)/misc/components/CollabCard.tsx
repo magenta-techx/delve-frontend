@@ -26,7 +26,7 @@ export default function CollabCard({ collab }: CollabCardProps) {
   const queryClient = useQueryClient();
   const deleteMutation = useDeleteCollaboration();
   const { userId } = useUserContext();
-  
+
   console.log('CollabCard userId:', userId);
 
   const handleDeleteClick = () => {
@@ -86,11 +86,12 @@ export default function CollabCard({ collab }: CollabCardProps) {
         <div className='absolute inset-0 bg-[#000000AD]' />
         <div className='z-2 relative flex h-full flex-col gap-4'>
           <header className='z-2 flex w-full items-center justify-between rounded-xl bg-white p-2 md:p-3 md:px-4'>
-            <h2 className='flex items-center gap-2'>
+            <h2 className='flex items-center gap-2 text-sm md:text-base'>
               <svg
                 width='20'
                 height='18'
                 viewBox='0 0 20 18'
+                className="size-4 md:size-5"
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
               >
@@ -113,6 +114,7 @@ export default function CollabCard({ collab }: CollabCardProps) {
                 width='18'
                 height='19'
                 viewBox='0 0 18 19'
+                className="size-4 md:size-5"
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
               >

@@ -604,6 +604,10 @@ export default function CollaborationForm() {
             >
               Add listings
             </Button>
+
+            <p className='text-xs text-gray-500 md:hidden'>
+              {selectedSavedBusiness?.length || 0} listings selected
+            </p>
           </section>
           <Button
             size='dynamic_lg'
