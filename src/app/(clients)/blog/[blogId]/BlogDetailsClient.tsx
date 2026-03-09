@@ -136,14 +136,21 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
                 Label & Key words{' '}
               </h2>
               <div className='flex flex-col items-center justify-center gap-2'>
-                {blog.labels.map(tag => (
-                  <span
-                    key={tag}
-                    className='mb-2 mr-2 inline-block rounded-full bg-[#F2F4F7] px-3 py-1 text-xs font-medium text-[#475467]'
-                  >
-                    {tag}
-                  </span>
-                ))}
+                {blog.labels.map((tag: any, index) => {
+                  const tagText =
+                    typeof tag === 'string'
+                      ? tag
+                      : tag?.name || tag?.title || tag?.label || String(tag);
+                  const tagKey = typeof tag === 'string' ? tag : tag?.id || index;
+                  return (
+                    <span
+                      key={tagKey}
+                      className='mb-2 mr-2 inline-block rounded-full bg-[#F2F4F7] px-3 py-1 text-xs font-medium text-[#475467]'
+                    >
+                      {tagText}
+                    </span>
+                  );
+                })}
               </div>
             </aside>
             <aside className='w-full bg-white text-sm text-[#475467]'>

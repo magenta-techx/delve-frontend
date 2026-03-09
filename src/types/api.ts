@@ -33,7 +33,7 @@ export interface BlogDetails {
     id: number;
     name: string;
   };
-  labels: string[];
+  labels: any[];
   content: string;
   created_at: string;
   thumbnail: string;

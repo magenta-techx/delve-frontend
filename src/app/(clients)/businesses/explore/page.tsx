@@ -1,11 +1,7 @@
 'use client';
 import { ExploreBaseIcons } from '@/assets/icons/explore/Icons';
 import { BaseIcons } from '@/assets/icons/base/Icons';
-// import BusinessFooter from '@/components/business/BusinessFooter';
 import FeaturedListingCard from '@/app/(clients)/misc/components/ListingCard';
-// import Navbar from '@/components/Navbar';
-// import type { Metadata } from 'next';
-// import Image from 'next/image';
 import Link from 'next/link';
 
 import {
