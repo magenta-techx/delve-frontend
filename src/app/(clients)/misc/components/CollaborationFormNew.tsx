@@ -287,44 +287,7 @@ export default function CollaborationForm() {
                 Group Listings
               </h3>
               <div className='flex items-center gap-2'>
-                <button
-                  type='button'
-                  className='text-[#9AA4B2] hover:text-[#0D121C]'
-                >
-                  <svg
-                    width='20'
-                    height='20'
-                    viewBox='0 0 20 20'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M12 8L8 12M8 8L12 12'
-                      stroke='currentColor'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                    />
-                  </svg>
-                </button>
-                <button
-                  type='button'
-                  className='text-[#9AA4B2] hover:text-[#0D121C]'
-                >
-                  <svg
-                    width='20'
-                    height='20'
-                    viewBox='0 0 20 20'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M8 12L12 8M12 12L8 8'
-                      stroke='currentColor'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                    />
-                  </svg>
-                </button>
+
               </div>
             </div>
             <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
