@@ -3,7 +3,7 @@
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { useBusinessDashboardDetails } from '../misc/api';
 import { LogoLoadingIcon } from '@/assets/icons';
-import { EmptyState, LinkButton } from '@/components/ui';
+import { Button, EmptyState, LinkButton } from '@/components/ui';
 import { EmptyChatMedia, EmptyListingIcon } from '@/app/(clients)/misc/icons';
 import {
   MessagesSelectedIcon,
@@ -23,12 +23,14 @@ import { useIsMobile } from '@/hooks';
 import Link from 'next/link';
 import Image from 'next/image';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage(): JSX.Element {
   const { currentBusiness, isLoading } = useBusinessContext();
   const { isMobile } = useIsMobile();
   const { data, isLoading: isBusinessDetailsLoading } =
     useBusinessDashboardDetails(currentBusiness?.id, 'dashboard');
+  const router = useRouter();
 
   const cardsData = [
     {
@@ -66,19 +68,20 @@ export default function DashboardPage(): JSX.Element {
   }
 
   if (!currentBusiness) {
+    router.replace('/businesses/create-listing');
     return (
       <EmptyState
         media={<EmptyListingIcon />}
         title='No business created yet'
         description='Get started by creating your first business listing.'
         actions={
-          <LinkButton
-            href='/businesses/create-listing'
+          <Button
+            isLoading
             // className='inline-block rounded-lg bg-primary px-6 py-3 text-white transition-colors hover:bg-primary/90'
             size='xl'
           >
-            Create Your First Business
-          </LinkButton>
+            Redirecting you to create your first business listing...
+          </Button>
         }
       />
     );

@@ -45,7 +45,9 @@ const BusinessLayoutWrapper = ({
           isMobile ? 'flex !h-dvh flex-col' : ''
       )}
     >
-      {calculatingScreenWidth ? null : isMobile ? <NavbarTop /> : <Sidebar />}
+      {calculatingScreenWidth ? null : isMobile ? <NavbarTop /> :
+        businesses?.length ?
+          <Sidebar /> : null}
 
       {/* Main content */}
       <div className='flex flex-1 flex-col overflow-hidden bg-[#FCFCFD]'>

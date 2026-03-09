@@ -199,7 +199,7 @@ const LandingPageNavbar = () => {
           isMobile
             ? 'bg-white'
             : pageHasBlackBg
-              ? 'bg-[#00000057] backdrop-blur-lg'
+              ? 'bg-[#0000008f] backdrop-blur-lg'
               : isBusiness || isMobile
                 ? 'bg-white'
                 : 'bg-white'
@@ -505,7 +505,7 @@ const LandingPageNavbar = () => {
                                       {popularStates.map(state => (
                                         <Link
                                           key={state.name}
-                                          href={`/businesses/search?state=${encodeURIComponent(state.name)}`}
+                                          href={`/businesses/search?location=${encodeURIComponent(state.name)}`}
                                           className='rounded-full bg-black px-6 py-2 text-white transition-colors hover:bg-gray-800'
                                         >
                                           {state.name}
@@ -522,7 +522,7 @@ const LandingPageNavbar = () => {
                                       {otherStates.map(state => (
                                         <Link
                                           key={state.name}
-                                          href={`/businesses/search?state=${encodeURIComponent(state.name)}`}
+                                          href={`/businesses/search?location=${encodeURIComponent(state.name)}`}
                                           className='rounded-full bg-gray-100 px-6 py-2 text-black transition-colors hover:bg-gray-200'
                                         >
                                           {state.name}

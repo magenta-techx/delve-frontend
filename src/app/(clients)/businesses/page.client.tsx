@@ -59,7 +59,7 @@ const BusinessesLandingPage = () => {
       <div className='mb-10 flex w-full justify-start px-7 lg:hidden lg:px-20'>
         <RoadMapIconsMobile />
       </div>
-      <div className='mb-32 hidden w-full justify-center px-5 sm:flex lg:flex'>
+      <div className='mb-32 hidden w-full justify-center px-5 sm:flex lg:flex md:px-16 lg:px-24'>
         <Image
           src={'/business/business-man.jpg'}
           alt='Delveng business'
@@ -67,7 +67,7 @@ const BusinessesLandingPage = () => {
           height={600}
           priority
           quality={100}
-          className='h-full'
+          className='h-full container'
         />
       </div>
       <div className='mb-10 flex w-full px-4 lg:hidden lg:px-20'>
@@ -78,18 +78,18 @@ const BusinessesLandingPage = () => {
           height={600}
           priority
           quality={100}
-          className='h-full'
+          className='h-full container'
         />
       </div>
       <div
-        className='mb-10 flex w-full flex-col items-center lg:mb-32 lg:px-8'
+        className='mb-10 w-full md:px-16 lg:px-24'
         id='type'
       >
-        <h1 className='mb-5 w-full max-w-6xl text-balance px-8 pr-10 font-inter text-base font-medium lg:mb-16 lg:px-20 lg:text-center lg:text-4xl'>
+        <h1 className='container mx-auto mb-5 w-full max-w-6xl text-balance px-8 pr-10 font-inter text-base font-medium lg:mb-16 lg:px-20 lg:text-center lg:text-4xl'>
           Delve is designed for all businesses, from established storefronts to
           independent service providers.
         </h1>
-        <section className='ms:px-0 flex grid-cols-[minmax(0,450px)_1fr] flex-col items-center gap-10 lg:grid lg:px-10'>
+        <section className='container mx-auto sm:px-0 flex grid-cols-[minmax(0,450px)_1fr] 2xl:grid-cols-[minmax(0,600px)_1fr] flex-col  gap-10 lg:grid '>
           <div className='flex flex-col gap-7 pl-8 pr-7 lg:gap-5'>
             <div className={`font-inter text-gray-600`}>
               <p
@@ -121,7 +121,7 @@ const BusinessesLandingPage = () => {
               height={482}
               priority
               quality={100}
-              className='w-[320px] lg:w-[545px]'
+              className='w-[320px] lg:w-[545px] 2xl:w-[580px]'
             />
             <div className='flex flex-row items-start gap-3 lg:flex-col lg:gap-5'>
               <Image

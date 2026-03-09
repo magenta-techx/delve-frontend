@@ -32,9 +32,28 @@ import {
 } from '@/components/ui';
 import ListingCardSkeleton from './misc/components/ListingCardSkeleton';
 import { useIsMobile } from '@/hooks';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useInView } from 'framer-motion';
+import NumberFlow from '@number-flow/react';
 import { LogoIcon } from '@/assets/icons';
 import { cn } from '@/lib/utils';
+
+const AnimatedStat = ({ stat }: { stat: { count: string; desc: string } }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  const match = stat.count.match(/(\d+)(.*)/);
+  const targetNum = match ? parseInt(match?.[1] || '0', 10) : 0;
+  const suffix = match ? match?.[2] || '' : '';
+
+  return (
+    <div ref={ref} className='flex flex-col items-center'>
+      <h1 className='font-karma text-[30px] font-semibold sm:-mb-5 sm:text-[48px]'>
+        <NumberFlow value={isInView ? targetNum : 0} suffix={suffix ?? ''} />
+      </h1>
+      <small className='text-[#697586]'>{stat.desc}</small>
+    </div>
+  );
+};
 
 export default function HomePage() {
   const { data: categoriesResp, isLoading: loadingCategories } =
@@ -317,16 +336,9 @@ export default function HomePage() {
       <section className='w-full md:px-16 lg:px-24'>
         <div className={cn('container flex w-full flex-col items-center pb-7 md:pb-14 ', !!sponsoredAds?.data.length && "pt-8")}>
           <div className='my-20 flex w-full items-center justify-between gap-6 pb-6 max-sm:px-5 md:mb-28 md:mt-24 lg:justify-center lg:gap-72'>
-            {STATS.map((stat, key) => {
-              return (
-                <div key={key} className='flex flex-col items-center'>
-                  <h1 className='font-karma text-[30px] font-semibold sm:-mb-5 sm:text-[48px]'>
-                    {stat.count}
-                  </h1>
-                  <small className='text-[#697586]'>{stat.desc}</small>
-                </div>
-              );
-            })}
+            {STATS.map((stat, key) => (
+              <AnimatedStat key={key} stat={stat} />
+            ))}
           </div>
 
           <section className='mt:px-0 container relative flex w-full flex-col items-center justify-between'>
