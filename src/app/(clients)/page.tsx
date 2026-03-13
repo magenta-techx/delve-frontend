@@ -45,10 +45,25 @@ const AnimatedStat = ({ stat }: { stat: { count: string; desc: string } }) => {
   const targetNum = match ? parseInt(match?.[1] || '0', 10) : 0;
   const suffix = match ? match?.[2] || '' : '';
 
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const interval = setInterval(() => {
+      setCount((prev) => (prev >= 30 ? 0 : prev + 1));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isInView]);
+
   return (
     <div ref={ref} className='flex flex-col items-center'>
       <h1 className='font-karma text-[30px] font-semibold sm:-mb-5 sm:text-[48px]'>
-        <NumberFlow value={isInView ? targetNum : 0} suffix={suffix ?? ''} />
+        <NumberFlow
+          value={isInView ? targetNum + count : 0}
+          suffix={suffix ?? ''}
+        />
       </h1>
       <small className='text-[#697586]'>{stat.desc}</small>
     </div>
