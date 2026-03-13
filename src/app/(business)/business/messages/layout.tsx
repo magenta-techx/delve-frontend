@@ -235,7 +235,7 @@ export default function UserChatsPage({
                       disabled={pinMutation.isPending}
                       onClick={() => {
                         pinMutation.mutate(
-                          { chat_id: pinConfirm.id },
+                          { chat_id: pinConfirm.id, is_pinned: !pinConfirm.is_pinned },
                           {
                             onSuccess: () => {
                               queryClient.invalidateQueries({ queryKey: ['business-chats'] });

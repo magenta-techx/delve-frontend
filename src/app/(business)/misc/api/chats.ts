@@ -52,12 +52,14 @@ export function useSendChatImages(): UseMutationResult<
 export function usePinBusinessChat(): UseMutationResult<
   ApiMessage,
   Error,
-  { chat_id: number | string }
+  { chat_id: number | string; is_pinned: boolean }
 > {
   return useMutation({
-    mutationFn: async ({ chat_id }) => {
+    mutationFn: async ({ chat_id, is_pinned }) => {
       const res = await fetch(`/api/chat/${chat_id}/pin`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_pinned }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok)
