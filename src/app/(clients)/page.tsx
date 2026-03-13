@@ -38,7 +38,13 @@ import NumberFlow from '@number-flow/react';
 import { LogoIcon } from '@/assets/icons';
 import { cn } from '@/lib/utils';
 
-const AnimatedStat = ({ stat }: { stat: { count: string; desc: string } }) => {
+const AnimatedStat = ({
+  stat,
+  index,
+}: {
+  stat: { count: string; desc: string };
+  index: number;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
   const match = stat.count.match(/(\d+)(.*)/);
@@ -46,16 +52,21 @@ const AnimatedStat = ({ stat }: { stat: { count: string; desc: string } }) => {
   const suffix = match ? match?.[2] || '' : '';
 
   const [count, setCount] = useState(0);
+  const randomMax = useRef(Math.floor(Math.random() * (30 - 25 + 1)) + 25).current;
 
   useEffect(() => {
     if (!isInView) return;
 
-    const interval = setInterval(() => {
-      setCount((prev) => (prev >= 30 ? 0 : prev + 1));
-    }, 1000);
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        setCount((prev) => (prev >= randomMax ? 0 : prev + 1));
+      }, 1000);
 
-    return () => clearInterval(interval);
-  }, [isInView]);
+      return () => clearInterval(interval);
+    }, index * 300); // 300ms stagger between each stat
+
+    return () => clearTimeout(timeout);
+  }, [isInView, index, randomMax]);
 
   return (
     <div ref={ref} className='flex flex-col items-center'>
@@ -120,7 +131,7 @@ export default function HomePage() {
       desc: 'Message sent',
     },
     {
-      count: '72+',
+      count: '105+',
       desc: 'Business rating',
     },
   ];
@@ -352,7 +363,7 @@ export default function HomePage() {
         <div className={cn('container flex w-full flex-col items-center pb-7 md:pb-14 ', !!sponsoredAds?.data.length && "pt-8")}>
           <div className='my-20 flex w-full items-center justify-between gap-6 pb-6 max-sm:px-5 md:mb-28 md:mt-24 lg:justify-center lg:gap-72'>
             {STATS.map((stat, key) => (
-              <AnimatedStat key={key} stat={stat} />
+              <AnimatedStat key={key} stat={stat} index={key} />
             ))}
           </div>
 
