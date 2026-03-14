@@ -179,8 +179,7 @@ const BusinessContactAndBusiness: React.FC<BusinessContactAndBusinessProps> = ({
                 id="website"
                 placeholder="https://www.yourbusiness.com"
                 value={contactInfo.website}
-                onChange={(e) => updateContactInfo('website', e.target.value)}
-                onBlur={(e) => {
+                onChange={(e) => {
                   const formattedUrl = ensureProtocol(e.target.value);
                   updateContactInfo('website', formattedUrl);
                 }}

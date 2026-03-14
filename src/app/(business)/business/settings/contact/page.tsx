@@ -298,11 +298,16 @@ export default function ContactPage() {
   };
 
   const handleFieldChange = (fieldKey: string, newValue: string) => {
+    let valueToStore = newValue;
+    if (fieldKey.includes('_link')) {
+      valueToStore = ensureProtocol(newValue);
+    }
+
     setFieldValues(prev => ({
       ...prev,
       [fieldKey]: {
         id: fieldKey,
-        value: newValue,
+        value: valueToStore,
         displayValue: prev[fieldKey]?.displayValue,
       },
     }));

@@ -231,11 +231,12 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
           <Input
             id="website"
             type="url"
-            {...register('website')}
-            onBlur={(e) => {
-              const formattedUrl = ensureProtocol(e.target.value);
-              setValue('website', formattedUrl, { shouldValidate: true });
-            }}
+            {...register('website', {
+              onChange: (e) => {
+                const formattedUrl = ensureProtocol(e.target.value);
+                setValue('website', formattedUrl, { shouldValidate: true });
+              }
+            })}
             placeholder="www.yoursite.com"
             className="mt-1"
             haserror={!!errors.website}

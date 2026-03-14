@@ -130,7 +130,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'scrollbar-hide relative flex flex-col overflow-y-auto overflow-x-visible border-r border-[#FBFAFF] bg-white transition-[width] duration-300 ease-in-out',
+        'scrollbar-hide relative flex flex-col overflow-visible overflow-y-auto border-r border-[#FBFAFF] bg-white transition-[width] duration-300 ease-in-out',
         collapsed ? 'w-[7.5rem]' : 'w-[17rem] lg:w-[19rem]'
       )}
       style={{ scrollbarGutter: 'auto' }}
