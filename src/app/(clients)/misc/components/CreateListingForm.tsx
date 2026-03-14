@@ -659,13 +659,6 @@ const BusinessStepForm = (): JSX.Element => {
       return 'Submit';
     }
 
-    if (
-      (pageNumber === 3 && selectedAmenities.length === 0) ||
-      (pageNumber === 4 && services.length === 0 && cloudServices.length === 0)
-    ) {
-      return 'Skip';
-    }
-
     return 'Continue';
   };
 
@@ -682,21 +675,28 @@ const BusinessStepForm = (): JSX.Element => {
         // Category - requires selection
         return !!(selectedCategoryId && selectedSubcategoryIds.length > 0);
       case 3:
-        // Amenities - optional, always valid
-        return true;
+        // Amenities - At least 4 required
+        return selectedAmenities.length >= 4;
       case 4:
-        // Services - optional or must be valid
-        if (services.length === 0) return true;
-        const servicesResult = servicesZodSchema.safeParse({ services });
-        return servicesResult.success;
+        // Services - At least 1 required
+        return services.length > 0 || cloudServices.length > 0 || localServices.length > 0;
       case 5:
         // Location - required and must be valid
         if (!location) return false;
         const locationResult = locationZodSchema.safeParse(location);
         return locationResult.success;
       case 6:
-        // Contact - requires phone number
-        return !!(contactInfo && contactInfo.phone_number);
+        // Contact - requires phone number AND at least one social link
+        const hasPhone = !!(contactInfo && contactInfo.phone_number);
+        const hasSocial = !!(
+          contactInfo &&
+          (contactInfo.whatsapp_link ||
+            contactInfo.facebook_link ||
+            contactInfo.instagram_link ||
+            contactInfo.twitter_link ||
+            contactInfo.tiktok_link)
+        );
+        return hasPhone && hasSocial;
       case 7:
         // Success page - always valid (no button shown anyway)
         return true;
@@ -783,9 +783,18 @@ const BusinessStepForm = (): JSX.Element => {
           break;
         case 6:
           // Contact validation
-          if (!contactInfo || !contactInfo.phone_number) {
+          const hasPhone = !!(contactInfo && contactInfo.phone_number);
+          const hasSocial = !!(
+            contactInfo &&
+            (contactInfo.whatsapp_link ||
+              contactInfo.facebook_link ||
+              contactInfo.instagram_link ||
+              contactInfo.twitter_link ||
+              contactInfo.tiktok_link)
+          );
+          if (!hasPhone || !hasSocial) {
             toast.error('Validation Error', {
-              description: 'Please provide your phone number.',
+              description: 'Please provide your phone number and at least one social link.',
             });
             setIsSubmitting(false);
             return;
@@ -1017,6 +1026,17 @@ const BusinessStepForm = (): JSX.Element => {
               </header>
             )}
             {currentStep?.component}
+            
+            {/* Direction Text */}
+            {pageNumber !== 7 && (
+              <div className='mx-auto mt-8 max-w-xl border-t pt-4'>
+                <p className='text-xs text-gray-500 italic'>
+                  {pageNumber === 3 && "Please select at least 4 amenities to continue."}
+                  {pageNumber === 4 && "Please add at least one service to continue."}
+                  {pageNumber === 6 && "Please provide a phone number and at least one social media link to continue."}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Footer Actions - Hidden on success page */}

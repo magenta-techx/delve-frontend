@@ -452,28 +452,29 @@ export default function ContactPage() {
         updateData = { phone_number: newValue };
       } else if (field === 'registration_number') {
         updateData = { registration_number: newValue };
+      } else {
         // Social media links
         let finalValue = newValue;
         if (field.includes('_link')) {
           finalValue = ensureProtocol(newValue);
         }
         updateData = { [field]: finalValue };
-
-        await updateLocationAndContactMutation.mutateAsync(
-          {
-            business_id: currentBusiness.id,
-            ...updateData,
-          },
-          {
-            onSuccess: () => {
-              toast.success('Updated successfully');
-              setEditingField(null);
-              setFieldValues({});
-              refetchBusinesses();
-            },
-          }
-        );
       }
+
+      await updateLocationAndContactMutation.mutateAsync(
+        {
+          business_id: currentBusiness.id,
+          ...updateData,
+        },
+        {
+          onSuccess: () => {
+            toast.success('Updated successfully');
+            setEditingField(null);
+            setFieldValues({});
+            refetchBusinesses();
+          },
+        }
+      );
     } catch (error) {
       toast.error(`Failed to update: ${String(error)}`);
       refetchBusinesses();

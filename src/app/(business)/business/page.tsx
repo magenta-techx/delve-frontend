@@ -273,7 +273,7 @@ export default function DashboardPage(): JSX.Element {
           </section>
         </section>
 
-        <aside className='max-xl:hidden'>
+        <aside className='sticky top-2 h-[calc(100vh-100px)] max-xl:hidden'>
           <Notifications />
         </aside>
       </div>
