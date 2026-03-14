@@ -175,7 +175,7 @@ export default function DashboardPage(): JSX.Element {
                 </h1>
               </header>
               <div>
-                {!data?.data.conversations.length ? (
+                {!!data?.data.conversations.length ? (
                   <>
                     {data?.data.conversations.map(conversation => (
                       <div key={conversation.id} className='mb-0.5'>
