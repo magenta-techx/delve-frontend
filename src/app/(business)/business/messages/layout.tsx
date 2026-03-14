@@ -36,7 +36,10 @@ export default function UserChatsPage({
   const [filteredChats, setFilteredChats] = React.useState(chats);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [pinConfirm, setPinConfirm] = React.useState<{ id: number; is_pinned: boolean } | null>(null);
+  const [pinConfirm, setPinConfirm] = React.useState<{
+    id: number;
+    is_pinned: boolean;
+  } | null>(null);
   const pinMutation = usePinBusinessChat();
   const queryClient = useQueryClient();
 
@@ -49,7 +52,9 @@ export default function UserChatsPage({
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
         filtered = filtered.filter((chat: any) =>
-          `${chat.customer.first_name} ${chat.customer.last_name}`.toLowerCase().includes(query)
+          `${chat.customer.first_name} ${chat.customer.last_name}`
+            .toLowerCase()
+            .includes(query)
         );
       }
       setFilteredChats({
@@ -60,17 +65,22 @@ export default function UserChatsPage({
   }, [chatsToShow, chats, searchQuery]);
 
   return (
-    <div className={cn('container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] px-0 md:pt-14  md:p-4', !pathname.startsWith('/business/messages/') && 'pb-20')}>
+    <div
+      className={cn(
+        'container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] px-0 md:p-4 md:pt-14',
+        !pathname.startsWith('/business/messages/') && 'pb-20'
+      )}
+    >
       <BusinessPageHeader marketPlace={true} />
 
       <div className='flex grow gap-x-4 overflow-hidden'>
         <section
           className={cn(
-            'relative flex w-full flex-col overflow-hidden rounded-2xl md:border border-[#ECE9FE] bg-background lg:w-80 xl:rounded-3xl',
+            'relative flex w-full flex-col overflow-hidden rounded-2xl border-[#ECE9FE] bg-background md:border lg:w-80 xl:rounded-3xl',
             !!current_chat_id && 'max-lg:hidden'
           )}
         >
-          <nav className='sticky h-16 top-0 flex items-center justify-between border-b border-border bg-white py-2 px-4 xl:px-6 xl:py-4'>
+          <nav className='sticky top-0 flex h-16 items-center justify-between border-b border-border bg-white px-4 py-2 xl:px-6 xl:py-4'>
             {isSearchOpen ? (
               <input
                 type='text'
@@ -96,7 +106,19 @@ export default function UserChatsPage({
                 className='flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-gray-100'
               >
                 {isSearchOpen ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                  <svg
+                    width='20'
+                    height='20'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='#0F0F0F'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <path d='M18 6 6 18' />
+                    <path d='m6 6 12 12' />
+                  </svg>
                 ) : (
                   <svg
                     className='size-4'
@@ -173,19 +195,36 @@ export default function UserChatsPage({
                     />
                   </div>
                   <div className='flex min-w-0 flex-1 flex-col'>
-                    <p className='font-semibold text-sm md:text-base md:font-medium'>
+                    <p className='text-sm font-semibold md:text-base md:font-medium'>
                       {chat.customer.first_name} {chat.customer.last_name}
                     </p>
                     <p
                       className={cn(
                         'line-clamp-2 min-h-[2lh] text-xs leading-tight text-[#111927] md:text-[0.825rem]',
-                        chat.last_message?.is_image_message && 'flex items-center gap-1'
+                        chat.last_message?.is_image_message &&
+                          'flex items-center gap-1'
                       )}
                     >
                       {chat.last_message?.is_image_message ? (
                         <>
-                          <svg className='h-3.5 w-3.5' aria-hidden='true' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
-                            <rect x='3' y='3' width='18' height='18' rx='2' ry='2'></rect>
+                          <svg
+                            className='h-3.5 w-3.5'
+                            aria-hidden='true'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                          >
+                            <rect
+                              x='3'
+                              y='3'
+                              width='18'
+                              height='18'
+                              rx='2'
+                              ry='2'
+                            ></rect>
                             <circle cx='8.5' cy='8.5' r='1.5'></circle>
                             <polyline points='21 15 16 10 5 21'></polyline>
                           </svg>
@@ -201,11 +240,26 @@ export default function UserChatsPage({
                       {formatRelativeTime(chat.last_message_sent_at)}
                     </span>
                     <button
-                      onClick={e => { e.preventDefault(); e.stopPropagation(); setPinConfirm({ id: chat.id, is_pinned: !!chat.is_pinned }); }}
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setPinConfirm({
+                          id: chat.id,
+                          is_pinned: !!chat.is_pinned_by_business,
+                        });
+                      }}
                       className='p-0.5'
-                      aria-label={chat.is_pinned ? 'Unpin chat' : 'Pin chat'}
+                      aria-label={
+                        chat.is_pinned_by_business ? 'Unpin chat' : 'Pin chat'
+                      }
                     >
-                      <MessagePin style={{ color: chat.is_pinned ? '#FF4405' : '#9AA4B2' }} />
+                      <MessagePin
+                        style={{
+                          color: chat.is_pinned_by_business
+                            ? '#FF4405'
+                            : '#9AA4B2',
+                        }}
+                      />
                     </button>
                   </div>
                 </Link>
@@ -217,7 +271,9 @@ export default function UserChatsPage({
               <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'>
                 <div className='w-full max-w-xs rounded-2xl bg-white p-5 shadow-xl'>
                   <h3 className='text-base font-semibold text-[#0F0F0F]'>
-                    {pinConfirm.is_pinned ? 'Unpin conversation?' : 'Pin conversation?'}
+                    {pinConfirm.is_pinned
+                      ? 'Unpin conversation?'
+                      : 'Pin conversation?'}
                   </h3>
                   <p className='mt-1 text-sm text-[#697586]'>
                     {pinConfirm.is_pinned
@@ -235,10 +291,15 @@ export default function UserChatsPage({
                       disabled={pinMutation.isPending}
                       onClick={() => {
                         pinMutation.mutate(
-                          { chat_id: pinConfirm.id, is_pinned: !pinConfirm.is_pinned },
+                          {
+                            chat_id: pinConfirm.id,
+                            is_pinned: !pinConfirm.is_pinned,
+                          },
                           {
                             onSuccess: () => {
-                              queryClient.invalidateQueries({ queryKey: ['business-chats'] });
+                              queryClient.invalidateQueries({
+                                queryKey: ['business-chats'],
+                              });
                               setPinConfirm(null);
                             },
                             onError: () => setPinConfirm(null),
@@ -247,7 +308,11 @@ export default function UserChatsPage({
                       }}
                       className='flex-1 rounded-xl bg-[#5F2EEA] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#5F2EEA]/90 disabled:opacity-60'
                     >
-                      {pinMutation.isPending ? 'Saving…' : pinConfirm.is_pinned ? 'Unpin' : 'Pin'}
+                      {pinMutation.isPending
+                        ? 'Saving…'
+                        : pinConfirm.is_pinned
+                          ? 'Unpin'
+                          : 'Pin'}
                     </button>
                   </div>
                 </div>

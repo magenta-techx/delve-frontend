@@ -272,7 +272,7 @@ export interface Review {
 export interface BusinessChatListItem {
   id: number;
   customer: Customer;
-  is_pinned: boolean;
+  is_pinned_by_business: boolean;
   last_message_sent_at: null | string;
   last_message: Lastmessage;
 }
