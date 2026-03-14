@@ -122,7 +122,7 @@ export default function GeneralPage() {
   }
 
   return (
-    <div className='max-w-5xl lg:space-y-6'>
+    <div className='lg:space-y-6'>
       {/* Business Logo */}
       <section className='grid-cols-[240px,1fr] space-y-4 border-b-[0.7px] border-[#E3E8EF] p-4 lg:grid lg:items-end lg:py-8'>
         <Label className='text-sm font-medium text-[#0F0F0F]'>
