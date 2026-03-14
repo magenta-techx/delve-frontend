@@ -52,6 +52,22 @@ export default function ChatDetailPage({
   const handleSocketPayload = useCallback(
     (payload: any) => {
       if (payload && typeof payload === 'object') {
+        const newMessage: ChatMessage = {
+          id: payload.id || `temp-${Date.now()}-${Math.random()}`,
+          content: payload.message || payload.content || '',
+          sender: {
+            id: payload.sender_id || 0,
+            first_name: payload.sender_name?.split(' ')[0] || '',
+            last_name: payload.sender_name?.split(' ')[1] || '',
+            profile_image: payload.sender_profile_image || null,
+          },
+          is_image_message:
+            payload.message_type === 'image' || payload.is_image_message,
+          image: payload.image || null,
+          sent_at: payload.created_at || new Date().toISOString(),
+          is_read: false,
+        };
+
         queryClient.setQueryData(
           ['chat-messages', chat_id],
           (old: ApiEnvelope<ChatMessage[]> | undefined) => {
@@ -59,13 +75,13 @@ export default function ChatDetailPage({
 
             // Avoid duplicate messages if they were already added (e.g. by optimistic update if we had one)
             const exists = old.data.some(
-              (m: ChatMessage) => m.id === payload.id
+              (m: ChatMessage) => m.id === newMessage.id
             );
             if (exists) return old;
 
             return {
               ...old,
-              data: [payload, ...old.data],
+              data: [newMessage, ...old.data],
             };
           }
         );
@@ -129,7 +145,7 @@ export default function ChatDetailPage({
     } catch (e) {
       try {
         el.scrollTop = el.scrollHeight;
-      } catch { }
+      } catch {}
     }
   }, []);
 
@@ -280,7 +296,16 @@ export default function ChatDetailPage({
               href='/chats'
               className='mr-1 flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted'
             >
-              <svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
                 <path d='m15 18-6-6 6-6' />
               </svg>
             </Link>
@@ -289,50 +314,75 @@ export default function ChatDetailPage({
             <div className='h-6 w-32 animate-pulse rounded bg-gray-200' />
           ) : (
             <h2 className='text-lg font-semibold'>
-              {isMobile ? 'Messages' : (selectedChat?.business.name ?? 'Conversation')}
+              {isMobile
+                ? 'Messages'
+                : (selectedChat?.business.name ?? 'Conversation')}
             </h2>
           )}
         </div>
         <div className='flex items-center gap-2'>
           {isLoadingChats ? (
             <div className='h-8 w-32 animate-pulse rounded-[0.825rem] bg-gray-200' />
-          ) : (
-            isMobile ? (
-              <button className='flex h-8 w-8 items-center justify-center hover:bg-muted rounded-full'>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" /></svg>
-              </button>
-            ) : (
-              <LinkButton
-                href={`/businesses/${selectedChat?.business.id ?? ''}`}
-                className='rounded-[0.825rem] border border-purple-500 py-1.5 text-[#551FB9] hover:!text-[#551FB9]'
-                variant='light'
-                size='md'
+          ) : isMobile ? (
+            <button className='flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted'>
+              <svg
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
               >
-                View profile
-              </LinkButton>
-            )
+                <circle cx='12' cy='12' r='1' />
+                <circle cx='12' cy='5' r='1' />
+                <circle cx='12' cy='19' r='1' />
+              </svg>
+            </button>
+          ) : (
+            <LinkButton
+              href={`/businesses/${selectedChat?.business.id ?? ''}`}
+              className='rounded-[0.825rem] border border-purple-500 py-1.5 text-[#551FB9] hover:!text-[#551FB9]'
+              variant='light'
+              size='md'
+            >
+              View profile
+            </LinkButton>
           )}
         </div>
       </nav>
 
       <div
         ref={messagesContainerRef}
-        className='flex flex-1 flex-col space-y-4 overflow-y-auto p-4 lg:p-6 pb-2 lg:pb-6'
+        className='flex flex-1 flex-col space-y-4 overflow-y-auto p-4 pb-2 lg:p-6 lg:pb-6'
         onScroll={handleScroll}
       >
         <div className='flex w-full flex-col items-center justify-center pb-6 pt-4'>
           <div className='relative mb-2 flex size-20 items-center justify-center overflow-hidden rounded-full bg-black text-white'>
             {selectedChat?.business?.logo ? (
-              <Image src={selectedChat.business.logo} alt='' fill className="object-cover" />
+              <Image
+                src={selectedChat.business.logo}
+                alt=''
+                fill
+                className='object-cover'
+              />
             ) : (
-              <span className='text-xl uppercase'>{selectedChat?.business?.name?.[0]}</span>
+              <span className='text-xl uppercase'>
+                {selectedChat?.business?.name?.[0]}
+              </span>
             )}
           </div>
           <p className='text-sm text-gray-500'>
-            Conversation with <span className='font-semibold text-black'>{selectedChat?.business?.name}</span>
+            Conversation with{' '}
+            <span className='font-semibold text-black'>
+              {selectedChat?.business?.name}
+            </span>
           </p>
         </div>
-        {messagesLoading && <div className="text-center w-full">Loading messages...</div>}
+        {messagesLoading && (
+          <div className='w-full text-center'>Loading messages...</div>
+        )}
         {messages && messages.data.length === 0 && (
           <div className='py-6 text-center text-gray-500'>No messages yet</div>
         )}
@@ -346,9 +396,14 @@ export default function ChatDetailPage({
               >
                 {/* Other person's avatar (left side) */}
                 {!isOwn && (
-                  <div className='relative size-4 md:size-5 shrink-0 overflow-hidden rounded-full bg-gray-200'>
+                  <div className='relative size-4 shrink-0 overflow-hidden rounded-full bg-gray-200 md:size-5'>
                     {msg.sender.profile_image ? (
-                      <Image src={msg.sender.profile_image} alt={msg.sender.first_name} fill className='object-cover' />
+                      <Image
+                        src={msg.sender.profile_image}
+                        alt={msg.sender.first_name}
+                        fill
+                        className='object-cover'
+                      />
                     ) : (
                       <span className='flex h-full w-full items-center justify-center text-[0.6rem] font-semibold uppercase text-gray-600'>
                         {msg.sender.first_name?.[0]}
@@ -380,18 +435,20 @@ export default function ChatDetailPage({
                   )}
                   <div
                     className={cn(
-                      'w-max max-w-[min(72vw,26rem)] rounded-xl px-3.5 py-2 font-normal leading-snug bg-[#F8FAFC] text-[#0F0F0F]',
+                      'w-max max-w-[min(72vw,26rem)] rounded-xl bg-[#F8FAFC] px-3.5 py-2 font-normal leading-snug text-[#0F0F0F]',
                       isOwn ? 'rounded-tr-none' : 'rounded-bl-none'
                     )}
                   >
-                    <p className='text-[0.8rem] md:text-sm'>{msg.content ?? ''}</p>
+                    <p className='text-[0.8rem] md:text-sm'>
+                      {msg.content ?? ''}
+                    </p>
                     {msg.is_image_message && (
                       <button
                         type='button'
                         onClick={() => openLightbox(String(msg.image))}
                         className='mt-2 block focus:outline-none'
                       >
-                        <div className='relative size-32 md:size-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
+                        <div className='relative size-32 overflow-hidden rounded-xl bg-[#E2E8F0] md:size-40'>
                           <Image
                             src={String(msg.image)}
                             alt='Chat image'
@@ -408,9 +465,14 @@ export default function ChatDetailPage({
 
                 {/* Own avatar (right side) */}
                 {isOwn && (
-                  <div className='relative size-4 md:size-5 shrink-0 overflow-hidden rounded-full bg-gray-200'>
+                  <div className='relative size-4 shrink-0 overflow-hidden rounded-full bg-gray-200 md:size-5'>
                     {msg.sender.profile_image ? (
-                      <Image src={msg.sender.profile_image} alt={msg.sender.first_name} fill className='object-cover' />
+                      <Image
+                        src={msg.sender.profile_image}
+                        alt={msg.sender.first_name}
+                        fill
+                        className='object-cover'
+                      />
                     ) : (
                       <span className='flex h-full w-full items-center justify-center text-[0.6rem] font-semibold uppercase text-gray-600'>
                         {msg.sender.first_name?.[0]}
@@ -424,7 +486,7 @@ export default function ChatDetailPage({
         {pendingUploads.map(upload => (
           <div key={upload.id} className='flex justify-end'>
             <div className='text-sidebar-primary-foreground w-max max-w-md rounded-lg bg-[#F8FAFC] px-4 py-2 text-sm font-normal leading-snug'>
-              <div className='relative mt-2 size-32 md:size-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
+              <div className='relative mt-2 size-32 overflow-hidden rounded-xl bg-[#E2E8F0] md:size-40'>
                 <img
                   src={upload.url}
                   alt='Uploading preview'
@@ -471,7 +533,7 @@ export default function ChatDetailPage({
       </div>
 
       <div className='w-full p-2 md:p-4 lg:p-6'>
-        <div className='flex w-full items-center rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] md:bg-[#F8FAFC] p-2 md:pl-4 drop-shadow-sm shadow-sm ring-1 ring-gray-100'>
+        <div className='flex w-full items-center rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] p-2 shadow-sm ring-1 ring-gray-100 drop-shadow-sm md:bg-[#F8FAFC] md:pl-4'>
           <textarea
             ref={textareaRef}
             value={text}
@@ -485,7 +547,7 @@ export default function ChatDetailPage({
             }}
             rows={1}
             placeholder='Write your message..'
-            className='max-h-[200px] text-xs md:text-sm lg:text-base w-full resize-none border-none bg-transparent py-1 outline-none placeholder:text-gray-500 focus:border-none'
+            className='max-h-[200px] w-full resize-none border-none bg-transparent py-1 text-xs outline-none placeholder:text-gray-500 focus:border-none md:text-sm lg:text-base'
           />
           <div className='flex items-center gap-1.5'>
             <input
@@ -498,21 +560,46 @@ export default function ChatDetailPage({
             />
             <button
               type='button'
-              className='flex size-6 md:size-8 items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
+              className='flex size-6 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 md:size-8'
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" x2="9.01" y1="9" y2="9" /><line x1="15" x2="15.01" y1="9" y2="9" /></svg>
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <circle cx='12' cy='12' r='10' />
+                <path d='M8 14s1.5 2 4 2 4-2 4-2' />
+                <line x1='9' x2='9.01' y1='9' y2='9' />
+                <line x1='15' x2='15.01' y1='9' y2='9' />
+              </svg>
             </button>
             <button
               type='button'
               onClick={handleSelectImage}
-              className='flex size-6 md:size-8 items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
+              className='flex size-6 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 md:size-8'
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <path d='m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48' />
+              </svg>
             </button>
             <Button
               size='icon'
               onClick={handleSend}
-              className='h-10 w-12 shrink-0 rounded-xl bg-[#FAF5FF] hover:bg-[#F3E8FF] ml-1'
+              className='ml-1 h-10 w-12 shrink-0 rounded-xl bg-[#FAF5FF] hover:bg-[#F3E8FF]'
               variant='unstyled'
               disabled={sending || connectionState !== 'open'}
             >
@@ -523,7 +610,16 @@ export default function ChatDetailPage({
                   fill='none'
                   xmlns='http://www.w3.org/2000/svg'
                 >
-                  <circle cx='12' cy='12' r='10' stroke='#551FB9' strokeWidth='3' strokeLinecap='round' strokeDasharray='60' strokeDashoffset='0'></circle>
+                  <circle
+                    cx='12'
+                    cy='12'
+                    r='10'
+                    stroke='#551FB9'
+                    strokeWidth='3'
+                    strokeLinecap='round'
+                    strokeDasharray='60'
+                    strokeDashoffset='0'
+                  ></circle>
                 </svg>
               ) : (
                 <svg
@@ -534,10 +630,18 @@ export default function ChatDetailPage({
                   xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
-                    d='M22 2L11 13' stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'} strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'
+                    d='M22 2L11 13'
+                    stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'}
+                    strokeWidth='2.5'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
                   <path
-                    d='M22 2L15 22L11 13L2 9L22 2Z' stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'} strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'
+                    d='M22 2L15 22L11 13L2 9L22 2Z'
+                    stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'}
+                    strokeWidth='2.5'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   />
                 </svg>
               )}

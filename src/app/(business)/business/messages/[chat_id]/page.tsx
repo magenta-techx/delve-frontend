@@ -43,6 +43,21 @@ export default function ChatDetailPage() {
   const handleSocketPayload = useCallback(
     (payload: any) => {
       if (payload && typeof payload === 'object') {
+        const newMessage: ChatMessage = {
+          id: payload.id || `temp-${Date.now()}-${Math.random()}`,
+          content: payload.message || payload.content || '',
+          sender: {
+            id: payload.sender_id || 0,
+            first_name: payload.sender_name?.split(' ')[0] || '',
+            last_name: payload.sender_name?.split(' ')[1] || '',
+            profile_image: payload.sender_profile_image || null,
+          },
+          is_image_message: payload.message_type === 'image' || payload.is_image_message,
+          image: payload.image || null,
+          sent_at: payload.created_at || new Date().toISOString(),
+          is_read: false,
+        };
+
         queryClient.setQueryData(
           ['chat-messages', chat_id],
           (old: ApiEnvelope<ChatMessage[]> | undefined) => {
@@ -50,13 +65,13 @@ export default function ChatDetailPage() {
 
             // Avoid duplicate messages
             const exists = old.data.some(
-              (m: ChatMessage) => m.id === payload.id
+              (m: ChatMessage) => m.id === newMessage.id
             );
             if (exists) return old;
 
             return {
               ...old,
-              data: [payload, ...old.data],
+              data: [newMessage, ...old.data],
             };
           }
         );
