@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui';
+import { ensureProtocol } from '@/lib/url';
 
 interface BusinessHours {
   day: string;
@@ -179,8 +180,15 @@ const BusinessContactAndBusiness: React.FC<BusinessContactAndBusinessProps> = ({
                 placeholder="https://www.yourbusiness.com"
                 value={contactInfo.website}
                 onChange={(e) => updateContactInfo('website', e.target.value)}
+                onBlur={(e) => {
+                  const formattedUrl = ensureProtocol(e.target.value);
+                  updateContactInfo('website', formattedUrl);
+                }}
                 className="pl-10"
               />
+              <p className="mt-1 text-xs text-muted-foreground">
+                URL link must start with http/https
+              </p>
             </div>
           </div>
         </div>

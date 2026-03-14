@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui';
 import { toast } from 'sonner';
 import { GalleryIcon } from '../icons';
 import { authAwareFetch } from '@/utils/authAwareFetch';
+import { ensureProtocol } from '@/lib/url';
 
 const businessIntroSchema = z.object({
   business_name: z.string().min(1, 'Business name is required'),
@@ -41,6 +42,7 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
     formState: { errors, isValid: formIsValid },
     getValues,
     watch,
+    setValue,
   } = useForm<BusinessIntroductionFormData>({
     resolver: zodResolver(businessIntroSchema),
     mode: 'onChange',
@@ -230,10 +232,17 @@ const BusinessCreateListingFormStep1Introduction = forwardRef<
             id="website"
             type="url"
             {...register('website')}
+            onBlur={(e) => {
+              const formattedUrl = ensureProtocol(e.target.value);
+              setValue('website', formattedUrl, { shouldValidate: true });
+            }}
             placeholder="www.yoursite.com"
             className="mt-1"
             haserror={!!errors.website}
           />
+          <p className="mt-1 text-xs text-muted-foreground">
+            URL link must start with http/https
+          </p>
           {errors.website && (
             <p className="mt-1 text-sm text-red-600">{errors.website.message}</p>
           )}
