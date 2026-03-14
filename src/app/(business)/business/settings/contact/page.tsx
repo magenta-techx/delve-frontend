@@ -242,11 +242,11 @@ export default function ContactPage() {
       setContactInfo({
         phone_number: currentBusiness.phone_number || '',
         registration_number: currentBusiness.registration_number || '',
-        whatsapp_link: currentBusiness.whatsapp_link || '',
-        facebook_link: currentBusiness.facebook_link || '',
-        instagram_link: currentBusiness.instagram_link || '',
-        twitter_link: currentBusiness.twitter_link || '',
-        tiktok_link: currentBusiness.tiktok_link || '',
+        whatsapp_link: currentBusiness.social_links?.whatsapp || '',
+        facebook_link: currentBusiness.social_links?.facebook || '',
+        instagram_link: currentBusiness.social_links?.instagram || '',
+        twitter_link: currentBusiness.social_links?.twitter || '',
+        tiktok_link: currentBusiness.social_links?.tiktok || '',
       });
 
       // Set selected state
