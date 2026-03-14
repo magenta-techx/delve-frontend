@@ -9,10 +9,7 @@ import ThisWeeksTrends from '@/app/(clients)/misc/components/ThisWeeksTrends';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import {
-  BusinessSearch,
-  FeaturedListingCard,
-} from './misc/components';
+import { BusinessSearch, FeaturedListingCard } from './misc/components';
 import { useBusinessCategories } from '@/app/(clients)/misc/api/metadata';
 import {
   BusinessCategoryIcons,
@@ -52,14 +49,16 @@ const AnimatedStat = ({
   const suffix = match ? match?.[2] || '' : '';
 
   const [count, setCount] = useState(0);
-  const randomMax = useRef(Math.floor(Math.random() * (30 - 25 + 1)) + 25).current;
+  const randomMax = useRef(
+    Math.floor(Math.random() * (30 - 25 + 1)) + 25
+  ).current;
 
   useEffect(() => {
     if (!isInView) return;
 
     const timeout = setTimeout(() => {
       const interval = setInterval(() => {
-        setCount((prev) => (prev >= randomMax ? 0 : prev + 1));
+        setCount(prev => (prev >= randomMax ? 0 : prev + 1));
       }, 1000);
 
       return () => clearInterval(interval);
@@ -137,13 +136,13 @@ export default function HomePage() {
   ];
 
   const { data: sponsoredAds } = useSponsoredAds();
-  const { } = useEvents('Lagos');
+  const {} = useEvents('Lagos');
 
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[85vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         <section />
-        <div className='relative flex h-screen min-h-[756px] w-full rounded-b-2xl -top-16 bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
+        <div className='relative -top-16 flex h-screen min-h-[756px] w-full rounded-b-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-b-xl bg-black/60 sm:rounded-none'></div>
         </div>
 
@@ -171,46 +170,46 @@ export default function HomePage() {
           paragraph='category'
         />
 
-        <div className='container mb-14 mt-10 flex w-full items-center gap-14 px-2 sm:px-0 md:mb-20 '>
+        <div className='container mb-14 mt-10 flex w-full items-center gap-14 px-2 sm:px-0 md:mb-20'>
           <div className='relative w-full'>
             <Carousel opts={{ align: 'start', loop: false }} className='w-full'>
               <CarouselContent className='-ml-2'>
                 {loadingCategories
                   ? Array.from({ length: 5 }).map((_, idx) => (
-                    <CarouselItem
-                      key={idx}
-                      className='flex basis-[35vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
-                    >
-                      <div className='flex flex-col items-center justify-center gap-2'>
-                        <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40 xl:size-44'></div>
-                      </div>
-                    </CarouselItem>
-                  ))
-                  : categories.map(category => {
-                    const iconName = category.name
-                      ?.split(' ')[0]
-                      ?.toLowerCase() as CategoryIconType;
-                    return (
                       <CarouselItem
-                        key={category.id}
-                        className='flex basis-[35vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
+                        key={idx}
+                        className='flex basis-[35vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
                       >
-                        <CategoryCard
-                          title={category.name}
-                          imageSrc={`/categories/${iconName}.jpg`}
-                          icon={
-                            <BusinessCategoryIcons
-                              className='size-12 text-white'
-                              value={iconName}
-                            />
-                          }
-                          hoverIcon={
-                            <BusinessCategoryIcons value={iconName} />
-                          }
-                        />
+                        <div className='flex flex-col items-center justify-center gap-2'>
+                          <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40 xl:size-44'></div>
+                        </div>
                       </CarouselItem>
-                    );
-                  })}
+                    ))
+                  : categories.map(category => {
+                      const iconName = category.name
+                        ?.split(' ')[0]
+                        ?.toLowerCase() as CategoryIconType;
+                      return (
+                        <CarouselItem
+                          key={category.id}
+                          className='flex basis-[35vw] items-center justify-center px-4 sm:px-6 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:px-10'
+                        >
+                          <CategoryCard
+                            title={category.name}
+                            imageSrc={`/categories/${iconName}.jpg`}
+                            icon={
+                              <BusinessCategoryIcons
+                                className='size-12 text-white'
+                                value={iconName}
+                              />
+                            }
+                            hoverIcon={
+                              <BusinessCategoryIcons value={iconName} />
+                            }
+                          />
+                        </CarouselItem>
+                      );
+                    })}
               </CarouselContent>
               <CarouselPrevious className='absolute bottom-0 left-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex' />
               <CarouselNext className='absolute bottom-0 right-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex' />
@@ -227,7 +226,7 @@ export default function HomePage() {
         />
 
         <div className='relative mt-3 flex w-full items-center justify-center xl:mt-9'>
-          <div className='mb-10 md:mb-20 w-full items-center'>
+          <div className='mb-10 w-full items-center md:mb-20'>
             <Carousel
               opts={{
                 align: calculatingScreenWidth
@@ -239,24 +238,24 @@ export default function HomePage() {
               }}
               className='container mx-auto w-screen md:w-[90vw] xl:w-[85vw]'
             >
-              <CarouselContent className='-ml-2 gap-2 max-md:px-4 py-4'>
+              <CarouselContent className='-ml-2 gap-2 py-4 max-md:px-4'>
                 {loadingApproved
                   ? Array.from({ length: 6 }).map((_, key) => (
-                    <CarouselItem
-                      key={key}
-                      className='basis-[80vw] md:pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
-                    >
-                      <ListingCardSkeleton classStyle='w-full sm:w-[300px] xl:w-full !aspect-[342/427]' />
-                    </CarouselItem>
-                  ))
+                      <CarouselItem
+                        key={key}
+                        className='basis-[80vw] sm:basis-[300px] md:pl-2 xl:basis-[33%] xl:px-3.5'
+                      >
+                        <ListingCardSkeleton classStyle='w-full sm:w-[300px] xl:w-full !aspect-[342/427]' />
+                      </CarouselItem>
+                    ))
                   : approved.map((business, key) => (
-                    <CarouselItem
-                      key={business.id ?? key}
-                      className='basis-[80vw] md:pl-2 sm:basis-[300px] xl:basis-[33%] xl:px-3.5'
-                    >
-                      <FeaturedListingCard business={business} isBigCard />
-                    </CarouselItem>
-                  ))}
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='basis-[80vw] sm:basis-[300px] md:pl-2 xl:basis-[33%] xl:px-3.5'
+                      >
+                        <FeaturedListingCard business={business} isBigCard />
+                      </CarouselItem>
+                    ))}
               </CarouselContent>
               <CarouselPrevious className='absolute -left-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-left-10' />
               <CarouselNext className='absolute -right-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-right-10' />
@@ -265,7 +264,9 @@ export default function HomePage() {
         </div>
 
         {/* Serch By location  */}
-        <div className={cn('container', !!sponsoredAds?.data.length && " mb-10")}>
+        <div
+          className={cn('container', !!sponsoredAds?.data.length && 'mb-10')}
+        >
           <header className='flex items-center justify-between max-md:px-4'>
             <h2 className='text-base font-semibold sm:text-2xl'>
               Search by location
@@ -282,7 +283,12 @@ export default function HomePage() {
             </div>
           </header>
 
-          <div className={cn('flex w-full items-center gap-10 sm:px-0 md:px-2', !!sponsoredAds?.data.length && "mb-4  sm:mb-20")}>
+          <div
+            className={cn(
+              'flex w-full items-center gap-10 sm:px-0 md:px-2',
+              !!sponsoredAds?.data.length && 'mb-4 sm:mb-20'
+            )}
+          >
             <div className='relative w-full'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
@@ -308,8 +314,7 @@ export default function HomePage() {
         </div>
 
         {/* Sponsored picks  */}
-        {
-          !!sponsoredAds?.data.length &&
+        {!!sponsoredAds?.data.length && (
           <div className='container relative max-md:px-4'>
             <SectionHeader header='Sponsored Picks' paragraph='Spotlight' />
 
@@ -356,11 +361,16 @@ export default function HomePage() {
               </Carousel>
             </div>
           </div>
-        }
+        )}
       </div>
 
       <section className='w-full md:px-16 lg:px-24'>
-        <div className={cn('container flex w-full flex-col items-center pb-7 md:pb-14 ', !!sponsoredAds?.data.length && "pt-8")}>
+        <div
+          className={cn(
+            'container flex w-full flex-col items-center pb-7 md:pb-14',
+            !!sponsoredAds?.data.length && 'pt-8'
+          )}
+        >
           <div className='my-20 flex w-full items-center justify-between gap-6 pb-6 max-sm:px-5 md:mb-28 md:mt-24 lg:justify-center lg:gap-72'>
             {STATS.map((stat, key) => (
               <AnimatedStat key={key} stat={stat} index={key} />
@@ -378,7 +388,7 @@ export default function HomePage() {
               <div className='flex items-center gap-2 text-primary'>
                 <BaseIcons value='arrows-left-primary' />
                 <Link
-                  href={'/businesss/search'}
+                  href={'/businesses/search'}
                   className='text-[12px] uppercase sm:text-[16px]'
                 >
                   See all
@@ -386,7 +396,7 @@ export default function HomePage() {
               </div>
             </header>
 
-            <div className='mb-10 md:mb-20 w-full items-center'>
+            <div className='mb-10 w-full items-center md:mb-20'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
                 className='w-full max-w-full px-2'
@@ -394,28 +404,28 @@ export default function HomePage() {
                 <CarouselContent className='-ml-2 w-full gap-1.5'>
                   {loadingApproved
                     ? Array.from({ length: 6 }).map((_, key) => (
-                      <CarouselItem
-                        key={key}
-                        className='basis-[70vw] md:pl-2 sm:basis-[300px] xl:basis-[380px] 2xl:px-4'
-                      >
-                        <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
-                      </CarouselItem>
-                    ))
+                        <CarouselItem
+                          key={key}
+                          className='basis-[70vw] sm:basis-[300px] md:pl-2 xl:basis-[380px] 2xl:px-4'
+                        >
+                          <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
+                        </CarouselItem>
+                      ))
                     : approved.map((business, key) => (
-                      <CarouselItem
-                        key={business.id ?? key}
-                        className='basis-[75vw] sm:basis-[300px] xl:basis-[25%] 2xl:px-2.5'
-                      >
-                        <FeaturedListingCard business={business} />
-                      </CarouselItem>
-                    ))}
+                        <CarouselItem
+                          key={business.id ?? key}
+                          className='basis-[75vw] sm:basis-[300px] xl:basis-[25%] 2xl:px-2.5'
+                        >
+                          <FeaturedListingCard business={business} />
+                        </CarouselItem>
+                      ))}
                 </CarouselContent>
               </Carousel>
             </div>
           </section>
         </div>
 
-        <div className='container mb-10 sm:mb-20 md:mb-32 flex w-full flex-col items-center px-4 sm:-mt-0 sm:px-0'>
+        <div className='container mb-10 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-20 sm:px-0 md:mb-32'>
           <h1 className='font-karma text-2xl max-sm:font-medium sm:text-[44px]'>
             Tips, Trends & Vendor Stories
           </h1>
