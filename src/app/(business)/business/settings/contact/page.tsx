@@ -12,10 +12,7 @@ import {
   useUpdateLocationAndContact,
 } from '@/app/(business)/misc/api/business';
 import SelectSingleSimple from '@/components/ui/SelectSingleSimple';
-import {
-  TwitterIcon,
-  LogoLoadingIcon,
-} from '@/assets/icons';
+import { TwitterIcon, LogoLoadingIcon } from '@/assets/icons';
 import { ensureProtocol } from '@/lib/url';
 
 interface LocationInfo {
@@ -455,27 +452,28 @@ export default function ContactPage() {
         updateData = { phone_number: newValue };
       } else if (field === 'registration_number') {
         updateData = { registration_number: newValue };
-      // Social media links
-      let finalValue = newValue;
-      if (field.includes('_link')) {
-        finalValue = ensureProtocol(newValue);
-      }
-      updateData = { [field]: finalValue };
-
-      await updateLocationAndContactMutation.mutateAsync(
-        {
-          business_id: currentBusiness.id,
-          ...updateData,
-        },
-        {
-          onSuccess: () => {
-            toast.success('Updated successfully');
-            setEditingField(null);
-            setFieldValues({});
-            refetchBusinesses();
-          },
+        // Social media links
+        let finalValue = newValue;
+        if (field.includes('_link')) {
+          finalValue = ensureProtocol(newValue);
         }
-      );
+        updateData = { [field]: finalValue };
+
+        await updateLocationAndContactMutation.mutateAsync(
+          {
+            business_id: currentBusiness.id,
+            ...updateData,
+          },
+          {
+            onSuccess: () => {
+              toast.success('Updated successfully');
+              setEditingField(null);
+              setFieldValues({});
+              refetchBusinesses();
+            },
+          }
+        );
+      }
     } catch (error) {
       toast.error(`Failed to update: ${String(error)}`);
       refetchBusinesses();
@@ -871,7 +869,7 @@ export default function ContactPage() {
                               handleFieldChange(linkField, e.target.value)
                             }
                           />
-                          <p className="mt-1 text-xs text-muted-foreground">
+                          <p className='mt-1 text-xs text-muted-foreground'>
                             URL link must start with http/https
                           </p>
                         </div>
