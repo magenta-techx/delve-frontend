@@ -93,17 +93,21 @@ export const BusinessProvider = ({ children }: BusinessProviderProps) => {
     refetch();
   }, [refetch]);
 
+  const isInitializingId = useMemo(() => {
+    return businesses.length > 0 && !currentBusinessId;
+  }, [businesses.length, currentBusinessId]);
+
   const value = useMemo(
     () => ({
       businesses,
       currentBusiness,
-      isLoading,
+      isLoading: isLoading || isInitializingId,
       isFetching,
       error: error as Error | null,
       switchBusiness,
       refetchBusinesses,
     }),
-    [businesses, currentBusiness, isLoading, isFetching, error, switchBusiness, refetchBusinesses]
+    [businesses, currentBusiness, isLoading, isInitializingId, isFetching, error, switchBusiness, refetchBusinesses]
   );
 
   return (
