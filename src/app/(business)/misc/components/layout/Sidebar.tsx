@@ -130,7 +130,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'scrollbar-hide relative flex flex-col overflow-y-auto border-r border-[#FBFAFF] bg-white transition-[width] duration-300 ease-in-out',
+        'scrollbar-hide relative flex flex-col overflow-y-auto overflow-x-visible border-r border-[#FBFAFF] bg-white transition-[width] duration-300 ease-in-out',
         collapsed ? 'w-[7.5rem]' : 'w-[17rem] lg:w-[19rem]'
       )}
       style={{ scrollbarGutter: 'auto' }}
@@ -166,9 +166,7 @@ export function Sidebar() {
           ) : (
             <>
               <PanelLeftClose className='h-5 w-5 shrink-0' />
-              <span className='max-md:hidden sr-only'>
-                Collapse
-              </span>
+              <span className='sr-only max-md:hidden'>Collapse</span>
             </>
           )}
         </button>
@@ -176,7 +174,7 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className='flex flex-1 flex-col gap-y-2.5 py-4'>
-        <div className='text-sidebar-foreground p-4 px-8 text-[0.6rem] md:text-xs font-semibold uppercase opacity-50'>
+        <div className='text-sidebar-foreground p-4 px-8 text-[0.6rem] font-semibold uppercase opacity-50 md:text-xs'>
           Overview
         </div>
         {navItems.map((item, index) => {
@@ -206,7 +204,12 @@ export function Sidebar() {
               ) : (
                 <Icon className='h-5 w-5 shrink-0' />
               )}
-              <span className={cn('transition-all duration-300 whitespace-nowrap overflow-hidden', collapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto')}>
+              <span
+                className={cn(
+                  'overflow-hidden whitespace-nowrap transition-all duration-300',
+                  collapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'
+                )}
+              >
                 {item.name}
               </span>
 
@@ -218,7 +221,7 @@ export function Sidebar() {
         })}
 
         {/* Support section */}
-        <div className='text-sidebar-foreground mt-auto p-4 px-8 text-[0.6rem] md:text-xs font-semibold uppercase opacity-50'>
+        <div className='text-sidebar-foreground mt-auto p-4 px-8 text-[0.6rem] font-semibold uppercase opacity-50 md:text-xs'>
           Support
         </div>
         <div className={cn(collapsed && '')}>
@@ -243,7 +246,12 @@ export function Sidebar() {
                     )}
                   >
                     <Icon className='h-5 w-5 shrink-0' />
-                    <span className={cn('transition-all duration-300 whitespace-nowrap overflow-hidden', collapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto')}>
+                    <span
+                      className={cn(
+                        'overflow-hidden whitespace-nowrap transition-all duration-300',
+                        collapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'
+                      )}
+                    >
                       {item.name}
                     </span>
                   </button>
@@ -265,7 +273,12 @@ export function Sidebar() {
                     ) : (
                       <Icon className='h-5 w-5 shrink-0' />
                     )}
-                    <span className={cn('transition-all duration-300 whitespace-nowrap overflow-hidden', collapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto')}>
+                    <span
+                      className={cn(
+                        'overflow-hidden whitespace-nowrap transition-all duration-300',
+                        collapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'
+                      )}
+                    >
                       {item.name}
                     </span>
 
@@ -278,8 +291,6 @@ export function Sidebar() {
             );
           })}
         </div>
-
-
       </nav>
     </aside>
   );
