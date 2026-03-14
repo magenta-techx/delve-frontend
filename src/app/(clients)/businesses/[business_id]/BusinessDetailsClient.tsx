@@ -427,7 +427,12 @@ const BusinessDetailsClient = ({
             </div>
           </div>
         </div>
-        <div className='container mx-auto px-4 py-8 md:px-8 lg:py-12'>
+        <div
+          className={cn(
+            'container mx-auto px-4 py-8 md:px-8 lg:py-12',
+            preview && 'w-[85%]'
+          )}
+        >
           <section id='about' className=''>
             <h2 className='mb-2 font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Get to know us
@@ -470,9 +475,18 @@ const BusinessDetailsClient = ({
 
         <section
           id='services'
-          className='container mx-auto grid gap-x-8 gap-y-4 py-8 lg:grid-cols-[1fr,minmax(0,400px)] lg:gap-4 lg:py-12'
+          className={cn(
+            'container mx-auto grid gap-x-8 gap-y-4 py-8 lg:grid-cols-[1fr,minmax(0,400px)] lg:gap-4 lg:py-12',
+            preview && 'px-5 md:px-16 xl:px-32'
+          )}
         >
-          <div id='about' className='container mx-auto px-4 md:px-10'>
+          <div
+            id='about'
+            className={cn(
+              'container mx-auto px-4 md:px-10',
+              preview && 'px-0 md:px-0'
+            )}
+          >
             <h2 className='mb-2 font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Services
             </h2>
@@ -757,7 +771,10 @@ const BusinessDetailsClient = ({
         <>
           <section
             id='gallery'
-            className='max-w-8xl container mx-auto py-8 md:px-8 xl:py-12'
+            className={cn(
+              'max-w-8xl container mx-auto py-8 md:px-8 xl:py-12',
+              preview && 'px-5 md:px-16 xl:px-32'
+            )}
           >
             {business.images && business.images.length > 0 ? (
               <div className='grid grid-cols-1 gap-4 md:grid-cols-[repeat(15,1fr)] md:grid-rows-[repeat(12,minmax(40px,50px))] md:gap-5 xl:gap-8'>
@@ -869,7 +886,12 @@ const BusinessDetailsClient = ({
           />
         </>
 
-        <div className='container mx-auto px-4 py-8 md:px-8 lg:py-12 xl:pt-20'>
+        <div
+          className={cn(
+            'container mx-auto px-4 py-8 md:px-8 lg:py-12 xl:pt-20',
+            preview && 'px-5 md:px-16 xl:px-32'
+          )}
+        >
           <section id='about' className=''>
             <h2 className='mb-2 text-center font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Amenities
@@ -894,7 +916,10 @@ const BusinessDetailsClient = ({
         {/* Reviews Section - Redesigned to match screenshots */}
         <section
           id='reviews'
-          className='container mx-auto px-4 py-8 md:px-8 lg:py-16'
+          className={cn(
+            'container mx-auto px-4 py-8 md:px-8 lg:py-16',
+            preview && 'px-5 md:px-16 xl:px-32'
+          )}
         >
           <header className='flex items-center justify-between'>
             <h2 className='w-full text-left font-karma text-2xl font-medium text-black'>
