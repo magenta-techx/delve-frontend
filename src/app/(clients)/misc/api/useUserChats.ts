@@ -8,11 +8,10 @@ import { apiRequest } from '@/utils/apiHandler';
 export interface UserChatItem {
   id: number;
   business: Business;
-  is_pinned: boolean;
+  is_pinned_by_customer: boolean;
   last_message_sent_at: null | string;
   last_message: Lastmessage;
 }
-
 
 interface Lastmessage {
   content: string;
@@ -22,6 +21,8 @@ interface Lastmessage {
   id?: number;
   image?: string;
   sent_at?: string;
+  is_deleted_by_business: boolean;
+  is_deleted_by_customer: boolean;
 }
 
 interface Sender {
