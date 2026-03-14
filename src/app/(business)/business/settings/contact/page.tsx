@@ -16,6 +16,7 @@ import {
   TwitterIcon,
   LogoLoadingIcon,
 } from '@/assets/icons';
+import { ensureProtocol } from '@/lib/url';
 
 interface LocationInfo {
   address: string;
@@ -454,10 +455,12 @@ export default function ContactPage() {
         updateData = { phone_number: newValue };
       } else if (field === 'registration_number') {
         updateData = { registration_number: newValue };
-      } else {
-        // Social media links
-        updateData = { [field]: newValue };
+      // Social media links
+      let finalValue = newValue;
+      if (field.includes('_link')) {
+        finalValue = ensureProtocol(newValue);
       }
+      updateData = { [field]: finalValue };
 
       await updateLocationAndContactMutation.mutateAsync(
         {
@@ -868,6 +871,9 @@ export default function ContactPage() {
                               handleFieldChange(linkField, e.target.value)
                             }
                           />
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            URL link must start with http/https
+                          </p>
                         </div>
                       ) : (
                         <div className='mt-1 rounded-xl border bg-[#FCFCFD] p-3'>

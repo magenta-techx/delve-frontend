@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import { Input } from '@/components/ui';
 import { TwitterIcon } from '@/assets/icons';
 import { Label } from '@/components/ui/label';
+import { ensureProtocol } from '@/lib/url';
 
 interface CombinedContactInfo {
   phone_number: string;
@@ -185,7 +186,9 @@ const BusinessContactAndBusiness: React.FC<BusinessContactAndBusinessProps> = ({
 
   const updateSocialLink = (platformId: string, url: string) => {
     const linkField = `${platformId}_link` as keyof CombinedContactInfo;
-    updateContactInfo(linkField, url);
+    // Auto-prepend protocol if not present
+    const formattedUrl = ensureProtocol(url);
+    updateContactInfo(linkField, formattedUrl);
   };
 
   return (
@@ -291,6 +294,9 @@ const BusinessContactAndBusiness: React.FC<BusinessContactAndBusinessProps> = ({
                     onChange={e => updateSocialLink(platformId, e.target.value)}
                     //
                   />
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    URL link must start with http/https
+                  </p>
                 </div>
               </div>
             </div>
