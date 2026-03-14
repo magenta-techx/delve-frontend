@@ -1,13 +1,13 @@
 import { forward } from '@/app/api/_lib/backend';
 import { NextRequest, NextResponse } from 'next/server';
 
-// POST /api/chat/[chat_id]/pin
+// POST /api/chat/[chat_id]/toggle-pin-status
 export async function POST(
     req: NextRequest,
     { params }: { params: { chat_id: string } }
 ): Promise<NextResponse> {
     const body = await req.json().catch(() => ({}));
-    return forward(req, 'POST', `/chat/${params.chat_id}/pin/`, {
+    return forward(req, 'POST', `/chat/${params.chat_id}/toggle-pin-status/`, {
         auth: true,
         contentType: 'json',
         body
