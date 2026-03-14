@@ -312,6 +312,7 @@ export interface ChatListItem {
 export interface ChatMessage {
   id: number;
   image: string;
+  images?: string[];
   content: string;
   is_image_message: boolean;
   sender: ChatMessageSender;

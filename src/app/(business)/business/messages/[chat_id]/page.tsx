@@ -43,6 +43,12 @@ export default function ChatDetailPage() {
   const handleSocketPayload = useCallback(
     (payload: any) => {
       if (payload && typeof payload === 'object') {
+        const isImage =
+          payload.message_type === 'images' ||
+          payload.message_type === 'image' ||
+          payload.is_image_message ||
+          Array.isArray(payload.image_urls);
+
         const newMessage: ChatMessage = {
           id: payload.id || `temp-${Date.now()}-${Math.random()}`,
           content: payload.message || payload.content || '',
@@ -52,8 +58,9 @@ export default function ChatDetailPage() {
             last_name: payload.sender_name?.split(' ')[1] || '',
             profile_image: payload.sender_profile_image || null,
           },
-          is_image_message: payload.message_type === 'image' || payload.is_image_message,
-          image: payload.image || null,
+          is_image_message: isImage,
+          image: payload.image || (Array.isArray(payload.image_urls) ? payload.image_urls[0] : null),
+          images: Array.isArray(payload.image_urls) ? payload.image_urls : payload.images || [],
           sent_at: payload.created_at || new Date().toISOString(),
           is_read: false,
         };
@@ -234,13 +241,19 @@ export default function ChatDetailPage() {
     return [...messages.data].reverse();
   }, [messages?.data]);
 
-  const imageGallery = useMemo(
-    () =>
-      orderedMessages
-        .filter(msg => msg.is_image_message && msg.image)
-        .map(msg => String(msg.image)),
-    [orderedMessages]
-  );
+  const imageGallery = useMemo(() => {
+    const urls: string[] = [];
+    orderedMessages.forEach(msg => {
+      if (msg.is_image_message) {
+        if (Array.isArray(msg.images) && msg.images.length > 0) {
+          urls.push(...msg.images.map(img => String(img)));
+        } else if (msg.image) {
+          urls.push(String(msg.image));
+        }
+      }
+    });
+    return urls;
+  }, [orderedMessages]);
 
   const openLightbox = useCallback(
     (imageUrl: string) => {
@@ -357,22 +370,46 @@ export default function ChatDetailPage() {
                   >
                     <p className='text-[0.8rem] md:text-sm'>{msg.content ?? ''}</p>
                     {msg.is_image_message && (
-                      <button
-                        type='button'
-                        onClick={() => openLightbox(String(msg.image))}
-                        className='mt-2 block focus:outline-none'
-                      >
-                        <div className='relative h-40 w-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
-                          <Image
-                            src={String(msg.image)}
-                            alt='Chat image'
-                            fill
-                            sizes='160px'
-                            className='object-cover'
-                            onLoadingComplete={() => scrollToBottom(false)}
-                          />
-                        </div>
-                      </button>
+                      <div className='mt-2 flex flex-wrap gap-2'>
+                        {msg.images && msg.images.length > 0 ? (
+                          msg.images.map((img, idx) => (
+                            <button
+                              key={`${msg.id}-img-${idx}`}
+                              type='button'
+                              onClick={() => openLightbox(String(img))}
+                              className='block focus:outline-none'
+                            >
+                              <div className='relative size-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
+                                <Image
+                                  src={String(img)}
+                                  alt='Chat image'
+                                  fill
+                                  sizes='160px'
+                                  className='object-cover'
+                                  onLoadingComplete={() => scrollToBottom(false)}
+                                />
+                              </div>
+                            </button>
+                          ))
+                        ) : msg.image ? (
+                          <button
+                            type='button'
+                            onClick={() => openLightbox(String(msg.image))}
+                            className='block focus:outline-none'
+                          >
+                            <div className='relative size-40 overflow-hidden rounded-xl bg-[#E2E8F0]'>
+                              <Image
+                                src={String(msg.image)}
+                                alt='Chat image'
+                                fill
+                                sizes='160px'
+                                className='object-cover'
+                                onLoadingComplete={() => scrollToBottom(false)}
+                              />
+                            </div>
+                          </button>
+                        ) : null}
+                      </div>
                     )}
                   </div>
                 </div>
