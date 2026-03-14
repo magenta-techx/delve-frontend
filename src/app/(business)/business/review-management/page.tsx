@@ -170,7 +170,7 @@ export default function ReviewManagementPage() {
     <div
       className={cn(
         'flex h-screen flex-1 flex-col overflow-hidden bg-[#FCFCFD]',
-        'px-5 md:px-16 xl:px-32'
+        'px-5'
       )}
     >
       <BusinessPageHeader
