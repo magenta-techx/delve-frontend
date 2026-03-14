@@ -43,24 +43,54 @@ export default function ChatDetailPage() {
   const handleSocketPayload = useCallback(
     (payload: any) => {
       if (payload && typeof payload === 'object') {
+        // Ensure this message is for the current active chat
+        if (payload.chat_id && String(payload.chat_id) !== String(chat_id)) {
+          return;
+        }
+
         const isImage =
           payload.message_type === 'images' ||
           payload.message_type === 'image' ||
           payload.is_image_message ||
           Array.isArray(payload.image_urls);
 
+        // Fallback name resolution if sender_name is missing
+        let firstName = payload.sender_name?.split(' ')[0] || '';
+        let lastName = payload.sender_name?.split(' ')[1] || '';
+
+        if (!firstName) {
+          if (String(payload.sender_id) === String(userId)) {
+            firstName = 'Me';
+          } else if (
+            selectedChat &&
+            String(payload.sender_id) === String(selectedChat.customer.id)
+          ) {
+            firstName = selectedChat.customer.first_name || 'Customer';
+            lastName = selectedChat.customer.last_name || '';
+          } else {
+            firstName = 'User';
+          }
+        }
+
         const newMessage: ChatMessage = {
-          id: payload.id || `temp-${Date.now()}-${Math.random()}`,
+          id:
+            typeof payload.id === 'number'
+              ? payload.id
+              : Math.floor(Math.random() * 100000000),
           content: payload.message || payload.content || '',
           sender: {
             id: payload.sender_id || 0,
-            first_name: payload.sender_name?.split(' ')[0] || '',
-            last_name: payload.sender_name?.split(' ')[1] || '',
+            first_name: firstName,
+            last_name: lastName,
             profile_image: payload.sender_profile_image || null,
           },
           is_image_message: isImage,
-          image: payload.image || (Array.isArray(payload.image_urls) ? payload.image_urls[0] : null),
-          images: Array.isArray(payload.image_urls) ? payload.image_urls : payload.images || [],
+          image:
+            payload.image ||
+            (Array.isArray(payload.image_urls) ? payload.image_urls[0] : null),
+          images: Array.isArray(payload.image_urls)
+            ? payload.image_urls
+            : payload.images || [],
           sent_at: payload.created_at || new Date().toISOString(),
           is_read: false,
         };
@@ -84,7 +114,7 @@ export default function ChatDetailPage() {
         );
       }
     },
-    [chat_id, queryClient]
+    [chat_id, queryClient, userId, selectedChat]
   );
 
   const handleSocketDebug = useCallback((entry: ChatDebugEntry) => {
