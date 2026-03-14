@@ -68,7 +68,7 @@ export default function UserChatsPage({
     <div
       className={cn(
         'container mx-auto flex h-screen flex-col !overflow-hidden bg-[#FCFCFD] px-0 md:p-4 md:pt-14',
-        !pathname.startsWith('/business/messages/') && 'pb-20 md:pt-0'
+        pathname.startsWith('/business/messages/') ? 'md:pt-0' : 'pb-20'
       )}
     >
       <BusinessPageHeader marketPlace={true} />
