@@ -1,35 +1,72 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { Trash, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Trash, ChevronLeft, ChevronRight, Upload, ChevronDown, Image as ImageIcon, Video } from 'lucide-react';
 
-// Mock UploadIcon component
-const UploadIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-  </svg>
-);
+// Cloudinary global type declaration
+declare global {
+  interface Window {
+    cloudinary: {
+      createUploadWidget: (
+        options: Record<string, unknown>,
+        callback: (error: unknown, result: { event: string; info: Record<string, unknown> }) => void
+      ) => { open: () => void; close: () => void };
+    };
+  }
+}
+
+const CLOUDINARY_CLOUD_NAME = process.env['NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME'] || 'your_cloud_name';
+const CLOUDINARY_UPLOAD_PRESET = process.env['NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET'] || 'your_upload_preset';
 
 interface ImageData {
-  type: 'cloud' | 'local';
+  type: 'cloud' | 'local' | 'video';
   source: string | File;
   id?: number;
+  /** For video uploads, the public_id returned by Cloudinary */
+  publicId?: string;
+}
+
+export interface VideoUploadResult {
+  public_id: string;
+  secure_url: string;
+  resource_type: string;
+  format: string;
+  duration?: number;
+  thumbnail_url?: string;
 }
 
 interface BusinessShowCaseFormProps {
   setBusinessShowCaseFile: (files: File[]) => void;
   setCloudImages?: (images: { id: number; image: string; uploaded_at: string }[]) => void;
   initialCloudImages?: { id: number; image: string; uploaded_at: string }[];
+  /** Called whenever a video is successfully uploaded via Cloudinary */
+  onVideoUploaded?: (result: VideoUploadResult) => void;
 }
 
 const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   setBusinessShowCaseFile,
   setCloudImages,
   initialCloudImages = [],
+  onVideoUploaded,
 }) => {
   const [localFiles, setLocalFiles] = useState<File[]>([]);
   const [cloudImages, setCloudImagesState] = useState<{ id: number; image: string; uploaded_at: string }[]>(initialCloudImages);
   const [previews, setPreviews] = useState<ImageData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const cloudImagePreviews: ImageData[] = initialCloudImages.map(img => ({
@@ -43,7 +80,18 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     setCurrentIndex(0);
   }, [initialCloudImages, setBusinessShowCaseFile]);
 
-  // Calculate which images are visible based on count and current index
+  // Load Cloudinary Upload Widget script once
+  useEffect(() => {
+    if (document.getElementById('cloudinary-widget-script')) return;
+    const script = document.createElement('script');
+    script.id = 'cloudinary-widget-script';
+    script.src = 'https://upload-widget.cloudinary.com/latest/global/all.js';
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
+
+  // ─── Carousel helpers ────────────────────────────────────────────────────────
+
   const getVisibleSlots = () => {
     const total = previews.length;
     if (total === 0) return [];
@@ -51,13 +99,11 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     if (total === 2) return [{ index: 0, slot: 'C' }, { index: 1, slot: 'D' }];
     if (total === 3) return [{ index: 0, slot: 'B' }, { index: 1, slot: 'C' }, { index: 2, slot: 'D' }];
     if (total === 4) return [
-      { index: 0, slot: 'A' }, 
-      { index: 1, slot: 'B' }, 
-      { index: 2, slot: 'C' }, 
-      { index: 3, slot: 'D' }
+      { index: 0, slot: 'A' },
+      { index: 1, slot: 'B' },
+      { index: 2, slot: 'C' },
+      { index: 3, slot: 'D' },
     ];
-    
-    // 5 or more items - show 5 slots starting from currentIndex
     return [
       { index: currentIndex, slot: 'A' },
       { index: currentIndex + 1, slot: 'B' },
@@ -71,29 +117,21 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   const canGoLeft = previews.length >= 5 && currentIndex > 0;
   const canGoRight = previews.length >= 5 && currentIndex < previews.length - 5;
 
-  const handlePrev = () => {
-    if (canGoLeft) {
-      setCurrentIndex(prev => Math.max(0, prev - 1));
-    }
-  };
+  const handlePrev = () => { if (canGoLeft) setCurrentIndex(prev => Math.max(0, prev - 1)); };
+  const handleNext = () => { if (canGoRight) setCurrentIndex(prev => Math.min(previews.length - 5, prev + 1)); };
 
-  const handleNext = () => {
-    if (canGoRight) {
-      setCurrentIndex(prev => Math.min(previews.length - 5, prev + 1));
-    }
-  };
-
-  // Get slot width percentage
   const getSlotWidth = (slot: string) => {
     switch (slot) {
-      case 'A': case 'E': return 20; // (100 - 35 - 20 - 20) / 2
+      case 'A': case 'E': return 20;
       case 'B': case 'D': return 25;
       case 'C': return 30;
       default: return 25;
     }
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // ─── Upload handlers ─────────────────────────────────────────────────────────
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
@@ -107,61 +145,93 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
     filesToAdd.forEach((file) => {
       const reader = new FileReader();
-      reader.onerror = () => {
-        console.error('Failed to read file:', file.name);
-      };
+      reader.onerror = () => console.error('Failed to read file:', file.name);
       reader.onload = (e) => {
         const result = e.target?.result;
         if (typeof result === 'string') {
           setPreviews((prev) => {
-            const newItem: ImageData = {
-              type: 'local',
-              source: result,
-            };
+            const newItem: ImageData = { type: 'local', source: result };
             const updated = [...prev, newItem];
-            
-            // Auto-scroll to show the newest item in slot E if we have 5+ items
-            if (updated.length >= 5) {
-              setCurrentIndex(updated.length - 5);
-            }
-            
+            if (updated.length >= 5) setCurrentIndex(updated.length - 5);
             return updated;
           });
-        } else {
-          console.error('FileReader result is not a string for file:', file.name);
         }
       };
       reader.readAsDataURL(file);
     });
   };
 
+  const openCloudinaryWidget = () => {
+    if (!window.cloudinary) {
+      console.error('Cloudinary widget script not loaded yet.');
+      return;
+    }
+
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName: CLOUDINARY_CLOUD_NAME,
+        uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+        sources: ['local', 'url', 'camera'],
+        resourceType: 'video',
+        clientAllowedFormats: ['mp4', 'mov', 'avi', 'webm', 'mkv'],
+        maxFileSize: 500000000, // 500 MB
+        showAdvancedOptions: false,
+        cropping: false,
+        multiple: false,
+      },
+      (error, result) => {
+        if (error) {
+          console.error('Cloudinary upload error:', error);
+          return;
+        }
+
+        if (result.event === 'success') {
+          const info = result.info as unknown as VideoUploadResult;
+          const thumbnailUrl = (info.thumbnail_url as string | undefined) ||
+            `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/so_0/${info.public_id}.jpg`;
+
+          setPreviews((prev) => {
+            const newItem: ImageData = {
+              type: 'video',
+              source: thumbnailUrl,
+              publicId: info.public_id as string,
+            };
+            const updated = [...prev, newItem];
+            if (updated.length >= 5) setCurrentIndex(updated.length - 5);
+            return updated;
+          });
+
+          onVideoUploaded?.(info);
+          widget.close();
+        }
+      }
+    );
+
+    widget.open();
+  };
+
+  // ─── Removal ─────────────────────────────────────────────────────────────────
+
   const removeFile = (index: number) => {
     const imageData = previews[index];
-
     if (!imageData) return;
 
     if (imageData.type === 'cloud') {
-      const cloudImagesBefore = previews
-        .slice(0, index)
-        .filter(p => p.type === 'cloud').length;
-
+      const cloudImagesBefore = previews.slice(0, index).filter(p => p.type === 'cloud').length;
       const newCloudImages = cloudImages.filter((_, i) => i !== cloudImagesBefore);
       setCloudImages?.(newCloudImages);
       setCloudImagesState(newCloudImages);
-    } else {
-      const localFilesBefore = previews
-        .slice(0, index)
-        .filter(p => p.type === 'local').length;
-
+    } else if (imageData.type === 'local') {
+      const localFilesBefore = previews.slice(0, index).filter(p => p.type === 'local').length;
       const newFiles = localFiles.filter((_, i) => i !== localFilesBefore);
       setLocalFiles(newFiles);
       setBusinessShowCaseFile(newFiles);
     }
+    // video type: managed externally via onVideoUploaded callback
 
     const newPreviews = previews.filter((_, i) => i !== index);
     setPreviews(newPreviews);
-    
-    // Adjust currentIndex if needed after deletion
+
     if (newPreviews.length >= 5 && currentIndex > newPreviews.length - 5) {
       setCurrentIndex(Math.max(0, newPreviews.length - 5));
     } else if (newPreviews.length < 5) {
@@ -173,7 +243,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   return (
     <section className="space-y-6">
-      {/* Custom Carousel with 5 Slots */}
+      {/* Carousel */}
       {previews.length > 0 && (
         <div className="w-full relative">
           <div className="flex items-center justify-center gap-4 px-16 py-4">
@@ -181,11 +251,8 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
               const imageData = previews[index];
               if (!imageData) return null;
 
-              let imgSrc = '';
-              if (typeof imageData.source === 'string') {
-                imgSrc = imageData.source;
-              }
-
+              const imgSrc = typeof imageData.source === 'string' ? imageData.source : '';
+              const isVideo = imageData.type === 'video';
               const widthPercent = getSlotWidth(slot);
 
               return (
@@ -207,6 +274,13 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
                       (e.target as HTMLImageElement).style.background = '#f0f0f0';
                     }}
                   />
+                  {/* Video badge */}
+                  {isVideo && (
+                    <span className="absolute bottom-2 right-2 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                      <Video size={10} />
+                      Video
+                    </span>
+                  )}
                   <button
                     type="button"
                     onClick={() => removeFile(index)}
@@ -248,29 +322,72 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
       {/* Upload Area */}
       <div className="relative max-w-xl mx-auto">
-        <div className="flex flex-col items-center justify-center rounded-lg border-[1.75px] border-dashed border-[#9AA4B2] bg-[#FBFAFF] p-8">
-          <UploadIcon className="h-12 w-12 text-purple-600" />
-          <p className="mt-4 text-sm font-inter text-gray-900">Upload service image</p>
-         
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleFileUpload}
-            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-            disabled={totalImages >= 10}
-          />
+        <div className="flex flex-col items-center justify-center rounded-lg border-[1.75px] border-dashed border-[#9AA4B2] bg-[#FBFAFF] p-8 gap-3">
+          <Upload className="h-12 w-12 text-purple-600" />
+          <p className="text-sm font-inter text-gray-900">Upload service media</p>
+
+          {/* Dropdown trigger button */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              type="button"
+              disabled={totalImages >= 10}
+              onClick={() => setDropdownOpen(prev => !prev)}
+              className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <Upload size={15} />
+              Upload
+              <ChevronDown size={15} className={`transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {dropdownOpen && (
+              <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-44 rounded-xl border border-gray-100 bg-white shadow-xl z-50 overflow-hidden">
+                {/* Photo option */}
+                <label
+                  className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-purple-50 transition-colors text-sm text-gray-700 font-medium"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <ImageIcon size={16} className="text-purple-600 flex-shrink-0" />
+                  Photo
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handlePhotoUpload}
+                    className="sr-only"
+                    disabled={totalImages >= 10}
+                  />
+                </label>
+
+                <div className="h-px bg-gray-100" />
+
+                {/* Video option */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    openCloudinaryWidget();
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-3 hover:bg-purple-50 transition-colors text-sm text-gray-700 font-medium"
+                >
+                  <Video size={16} className="text-purple-600 flex-shrink-0" />
+                  Video
+                </button>
+              </div>
+            )}
+          </div>
         </div>
+
         {totalImages >= 10 && (
-          <p className="mt-2 text-sm text-amber-600">
-            Maximum of 10 images allowed
+          <p className="mt-2 text-sm text-amber-600 text-center">
+            Maximum of 10 items allowed
           </p>
         )}
       </div>
 
-      {totalImages > 0 && (
+      {previews.length > 0 && (
         <p className="text-center text-sm text-gray-600">
-          {totalImages} image{totalImages !== 1 ? 's' : ''} uploaded
+          {previews.length} item{previews.length !== 1 ? 's' : ''} uploaded
         </p>
       )}
     </section>

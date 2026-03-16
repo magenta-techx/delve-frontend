@@ -66,7 +66,7 @@ export default function ChatDetailPage({
 
         // Fallback name resolution if sender_name is missing
         let firstName = payload.sender_name?.split(' ')[0] || '';
-        let lastName = payload.sender_name?.split(' ')[1] || '';
+        const lastName = payload.sender_name?.split(' ')[1] || '';
 
         if (!firstName) {
           if (String(payload.sender_id) === String(userId)) {
@@ -501,7 +501,9 @@ export default function ChatDetailPage({
                                   fill
                                   sizes='160px'
                                   className='object-cover'
-                                  onLoadingComplete={() => scrollToBottom(false)}
+                                  onLoadingComplete={() =>
+                                    scrollToBottom(false)
+                                  }
                                 />
                               </div>
                             </button>
