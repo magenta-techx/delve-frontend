@@ -231,6 +231,8 @@ export interface BusinessDetail {
   business_hours: Businesshour[];
   // The detail response in api.md shows performance embedded in example; usually separate
   performance?: Array<{ date: string; performance_score: number }>;
+  conversation_initiated?: boolean;
+  has_free_trial?: boolean;
 }
 
 interface Businesshour {

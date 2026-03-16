@@ -180,6 +180,22 @@ const BusinessDetailsClient = ({
     }
   };
 
+  const showMessageButton = useMemo(() => {
+    if (preview) return true; // Keep original behavior for preview
+    if (business.has_free_trial || business.owner?.is_premium_plan_active)
+      return true;
+    if (business.conversation_initiated) return true;
+    return false;
+  }, [business, preview]);
+
+  const messageButtonLabel = useMemo(() => {
+    if (isLoadingChat) return 'Starting chat...';
+    if (business.has_free_trial || business.owner?.is_premium_plan_active)
+      return 'Send us a message';
+    if (business.conversation_initiated) return 'View messages';
+    return 'Send us a message';
+  }, [business, isLoadingChat]);
+
   const googleMapsApiKey = process.env['NEXT_PUBLIC_GOOGLE_MAPS_API_KEY'] || '';
 
   // Reviews section state
@@ -412,16 +428,16 @@ const BusinessDetailsClient = ({
                     >
                       Business Profile
                     </LinkButton>
-                  ) : (
+                  ) : showMessageButton ? (
                     <Button
                       onClick={handleStartChat}
                       variant={'unstyled'}
                       disabled={isLoadingChat}
                       className='mt-6 border border-[#FCFCFD] bg-[#0000006B] !py-6 md:px-20 md:py-8'
                     >
-                      {isLoadingChat ? 'Starting chat...' : 'Send us a message'}
+                      {messageButtonLabel}
                     </Button>
-                  )}{' '}
+                  ) : null}{' '}
                 </div>
               </section>
             </div>
