@@ -56,21 +56,41 @@ interface BusinessShowCaseFormProps {
   initialCloudImages?: { id: number; image: string; uploaded_at: string }[];
   /** Called whenever a video is successfully uploaded via Cloudinary */
   onVideoUploaded?: (result: VideoUploadResult) => void;
+  /** Called whenever a video is removed */
+  onVideoRemoved?: () => void;
+  initialVideoUrl?: string | undefined;
 }
 
 const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   setBusinessShowCaseFile,
   setCloudImages,
-  initialCloudImages = [],
+  initialCloudImages,
   onVideoUploaded,
-}) => {
-  const [localFiles, setLocalFiles] = useState<File[]>([]);
-  const [cloudImages, setCloudImagesState] =
-    useState<{ id: number; image: string; uploaded_at: string }[]>(
-      initialCloudImages
-    );
-  const [previews, setPreviews] = useState<ImageData[]>([]);
+  onVideoRemoved,
+  initialVideoUrl,
+}: BusinessShowCaseFormProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [localFiles, setLocalFiles] = useState<File[]>([]);
+  const [cloudImages, setLocalCloudImages] = useState(initialCloudImages || []);
+  const [previews, setPreviews] = useState<ImageData[]>(() => {
+    const images: ImageData[] = (initialCloudImages || []).map(img => ({
+      type: 'cloud',
+      source: img.image,
+      id: img.id,
+    }));
+
+    if (initialVideoUrl) {
+      // For existing videos, we might not have a thumbnail easily available
+      // but we can try to guess it or just use a placeholder
+      const thumbnailUrl = initialVideoUrl.replace(/\.[^/.]+$/, ".jpg");
+      images.push({
+        type: 'video',
+        source: thumbnailUrl, // Cloudinary usually supports this replacement for thumbnails
+        // Note: we don't have publicId here easily, but ImageData uses source for display
+      });
+    }
+    return images;
+  });
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -91,16 +111,24 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   }, []);
 
   useEffect(() => {
-    const cloudImagePreviews: ImageData[] = initialCloudImages.map(img => ({
+    // This effect is now partially redundant due to direct initialization of previews
+    // However, it still clears local files and resets current index if initialCloudImages changes
+    const cloudImagePreviews: ImageData[] = (initialCloudImages || []).map(img => ({
       type: 'cloud',
       source: img.image,
       id: img.id,
     }));
-    setPreviews(cloudImagePreviews);
+
+    const videoPreview: ImageData[] = initialVideoUrl ? [{
+      type: 'video',
+      source: initialVideoUrl.replace(/\.[^/.]+$/, ".jpg"),
+    }] : [];
+
+    setPreviews([...cloudImagePreviews, ...videoPreview]);
     setLocalFiles([]);
     setBusinessShowCaseFile([]);
     setCurrentIndex(0);
-  }, [initialCloudImages, setBusinessShowCaseFile]);
+  }, [initialCloudImages, initialVideoUrl, setBusinessShowCaseFile]);
 
   // Load Cloudinary Upload Widget script once
   useEffect(() => {
@@ -233,8 +261,8 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
       const newCloudImages = cloudImages.filter(
         (_, i) => i !== cloudImagesBefore
       );
+      setLocalCloudImages(newCloudImages);
       setCloudImages?.(newCloudImages);
-      setCloudImagesState(newCloudImages);
     } else if (imageData.type === 'local') {
       const localFilesBefore = previews
         .slice(0, index)
@@ -242,8 +270,9 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
       const newFiles = localFiles.filter((_, i) => i !== localFilesBefore);
       setLocalFiles(newFiles);
       setBusinessShowCaseFile(newFiles);
+    } else if (imageData.type === 'video') {
+      onVideoRemoved?.();
     }
-    // video type: managed externally via onVideoUploaded callback
 
     const newPreviews = previews.filter((_, i) => i !== index);
     setPreviews(newPreviews);

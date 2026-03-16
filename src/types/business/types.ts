@@ -6,6 +6,7 @@ export interface BusinessIntroductionProps {
 export interface BusinessShowCaseProps {
   business_id?: number | undefined;
   images?: File[];
+  video_url?: string | undefined;
 }
 
 export interface BusinessAmenitiesTypeProp {
@@ -123,6 +124,7 @@ export interface OngoingBusinessOnboarding {
   last_payment_failed: boolean;
   business_hours: BusinessHours[];
   onboarding_phase: OnboardingPhase;
+  video_url?: string;
 }
 
 export interface OngoingBusinessOnboardingResponse {

@@ -142,6 +142,9 @@ const BusinessStepForm = (): JSX.Element => {
   const [contactInfo, setContactInfo] = useState<CombinedContactInfo | null>(
     null
   );
+  const [videoUrl, setVideoUrl] = useState<string | undefined>(
+    onboardingData?.data?.video_url || undefined
+  );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [businessId, setLocalBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
@@ -250,6 +253,11 @@ const BusinessStepForm = (): JSX.Element => {
         setCloudImages(onboarding.images);
       }
 
+      // Set video URL from onboarding
+      if (onboarding.video_url) {
+        setVideoUrl(onboarding.video_url);
+      }
+
       // Set cloud services from onboarding
       if (
         Array.isArray(onboarding.services) &&
@@ -306,11 +314,15 @@ const BusinessStepForm = (): JSX.Element => {
         });
       }
 
-      // Upload new local images
-      if (values.images && values.images.length > 0) {
+      // Upload new local images and video URL
+      if (
+        (values.images && values.images.length > 0) ||
+        values.video_url
+      ) {
         await uploadImagesMutation.mutateAsync({
           business_id: businessId,
-          images: values.images,
+          images: values.images || [],
+          video_url: values.video_url,
         });
       }
 
@@ -721,6 +733,7 @@ const BusinessStepForm = (): JSX.Element => {
           await handleShowCaseFormsSubmission({
             business_id: businessId,
             images: businessShowCaseFile,
+            video_url: videoUrl,
           });
           break;
         case 2:
@@ -854,7 +867,9 @@ const BusinessStepForm = (): JSX.Element => {
         <BusinessShowCaseForm
           setBusinessShowCaseFile={setBusinessShowCaseFile}
           setCloudImages={setCloudImages}
-          initialCloudImages={initialCloudImages}
+          onVideoUploaded={result => setVideoUrl(result.secure_url)}
+          onVideoRemoved={() => setVideoUrl(undefined)}
+          initialVideoUrl={videoUrl || undefined}
         />
       ),
     },
