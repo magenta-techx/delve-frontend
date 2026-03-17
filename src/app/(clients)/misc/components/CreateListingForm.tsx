@@ -868,6 +868,7 @@ const BusinessStepForm = (): JSX.Element => {
         <BusinessShowCaseForm
           setBusinessShowCaseFile={setBusinessShowCaseFile}
           setCloudImages={setCloudImages}
+          initialCloudImages={initialCloudImages}
           onVideoUploaded={result => setVideoUrl(result.secure_url)}
           onVideoRemoved={() => setVideoUrl(undefined)}
           initialVideoUrl={videoUrl || undefined}
