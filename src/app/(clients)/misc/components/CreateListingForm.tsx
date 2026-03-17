@@ -146,6 +146,9 @@ const BusinessStepForm = (): JSX.Element => {
   const [videoUrl, setVideoUrl] = useState<string | undefined>(
     onboardingData?.data?.video_url || undefined
   );
+  const [initialVideoUrl, setInitialVideoUrlState] = useState<string | undefined>(
+    onboardingData?.data?.video_url || undefined
+  );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [businessId, setLocalBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
@@ -257,6 +260,7 @@ const BusinessStepForm = (): JSX.Element => {
       // Set video URL from onboarding
       if (onboarding.video_url) {
         setVideoUrl(onboarding.video_url);
+        setInitialVideoUrlState(onboarding.video_url);
       }
 
       // Set cloud services from onboarding
@@ -315,11 +319,11 @@ const BusinessStepForm = (): JSX.Element => {
         });
       }
 
-      // Upload new local images and video URL
-      if (
-        (values.images && values.images.length > 0) ||
-        values.video_url
-      ) {
+      // Upload new local images and video URL ONLY if there are changes
+      const hasNewImages = values.images && values.images.length > 0;
+      const hasVideoChanged = values.video_url !== initialVideoUrl;
+
+      if (hasNewImages || hasVideoChanged) {
         await uploadImagesMutation.mutateAsync({
           business_id: businessId,
           images: values.images || [],
@@ -330,6 +334,9 @@ const BusinessStepForm = (): JSX.Element => {
       toast.success('Step completed!', {
         description: 'Showcase images saved successfully.',
       });
+
+      // Update initial video URL state to the current value
+      setInitialVideoUrlState(values.video_url);
 
       // Refetch onboarding data after step change
       await refetchOnboarding();
