@@ -25,6 +25,7 @@ import {
   useDeleteService,
   useOngoingBusinessOnboarding,
   useDeleteBusinessImages,
+  useUpdateBusiness,
 } from '@/app/(business)/misc/api/business';
 import { Logo } from '@/assets/icons';
 import {

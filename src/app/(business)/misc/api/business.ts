@@ -532,7 +532,7 @@ export function useUploadBusinessImages(): UseMutationResult<
         fd.append('video_url', video_url);
       }
       const res = await authAwareFetch(
-        `/api/business/${business_id}/upload-image`,
+        `/api/businesses/${business_id}/upload-media`,
         {
           method: 'POST',
           body: fd,

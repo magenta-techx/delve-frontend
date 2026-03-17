@@ -37,6 +37,8 @@ interface ImageData {
   id?: number;
   /** For video uploads, the public_id returned by Cloudinary */
   publicId?: string;
+  /** The actual video URL for playback */
+  videoUrl?: string;
 }
 
 export interface VideoUploadResult {
@@ -80,13 +82,12 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     }));
 
     if (initialVideoUrl) {
-      // For existing videos, we might not have a thumbnail easily available
-      // but we can try to guess it or just use a placeholder
+      // For existing videos, we use a thumbnail for the carousel preview
       const thumbnailUrl = initialVideoUrl.replace(/\.[^/.]+$/, ".jpg");
       images.push({
         type: 'video',
-        source: thumbnailUrl, // Cloudinary usually supports this replacement for thumbnails
-        // Note: we don't have publicId here easily, but ImageData uses source for display
+        source: thumbnailUrl,
+        videoUrl: initialVideoUrl,
       });
     }
     return images;
@@ -122,6 +123,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     const videoPreview: ImageData[] = initialVideoUrl ? [{
       type: 'video',
       source: initialVideoUrl.replace(/\.[^/.]+$/, ".jpg"),
+      videoUrl: initialVideoUrl,
     }] : [];
 
     setPreviews([...cloudImagePreviews, ...videoPreview]);
@@ -233,6 +235,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
               type: 'video',
               source: thumbnailUrl,
               publicId: info.public_id as string,
+              videoUrl: info.secure_url as string,
             };
             const updated = [...prev, newItem];
             setCurrentIndex(updated.length - 1);
@@ -323,19 +326,27 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
           onClick={() => setCurrentIndex(index)}
         >
           <div className='relative h-full w-full overflow-hidden rounded-lg'>
-            <Image
-              src={imgSrc}
-              fill
-              style={{ objectFit: 'cover' }}
-              alt={`Business showcase ${index + 1}`}
-              className='h-full w-full rounded-lg object-cover'
-              onError={e => {
-                console.error('Image failed to load:', imgSrc);
-                (e.target as HTMLImageElement).style.background = '#f0f0f0';
-              }}
-            />
+            {isVideo && position === 2 && imageData.videoUrl ? (
+              <video
+                src={imageData.videoUrl}
+                controls
+                className='h-full w-full rounded-lg object-cover'
+              />
+            ) : (
+              <Image
+                src={imgSrc}
+                fill
+                style={{ objectFit: 'cover' }}
+                alt={`Business showcase ${index + 1}`}
+                className='h-full w-full rounded-lg object-cover'
+                onError={e => {
+                  console.error('Image failed to load:', imgSrc);
+                  (e.target as HTMLImageElement).style.background = '#f0f0f0';
+                }}
+              />
+            )}
             {/* Video badge */}
-            {isVideo && (
+            {isVideo && position !== 2 && (
               <span className='absolute bottom-2 right-2 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white'>
                 <Video size={10} />
                 Video
@@ -446,14 +457,15 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
                 {/* Video option */}
                 <button
                   type='button'
+                  disabled={previews.some(p => p.type === 'video')}
                   onClick={() => {
                     setDropdownOpen(false);
                     openCloudinaryWidget();
                   }}
-                  className='flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-purple-50'
+                  className='flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50'
                 >
-                  <Video size={16} className='flex-shrink-0 text-purple-600' />
-                  Video
+                  <Video size={16} className={`flex-shrink-0 ${previews.some(p => p.type === 'video') ? 'text-gray-400' : 'text-purple-600'}`} />
+                  Video {previews.some(p => p.type === 'video') && '(1 max)'}
                 </button>
               </div>
             )}
