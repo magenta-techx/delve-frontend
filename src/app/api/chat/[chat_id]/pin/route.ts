@@ -7,7 +7,7 @@ export async function POST(
     { params }: { params: { chat_id: string } }
 ): Promise<NextResponse> {
     const body = await req.json().catch(() => ({}));
-    return forward(req, 'POST', `/chat/${params.chat_id}/toggle-pin-status/`, {
+    return forward(req, 'PATCH', `/chat/${params.chat_id}/toggle-pin-status/`, {
         auth: true,
         contentType: 'json',
         body
