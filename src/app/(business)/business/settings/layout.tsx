@@ -73,8 +73,9 @@ export default function SettingsLayout({
       <div
         className={cn(
           'h-full w-full space-y-3 overflow-hidden md:space-y-6',
-          pathname !== '/business/settings/gallery' &&
-            'grid grid-rows-[max-content,max-content,1fr]'
+          pathname !== '/business/settings/gallery'
+            ? 'grid grid-rows-[max-content,max-content,1fr]'
+            : 'flex flex-col'
         )}
       >
         {pathname !== '/business/settings/gallery' && (
@@ -214,7 +215,7 @@ export default function SettingsLayout({
           </>
         )}
 
-        <div className='overflow-y-auto p-4 max-md:pb-16'>{children}</div>
+        <div className='flex-1 overflow-y-auto p-4 max-md:pb-16'>{children}</div>
       </div>
 
       {isDeactivateModalOpen && (
