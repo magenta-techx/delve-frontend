@@ -164,7 +164,7 @@ export default function CollaborationForm() {
               toast.success('Member removed from collaboration');
               // Update local state
               setExistingMembers(prev =>
-                prev.filter(m => m.member?.id !== memberId)
+                prev.filter(m => m.id !== memberId)
               );
               refetch();
               deleteConfirmation.closeConfirmation();
@@ -719,7 +719,7 @@ export default function CollaborationForm() {
                             onClick={() => {
                               console.log('remove member clicked', member);
                               handleRemoveMemberClick(
-                                member.member?.id!,
+                                member.id!,
                                 member.member
                                   ? `${member.member.first_name} ${member.member.last_name}`
                                   : member.unregistered_user_email ||
