@@ -36,6 +36,10 @@ interface Business {
   id: number;
   name: string;
   logo: string;
+  is_free_trial_active?: boolean;
+  owner?: {
+    is_premium_plan_active?: boolean;
+  };
 }
 
 

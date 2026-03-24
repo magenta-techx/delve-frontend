@@ -601,6 +601,7 @@ export default function ChatDetailPage({
       </div>
 
       <div className='w-full p-2 md:p-4 lg:p-6'>
+        {selectedChat && (selectedChat.business.is_free_trial_active || selectedChat.business.owner?.is_premium_plan_active) ? (
         <div className='flex w-full items-center rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] p-2 shadow-sm ring-1 ring-gray-100 drop-shadow-sm md:bg-[#F8FAFC] md:pl-4'>
           <textarea
             ref={textareaRef}
@@ -716,6 +717,11 @@ export default function ChatDetailPage({
             </Button>
           </div>
         </div>
+        ) : (
+          <div className='flex w-full items-center justify-center rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] p-4 text-sm text-gray-500 shadow-sm md:bg-[#F8FAFC]'>
+            This business cannot receive messages at this time.
+          </div>
+        )}
       </div>
       {lightboxOpen && imageGallery.length > 0 && (
         <GalleryModal
