@@ -25,7 +25,6 @@ import {
   useDeleteService,
   useOngoingBusinessOnboarding,
   useDeleteBusinessImages,
-  useUpdateBusiness,
 } from '@/app/(business)/misc/api/business';
 import { Logo } from '@/assets/icons';
 import {
@@ -146,9 +145,9 @@ const BusinessStepForm = (): JSX.Element => {
   const [videoUrl, setVideoUrl] = useState<string | undefined>(
     onboardingData?.data?.video_url || undefined
   );
-  const [initialVideoUrl, setInitialVideoUrlState] = useState<string | undefined>(
-    onboardingData?.data?.video_url || undefined
-  );
+  const [initialVideoUrl, setInitialVideoUrlState] = useState<
+    string | undefined
+  >(onboardingData?.data?.video_url || undefined);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [businessId, setLocalBusinessId] = useState<number | undefined>(
     currentBusinessId ?? undefined
@@ -699,7 +698,11 @@ const BusinessStepForm = (): JSX.Element => {
         return selectedAmenities.length >= 4;
       case 4:
         // Services - At least 1 required
-        return services.length > 0 || cloudServices.length > 0 || localServices.length > 0;
+        return (
+          services.length > 0 ||
+          cloudServices.length > 0 ||
+          localServices.length > 0
+        );
       case 5:
         // Location - required and must be valid
         if (!location) return false;
@@ -815,7 +818,8 @@ const BusinessStepForm = (): JSX.Element => {
           );
           if (!hasPhone || !hasSocial) {
             toast.error('Validation Error', {
-              description: 'Please provide your phone number and at least one social link.',
+              description:
+                'Please provide your phone number and at least one social link.',
             });
             setIsSubmitting(false);
             return;
@@ -1050,14 +1054,17 @@ const BusinessStepForm = (): JSX.Element => {
               </header>
             )}
             {currentStep?.component}
-            
+
             {/* Direction Text */}
             {pageNumber !== 7 && (
               <div className='mx-auto mt-8 max-w-xl border-t pt-4'>
-                <p className='text-xs text-gray-500 italic'>
-                  {pageNumber === 3 && "Please select at least 4 amenities to continue."}
-                  {pageNumber === 4 && "Please add at least one service to continue."}
-                  {pageNumber === 6 && "Please provide a phone number and at least one social media link to continue."}
+                <p className='text-xs italic text-gray-500'>
+                  {pageNumber === 3 &&
+                    'Please select at least 4 amenities to continue.'}
+                  {pageNumber === 4 &&
+                    'Please add at least one service to continue.'}
+                  {pageNumber === 6 &&
+                    'Please provide a phone number and at least one social media link to continue.'}
                 </p>
               </div>
             )}
