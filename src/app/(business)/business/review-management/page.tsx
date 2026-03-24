@@ -8,6 +8,12 @@ import {
   SheetContent,
   SheetHeader,
 } from '@/components/ui';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/';
 import { ChevronDown, Send } from 'lucide-react';
 import { useBusinessReviews, useReplyToReview } from '../../misc/api/reviews';
 import { useBusinessContext } from '@/contexts/BusinessContext';
@@ -39,6 +45,9 @@ export default function ReviewManagementPage() {
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [filterOption, setFilterOption] = useState<'all_time' | 'most_recent'>(
+    'all_time'
+  );
 
   const selectedReview = useMemo(() => {
     if (selectedReviewId === null) return null;
@@ -185,13 +194,27 @@ export default function ReviewManagementPage() {
         <section className='flex max-h-full flex-col gap-y-6 overflow-hidden py-1 lg:py-4'>
           {/* Header */}
           <div className='flex items-center justify-between px-6'>
-            <Button
-              variant='outline'
-              className='gap-2 rounded-full border-border text-xs text-[#0F0F0F] hover:bg-muted md:text-sm'
-            >
-              All Time
-              <ChevronDown className='h-3 w-3 md:h-4 md:w-4' />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant='outline'
+                  className='gap-2 rounded-full border-border text-xs text-[#0F0F0F] hover:bg-muted md:text-sm'
+                >
+                  {filterOption === 'all_time' ? 'All Time' : 'Most Recent'}
+                  <ChevronDown className='h-3 w-3 md:h-4 md:w-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='start'>
+                <DropdownMenuItem onClick={() => setFilterOption('all_time')}>
+                  All Time
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setFilterOption('most_recent')}
+                >
+                  Most Recent
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Stats Row */}

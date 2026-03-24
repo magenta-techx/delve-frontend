@@ -189,7 +189,7 @@ const GalleryPage = () => {
 
  
     return (
-        <div className="lg:p-6 space-y-6">
+        <div className="lg:p-6 space-y-6 h-full overflow-y-auto">
             {/* Header */}
             <header className="flex sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
