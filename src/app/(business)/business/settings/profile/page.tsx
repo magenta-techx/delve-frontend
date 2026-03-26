@@ -234,7 +234,7 @@ export default function ProfileSettings() {
   const getBusinessImages = () => {
     if (!currentBusiness?.images) return [];
     return currentBusiness.images.map(img =>
-      typeof img === 'string' ? img : img.image
+      typeof img === 'string' ? img : img.url
     );
   };
 
@@ -647,15 +647,15 @@ export default function ProfileSettings() {
           </DialogHeader>
 
           <div className='grid grid-cols-3 gap-4'>
-            {currentBusiness.images?.map(({ image, is_thumbnail }, index) => (
+            {currentBusiness.images?.map(({ url, is_thumbnail }, index) => (
               <button
                 key={index}
                 onClick={() => {
-                  handleFieldChange('profilePicture', image);
+                  handleFieldChange('profilePicture', url);
                   setShowImageSelector(false);
                   // Find image id from currentBusiness.images
                   const selectedImageObj = currentBusiness.images?.find(
-                    img => (typeof img === 'object' ? img.image : img) === image
+                    img => (typeof img === 'object' ? img.url : img) === url
                   );
                   const imageId =
                     typeof selectedImageObj === 'object'
@@ -682,7 +682,7 @@ export default function ProfileSettings() {
                 className='group relative aspect-square overflow-hidden rounded-lg border-2 transition-colors hover:border-purple-500'
               >
                 <Image
-                  src={image}
+                  src={url}
                   alt={`Business image ${index + 1}`}
                   fill
                   className='object-cover transition-transform group-hover:scale-105'
