@@ -43,7 +43,9 @@ export interface VideoUploadResult {
 }
 
 interface BusinessShowCaseFormProps {
-  setBusinessShowCaseFile: (files: { url: string; public_id: string }[]) => void;
+  setBusinessShowCaseFile: (
+    files: { url: string; public_id: string }[]
+  ) => void;
   setCloudImages?: (
     images: { id: number; image: string; uploaded_at: string }[]
   ) => void;
@@ -64,7 +66,9 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   initialVideoUrl,
 }: BusinessShowCaseFormProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [uploadedImages, setUploadedImages] = useState<{ url: string; public_id: string }[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<
+    { url: string; public_id: string }[]
+  >([]);
   const [cloudImages, setLocalCloudImages] = useState(initialCloudImages || []);
   const [previews, setPreviews] = useState<ImageData[]>(() => {
     const images: ImageData[] = (initialCloudImages || []).map(img => ({
@@ -75,7 +79,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
     if (initialVideoUrl) {
       // For existing videos, we use a thumbnail for the carousel preview
-      const thumbnailUrl = initialVideoUrl.replace(/\.[^/.]+$/, ".jpg");
+      const thumbnailUrl = initialVideoUrl.replace(/\.[^/.]+$/, '.jpg');
       images.push({
         type: 'video',
         source: thumbnailUrl,
@@ -105,17 +109,23 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   useEffect(() => {
     // This effect is now partially redundant due to direct initialization of previews
     // However, it still clears local files and resets current index if initialCloudImages changes
-    const cloudImagePreviews: ImageData[] = (initialCloudImages || []).map(img => ({
-      type: 'cloud',
-      source: img.image,
-      id: img.id,
-    }));
+    const cloudImagePreviews: ImageData[] = (initialCloudImages || []).map(
+      img => ({
+        type: 'cloud',
+        source: img.image,
+        id: img.id,
+      })
+    );
 
-    const videoPreview: ImageData[] = initialVideoUrl ? [{
-      type: 'video',
-      source: initialVideoUrl.replace(/\.[^/.]+$/, ".jpg"),
-      videoUrl: initialVideoUrl,
-    }] : [];
+    const videoPreview: ImageData[] = initialVideoUrl
+      ? [
+          {
+            type: 'video',
+            source: initialVideoUrl.replace(/\.[^/.]+$/, '.jpg'),
+            videoUrl: initialVideoUrl,
+          },
+        ]
+      : [];
 
     setPreviews([...cloudImagePreviews, ...videoPreview]);
     setUploadedImages([]);
@@ -187,7 +197,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
         if (result.event === 'success') {
           const info = result.info as any;
-          
+
           setPreviews(prev => {
             const newItem: ImageData = {
               type: 'new_cloud',
@@ -200,11 +210,14 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
           });
 
           setUploadedImages(prev => {
-            const newImages = [...prev, { url: info.secure_url, public_id: info.public_id }];
+            const newImages = [
+              ...prev,
+              { url: info.secure_url, public_id: info.public_id },
+            ];
             return newImages;
           });
         }
-        
+
         if (result.event === 'queues-end') {
           setUploadedImages(prev => {
             setBusinessShowCaseFile(prev);
@@ -482,14 +495,15 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
                   }}
                   className='flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50'
                 >
-                  <Video size={16} className={`flex-shrink-0 ${previews.some(p => p.type === 'video') ? 'text-gray-400' : 'text-purple-600'}`} />
+                  <Video
+                    size={16}
+                    className={`flex-shrink-0 ${previews.some(p => p.type === 'video') ? 'text-gray-400' : 'text-purple-600'}`}
+                  />
                   Video {previews.some(p => p.type === 'video') && '(1 max)'}
                 </button>
               </div>
             )}
           </div>
-
-
         </div>
 
         {totalImages >= 10 && (
