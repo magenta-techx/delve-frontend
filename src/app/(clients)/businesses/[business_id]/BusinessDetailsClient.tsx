@@ -459,7 +459,7 @@ const BusinessDetailsClient = ({
             </p>
             <div className='mt-8 grid grid-cols-3 gap-4 xl:mt-12 xl:gap-8'>
               {business.images?.slice(0, 3).map((image, index) => {
-                const src = typeof image === 'string' ? image : image.image;
+                const src = typeof image === 'string' ? image : image.url;
                 return (
                   <div
                     key={
@@ -799,7 +799,7 @@ const BusinessDetailsClient = ({
                   const src = image
                     ? typeof image === 'string'
                       ? image
-                      : image.image
+                      : image.url
                     : null;
 
                   const pos = positions[index];

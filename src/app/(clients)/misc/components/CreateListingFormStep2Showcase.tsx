@@ -11,12 +11,6 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 
-// Cloudinary global type declaration
-declare global {
-  interface Window {
-    cloudinary: any;
-  }
-}
 
 const CLOUDINARY_CLOUD_NAME =
   process.env['NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME'] || 'your_cloud_name';

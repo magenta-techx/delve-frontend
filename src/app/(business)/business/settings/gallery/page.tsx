@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import {
   useUploadBusinessImages,
-  useDeleteBusinessImages,
+  useDeleteBusinessImage,
 } from '@/app/(business)/misc/api/business';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
@@ -20,13 +20,6 @@ import { Upload2Icon } from '@/app/(clients)/misc/icons';
 import { TrashIcon } from '@/assets/icons';
 import { ArrowLeft, Check } from 'lucide-react';
 import { LinkButton } from '@/components/ui';
-
-// Cloudinary global type declaration
-declare global {
-  interface Window {
-    cloudinary: any;
-  }
-}
 
 const CLOUDINARY_CLOUD_NAME =
   process.env['NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME'] || 'your_cloud_name';
@@ -55,18 +48,9 @@ const GalleryPage = () => {
 
   // Mutations
   const uploadImagesMutation = useUploadBusinessImages();
-  const deleteImagesMutation = useDeleteBusinessImages();
+  const deleteImagesMutation = useDeleteBusinessImage();
 
   // Get business images with proper typing
-  const getBusinessImages = () => {
-    if (!currentBusiness?.images) return [];
-    return currentBusiness.images.map((img, index) => {
-      if (typeof img === 'string') {
-        return { id: index, image: img };
-      }
-      return img;
-    });
-  };
 
   const openCloudinaryWidget = () => {
     if (!window.cloudinary) {
@@ -118,7 +102,7 @@ const GalleryPage = () => {
                   refetchBusinesses();
                   uploadedImages = [];
                 },
-                onError: err => {
+                onError: (err: any) => {
                   toast.error(`Save failed: ${err.message}`);
                 },
               }
@@ -161,7 +145,7 @@ const GalleryPage = () => {
           setShowDeleteModal(false);
           refetchBusinesses();
         },
-        onError: error => {
+        onError: (error: any) => {
           toast.error(`Delete failed: ${error.message}`);
         },
       }
@@ -172,8 +156,6 @@ const GalleryPage = () => {
     setIsSelecting(!isSelecting);
     setSelectedImages(new Set());
   };
-
-  const businessImages = getBusinessImages();
 
   if (!currentBusiness) {
     return (
@@ -202,21 +184,26 @@ const GalleryPage = () => {
         </div>
 
         <div className='flex items-center gap-2'>
-          {isSelecting && businessImages.length > 0 && (
+          {isSelecting && (currentBusiness?.images?.length ?? 0) > 0 && (
             <div
               className='mr-4 flex cursor-pointer items-center gap-1.5 font-medium text-primary'
               onClick={() => {
-                if (selectedImages.size === businessImages.length) {
+                if (
+                  selectedImages.size === (currentBusiness?.images?.length ?? 0)
+                ) {
                   setSelectedImages(new Set());
                 } else {
-                  setSelectedImages(new Set(businessImages.map(img => img.id)));
+                  setSelectedImages(
+                    new Set(currentBusiness?.images?.map(img => img.id))
+                  );
                 }
               }}
             >
               <div className='flex size-5 items-center justify-center rounded-md border-[1.6px] border-primary p-1 text-primary'>
                 <Check
                   className={cn(
-                    selectedImages.size === businessImages.length
+                    selectedImages.size ===
+                      (currentBusiness?.images?.length ?? 0)
                       ? 'opacity-100'
                       : 'opacity-0',
                     'size-4 text-primary transition-all'
@@ -226,7 +213,7 @@ const GalleryPage = () => {
               All
             </div>
           )}
-          {businessImages.length > 0 && (
+          {(currentBusiness?.images?.length ?? 0) > 0 && (
             <>
               <Button
                 variant='outline'
@@ -276,9 +263,9 @@ const GalleryPage = () => {
 
       {/* Image Grid */}
       <div className='space-y-4'>
-        {businessImages.length > 0 ? (
+        {(currentBusiness?.images?.length ?? 0) > 0 ? (
           <div className='grid grid-cols-2 gap-6 lg:grid-cols-3 xl:grid-cols-4'>
-            {businessImages.map(image => (
+            {currentBusiness?.images?.map(image => (
               <div
                 key={image.id}
                 className={cn(
@@ -289,7 +276,7 @@ const GalleryPage = () => {
                 onClick={() => handleImageSelect(image.id)}
               >
                 <Image
-                  src={image.image}
+                  src={image.url}
                   alt={`Business gallery image ${image.id}`}
                   fill
                   className={cn(
@@ -332,7 +319,9 @@ const GalleryPage = () => {
                 {/* Image Index */}
                 {!isSelecting && (
                   <div className='absolute left-2 top-2 rounded bg-black bg-opacity-60 px-2 py-1 text-xs text-white'>
-                    {businessImages.findIndex(img => img.id === image.id) + 1}
+                    {(currentBusiness?.images?.findIndex(
+                      img => img.id === image.id
+                    ) ?? -1) + 1}
                   </div>
                 )}
               </div>
