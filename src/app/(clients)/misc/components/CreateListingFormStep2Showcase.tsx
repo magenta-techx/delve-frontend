@@ -14,15 +14,7 @@ import Image from 'next/image';
 // Cloudinary global type declaration
 declare global {
   interface Window {
-    cloudinary: {
-      createUploadWidget: (
-        options: Record<string, unknown>,
-        callback: (
-          error: unknown,
-          result: { event: string; info: Record<string, unknown> }
-        ) => void
-      ) => { open: () => void; close: () => void };
-    };
+    cloudinary: any;
   }
 }
 
@@ -32,8 +24,8 @@ const CLOUDINARY_UPLOAD_PRESET =
   process.env['NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET'] || 'your_upload_preset';
 
 interface ImageData {
-  type: 'cloud' | 'local' | 'video';
-  source: string | File;
+  type: 'cloud' | 'new_cloud' | 'video';
+  source: string;
   id?: number;
   /** For video uploads, the public_id returned by Cloudinary */
   publicId?: string;
@@ -51,7 +43,7 @@ export interface VideoUploadResult {
 }
 
 interface BusinessShowCaseFormProps {
-  setBusinessShowCaseFile: (files: File[]) => void;
+  setBusinessShowCaseFile: (files: { url: string; public_id: string }[]) => void;
   setCloudImages?: (
     images: { id: number; image: string; uploaded_at: string }[]
   ) => void;
@@ -72,7 +64,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   initialVideoUrl,
 }: BusinessShowCaseFormProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [localFiles, setLocalFiles] = useState<File[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<{ url: string; public_id: string }[]>([]);
   const [cloudImages, setLocalCloudImages] = useState(initialCloudImages || []);
   const [previews, setPreviews] = useState<ImageData[]>(() => {
     const images: ImageData[] = (initialCloudImages || []).map(img => ({
@@ -95,7 +87,6 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -127,7 +118,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     }] : [];
 
     setPreviews([...cloudImagePreviews, ...videoPreview]);
-    setLocalFiles([]);
+    setUploadedImages([]);
     setBusinessShowCaseFile([]);
     setCurrentIndex(0);
   }, [initialCloudImages, initialVideoUrl, setBusinessShowCaseFile]);
@@ -170,34 +161,61 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   // ─── Upload handlers ─────────────────────────────────────────────────────────
 
-  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    if (files.length === 0) return;
+  const openImageCloudinaryWidget = () => {
+    if (!window.cloudinary) {
+      console.error('Cloudinary widget script not loaded yet.');
+      return;
+    }
 
-    const totalCurrent = cloudImages.length + localFiles.length;
-    const remainingSlots = 10 - totalCurrent;
-    const filesToAdd = files.slice(0, remainingSlots);
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName: CLOUDINARY_CLOUD_NAME,
+        uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+        sources: ['local', 'url', 'camera'],
+        resourceType: 'image',
+        clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
+        maxFileSize: 10000000, // 10 MB
+        showAdvancedOptions: false,
+        cropping: false,
+        multiple: true,
+      },
+      (error: any, result: any) => {
+        if (error) {
+          console.error('Cloudinary upload error:', error);
+          return;
+        }
 
-    const newFiles = [...localFiles, ...filesToAdd];
-    setLocalFiles(newFiles);
-    setBusinessShowCaseFile(newFiles);
-
-    filesToAdd.forEach(file => {
-      const reader = new FileReader();
-      reader.onerror = () => console.error('Failed to read file:', file.name);
-      reader.onload = e => {
-        const result = e.target?.result;
-        if (typeof result === 'string') {
+        if (result.event === 'success') {
+          const info = result.info as any;
+          
           setPreviews(prev => {
-            const newItem: ImageData = { type: 'local', source: result };
+            const newItem: ImageData = {
+              type: 'new_cloud',
+              source: info.secure_url,
+              publicId: info.public_id,
+            };
             const updated = [...prev, newItem];
             setCurrentIndex(updated.length - 1);
             return updated;
           });
+
+          setUploadedImages(prev => {
+            const newImages = [...prev, { url: info.secure_url, public_id: info.public_id }];
+            return newImages;
+          });
         }
-      };
-      reader.readAsDataURL(file);
-    });
+        
+        if (result.event === 'queues-end') {
+          setUploadedImages(prev => {
+            setBusinessShowCaseFile(prev);
+            return prev;
+          });
+          widget.close();
+        }
+      }
+    );
+
+    widget.open();
   };
 
   const openCloudinaryWidget = () => {
@@ -218,7 +236,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
         cropping: false,
         multiple: false,
       },
-      (error, result) => {
+      (error: any, result: any) => {
         if (error) {
           console.error('Cloudinary upload error:', error);
           return;
@@ -266,12 +284,12 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
       );
       setLocalCloudImages(newCloudImages);
       setCloudImages?.(newCloudImages);
-    } else if (imageData.type === 'local') {
-      const localFilesBefore = previews
+    } else if (imageData.type === 'new_cloud') {
+      const newCloudBefore = previews
         .slice(0, index)
-        .filter(p => p.type === 'local').length;
-      const newFiles = localFiles.filter((_, i) => i !== localFilesBefore);
-      setLocalFiles(newFiles);
+        .filter(p => p.type === 'new_cloud').length;
+      const newFiles = uploadedImages.filter((_, i) => i !== newCloudBefore);
+      setUploadedImages(newFiles);
       setBusinessShowCaseFile(newFiles);
     } else if (imageData.type === 'video') {
       onVideoRemoved?.();
@@ -368,7 +386,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     });
   };
 
-  const totalImages = cloudImages.length + localFiles.length;
+  const totalImages = cloudImages.length + uploadedImages.length;
 
   return (
     <section className='space-y-6'>
@@ -442,7 +460,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
                   className='flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-purple-50'
                   onClick={() => {
                     setDropdownOpen(false);
-                    fileInputRef.current?.click();
+                    openImageCloudinaryWidget();
                   }}
                 >
                   <ImageIcon
@@ -471,16 +489,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
             )}
           </div>
 
-          {/* Hidden file input — lives outside the dropdown so it persists in the DOM */}
-          <input
-            ref={fileInputRef}
-            type='file'
-            accept='image/*'
-            multiple
-            onChange={handlePhotoUpload}
-            className='sr-only'
-            disabled={totalImages >= 10}
-          />
+
         </div>
 
         {totalImages >= 10 && (

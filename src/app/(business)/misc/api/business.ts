@@ -515,7 +515,7 @@ export function useBusinessActivation(): UseMutationResult<
 export function useUploadBusinessImages(): UseMutationResult<
   ApiEnvelope<string[]>,
   Error,
-  { business_id: BusinessId; images: FileList | File[]; video_url?: string | undefined }
+  { business_id: BusinessId; images: { url: string; public_id: string }[]; video_url?: string | undefined }
 > {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
@@ -523,19 +523,16 @@ export function useUploadBusinessImages(): UseMutationResult<
   return useMutation<
     ApiEnvelope<string[]>,
     Error,
-    { business_id: BusinessId; images: FileList | File[]; video_url?: string | undefined }
+    { business_id: BusinessId; images: { url: string; public_id: string }[]; video_url?: string | undefined }
   >({
     mutationFn: async ({ business_id, images, video_url }) => {
-      const fd = new FormData();
-      Array.from(images).forEach(file => fd.append('images', file));
-      if (video_url) {
-        fd.append('video_url', video_url);
-      }
+      const payload = { images, video_url };
       const res = await authAwareFetch(
         `/api/businesses/${business_id}/upload-media`,
         {
           method: 'POST',
-          body: fd,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
         }
       );
       const data = await res.json();

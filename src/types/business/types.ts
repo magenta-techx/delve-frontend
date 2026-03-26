@@ -5,7 +5,7 @@ export interface BusinessIntroductionProps {
 }
 export interface BusinessShowCaseProps {
   business_id?: number | undefined;
-  images?: File[];
+  images?: { url: string; public_id: string }[];
   video_url?: string | undefined;
 }
 

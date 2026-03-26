@@ -68,7 +68,7 @@ const BusinessStepForm = (): JSX.Element => {
   const updateCategoryMutation = useUpdateBusinessCategory();
 
   const [pageNumber, setPageNumber] = useState(savedStep);
-  const [businessShowCaseFile, setBusinessShowCaseFile] = useState<File[]>([]);
+  const [businessShowCaseFile, setBusinessShowCaseFile] = useState<{ url: string; public_id: string }[]>([]);
   const [cloudImages, setCloudImages] = useState<
     { id: number; image: string; uploaded_at: string }[]
   >([]);
