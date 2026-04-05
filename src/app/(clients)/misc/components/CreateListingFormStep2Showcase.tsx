@@ -10,7 +10,8 @@ import {
   Video,
 } from 'lucide-react';
 import Image from 'next/image';
-
+import { useUserContext } from '@/contexts/UserContext';
+import { toast } from 'sonner';
 
 const CLOUDINARY_CLOUD_NAME =
   process.env['NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME'] || 'your_cloud_name';
@@ -59,6 +60,12 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   onVideoRemoved,
   initialVideoUrl,
 }: BusinessShowCaseFormProps) => {
+  const { user } = useUserContext();
+  const isPremium = user?.is_premium_plan_active;
+  const maxImageCount = isPremium ? 20 : 10;
+  const maxImageSize = isPremium ? 20000000 : 10000000; // 20MB vs 10MB
+  const maxVideoSize = isPremium ? 500000000 : 100000000; // 500MB vs 100MB
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [uploadedImages, setUploadedImages] = useState<
     { url: string; public_id: string }[]
@@ -101,8 +108,6 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   }, []);
 
   useEffect(() => {
-    // This effect is now partially redundant due to direct initialization of previews
-    // However, it still clears local files and resets current index if initialCloudImages changes
     const cloudImagePreviews: ImageData[] = (initialCloudImages || []).map(
       img => ({
         type: 'cloud',
@@ -140,12 +145,11 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   // ─── Carousel helpers ────────────────────────────────────────────────────────
 
   const getSlotWidth = (position: number) => {
-    // Position relative to center (0 = center)
-    const relativePos = position - 2; // -2, -1, 0, 1, 2
+    const relativePos = position - 2;
 
-    if (relativePos === 0) return 30; // Center slot C
-    if (relativePos === -1 || relativePos === 1) return 25; // B and D
-    return 20; // A and E (edges)
+    if (relativePos === 0) return 30;
+    if (relativePos === -1 || relativePos === 1) return 25;
+    return 20;
   };
 
   const handlePrev = () => {
@@ -167,7 +171,13 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   const openImageCloudinaryWidget = () => {
     if (!window.cloudinary) {
-      console.error('Cloudinary widget script not loaded yet.');
+      toast.error('Upload service is loading. Please try again in a moment.');
+      return;
+    }
+
+    const currentImageCount = cloudImages.length + uploadedImages.length;
+    if (currentImageCount >= maxImageCount) {
+      toast.error(`You have reached the maximum limit of ${maxImageCount} images for your ${isPremium ? 'Premium' : 'Free'} plan.`);
       return;
     }
 
@@ -178,10 +188,11 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
         sources: ['local', 'url', 'camera'],
         resourceType: 'image',
         clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
-        maxFileSize: 10000000, // 10 MB
+        maxFileSize: maxImageSize,
         showAdvancedOptions: false,
         cropping: false,
         multiple: true,
+        maxFiles: maxImageCount - currentImageCount,
       },
       (error: any, result: any) => {
         if (error) {
@@ -227,7 +238,12 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   const openCloudinaryWidget = () => {
     if (!window.cloudinary) {
-      console.error('Cloudinary widget script not loaded yet.');
+      toast.error('Upload service is loading. Please try again in a moment.');
+      return;
+    }
+
+    if (previews.some(p => p.type === 'video')) {
+      toast.error('Only one video is allowed.');
       return;
     }
 
@@ -238,10 +254,11 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
         sources: ['local', 'url', 'camera'],
         resourceType: 'video',
         clientAllowedFormats: ['mp4', 'mov', 'avi', 'webm', 'mkv'],
-        maxFileSize: 500000000, // 500 MB
+        maxFileSize: maxVideoSize,
         showAdvancedOptions: false,
         cropping: false,
         multiple: false,
+        maxFiles: 1,
       },
       (error: any, result: any) => {
         if (error) {
@@ -447,12 +464,12 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
           <div className='relative' ref={dropdownRef}>
             <button
               type='button'
-              disabled={totalImages >= 10}
+              disabled={totalImages >= maxImageCount}
               onClick={() => setDropdownOpen(prev => !prev)}
               className='inline-flex items-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow transition-colors hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50'
             >
               <Upload size={15} />
-              Upload
+              {totalImages >= maxImageCount ? 'Limit Reached' : 'Upload'}
               <ChevronDown
                 size={15}
                 className={`transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}
@@ -464,7 +481,8 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
                 {/* Photo option */}
                 <button
                   type='button'
-                  className='flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-purple-50'
+                  disabled={totalImages >= maxImageCount}
+                  className='flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50'
                   onClick={() => {
                     setDropdownOpen(false);
                     openImageCloudinaryWidget();
@@ -472,9 +490,9 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
                 >
                   <ImageIcon
                     size={16}
-                    className='flex-shrink-0 text-purple-600'
+                    className={`flex-shrink-0 ${totalImages >= maxImageCount ? 'text-gray-400' : 'text-purple-600'}`}
                   />
-                  Photo
+                  Photo ({totalImages}/{maxImageCount})
                 </button>
 
                 <div className='h-px bg-gray-100' />
@@ -500,9 +518,10 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
           </div>
         </div>
 
-        {totalImages >= 10 && (
-          <p className='mt-2 text-center text-sm text-amber-600'>
-            Maximum of 10 items allowed
+        {totalImages >= maxImageCount && (
+          <p className='mt-2 text-center text-sm text-amber-600 font-medium'>
+            Maximum of {maxImageCount} images allowed on your {isPremium ? 'Premium' : 'Free'} plan.
+            {!isPremium && " Upgrade for more storage."}
           </p>
         )}
       </div>

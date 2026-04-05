@@ -156,7 +156,8 @@ export function useTrendingBusiness(): UseQueryResult<
         throw new Error(data?.error || 'Failed to fetch trending business');
       return data;
     },
-    retry: 2,
+    enabled: new Date().getDay() === 5,
+    retry: 0,
   });
 }
 

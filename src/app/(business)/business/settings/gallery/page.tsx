@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useBusinessContext } from '@/contexts/BusinessContext';
+import { useUserContext } from '@/contexts/UserContext';
 import {
   useUploadBusinessImages,
   useDeleteBusinessImage,
@@ -28,6 +29,11 @@ const CLOUDINARY_UPLOAD_PRESET =
 
 const GalleryPage = () => {
   const { currentBusiness, refetchBusinesses } = useBusinessContext();
+  const { user } = useUserContext();
+  const isPremium = user?.is_premium_plan_active;
+  const maxImageCount = isPremium ? 20 : 10;
+  const maxFileSize = isPremium ? 20000000 : 10000000; // 20MB for premium, 10MB for free
+  
   const [selectedImages, setSelectedImages] = useState<Set<number>>(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
@@ -58,6 +64,12 @@ const GalleryPage = () => {
       return;
     }
 
+    const currentImageCount = currentBusiness?.images?.length ?? 0;
+    if (currentImageCount >= maxImageCount) {
+      toast.error(`You have reached the maximum limit of ${maxImageCount} images for your ${isPremium ? 'Premium' : 'Free'} plan.`);
+      return;
+    }
+
     let uploadedImages: { url: string; public_id: string }[] = [];
 
     const widget = window.cloudinary.createUploadWidget(
@@ -67,10 +79,11 @@ const GalleryPage = () => {
         sources: ['local', 'url', 'camera'],
         resourceType: 'image',
         clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
-        maxFileSize: 10000000,
+        maxFileSize: maxFileSize,
         showAdvancedOptions: false,
         cropping: false,
         multiple: true,
+        maxFiles: maxImageCount - currentImageCount,
       },
       (error: any, result: any) => {
         if (error) {
@@ -250,16 +263,30 @@ const GalleryPage = () => {
           {!isSelecting && (
             <Button
               onClick={openCloudinaryWidget}
-              disabled={uploadImagesMutation.isPending}
+              disabled={uploadImagesMutation.isPending || (currentBusiness?.images?.length ?? 0) >= maxImageCount}
               size='dynamic_lg'
               className='max-lg:hidden'
             >
-              {uploadImagesMutation.isPending ? 'Uploading...' : 'Upload Media'}
+              {uploadImagesMutation.isPending ? 'Uploading...' : (currentBusiness?.images?.length ?? 0) >= maxImageCount ? 'Limit Reached' : 'Upload Media'}
               <Upload2Icon />
             </Button>
           )}
         </div>
       </header>
+
+      {/* Plan limit indicator */}
+      {!isSelecting && (
+        <div className='flex items-center justify-between rounded-lg bg-gray-50 px-4 py-2 text-sm text-gray-600'>
+          <span>
+            Storage: <span className='font-medium'>{currentBusiness?.images?.length ?? 0}</span> / {maxImageCount} images
+          </span>
+          {!isPremium && (
+            <span className='text-xs text-amber-600'>
+              Upgrade to Premium for 20 images and larger uploads
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Image Grid */}
       <div className='space-y-4'>
@@ -352,10 +379,10 @@ const GalleryPage = () => {
             </p>
             <Button
               onClick={openCloudinaryWidget}
-              disabled={uploadImagesMutation.isPending}
+              disabled={uploadImagesMutation.isPending || (currentBusiness?.images?.length ?? 0) >= maxImageCount}
               className='bg-purple-600 hover:bg-purple-700'
             >
-              Upload Your First Images
+              {(currentBusiness?.images?.length ?? 0) >= maxImageCount ? 'Limit Reached' : 'Upload Your First Images'}
             </Button>
           </div>
         )}
