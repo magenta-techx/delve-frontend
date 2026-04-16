@@ -267,7 +267,7 @@ export default function HomePage() {
         <div
           className={cn('container', !!sponsoredAds?.data.length && 'mb-10')}
         >
-          <header className='flex items-center justify-between max-md:px-4'>
+          <header className='flex items-center justify-between px-4'>
             <h2 className='text-base font-semibold sm:text-2xl'>
               Search by location
             </h2>
@@ -285,7 +285,7 @@ export default function HomePage() {
 
           <div
             className={cn(
-              'flex w-full items-center gap-10 sm:px-0 md:px-2',
+              'flex w-full items-center gap-10 sm:px-0',
               !!sponsoredAds?.data.length && 'mb-4 sm:mb-20'
             )}
           >
@@ -294,7 +294,7 @@ export default function HomePage() {
                 opts={{ align: 'start', loop: false }}
                 className='w-full'
               >
-                <CarouselContent className='-ml-2 p-2 max-md:px-4'>
+                <CarouselContent className='-ml-2 p-0 max-md:px-4'>
                   {LOCATIONS.map((location, key) => (
                     <CarouselItem
                       key={key}
