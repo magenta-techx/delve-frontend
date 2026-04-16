@@ -176,9 +176,26 @@ export default function UserChatsPage({
             </div>
           </nav>
           <div className='custom-scrollbar flex-1 space-y-1 overflow-y-scroll'>
-            {filteredChats?.data.map(chat => {
-              return (
-                <Link
+            {isLoadingChats ? (
+              <div className='flex h-full w-full items-center justify-center py-10'>
+                <LogoLoadingIcon />
+              </div>
+            ) : filteredChats?.data?.length === 0 ? (
+              <div className='flex h-full w-full items-center justify-center p-4 py-10'>
+                <EmptyState
+                  media={<EmptyChatMedia />}
+                  title={searchQuery ? 'No conversations found' : 'No messages yet'}
+                  description={
+                    searchQuery
+                      ? "We couldn't find any chats matching your search."
+                      : 'When you receive new messages, they will appear here.'
+                  }
+                />
+              </div>
+            ) : (
+              filteredChats?.data.map((chat: any) => {
+                return (
+                  <Link
                   key={chat.id}
                   href={`/business/messages/${chat.id}`}
                   className={cn(
@@ -264,7 +281,8 @@ export default function UserChatsPage({
                   </div>
                 </Link>
               );
-            })}
+            })
+          )}
 
             {/* Pin Confirmation Dialog */}
             {pinConfirm && (

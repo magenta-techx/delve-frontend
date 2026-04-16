@@ -10,13 +10,13 @@ const SectionHeader = ({
 }: SectionHeaderProps): JSX.Element => {
   return (
     <div className='flex flex-col items-center justify-center gap-3 px-10'>
-      <div className='flex w-[19.8px] items-center justify-center sm:w-full'>
-        <LogoIcon/>
+      <div className='flex w-[25px] items-center justify-center sm:w-full'>
+        <LogoIcon />
       </div>
-      <p className='font-inter text-[12px] font-medium sm:text-[20px]'>
+      <p className='font-inter text-[13.5px] font-medium sm:text-[20px]'>
         {paragraph}
       </p>
-      <h1 className='text-center font-karma text-2xl max-sm:font-medium sm:text-[44px] text-balance'>
+      <h1 className='text-balance text-center font-karma text-2xl max-sm:font-medium sm:text-[44px]'>
         {header}
       </h1>
     </div>
