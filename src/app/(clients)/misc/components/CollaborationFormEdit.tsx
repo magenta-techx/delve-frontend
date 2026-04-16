@@ -163,9 +163,7 @@ export default function CollaborationForm() {
             onSuccess: () => {
               toast.success('Member removed from collaboration');
               // Update local state
-              setExistingMembers(prev =>
-                prev.filter(m => m.id !== memberId)
-              );
+              setExistingMembers(prev => prev.filter(m => m.id !== memberId));
               refetch();
               deleteConfirmation.closeConfirmation();
             },
@@ -295,7 +293,9 @@ export default function CollaborationForm() {
   }
 
   const renderPreview = (isMobile: boolean = false) => (
-    <article className={`custom-scrollbar flex flex-col overflow-y-auto rounded-lg bg-[#FFFFFF] p-3 md:p-5 ${isMobile ? 'h-full' : 'hidden xl:flex xl:h-full'}`}>
+    <article
+      className={`custom-scrollbar flex flex-col overflow-y-auto rounded-lg bg-[#FFFFFF] p-3 md:p-5 ${isMobile ? 'h-full' : 'hidden xl:flex xl:h-full'}`}
+    >
       {/* Preview Header */}
       <div className='mb-5 flex items-center justify-between border-b pb-3'>
         <h2 className='text-xl font-bold text-[#0D121C]'>Preview</h2>
@@ -365,8 +365,7 @@ export default function CollaborationForm() {
                     className='size-6 rounded-full object-cover md:size-10'
                   />
                   <span className='text-[0.6125rem] font-normal text-[#0D121C] lg:text-xs'>
-                    {currentUser?.user.first_name}{' '}
-                    {currentUser?.user.last_name}
+                    {currentUser?.user.first_name} {currentUser?.user.last_name}
                   </span>
                 </div>
                 <span className='rounded-md bg-[#F8FAFC] px-3 py-2 text-[0.6125rem] font-normal text-[#0D121C] lg:text-xs'>
@@ -448,10 +447,7 @@ export default function CollaborationForm() {
             </div>
             <div className='flex gap-4 max-lg:flex-col lg:grid lg:grid-cols-2'>
               {selectedSavedBusiness.map(business => (
-                <div
-                  className=' md:basis-1/2 lg:basis-1/2'
-                  key={business.id}
-                >
+                <div className='md:basis-1/2 lg:basis-1/2' key={business.id}>
                   <FeaturedListingCard
                     business={business}
                     isSelectable={true}
@@ -467,7 +463,7 @@ export default function CollaborationForm() {
   );
 
   return (
-    <div className='w-full gap-3 py-8 pt-16 lg:grid lg:h-screen lg:grid-rows-[max-content,1fr] lg:overflow-hidden py-16 md:py-8 xl:pb-12 xl:pt-28'>
+    <div className='w-full gap-3 py-16 py-8 pt-16 md:py-8 lg:grid lg:h-screen lg:grid-rows-[max-content,1fr] lg:overflow-hidden xl:pb-12 xl:pt-28'>
       <header className='container mx-auto flex w-full items-center justify-between px-4'>
         <Link
           href='/businesses/saved/collaboration'
@@ -482,7 +478,7 @@ export default function CollaborationForm() {
           size='dynamic_lg'
           onClick={() => onSubmit('submit')}
           disabled={isSubmitting || !isValid}
-          className='bg-[#551FB9] hidden xl:flex'
+          className='hidden bg-[#551FB9] xl:flex'
           isLoading={isUpdatingCollab || isSendingInvite}
         >
           Save Changes
@@ -491,23 +487,21 @@ export default function CollaborationForm() {
         {/* Mobile Preview */}
         <Sheet>
           <SheetTrigger asChild>
-            <Button
-              size='md'
-              className='bg-[#551FB9] xl:hidden rounded-xl'
-            >
+            <Button size='md' className='rounded-xl bg-[#551FB9] xl:hidden'>
               Preview
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[90vh] overflow-y-auto px-0 pt-6 sm:max-w-none">
-            <div className="h-full px-4 pb-12">
-              {renderPreview(true)}
-            </div>
+          <SheetContent
+            side='bottom'
+            className='h-[90vh] overflow-y-auto px-0 pt-6 sm:max-w-none'
+          >
+            <div className='h-full px-4 pb-12'>{renderPreview(true)}</div>
           </SheetContent>
         </Sheet>
       </header>
       <section className='container mx-auto grid w-full gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
-        <form className='custom-scrollbar flex flex-col gap-4 overflow-scroll rounded-lg pl-4 lg:h-full max-md:mt-4'>
-          <h1 className='md:mb-2 text-[1.15rem] font-semibold md:text-lg mac-md:mt-4'>
+        <form className='custom-scrollbar flex flex-col gap-4 overflow-scroll rounded-lg pl-4 max-md:mt-4 lg:h-full'>
+          <h1 className='mac-md:mt-4 text-[1.15rem] font-semibold md:mb-2 md:text-lg'>
             Collaborate With Your Crew
           </h1>
           <div>
@@ -569,12 +563,12 @@ export default function CollaborationForm() {
                 <span className='rounded-md bg-[#FEFDF0] px-3 py-2 text-[0.625rem] font-medium text-yellow-600 lg:text-xs'>
                   Owner
                 </span>
-                <span className='flex items-center gap-2 text-[0.625rem] sm:text-[0.8rem] text-[#9AA4B2]'>
+                <span className='flex items-center gap-2 text-[0.625rem] text-[#9AA4B2] sm:text-[0.8rem]'>
                   <svg
                     width='15'
                     height='15'
                     viewBox='0 0 15 15'
-                    className="size-2.5 md:size-4"
+                    className='size-2.5 md:size-4'
                     fill='none'
                     xmlns='http://www.w3.org/2000/svg'
                   >
@@ -596,9 +590,9 @@ export default function CollaborationForm() {
 
                   {collabData?.data?.created_when
                     ? format(
-                      new Date(collabData.data.created_when),
-                      'MM-dd-yyyy'
-                    )
+                        new Date(collabData.data.created_when),
+                        'MM-dd-yyyy'
+                      )
                     : ''}
                 </span>
                 <span className='text-[0.625rem] capitalize text-primary lg:text-xs'>
@@ -623,10 +617,9 @@ export default function CollaborationForm() {
                           ? `${member.member.first_name} ${member.member.last_name}`
                           : member.unregistered_user_email || 'User'
                       }
-                      className='size-6 md:size-10 rounded-full object-cover'
-
+                      className='size-6 rounded-full object-cover md:size-10'
                     />
-                    <span className='text-[0.625rem] lg:text-xs text-gray-600'>
+                    <span className='text-[0.625rem] text-gray-600 lg:text-xs'>
                       {member.member
                         ? `${member.member.first_name} ${member.member.last_name}`
                         : member.unregistered_user_email || 'Unknown'}
@@ -665,7 +658,7 @@ export default function CollaborationForm() {
                             }
                           );
                         }}
-                        className='rounded border border-gray-300 px-1.5 py-1 md:px-2 md:py-1 text-[0.625rem] lg:text-xs'
+                        className='rounded border border-gray-300 px-1.5 py-1 text-[0.625rem] md:px-2 md:py-1 lg:text-xs'
                       >
                         <option value='contributor'>Contributor</option>
                         <option value='member'>Member</option>
@@ -712,7 +705,7 @@ export default function CollaborationForm() {
                         </DropdownMenuTrigger>
 
                         <DropdownMenuContent align='end' className='w-40'>
-                          <DropdownMenuItem className='md:hidden focus:bg-transparent cursor-default'>
+                          <DropdownMenuItem className='cursor-default focus:bg-transparent md:hidden'>
                             Status: {member.status}
                           </DropdownMenuItem>
                           <DropdownMenuItem
@@ -723,7 +716,7 @@ export default function CollaborationForm() {
                                 member.member
                                   ? `${member.member.first_name} ${member.member.last_name}`
                                   : member.unregistered_user_email ||
-                                  'this member'
+                                      'this member'
                               );
                             }}
                           >
@@ -813,7 +806,7 @@ export default function CollaborationForm() {
                       </DropdownMenuTrigger>
 
                       <DropdownMenuContent align='end' className='w-40'>
-                        <DropdownMenuItem className='md:hidden focus:bg-transparent cursor-default'>
+                        <DropdownMenuItem className='cursor-default focus:bg-transparent md:hidden'>
                           Status: {member.status}
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -897,30 +890,29 @@ export default function CollaborationForm() {
             )}
           </section>
           <section className='mt-4'>
-            <div className="flex gap-4">
+            <div className='flex items-center gap-4'>
               <h5 className='text-sm font-medium'>Group Listings</h5>
-              <p className='text-xs text-gray-500 md:hidden bg-primary/50 px-2 py-1 rounded-full'>
+              <p className='rounded-full bg-primary/20 px-1.5 py-0.5 text-[0.65rem] text-primary md:hidden md:text-xs'>
                 {selectedSavedBusiness?.length || 0} selected
               </p>
-              <Button
-                size='dynamic_lg'
-                variant='colored_outline'
-                type='button'
-                className='mt-2.5'
-                icon={<PlusIcon className='!size-3' />}
-                onClick={openBusinessSelectorModal}
-                iconPosition='right'
-              >
-                Add listings
-              </Button>
-
             </div>
+            <Button
+              size='dynamic_lg'
+              variant='colored_outline'
+              type='button'
+              className='mt-2.5'
+              icon={<PlusIcon className='!size-3' />}
+              onClick={openBusinessSelectorModal}
+              iconPosition='right'
+            >
+              Add listings
+            </Button>
           </section>
           <Button
             size='dynamic_lg'
             onClick={() => onSubmit('submit')}
             disabled={isSubmitting || !isValid}
-            className='bg-[#551FB9] mt-6 xl:hidden w-full'
+            className='mt-6 w-full bg-[#551FB9] xl:hidden'
             isLoading={isUpdatingCollab || isSendingInvite}
           >
             Save Changes

@@ -208,7 +208,7 @@ export default function GeneralPage() {
               // onClick={() => handleEdit('name')}
               variant='outline'
               size='sm'
-              className='w-full text-gray-500 hover:text-primary md:w-auto'
+              className='w-max text-gray-500 hover:text-primary md:w-auto'
               disabled
               title='Contact support to change business name'
             >
@@ -280,7 +280,7 @@ export default function GeneralPage() {
               variant='outline'
               size='sm'
               disabled={isUpdating}
-              className='w-full text-gray-500 hover:text-primary md:w-auto'
+              className='w-max text-gray-500 hover:text-primary md:w-auto'
             >
               Edit
             </Button>
@@ -345,7 +345,7 @@ export default function GeneralPage() {
               onClick={() => handleEdit('website')}
               variant='outline'
               size='sm'
-              className='w-full text-gray-500 hover:text-primary md:w-auto'
+              className='w-max text-gray-500 hover:text-primary md:w-auto'
               disabled={isUpdating}
             >
               Edit

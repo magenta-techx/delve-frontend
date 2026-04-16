@@ -231,9 +231,9 @@ const BusinessDetailsClient = ({
           }}
         >
           {/* Hero Image */}
-          <div className='relative min-h-[50vh] w-full bg-[#00000075] px-5 pb-24 pt-14 text-white md:px-16 xl:px-32'>
+          <div className='relative min-h-[35vh] w-full bg-[#00000075] px-12 pb-20 pt-14 text-white md:min-h-[50vh] md:px-16 xl:px-32'>
             <div className='flex items-center justify-between'>
-              <div className='hidden gap-14 lg:flex'>
+              <nav className='hidden gap-14 lg:flex'>
                 {navLink.map((links, index) => {
                   const isActive = activeHash === links.href;
                   return (
@@ -242,9 +242,9 @@ const BusinessDetailsClient = ({
                         href={links.href}
                         onClick={() => setActiveHash(links.href)}
                         className={cn(
-                          'text-sm font-medium transition-colors',
+                          'relative text-sm font-medium transition-colors',
                           isActive
-                            ? 'text-[#C3B5FD] underline decoration-[#C3B5FD] decoration-2'
+                            ? 'text-[#C3B5FD] after:absolute after:-bottom-2 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-[#C3B5FD]'
                             : 'text-white'
                         )}
                       >
@@ -253,16 +253,16 @@ const BusinessDetailsClient = ({
                     </div>
                   );
                 })}
-              </div>
-              {business?.admin_approval_status == 'approved' && (
+              </nav>
+              {business?.admin_approval_status == 'approved' && !preview && (
                 <button className='flex min-w-max shrink-0 items-center gap-1.5 rounded-lg border border-[#D9D6FE] bg-[#F5F3FF] p-1.5 text-[0.625rem] text-[#551FB9] md:rounded-2xl md:px-4 md:py-2 md:text-sm'>
                   <VerifiedIcon className='size-3.5 md:size-5' />
                   Verified By Delve <DelveIcon className='size-3.5 md:size-5' />
                 </button>
               )}
             </div>
-            <div className='mt-48 lg:mt-96'>
-              <div className='relative size-12 overflow-hidden rounded-full lg:size-24 xl:size-28'>
+            <div className='mt-32 md:mt-48 lg:mt-96'>
+              <div className='relative size-20 overflow-hidden rounded-full lg:size-24 xl:size-28'>
                 <Image
                   src={business?.logo || '/default-logo.png'}
                   alt={`${business.name} logo`}
@@ -419,37 +419,64 @@ const BusinessDetailsClient = ({
                   })}
                 </div>
 
-                <div className=''>
-                  {isOwner ? (
-                    <LinkButton
-                      href='/business/settings/general'
-                      variant={'unstyled'}
-                      className='mt-6 border border-[#FCFCFD] bg-[#0000006B] !py-6 md:px-20 md:py-8'
-                    >
-                      Business Profile
-                    </LinkButton>
-                  ) : showMessageButton ? (
-                    <Button
-                      onClick={handleStartChat}
-                      variant={'unstyled'}
-                      disabled={isLoadingChat}
-                      className='mt-6 border border-[#FCFCFD] bg-[#0000006B] !py-6 md:px-20 md:py-8'
-                    >
-                      {messageButtonLabel}
-                    </Button>
-                  ) : null}{' '}
-                </div>
+                {!preview && (
+                  <div className=''>
+                    {isOwner ? (
+                      <LinkButton
+                        href='/business/settings/general'
+                        variant={'unstyled'}
+                        className='mt-6 border border-[#FCFCFD] bg-[#0000006B] !py-6 md:px-20 md:py-8'
+                      >
+                        Business Profile
+                      </LinkButton>
+                    ) : showMessageButton ? (
+                      <Button
+                        onClick={handleStartChat}
+                        variant={'unstyled'}
+                        disabled={isLoadingChat}
+                        className='mt-6 border border-[#FCFCFD] bg-[#0000006B] !py-6 md:px-20 md:py-8'
+                      >
+                        {messageButtonLabel}
+                      </Button>
+                    ) : null}{' '}
+                  </div>
+                )}
               </section>
             </div>
           </div>
         </div>
-        <div
+
+        {preview && (
+          <nav className='mx-auto flex max-w-[85%] items-center justify-center gap-4 md:hidden'>
+            {navLink.map((links, index) => {
+              const isActive = activeHash === links.href;
+              return (
+                <div key={index}>
+                  <Link
+                    href={links.href}
+                    onClick={() => setActiveHash(links.href)}
+                    className={cn(
+                      'relative text-sm font-medium transition-colors',
+                      isActive
+                        ? 'text-[#C3B5FD] after:absolute after:-bottom-2 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-[#C3B5FD]'
+                        : 'text-black/80'
+                    )}
+                  >
+                    {links.name}
+                  </Link>
+                </div>
+              );
+            })}
+          </nav>
+        )}
+
+        <section
           className={cn(
             'container mx-auto px-4 py-8 md:px-8 lg:py-12',
             preview && 'w-[85%]'
           )}
         >
-          <section id='about' className=''>
+          <div id='about' className=''>
             <h2 className='mb-2 font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Get to know us
             </h2>
@@ -457,7 +484,7 @@ const BusinessDetailsClient = ({
               {business.description ||
                 'No description available for this business.'}
             </p>
-            <div className='mt-8 grid grid-cols-3 gap-4 xl:mt-12 xl:gap-8'>
+            <div className='mt-8 grid gap-4 md:grid-cols-3 xl:mt-12 xl:gap-8'>
               {business.images?.slice(0, 3).map((image, index) => {
                 const src = typeof image === 'string' ? image : image.url;
                 return (
@@ -467,7 +494,10 @@ const BusinessDetailsClient = ({
                         ? image.id
                         : index
                     }
-                    className='relative aspect-[470/539] cursor-pointer overflow-hidden bg-gray-200'
+                    className={cn(
+                      'relative aspect-video cursor-pointer overflow-hidden bg-gray-200 md:aspect-[470/539]',
+                      index == 1 && 'max-md:px-10'
+                    )}
                     onClick={() => handleImageClick(index)}
                   >
                     {src && (
@@ -486,18 +516,18 @@ const BusinessDetailsClient = ({
                 );
               })}
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
 
         <section
           id='services'
           className={cn(
-            'container mx-auto grid gap-x-8 gap-y-4 py-8 lg:grid-cols-[1fr,minmax(0,400px)] lg:gap-4 lg:py-12',
-            preview && 'px-5 md:px-16 xl:px-32'
+            'container mx-auto grid gap-x-8 gap-y-4 px-4 py-8 md:px-8 lg:grid-cols-[1fr,minmax(0,400px)] lg:gap-4 lg:py-12',
+            preview && 'w-[85%]'
           )}
         >
           <div
-            id='about'
+            id='services'
             className={cn(
               'container mx-auto px-4 md:px-10',
               preview && 'px-0 md:px-0'
@@ -524,7 +554,7 @@ const BusinessDetailsClient = ({
           </div>
 
           {(business.address || business.business_hours) && (
-            <div className='space-y-6 max-md:px-4'>
+            <div className='space-y-6'>
               {business.address && (
                 <Card className='border !border-[#E3E8EF] p-2 ring-0 md:p-4'>
                   <div className='space-y-4'>
@@ -908,7 +938,7 @@ const BusinessDetailsClient = ({
             preview && 'px-5 md:px-16 xl:px-32'
           )}
         >
-          <section id='about' className=''>
+          <section id='amenities' className=''>
             <h2 className='mb-2 text-center font-karma text-3xl font-medium text-[#FF9C66] md:mb-4 md:text-4xl lg:text-5xl'>
               Amenities
             </h2>
@@ -934,7 +964,7 @@ const BusinessDetailsClient = ({
           id='reviews'
           className={cn(
             'container mx-auto px-4 py-8 md:px-8 lg:py-16',
-            preview && 'px-5 md:px-16 xl:px-32'
+            preview && 'px-10 md:px-16 xl:px-32'
           )}
         >
           <header className='flex items-center justify-between'>

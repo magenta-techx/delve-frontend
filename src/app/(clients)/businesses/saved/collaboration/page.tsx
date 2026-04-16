@@ -3,7 +3,7 @@ import { LinkButton } from '@/components/ui';
 
 export default function CollaborationsPage() {
   return (
-    <div className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4'>
+    <div className='container relative mx-auto flex w-full flex-col items-center overflow-x-hidden px-4 max-md:pb-20'>
       <header className='z-10 mt-20 w-full md:mt-28'>
         <div className='mb-6 flex w-full items-center justify-between'>
           <section>
