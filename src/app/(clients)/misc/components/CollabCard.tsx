@@ -79,7 +79,7 @@ export default function CollabCard({ collab }: CollabCardProps) {
       <div
         className='relative block overflow-hidden rounded-2xl border p-4 hover:bg-gray-50 xl:min-h-[150px]'
         style={{
-          backgroundImage: 'url(/collaboration/collab_card.jpg)',
+          backgroundImage: `url(${collab.thumbnail || '/collaboration/collab_card.jpg'})`,
           backgroundSize: 'cover',
         }}
       >

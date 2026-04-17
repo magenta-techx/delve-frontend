@@ -332,6 +332,7 @@ interface ChatMessageSender {
 export interface CollaborationSummary {
   id: number;
   name: string;
+  thumbnail?: string;
   description: string;
   number_of_members: number;
   owner_id: number;
