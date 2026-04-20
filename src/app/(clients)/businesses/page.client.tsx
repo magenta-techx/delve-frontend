@@ -59,7 +59,7 @@ const BusinessesLandingPage = () => {
       <div className='mb-10 flex w-full justify-start px-7 lg:hidden lg:px-20'>
         <RoadMapIconsMobile />
       </div>
-      <div className='mb-32 hidden w-full justify-center px-5 sm:flex lg:flex md:px-16 lg:px-24'>
+      <div className='mb-32 hidden w-full justify-center px-5 sm:flex md:px-16 lg:flex lg:px-24'>
         <Image
           src={'/business/business-man.jpg'}
           alt='Delveng business'
@@ -67,7 +67,7 @@ const BusinessesLandingPage = () => {
           height={600}
           priority
           quality={100}
-          className='h-full container'
+          className='container h-full'
         />
       </div>
       <div className='mb-10 flex w-full px-4 lg:hidden lg:px-20'>
@@ -78,18 +78,15 @@ const BusinessesLandingPage = () => {
           height={600}
           priority
           quality={100}
-          className='h-full container'
+          className='container h-full'
         />
       </div>
-      <div
-        className='mb-10 w-full md:px-16 lg:px-24'
-        id='type'
-      >
+      <div className='mb-10 w-full md:px-16 lg:px-24' id='type'>
         <h1 className='container mx-auto mb-5 w-full max-w-6xl text-balance px-8 pr-10 font-inter text-base font-medium lg:mb-16 lg:px-20 lg:text-center lg:text-4xl'>
           Delve is designed for all businesses, from established storefronts to
           independent service providers.
         </h1>
-        <section className='container mx-auto sm:px-0 flex grid-cols-[minmax(0,450px)_1fr] 2xl:grid-cols-[minmax(0,600px)_1fr] flex-col  gap-10 lg:grid '>
+        <section className='container mx-auto flex grid-cols-[minmax(0,450px)_1fr] flex-col gap-10 sm:px-0 lg:grid 2xl:grid-cols-[minmax(0,600px)_1fr]'>
           <div className='flex flex-col gap-7 pl-8 pr-7 lg:gap-5'>
             <div className={`font-inter text-gray-600`}>
               <p
@@ -299,7 +296,7 @@ const BusinessesLandingPage = () => {
         className='flex w-full flex-col items-center pt-10 lg:bg-[#FCFCFDCC] lg:pt-24'
         id='pricing'
       >
-        <section className='my-12 hidden w-full flex-col justify-center sm:px-0 lg:flex'>
+        <section className='my-12 flex w-full flex-col justify-center sm:px-0'>
           <h1 className='mx-auto mb-10 w-full text-center font-karma text-2xl sm:max-w-screen-md sm:text-3xl sm:font-semibold xl:text-4xl'>
             Delve search listing pricing and features
           </h1>
