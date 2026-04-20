@@ -190,7 +190,10 @@ const LandingPageNavbar = () => {
     return null;
   }
 
-  if (!isMobile && isPageWithoutNavbar && !isMobilePageWithoutNavbar) {
+  if (
+    (isMobile && isMobilePageWithoutNavbar) ||
+    (!isMobile && isPageWithoutNavbar)
+  ) {
     return null;
   }
 
