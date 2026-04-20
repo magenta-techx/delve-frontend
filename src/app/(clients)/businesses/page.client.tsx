@@ -297,7 +297,7 @@ const BusinessesLandingPage = () => {
         id='pricing'
       >
         <section className='my-12 flex w-full flex-col justify-center sm:px-0'>
-          <h1 className='mx-auto mb-10 w-full text-center font-karma text-2xl sm:max-w-screen-md sm:text-3xl sm:font-semibold xl:text-4xl'>
+          <h1 className='mx-auto mb-10 w-full text-center font-karma text-2xl max-md:max-w-[20ch] max-md:text-balance sm:max-w-screen-md sm:text-3xl sm:font-semibold xl:text-4xl'>
             Delve search listing pricing and features
           </h1>
           <BusinessLandingPricingList />
