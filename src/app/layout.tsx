@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import { Inter, Karma, DM_Sans } from 'next/font/google';
 
@@ -62,6 +62,13 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+};
+
+// Ensure a viewport meta tag exists and prevent iOS zoom on input focus
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 interface RootLayoutProps {

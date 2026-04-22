@@ -90,7 +90,6 @@
       -moz-osx-font-smoothing: grayscale;
     }
   }
-
 }
 
 .section-header-underlined {
@@ -115,12 +114,10 @@
   }
 }
 
-
-
 .custom-scrollbar {
   scrollbar-width: thin !important;
   scroll-behavior: smooth;
-  scrollbar-color: #F5F3FF transparent;
+  scrollbar-color: #f5f3ff transparent;
   direction: rtl;
   overflow-y: auto;
 
@@ -138,13 +135,13 @@
   }
 
   &:hover::-webkit-scrollbar-thumb {
-    background-color: #E9E5FF;
+    background-color: #e9e5ff;
     border: solid 1px #d4d0eb;
   }
 
   &::-webkit-scrollbar-thumb:hover {
     background-color: hsl(var(--primary));
-    border: solid 1.5px #551FB9;
+    border: solid 1.5px #551fb9;
   }
 
   &::-webkit-scrollbar-track {
@@ -154,4 +151,13 @@
 
 .custom-scrollbar > * {
   direction: ltr;
+}
+
+/* Prevent iPhone input focus zoom app-wide by ensuring at least 16px font-size on iOS */
+@supports (-webkit-touch-callout: none) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }

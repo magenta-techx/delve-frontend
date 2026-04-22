@@ -11,25 +11,24 @@ import { NotificationProvider } from '@/contexts/NotificationProvider';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Wrapper } from './Wrapper';
 
-
 const AllProvider = async ({ children }: { children: React.ReactNode }) => {
   const session = await getServerSession(authOptions);
 
   return (
-    <SessionProviderWrapper session={session}>
-      <QueryProvider >
-        <UserProvider>
-          <SavedBusinessesProvider>
-            <NotificationProvider>
-              <Wrapper>
+    <Wrapper>
+      <SessionProviderWrapper session={session}>
+        <QueryProvider>
+          <UserProvider>
+            <SavedBusinessesProvider>
+              <NotificationProvider>
                 <Toaster />
                 {children}
-              </Wrapper>
-            </NotificationProvider>
-          </SavedBusinessesProvider>
-        </UserProvider>
-      </QueryProvider>
-    </SessionProviderWrapper>
+              </NotificationProvider>
+            </SavedBusinessesProvider>
+          </UserProvider>
+        </QueryProvider>
+      </SessionProviderWrapper>
+    </Wrapper>
   );
 };
 
