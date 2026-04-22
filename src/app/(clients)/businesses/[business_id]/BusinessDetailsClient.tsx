@@ -218,7 +218,7 @@ const BusinessDetailsClient = ({
     <Suspense fallback={<div>Loading business details...</div>}>
       <main
         className={cn(
-          'relative mx-auto py-8 pt-16 lg:pt-20',
+          'relative mx-auto pb-8 md:pt-16 lg:pt-20',
           preview && 'pt-0 lg:pt-0'
         )}
       >
@@ -255,7 +255,7 @@ const BusinessDetailsClient = ({
                 })}
               </nav>
               {business?.admin_approval_status == 'approved' && !preview && (
-                <button className='flex min-w-max shrink-0 items-center gap-1.5 rounded-lg border border-[#D9D6FE] bg-[#F5F3FF] p-1.5 text-[0.625rem] text-[#551FB9] md:rounded-2xl md:px-4 md:py-2 md:text-sm'>
+                <button className='hidden min-w-max shrink-0 items-center gap-1.5 rounded-lg border border-[#D9D6FE] bg-[#F5F3FF] p-1.5 text-[0.625rem] text-[#551FB9] md:flex md:rounded-2xl md:px-4 md:py-2 md:text-sm'>
                   <VerifiedIcon className='size-3.5 md:size-5' />
                   Verified By Delve <DelveIcon className='size-3.5 md:size-5' />
                 </button>
@@ -446,29 +446,27 @@ const BusinessDetailsClient = ({
           </div>
         </div>
 
-        {preview && (
-          <nav className='mx-auto flex max-w-[85%] items-center justify-center gap-4 md:hidden'>
-            {navLink.map((links, index) => {
-              const isActive = activeHash === links.href;
-              return (
-                <div key={index}>
-                  <Link
-                    href={links.href}
-                    onClick={() => setActiveHash(links.href)}
-                    className={cn(
-                      'relative text-sm font-medium transition-colors',
-                      isActive
-                        ? 'text-[#C3B5FD] after:absolute after:-bottom-2 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-[#C3B5FD]'
-                        : 'text-black/80'
-                    )}
-                  >
-                    {links.name}
-                  </Link>
-                </div>
-              );
-            })}
-          </nav>
-        )}
+        <nav className='mx-auto flex max-w-[85%] items-center justify-center gap-4 md:hidden'>
+          {navLink.map((links, index) => {
+            const isActive = activeHash === links.href;
+            return (
+              <div key={index}>
+                <Link
+                  href={links.href}
+                  onClick={() => setActiveHash(links.href)}
+                  className={cn(
+                    'relative text-sm font-medium transition-colors',
+                    isActive
+                      ? 'text-[#C3B5FD] after:absolute after:-bottom-2 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-[#C3B5FD]'
+                      : 'text-black/80'
+                  )}
+                >
+                  {links.name}
+                </Link>
+              </div>
+            );
+          })}
+        </nav>
 
         <section
           className={cn(
