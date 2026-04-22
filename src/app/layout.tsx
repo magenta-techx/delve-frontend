@@ -82,7 +82,7 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          'min-h-screen bg-background antialiased',
+          'min-h-svh bg-background antialiased',
           inter.className,
           karma.variable,
           dmSans.variable

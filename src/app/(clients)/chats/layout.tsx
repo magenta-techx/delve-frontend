@@ -58,7 +58,7 @@ export default function UserChatsPage({
   }, [chatsToShow, chats, searchQuery]);
 
   return (
-    <div className='container mx-auto flex h-screen gap-x-4 !overflow-hidden bg-[#FCFCFD] px-0 pb-16 md:p-4 md:pt-20 lg:!pt-28'>
+    <div className='container mx-auto flex h-svh gap-x-4 !overflow-hidden bg-[#FCFCFD] px-0 pb-16 md:p-4 md:pt-20 lg:!pt-28'>
       <section
         className={cn(
           'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background max-md:rounded-none max-md:border-none lg:w-80 xl:rounded-3xl',
@@ -169,7 +169,9 @@ export default function UserChatsPage({
             <div className='flex h-full w-full items-center justify-center p-4 py-10'>
               <EmptyState
                 media={<EmptyChatMedia />}
-                title={searchQuery ? 'No conversations found' : 'No messages yet'}
+                title={
+                  searchQuery ? 'No conversations found' : 'No messages yet'
+                }
                 description={
                   searchQuery
                     ? "We couldn't find any chats matching your search."
@@ -181,77 +183,80 @@ export default function UserChatsPage({
             filteredChats?.data.map((chat: any) => {
               return (
                 <Link
-                key={chat.id}
-                href={`/chats/${chat.id}`}
-                className={cn(
-                  'flex w-full items-start gap-2 bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50',
-                  current_chat_id === String(chat.id) && '!bg-[#F5F3FF]'
-                )}
-              >
-                <div className='relative size-12 shrink-0 overflow-hidden rounded-full md:size-14'>
-                  <Image
-                    src={chat.business.logo || '/default-avatar.png'}
-                    alt={chat.business.name}
-                    fill
-                    objectFit='cover'
-                  />
-                </div>
-                <div className='flex min-w-0 flex-1 flex-col'>
-                  <p className='text-sm font-semibold md:text-base md:font-medium'>
-                    {chat.business.name}
-                  </p>
-                  <p
-                    className={cn(
-                      'xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight',
-                      current_chat_id === String(chat.id)
-                        ? 'text-[#551FB9]'
-                        : 'text-[#111927]',
-                      chat.last_message?.is_image_message &&
-                        'flex items-center gap-1'
-                    )}
-                  >
-                    {chat.last_message?.is_image_message ? (
-                      <>
-                        <ImageIcon className='h-3.5 w-3.5' aria-hidden='true' />
-                        <span>Image</span>
-                      </>
-                    ) : (
-                      chat.last_message?.content || 'No messages yet'
-                    )}
-                  </p>
-                </div>
-
-                <div className='flex shrink-0 flex-col items-end gap-1.5'>
-                  <span className='whitespace-nowrap text-xs text-gray-500'>
-                    {formatRelativeTime(chat.last_message_sent_at)}
-                  </span>
-                  <button
-                    onClick={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setPinConfirm({
-                        id: chat.id,
-                        is_pinned: !!chat.is_pinned_by_customer,
-                      });
-                    }}
-                    className='p-0.5'
-                    aria-label={
-                      chat.is_pinned_by_customer ? 'Unpin chat' : 'Pin chat'
-                    }
-                  >
-                    <MessagePin
-                      style={{
-                        color: chat.is_pinned_by_customer
-                          ? '#FF4405'
-                          : '#9AA4B2',
-                      }}
+                  key={chat.id}
+                  href={`/chats/${chat.id}`}
+                  className={cn(
+                    'flex w-full items-start gap-2 bg-[#F8FAFC] px-4 py-2.5 text-left transition-colors hover:bg-muted/50',
+                    current_chat_id === String(chat.id) && '!bg-[#F5F3FF]'
+                  )}
+                >
+                  <div className='relative size-12 shrink-0 overflow-hidden rounded-full md:size-14'>
+                    <Image
+                      src={chat.business.logo || '/default-avatar.png'}
+                      alt={chat.business.name}
+                      fill
+                      objectFit='cover'
                     />
-                  </button>
-                </div>
-              </Link>
-            );
-          })
-        )}
+                  </div>
+                  <div className='flex min-w-0 flex-1 flex-col'>
+                    <p className='text-sm font-semibold md:text-base md:font-medium'>
+                      {chat.business.name}
+                    </p>
+                    <p
+                      className={cn(
+                        'xs:text-xs line-clamp-2 min-h-[2lh] text-[0.825rem] leading-tight',
+                        current_chat_id === String(chat.id)
+                          ? 'text-[#551FB9]'
+                          : 'text-[#111927]',
+                        chat.last_message?.is_image_message &&
+                          'flex items-center gap-1'
+                      )}
+                    >
+                      {chat.last_message?.is_image_message ? (
+                        <>
+                          <ImageIcon
+                            className='h-3.5 w-3.5'
+                            aria-hidden='true'
+                          />
+                          <span>Image</span>
+                        </>
+                      ) : (
+                        chat.last_message?.content || 'No messages yet'
+                      )}
+                    </p>
+                  </div>
+
+                  <div className='flex shrink-0 flex-col items-end gap-1.5'>
+                    <span className='whitespace-nowrap text-xs text-gray-500'>
+                      {formatRelativeTime(chat.last_message_sent_at)}
+                    </span>
+                    <button
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setPinConfirm({
+                          id: chat.id,
+                          is_pinned: !!chat.is_pinned_by_customer,
+                        });
+                      }}
+                      className='p-0.5'
+                      aria-label={
+                        chat.is_pinned_by_customer ? 'Unpin chat' : 'Pin chat'
+                      }
+                    >
+                      <MessagePin
+                        style={{
+                          color: chat.is_pinned_by_customer
+                            ? '#FF4405'
+                            : '#9AA4B2',
+                        }}
+                      />
+                    </button>
+                  </div>
+                </Link>
+              );
+            })
+          )}
 
           {/* Pin Confirmation Dialog */}
           {pinConfirm && (

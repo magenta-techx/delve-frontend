@@ -173,8 +173,8 @@ const CLientsLandingFAQs = (): JSX.Element => {
   };
 
   return (
-    <section className='mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-6 sm:py-12 text-[#0F172B] md:py-16'>
-      <h2 className='text-balance text-center font-karma text-2xl font-medium sm:text-3xl lg:text-5xl'>
+    <section className='mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-6 text-[#0F172B] sm:py-12 md:py-16'>
+      <h2 className='text-balance text-center font-karma text-2xl font-semibold sm:text-3xl lg:text-5xl'>
         We are here to help with your questions
       </h2>
       <div className='flex w-full flex-col items-center justify-center space-y-4'>
@@ -192,11 +192,11 @@ const CLientsLandingFAQs = (): JSX.Element => {
                 aria-expanded={isActive}
                 className='grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 text-left text-sm font-medium sm:text-base'
               >
-                <span className='flex size-10 items-center justify-center rounded-full sm:size-12'>
+                <span className='flex !size-5 items-center justify-center rounded-full sm:!size-12'>
                   {Icon}
                 </span>
 
-                <span className='border-l-[3px] border-[#E3E8EF] pl-4 text-sm sm:pl-6 md:text-base'>
+                <span className='border-l-[3px] border-[#E3E8EF] pl-4 text-[0.85rem] sm:pl-6 sm:text-sm md:text-base'>
                   {item.question}
                 </span>
 

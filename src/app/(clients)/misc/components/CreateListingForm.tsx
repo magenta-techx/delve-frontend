@@ -68,7 +68,9 @@ const BusinessStepForm = (): JSX.Element => {
   const updateCategoryMutation = useUpdateBusinessCategory();
 
   const [pageNumber, setPageNumber] = useState(savedStep);
-  const [businessShowCaseFile, setBusinessShowCaseFile] = useState<{ url: string; public_id: string }[]>([]);
+  const [businessShowCaseFile, setBusinessShowCaseFile] = useState<
+    { url: string; public_id: string }[]
+  >([]);
   const [cloudImages, setCloudImages] = useState<
     { id: number; image: string; uploaded_at: string }[]
   >([]);
@@ -961,7 +963,7 @@ const BusinessStepForm = (): JSX.Element => {
   return (
     <div className=''>
       {isLoadingOnboarding && (
-        <div className='flex h-screen items-center justify-center'>
+        <div className='flex h-svh items-center justify-center'>
           <div className='text-center'>
             <div className='mb-4 inline-block'>
               <Logo textColor={'black'} />

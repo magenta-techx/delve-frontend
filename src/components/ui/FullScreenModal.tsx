@@ -36,7 +36,7 @@ export function FullScreenModal({
   return (
     <div
       className={cn(
-        'fixed inset-0 z-[500] bg-white overflow-y-auto !m-0 !p-0',
+        'fixed inset-0 z-[500] !m-0 overflow-y-auto bg-white !p-0',
         className
       )}
     >
@@ -44,17 +44,17 @@ export function FullScreenModal({
         <button
           onClick={onClose}
           className={cn(
-            'fixed z-10 p-2 rounded-md hover:bg-gray-100 transition-colors',
-            closeButtonPosition === 'top-right' ? 'top-4 right-4' : 'top-4 left-4'
+            'fixed z-10 rounded-md p-2 transition-colors hover:bg-gray-100',
+            closeButtonPosition === 'top-right'
+              ? 'right-4 top-4'
+              : 'left-4 top-4'
           )}
-          aria-label="Close modal"
+          aria-label='Close modal'
         >
-          <X className="h-6 w-6" />
+          <X className='h-6 w-6' />
         </button>
       )}
-      <div className="min-h-screen">
-        {children}
-      </div>
+      <div className='min-h-svh'>{children}</div>
     </div>
   );
 }

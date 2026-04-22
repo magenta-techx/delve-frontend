@@ -84,7 +84,7 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
   }
 
   return (
-    <main className='flex min-h-screen flex-col items-center bg-white'>
+    <main className='flex min-h-svh flex-col items-center bg-white'>
       <LandingPageNavbar />
 
       <div className='relative flex w-full flex-col px-4 md:px-16 md:backdrop-blur-lg lg:px-24 lg:py-16'>
@@ -141,7 +141,8 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
                     typeof tag === 'string'
                       ? tag
                       : tag?.name || tag?.title || tag?.label || String(tag);
-                  const tagKey = typeof tag === 'string' ? tag : tag?.id || index;
+                  const tagKey =
+                    typeof tag === 'string' ? tag : tag?.id || index;
                   return (
                     <span
                       key={tagKey}

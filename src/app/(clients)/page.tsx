@@ -142,7 +142,7 @@ export default function HomePage() {
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[85vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         <section />
-        <div className='relative -top-16 flex h-screen min-h-[756px] w-full rounded-b-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
+        <div className='relative -top-16 flex h-svh min-h-[756px] w-full rounded-b-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-b-xl bg-black/60 sm:rounded-none'></div>
         </div>
 
@@ -164,7 +164,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className='flex w-full flex-col items-center pt-8 sm:pb-12 sm:pt-16'>
+      <div className='flex w-full flex-col items-center pt-5 sm:pb-12 sm:pt-16'>
         <SectionHeader
           header='Whatever you’re looking for, find it here.'
           paragraph='category'
@@ -219,7 +219,7 @@ export default function HomePage() {
       </div>
 
       {/* featured listings  */}
-      <div className='flex w-full flex-col items-center justify-between pt-7 sm:pt-16 md:px-16 lg:px-24'>
+      <div className='flex w-full flex-col items-center justify-between pt-5 sm:pt-16 md:px-16 lg:px-24'>
         <SectionHeader
           header='Trusted by dozens of happy clients. '
           paragraph='Featured Listing'
@@ -267,7 +267,7 @@ export default function HomePage() {
         <div
           className={cn('container', !!sponsoredAds?.data.length && 'mb-10')}
         >
-          <header className='flex items-center justify-between px-4'>
+          <header className='mb-2 flex items-center justify-between px-4'>
             <h2 className='text-base font-semibold sm:text-2xl'>
               Search by location
             </h2>
@@ -298,7 +298,7 @@ export default function HomePage() {
                   {LOCATIONS.map((location, key) => (
                     <CarouselItem
                       key={key}
-                      className='flex basis-32 items-center justify-center px-1.5 sm:basis-[25%]'
+                      className='flex basis-48 items-center justify-center px-1.5 sm:basis-[25%]'
                     >
                       <LocationCard
                         key={key}
@@ -426,7 +426,7 @@ export default function HomePage() {
         </div>
 
         <div className='container mb-10 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-20 sm:px-0 md:mb-32'>
-          <h1 className='font-karma text-2xl max-sm:font-medium sm:text-[44px]'>
+          <h1 className='self-start font-karma text-2xl max-md:text-left max-sm:font-semibold sm:text-[44px]'>
             Tips, Trends & Vendor Stories
           </h1>
           <p className='mb-10 font-inter text-[13px] sm:text-[18px]'>
@@ -438,7 +438,7 @@ export default function HomePage() {
             <BlogCard
               imageUrl={'/landingpage/stories-1.jpg'}
               header='Top 5 Wedding Decor Trends Nigerians Are Loving in 2025'
-              containerClassStyle='w-full h-[422px] sm:h-[740px]  lg:basis-[60%]'
+              containerClassStyle='w-full h-[430px] sm:h-[740px]  lg:basis-[60%]'
               imageClassStyle=' sm:h-[440px] w-full'
             />
             <BlogCard

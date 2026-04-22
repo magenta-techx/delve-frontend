@@ -1,5 +1,8 @@
 'use client';
-import { useCollaboration, useUpdateInviteStatus } from '@/app/(clients)/misc/api';
+import {
+  useCollaboration,
+  useUpdateInviteStatus,
+} from '@/app/(clients)/misc/api';
 import { LogoLoadingIcon } from '@/assets/icons';
 import { EmptyState, Button, LinkButton } from '@/components/ui';
 import { EmptyListingIcon } from '../icons';
@@ -17,7 +20,8 @@ export default function CollaborationDetails({
 }) {
   const { data: collabData, isLoading } = useCollaboration(collabId);
   const { user } = useUserContext();
-  const { mutate: updateInviteStatus, isPending: isUpdatingStatus } = useUpdateInviteStatus();
+  const { mutate: updateInviteStatus, isPending: isUpdatingStatus } =
+    useUpdateInviteStatus();
   const [statusErrors, setStatusErrors] = useState<string | null>(null);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -85,9 +89,7 @@ export default function CollaborationDetails({
       m.member !== null
   );
   const pendingMembers = members.filter(
-    m =>
-      m.status === 'pending' &&
-      (m.unregistered_user_email || m.member)
+    m => m.status === 'pending' && (m.unregistered_user_email || m.member)
   );
 
   const handleAcceptInvite = (memberId: number) => {
@@ -109,7 +111,7 @@ export default function CollaborationDetails({
           setStatusErrors(null);
           setConfirmModal({ isOpen: false, memberId: null, action: null });
         },
-        onError: (error) => {
+        onError: error => {
           setStatusErrors(error.message);
         },
       }
@@ -117,7 +119,7 @@ export default function CollaborationDetails({
   };
 
   return (
-    <div className='w-full overflow-hidden py-8 pt-16 lg:h-screen xl:pb-12 xl:pt-28'>
+    <div className='w-full overflow-hidden py-8 pt-16 lg:h-svh xl:pb-12 xl:pt-28'>
       <header className='custom-scrollbar container mx-auto mb-2.5 flex h-12 w-full max-w-[1356px] justify-between overflow-y-scroll p-5 px-4 md:px-8'>
         <div className='flex items-center gap-2'>
           {(isUserContributor || isUserOwner) && (
@@ -407,7 +409,9 @@ export default function CollaborationDetails({
                     ) : (
                       <>
                         <div className='flex size-10 items-center justify-center rounded-full bg-[#E5E7EB] text-xs font-medium text-[#6B7280] md:size-12'>
-                          {member.unregistered_user_email?.charAt(0).toUpperCase()}
+                          {member.unregistered_user_email
+                            ?.charAt(0)
+                            .toUpperCase()}
                         </div>
                         <span className='text-xs font-medium text-[#0D121C] md:text-sm'>
                           {member.unregistered_user_email}
@@ -420,7 +424,8 @@ export default function CollaborationDetails({
                   </span>
 
                   {/* Show accept/decline buttons only for current user's pending invite */}
-                  {member.member?.id === user?.id && member.status === 'pending' ? (
+                  {member.member?.id === user?.id &&
+                  member.status === 'pending' ? (
                     <div className='flex items-center gap-2'>
                       <Button
                         onClick={() => handleAcceptInvite(member.id)}
@@ -491,7 +496,11 @@ export default function CollaborationDetails({
             <div className='flex gap-3'>
               <Button
                 onClick={() =>
-                  setConfirmModal({ isOpen: false, memberId: null, action: null })
+                  setConfirmModal({
+                    isOpen: false,
+                    memberId: null,
+                    action: null,
+                  })
                 }
                 variant='light'
                 className='flex-1'

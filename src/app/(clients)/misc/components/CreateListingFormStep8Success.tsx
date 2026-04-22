@@ -7,12 +7,11 @@ interface CreateListingFormStep8SuccessProps {
   businessId?: string | number | undefined;
 }
 
-const CreateListingFormStep8Success: React.FC<CreateListingFormStep8SuccessProps> = ({
-}) => {
-
-
+const CreateListingFormStep8Success: React.FC<
+  CreateListingFormStep8SuccessProps
+> = ({}) => {
   return (
-    <div className='flex min-h-screen flex-col items-center justify-center bg-white px-4 py-8'>
+    <div className='flex min-h-svh flex-col items-center justify-center bg-white px-4 py-8'>
       <div className='space-y-6 text-center'>
         {/* Success Image */}
         <div className='relative mx-auto h-64 w-full max-w-md'>
@@ -40,7 +39,7 @@ const CreateListingFormStep8Success: React.FC<CreateListingFormStep8SuccessProps
         {/* Action Button */}
         <div className='pt-4'>
           <LinkButton
-          href="/business"
+            href='/business'
             size='xl'
             className='inline-flex items-center gap-2'
           >

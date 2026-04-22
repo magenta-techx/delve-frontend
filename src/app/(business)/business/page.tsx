@@ -88,7 +88,7 @@ export default function DashboardPage(): JSX.Element {
   }
 
   return (
-    <div className='flex h-screen flex-1 flex-col overflow-hidden'>
+    <div className='flex h-svh flex-1 flex-col overflow-hidden'>
       <BusinessPageHeader marketPlace={true} />
       <div className='grid flex-1 gap-4 gap-y-5 overflow-y-auto px-3 pt-2 max-md:pb-16 lg:px-5 xl:grid-cols-[1fr,minmax(0,280px)] 2xl:grid-cols-[1fr,minmax(0,350px)]'>
         <section className='w-full overflow-x-hidden'>
@@ -96,7 +96,7 @@ export default function DashboardPage(): JSX.Element {
             <h6 className='text-[0.825rem] font-medium md:text-sm'>
               🚀 Promote Your Business
             </h6>
-            <p className='relative z-[2] max-w-md text-balance font-karma font-semibold text-xl md:text-2xl lg:text-3xl 2xl:max-w-2xl 2xl:text-[clamp(2.25rem,2.35vw,2.9rem)] 2xl:leading-snug'>
+            <p className='relative z-[2] max-w-md text-balance font-karma text-xl font-semibold md:text-2xl lg:text-3xl 2xl:max-w-2xl 2xl:text-[clamp(2.25rem,2.35vw,2.9rem)] 2xl:leading-snug'>
               Reach more customers with ads and featured spots on Delve.
             </p>
             <LinkButton
@@ -129,13 +129,13 @@ export default function DashboardPage(): JSX.Element {
             <PromotionBannerStars className='absolute bottom-0 right-0 mt-4 hidden md:block' />
           </article>
 
-          <div className='container flex gap-2 overflow-x-auto pb-2 max-md:snap-x max-md:snap-mandatory md:grid md:grid-cols-2 lg:gap-4 xl:grid-cols-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'>
+          <div className='container flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] max-md:snap-x max-md:snap-mandatory md:grid md:grid-cols-2 lg:gap-4 xl:grid-cols-3 [&::-webkit-scrollbar]:hidden'>
             {cardsData.map((card, index) => (
               <article
                 key={index}
-                className='flex flex-col gap-1.5 overflow-x-hidden rounded-[0.85rem] md:rounded-2xl border border-[#F5F3FF] bg-card p-2 px-2.5 text-card-foreground max-md:min-w-[42vw] max-md:snap-start md:gap-3 md:p-4 lg:px-6'
+                className='flex flex-col gap-1.5 overflow-x-hidden rounded-[0.85rem] border border-[#F5F3FF] bg-card p-2 px-2.5 text-card-foreground max-md:min-w-[42vw] max-md:snap-start md:gap-3 md:rounded-2xl md:p-4 lg:px-6'
               >
-                <section className='flex md:items-center gap-2'>
+                <section className='flex gap-2 md:items-center'>
                   <div
                     className={cn(
                       'flex items-center justify-center max-md:mt-1',
@@ -146,14 +146,14 @@ export default function DashboardPage(): JSX.Element {
                     {card.icon}
                   </div>
                   <div>
-                    <h3 className='text-xl font-bold md:font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
+                    <h3 className='text-xl font-bold text-[#0F0F0F] md:text-2xl md:font-semibold lg:text-3xl'>
                       {card.title_count ?? 0}{' '}
                       <span className='ml-0.5 text-[0.725rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
                         {card.title}
                       </span>
                     </h3>
 
-                    <p className='text-[0.7125rem] text-[#0F0F0F] font-medium md:hidden'>
+                    <p className='text-[0.7125rem] font-medium text-[#0F0F0F] md:hidden'>
                       {card.title_desc_mobile}
                     </p>
                     <p className='text-xs text-[#0F0F0F] max-md:hidden md:text-sm'>
@@ -209,11 +209,11 @@ export default function DashboardPage(): JSX.Element {
                             <small className='text-end text-xs text-[#697586]'>
                               {conversation.last_message?.sent_at
                                 ? format(
-                                  new Date(
-                                    conversation.last_message?.sent_at || 0
-                                  ),
-                                  'dd MMM, hh:mm a'
-                                )
+                                    new Date(
+                                      conversation.last_message?.sent_at || 0
+                                    ),
+                                    'dd MMM, hh:mm a'
+                                  )
                                 : '--'}
                             </small>
                           </div>
@@ -222,7 +222,7 @@ export default function DashboardPage(): JSX.Element {
                     ))}
                   </>
                 ) : (
-                  <div className='max-md:min-h-[40vh] flex flex-col items-center justify-center'>
+                  <div className='flex flex-col items-center justify-center max-md:min-h-[40vh]'>
                     <EmptyState
                       media={<EmptyChatMedia />}
                       description='Your conversations will be displayed here.'
@@ -245,7 +245,7 @@ export default function DashboardPage(): JSX.Element {
               <p className='mt-2 text-center text-sm font-medium text-[#111927] md:text-sm'>
                 {data?.data.number_of_reviews || 0} reviews
               </p>
-              <div className='flex justify-center -space-x-4 mt-2'>
+              <div className='mt-2 flex justify-center -space-x-4'>
                 {[
                   '/business/reviewer1.jpg',
                   '/business/reviewer2.jpg',
@@ -256,12 +256,11 @@ export default function DashboardPage(): JSX.Element {
                   .map((image, index) => (
                     <div
                       key={index}
-                      className='relative size-10 md:size-14 overflow-hidden rounded-full border border-gray-300 ring-1 ring-black'
+                      className='relative size-10 overflow-hidden rounded-full border border-gray-300 ring-1 ring-black md:size-14'
                     >
                       <Image fill objectFit='cover' src={image} alt={image} />
                     </div>
                   ))}
-
               </div>
 
               {data?.data.performances && (

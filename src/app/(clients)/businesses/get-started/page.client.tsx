@@ -59,7 +59,7 @@ const GetStartedPage = () => {
 
   return (
     <div
-      className='relative flex h-screen w-screen flex-col items-center justify-center'
+      className='relative flex h-svh w-screen flex-col items-center justify-center'
       style={{
         backgroundImage: 'url(/business-landing-bg.jpg)',
         backgroundSize: 'cover',
@@ -94,7 +94,7 @@ const GetStartedPage = () => {
             variant='white'
           >
             {isPending ? (
-              <Loader borderColor='border-[#9AA4B2]'  />
+              <Loader borderColor='border-[#9AA4B2]' />
             ) : (
               <svg
                 width='18'

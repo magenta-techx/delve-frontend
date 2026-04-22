@@ -3,7 +3,7 @@ import { BaseIcons } from '@/assets/icons/base/Icons';
 
 export default function NotFound() {
   return (
-    <div className='flex min-h-screen flex-col items-center justify-center px-4'>
+    <div className='flex min-h-svh flex-col items-center justify-center px-4'>
       <div className='text-center'>
         <div className='mb-6 flex justify-center'>
           <BaseIcons value='listing-black' />
@@ -11,8 +11,9 @@ export default function NotFound() {
         <h1 className='mb-4 text-4xl font-bold text-[#0F172A]'>
           Blog Not Found
         </h1>
-        <p className='mb-8 text-lg text-[#64748B] text-balance max-w-md mx-auto'>
-          The business you&apos;re looking for either doesn&apos;t exist, hasn&apos;t been approved, or has been removed.
+        <p className='mx-auto mb-8 max-w-md text-balance text-lg text-[#64748B]'>
+          The business you&apos;re looking for either doesn&apos;t exist,
+          hasn&apos;t been approved, or has been removed.
         </p>
         <div className='flex flex-col gap-3 sm:flex-row sm:justify-center'>
           <Link

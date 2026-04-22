@@ -8,7 +8,16 @@ import {
   useBusinessCategories,
   useBusinessStates,
 } from '@/app/(clients)/misc/api/metadata';
-import { Button, EmptyState, Input, Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui';
+import {
+  Button,
+  EmptyState,
+  Input,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+} from '@/components/ui';
 import { BaseIcons } from '@/assets/icons/base/Icons';
 import { BusinessCategoryIcons } from '@/assets/icons/business/BusinessCategoriesIcon';
 import { cn } from '@/lib/utils';
@@ -49,14 +58,12 @@ const FilterChip = ({
   <button
     type='button'
     onClick={onRemove}
-    className='inline-flex items-center gap-2 rounded-full border border-[#E3E8EF] bg-[#F8FAFC] p-1.5 text-[0.625rem] md:px-3 md:py-1.5 font-medium text-[#0F172B] transition hover:border-[#6E44FF] hover:text-[#5B36D4]'
+    className='inline-flex items-center gap-2 rounded-full border border-[#E3E8EF] bg-[#F8FAFC] p-1.5 text-[0.625rem] font-medium text-[#0F172B] transition hover:border-[#6E44FF] hover:text-[#5B36D4] md:px-3 md:py-1.5'
   >
     <span className='truncate'>{label}</span>
     <span className='text-sm font-semibold text-[#6E44FF]'>x</span>
   </button>
 );
-
-
 
 const BusinessSearchPage = (): JSX.Element => {
   const router = useRouter();
@@ -222,17 +229,21 @@ const BusinessSearchPage = (): JSX.Element => {
       : 'We could not complete the search. Please try again.';
 
   return (
-    <div className='relative mx-auto flex min-h-screen w-full container flex-1 flex-col gap-10 bg-[#F8FAFC] px-4 py-24 md:pt-32 lg:flex-row lg:px-6'>
+    <div className='container relative mx-auto flex min-h-svh w-full flex-1 flex-col gap-10 bg-[#F8FAFC] px-4 py-24 md:pt-32 lg:flex-row lg:px-6'>
       {/* Mobile Bottom Sheet */}
       <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
-        <SheetContent side="left" className="lg:hidden w-screen max-w-screen flex flex-col !p-0" showCloseButton={false}>
-          <SheetHeader className="flex !flex-row justify-between items-center px-4 py-4 border-b border-[#E3E8EF]">
-            <SheetTitle className="text-base font-semibold text-[#0F172B]">
+        <SheetContent
+          side='left'
+          className='max-w-screen flex w-screen flex-col !p-0 lg:hidden'
+          showCloseButton={false}
+        >
+          <SheetHeader className='flex !flex-row items-center justify-between border-b border-[#E3E8EF] px-4 py-4'>
+            <SheetTitle className='text-base font-semibold text-[#0F172B]'>
               Filter Search
             </SheetTitle>
 
             <SheetClose asChild>
-              <button type="button" className="text-[#94A3B8]">
+              <button type='button' className='text-[#94A3B8]'>
                 Close
               </button>
             </SheetClose>
@@ -297,7 +308,9 @@ const BusinessSearchPage = (): JSX.Element => {
                       All States
                     </button>
                     {filteredLocations.map(state => {
-                      const isActive = locationParam?.toLowerCase() === state.name.toLowerCase();
+                      const isActive =
+                        locationParam?.toLowerCase() ===
+                        state.name.toLowerCase();
                       return (
                         <button
                           key={state.name}
@@ -352,8 +365,12 @@ const BusinessSearchPage = (): JSX.Element => {
                 {openSections.categories && (
                   <div className='mt-3 space-y-2'>
                     {filteredCategories.map(category => {
-                      const isActive = categoryParam?.toLowerCase() === category.name.toLowerCase();
-                      const iconKey = (category.name ?? '').split(' ')[0]?.toLowerCase() ?? '';
+                      const isActive =
+                        categoryParam?.toLowerCase() ===
+                        category.name.toLowerCase();
+                      const iconKey =
+                        (category.name ?? '').split(' ')[0]?.toLowerCase() ??
+                        '';
                       return (
                         <button
                           key={category.name}
@@ -570,7 +587,8 @@ const BusinessSearchPage = (): JSX.Element => {
                   const name = category.name;
                   const isActive =
                     categoryParam?.toLowerCase() === name.toLowerCase();
-                  const iconKey = (name ?? '').split(' ')[0]?.toLowerCase() ?? '';
+                  const iconKey =
+                    (name ?? '').split(' ')[0]?.toLowerCase() ?? '';
                   return (
                     <button
                       key={name}
@@ -626,7 +644,7 @@ const BusinessSearchPage = (): JSX.Element => {
             <BaseIcons value='filter-outlined-black' />
             <span>Filter</span>
             {hasAnyFilter && (
-              <span className='absolute -right-0 -top-0 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#6E44FF]  text-[0.625rem] font-semibold text-white'>
+              <span className='absolute -right-0 -top-0 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#6E44FF] text-[0.625rem] font-semibold text-white'>
                 {activeFilters.length}
               </span>
             )}
@@ -638,15 +656,21 @@ const BusinessSearchPage = (): JSX.Element => {
               leftIcon={<BaseIcons value='search-black' />}
               leftIconContainerClass='text-[#94A3B8]'
               containerClassName='h-10'
-              className='h-10 rounded-xl !bg-transparent border-[#E2E8F0] text-sm placeholder:text-[#94A3B8]'
+              className='h-10 rounded-xl border-[#E2E8F0] !bg-transparent text-sm placeholder:text-[#94A3B8]'
             />
           </div>
         </div>
 
         <div className='flex flex-wrap items-center justify-between gap-4'>
           <div>
-
-            <h2 className={cn('text-2xl font-semibold text-[#0F172B]', !searchTextParam && "max-md:hidden")}>{heading}</h2>
+            <h2
+              className={cn(
+                'text-2xl font-semibold text-[#0F172B]',
+                !searchTextParam && 'max-md:hidden'
+              )}
+            >
+              {heading}
+            </h2>
             <p className='text-sm text-[#64748B]'>{resultLabel}</p>
           </div>
           {hasAnyFilter ? (
@@ -668,9 +692,7 @@ const BusinessSearchPage = (): JSX.Element => {
               media={<EmptyBusinessSearchGraphic />}
               description={errormessage}
               actions={
-                <Button onClick={() => router.refresh()}>
-                  Retry search
-                </Button>
+                <Button onClick={() => router.refresh()}>Retry search</Button>
               }
               className='rounded-3xl border border-[#E3E8EF] bg-white py-12'
             />
@@ -686,18 +708,13 @@ const BusinessSearchPage = (): JSX.Element => {
               title='Oops! No businesses found. Try adjusting your filters or searching with a different keyword'
               className='rounded-3xl border border-[#E3E8EF] bg-white py-16'
               actions={
-                <Button onClick={handleClearFilters}>
-                  Clear filters
-                </Button>
+                <Button onClick={handleClearFilters}>Clear filters</Button>
               }
             />
           ) : (
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
               {businesses.map(business => (
-                <FeaturedListingCard
-                  key={business.id}
-                  business={business}
-                />
+                <FeaturedListingCard key={business.id} business={business} />
               ))}
             </div>
           )}

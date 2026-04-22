@@ -2,7 +2,14 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Input, Textarea, Button, Sheet, SheetContent, SheetTrigger } from '@/components/ui';
+import {
+  Input,
+  Textarea,
+  Button,
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui';
 import {
   useCreateCollaboration,
   useCurrentUser,
@@ -125,19 +132,20 @@ export default function CollaborationForm() {
 
           // Step 2: Send invitations to all invited members
           if (invitedMembers.length > 0) {
-            const invitePromises = invitedMembers.map(member =>
-              new Promise((resolve, reject) => {
-                sendInvitation(
-                  {
-                    email: member.email,
-                    collab_id: collabId,
-                  },
-                  {
-                    onSuccess: () => resolve(member.email),
-                    onError: () => reject(member.email),
-                  }
-                );
-              })
+            const invitePromises = invitedMembers.map(
+              member =>
+                new Promise((resolve, reject) => {
+                  sendInvitation(
+                    {
+                      email: member.email,
+                      collab_id: collabId,
+                    },
+                    {
+                      onSuccess: () => resolve(member.email),
+                      onError: () => reject(member.email),
+                    }
+                  );
+                })
             );
 
             // Wait for all invitations to be sent
@@ -158,7 +166,9 @@ export default function CollaborationForm() {
   };
 
   const renderPreview = (isMobile: boolean = false) => (
-    <article className={`custom-scrollbar flex flex-col overflow-y-auto rounded-lg bg-[#FFFFFF] p-5 ${isMobile ? 'h-full' : 'hidden xl:flex xl:h-full'}`}>
+    <article
+      className={`custom-scrollbar flex flex-col overflow-y-auto rounded-lg bg-[#FFFFFF] p-5 ${isMobile ? 'h-full' : 'hidden xl:flex xl:h-full'}`}
+    >
       {/* Preview Header */}
       <div className='mb-5 flex items-center justify-between border-b pb-3'>
         <h2 className='text-xl font-bold text-[#0D121C]'>Preview</h2>
@@ -224,20 +234,19 @@ export default function CollaborationForm() {
                       '/collaboration/user_1.png'
                     }
                     alt={`${currentUser?.user.first_name} ${currentUser?.user.last_name}`}
-                    className='size-6 md:size-10 rounded-full object-cover'
+                    className='size-6 rounded-full object-cover md:size-10'
                   />
-                  <span className='text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
-                    {currentUser?.user.first_name}{' '}
-                    {currentUser?.user.last_name}
+                  <span className='text-[0.6125rem] font-normal text-[#0D121C] lg:text-xs'>
+                    {currentUser?.user.first_name} {currentUser?.user.last_name}
                   </span>
                 </div>
-                <span className='rounded-md bg-[#F8FAFC] px-3 py-2 text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
+                <span className='rounded-md bg-[#F8FAFC] px-3 py-2 text-[0.6125rem] font-normal text-[#0D121C] lg:text-xs'>
                   Owner
                 </span>
-                <span className='text-[0.6125rem] lg:text-xs font-normal text-[#4F5E71]'>
+                <span className='text-[0.6125rem] font-normal text-[#4F5E71] lg:text-xs'>
                   Joined {format(new Date(), 'MM-d-yyyy')}
                 </span>
-                <span className='text-[0.6125rem] lg:text-xs font-normal text-[#7C3AED]'>
+                <span className='text-[0.6125rem] font-normal text-[#7C3AED] lg:text-xs'>
                   Active
                 </span>
               </div>
@@ -252,9 +261,9 @@ export default function CollaborationForm() {
                   <img
                     src='/collaboration/user_1.png'
                     alt={member.email}
-                    className='size-6 md:size-10 rounded-full object-cover'
+                    className='size-6 rounded-full object-cover md:size-10'
                   />
-                  <span className='text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
+                  <span className='text-[0.6125rem] font-normal text-[#0D121C] lg:text-xs'>
                     {(() => {
                       const username = member.email.split('@')[0];
                       return username && username.length > 15
@@ -263,13 +272,13 @@ export default function CollaborationForm() {
                     })()}
                   </span>
                 </div>
-                <span className='rounded-md bg-white p-1 md:px-2 text-[0.6125rem] lg:text-xs font-normal text-[#0D121C]'>
+                <span className='rounded-md bg-white p-1 text-[0.6125rem] font-normal text-[#0D121C] md:px-2 lg:text-xs'>
                   Member
                 </span>
-                <span className='text-[0.625rem] lg:text-xs font-normal text-[#4F5E71]'>
+                <span className='text-[0.625rem] font-normal text-[#4F5E71] lg:text-xs'>
                   Joined {format(new Date(), 'MM-d-yyyy')}
                 </span>
-                <span className='text-[0.625rem] lg:text-xs font-normal text-[#9AA4B2]'>
+                <span className='text-[0.625rem] font-normal text-[#9AA4B2] lg:text-xs'>
                   {member.status}
                 </span>
               </div>
@@ -286,13 +295,11 @@ export default function CollaborationForm() {
               <h3 className='text-sm font-normal text-[#9AA4B2]'>
                 Group Listings
               </h3>
-              <div className='flex items-center gap-2'>
-
-              </div>
+              <div className='flex items-center gap-2'></div>
             </div>
             <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
               {selectedSavedBusiness.map(business => (
-                <div className=' md:basis-1/2 lg:basis-1/2'>
+                <div className='md:basis-1/2 lg:basis-1/2'>
                   <FeaturedListingCard
                     key={business.id}
                     business={business}
@@ -307,10 +314,13 @@ export default function CollaborationForm() {
   );
 
   return (
-    <div className='grid h-screen w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-16 md:py-8 xl:pb-12 xl:pt-28'>
-      <header className='mx-auto flex w-full container items-center justify-between px-4'>
-        <Link href='/businesses/saved/collaboration' className='flex items-center gap-2 text-sm md:text-base'>
-          <ChevronLeft className='size-4 md:size-6 cursor-pointer text-gray-700 hover:text-gray-900' />
+    <div className='grid h-svh w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-16 md:py-8 xl:pb-12 xl:pt-28'>
+      <header className='container mx-auto flex w-full items-center justify-between px-4'>
+        <Link
+          href='/businesses/saved/collaboration'
+          className='flex items-center gap-2 text-sm md:text-base'
+        >
+          <ChevronLeft className='size-4 cursor-pointer text-gray-700 hover:text-gray-900 md:size-6' />
           Back
         </Link>
 
@@ -319,7 +329,7 @@ export default function CollaborationForm() {
           size='dynamic_lg'
           onClick={onSubmit}
           disabled={isSubmitting || !isValid}
-          className='bg-[#551FB9] hidden xl:flex'
+          className='hidden bg-[#551FB9] xl:flex'
           isLoading={isCreatingColabo || isSendingInvite}
         >
           Save and Create
@@ -328,29 +338,27 @@ export default function CollaborationForm() {
         {/* Mobile Preview */}
         <Sheet>
           <SheetTrigger asChild>
-            <Button
-              size='default'
-              className='bg-[#551FB9] xl:hidden'
-            >
+            <Button size='default' className='bg-[#551FB9] xl:hidden'>
               Preview
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-[90vh] overflow-y-auto px-0 pt-6 sm:max-w-none">
-            <div className="h-full px-4 pb-12">
-              {renderPreview(true)}
-            </div>
+          <SheetContent
+            side='bottom'
+            className='h-[90vh] overflow-y-auto px-0 pt-6 sm:max-w-none'
+          >
+            <div className='h-full px-4 pb-12'>{renderPreview(true)}</div>
           </SheetContent>
         </Sheet>
       </header>
-      <section className='mx-auto grid w-full container gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
+      <section className='container mx-auto grid w-full gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
         <form className='flex flex-col gap-4 max-md:mt-4'>
-          <h1 className='md:mb-2 text-[1.15rem] font-semibold md:text-lg'>
+          <h1 className='text-[1.15rem] font-semibold md:mb-2 md:text-lg'>
             Collaborate With Your Crew
           </h1>
           <div>
             <label
               htmlFor='name'
-              className='block text-xs sm:text-sm font-medium text-gray-700'
+              className='block text-xs font-medium text-gray-700 sm:text-sm'
             >
               Group Name
             </label>
@@ -362,14 +370,16 @@ export default function CollaborationForm() {
               haserror={!!errors.name}
             />
             {errors.name && (
-              <p className='mt-1 text-xs sm:text-sm text-red-600'>{errors.name.message}</p>
+              <p className='mt-1 text-xs text-red-600 sm:text-sm'>
+                {errors.name.message}
+              </p>
             )}
           </div>
 
           <div>
             <label
               htmlFor='description'
-              className='block text-xs sm:text-sm font-medium text-gray-700'
+              className='block text-xs font-medium text-gray-700 sm:text-sm'
             >
               Description
             </label>
@@ -386,7 +396,9 @@ export default function CollaborationForm() {
           </div>
 
           <section className='mt-4'>
-            <h5 className='mb-2 text-[0.825rem] sm:text-sm font-medium'>Group Members</h5>
+            <h5 className='mb-2 text-[0.825rem] font-medium sm:text-sm'>
+              Group Members
+            </h5>
             <div className='custom-scrollbar max-h-[400px] space-y-3 overflow-y-auto'>
               {/* Owner */}
               <div className='flex items-center justify-between rounded-md bg-[#FFFFFF] px-3 py-2'>
@@ -397,21 +409,21 @@ export default function CollaborationForm() {
                       '/collaboration/user_1.png'
                     }
                     alt={`${currentUser?.user.first_name} ${currentUser?.user.last_name}`}
-                    className='size-6 md:size-10 rounded-full object-cover'
+                    className='size-6 rounded-full object-cover md:size-10'
                   />
                   <span className='text-[0.625rem] lg:text-xs'>
                     {currentUser?.user.first_name} {currentUser?.user.last_name}
                   </span>
                 </div>
-                <span className='rounded-md bg-[#FEFDF0] px-3 py-2 text-[0.625rem] lg:text-xs font-medium text-yellow-600'>
+                <span className='rounded-md bg-[#FEFDF0] px-3 py-2 text-[0.625rem] font-medium text-yellow-600 lg:text-xs'>
                   Owner
                 </span>
-                <span className='flex items-center gap-2 text-[0.625rem] sm:text-[0.8rem] text-[#9AA4B2]'>
+                <span className='flex items-center gap-2 text-[0.625rem] text-[#9AA4B2] sm:text-[0.8rem]'>
                   <svg
                     width='15'
                     height='15'
                     viewBox='0 0 15 15'
-                    className="size-2.5 md:size-4"
+                    className='size-2.5 md:size-4'
                     fill='none'
                     xmlns='http://www.w3.org/2000/svg'
                   >
@@ -433,7 +445,7 @@ export default function CollaborationForm() {
 
                   {format(new Date(), 'MM-dd-yyyy')}
                 </span>
-                <span className='text-[0.625rem] lg:text-xs capitalize text-primary'>
+                <span className='text-[0.625rem] capitalize text-primary lg:text-xs'>
                   Active
                 </span>
               </div>
@@ -448,13 +460,13 @@ export default function CollaborationForm() {
                     <img
                       src='/collaboration/user_1.png'
                       alt={member.email}
-                      className='size-6 md:size-10 rounded-full object-cover'
+                      className='size-6 rounded-full object-cover md:size-10'
                     />
-                    <span className='text-[0.625rem] lg:text-xs text-gray-600'>
+                    <span className='text-[0.625rem] text-gray-600 lg:text-xs'>
                       {member.email}
                     </span>
                   </div>
-                  <span className='rounded-md bg-[#FEFDF0] px-3 py-2 text-[0.625rem] lg:text-xs font-medium text-yellow-600'>
+                  <span className='rounded-md bg-[#FEFDF0] px-3 py-2 text-[0.625rem] font-medium text-yellow-600 lg:text-xs'>
                     {member.priviledge}
                   </span>
 
@@ -475,7 +487,7 @@ export default function CollaborationForm() {
                       />
                     </svg>
 
-                    <span className='rounded bg-gray-200 px-2 py-1 text-[0.625rem] lg:text-xs text-gray-500'>
+                    <span className='rounded bg-gray-200 px-2 py-1 text-[0.625rem] text-gray-500 lg:text-xs'>
                       Invited
                     </span>
                   </span>
@@ -490,7 +502,7 @@ export default function CollaborationForm() {
               ))}
             </div>
             {isEditingEmailInvite ? (
-              <div className='mt-2.5 flex w-full items-center gap-1.5 md:gap-3 rounded-xl border p-1 pl-2'>
+              <div className='mt-2.5 flex w-full items-center gap-1.5 rounded-xl border p-1 pl-2 md:gap-3'>
                 <button
                   type='button'
                   onClick={() => {
@@ -503,7 +515,7 @@ export default function CollaborationForm() {
                     width='20'
                     height='20'
                     viewBox='0 0 20 20'
-                    className="size-4 md:size-5"
+                    className='size-4 md:size-5'
                     fill='none'
                     xmlns='http://www.w3.org/2000/svg'
                   >
@@ -576,7 +588,7 @@ export default function CollaborationForm() {
             size='dynamic_lg'
             onClick={onSubmit}
             disabled={isSubmitting || !isValid}
-            className='bg-[#551FB9] mt-6 xl:hidden w-full'
+            className='mt-6 w-full bg-[#551FB9] xl:hidden'
             isLoading={isCreatingColabo || isSendingInvite}
           >
             Save and Create

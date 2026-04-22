@@ -191,7 +191,7 @@ const ProfilePage = () => {
       <Button
         type='submit'
         size='dynamic_lg'
-        className='w-full rounded-xl md:rounded-2xl py-5 md:py-3 text-base font-semibold shadow-sm bg-[#551FB9] my-8 md:mt-6 md:max-w-[180px]'
+        className='my-8 w-full rounded-xl bg-[#551FB9] py-5 text-base font-semibold shadow-sm md:mt-6 md:max-w-[180px] md:rounded-2xl md:py-3'
         isLoading={updateProfileMutation.isPending}
       >
         Change
@@ -200,10 +200,10 @@ const ProfilePage = () => {
   );
 
   return (
-    <div className='min-h-screen w-screen overflow-hidden bg-[#F8F7FB] sm:px-6 lg:px-12'>
-      <section className='container  mx-auto p-4 pt-16 md:pt-24'>
+    <div className='min-h-svh w-screen overflow-hidden bg-[#F8F7FB] sm:px-6 lg:px-12'>
+      <section className='container mx-auto p-4 pt-16 md:pt-24'>
         <header className='flex w-full flex-col gap-2 pt-4 md:py-8'>
-          <h1 className='flex items-center gap-2 text-base md:text-xl font-semibold text-[#0F172B]'>
+          <h1 className='flex items-center gap-2 text-base font-semibold text-[#0F172B] md:text-xl'>
             <svg
               width='23'
               height='24'
@@ -231,10 +231,14 @@ const ProfilePage = () => {
           </h1>
         </header>
 
-        <div className={cn(
-          'grid gap-6',
-          isPasswordPanelOpen && !isMobile ? 'lg:grid-cols-[minmax(0,1fr)_0.5fr]' : ''
-        )}>
+        <div
+          className={cn(
+            'grid gap-6',
+            isPasswordPanelOpen && !isMobile
+              ? 'lg:grid-cols-[minmax(0,1fr)_0.5fr]'
+              : ''
+          )}
+        >
           <ProfilePanel
             isLoading={profileLoading && !profileData}
             displayName={displayName}
@@ -253,11 +257,13 @@ const ProfilePage = () => {
           {/* Password Change Side Panel - Desktop Only */}
           {isPasswordPanelOpen && !isMobile && (
             <section className='h-max'>
-              <div className='flex items-center justify-between mb-6'>
-                <h2 className='text-lg font-semibold text-[#0F172B]'>Change Password</h2>
+              <div className='mb-6 flex items-center justify-between'>
+                <h2 className='text-lg font-semibold text-[#0F172B]'>
+                  Change Password
+                </h2>
                 <button
                   onClick={handleClosePasswordPanel}
-                  className='text-[#5F2EEA] text-sm font-medium hover:underline'
+                  className='text-sm font-medium text-[#5F2EEA] hover:underline'
                 >
                   Cancel
                 </button>
@@ -269,16 +275,23 @@ const ProfilePage = () => {
       </section>
 
       {/* Password Change Bottom Sheet - Mobile Only */}
-      <Sheet open={isPasswordPanelOpen && isMobile} onOpenChange={setIsPasswordPanelOpen}>
-        <SheetContent side='bottom' className='rounded-t-2xl px-6 pb-4 md:pb-8 pt-4' showCloseButton={false}>
+      <Sheet
+        open={isPasswordPanelOpen && isMobile}
+        onOpenChange={setIsPasswordPanelOpen}
+      >
+        <SheetContent
+          side='bottom'
+          className='rounded-t-2xl px-6 pb-4 pt-4 md:pb-8'
+          showCloseButton={false}
+        >
           <SheetHeader className='mb-6'>
             <div className='flex items-center justify-between'>
-              <SheetTitle className='text-base md:text-lg font-medium text-[#0F172B]'>
+              <SheetTitle className='text-base font-medium text-[#0F172B] md:text-lg'>
                 Change Password
               </SheetTitle>
               <button
                 onClick={handleClosePasswordPanel}
-                className='text-[#5F2EEA] text-sm font-medium hover:underline'
+                className='text-sm font-medium text-[#5F2EEA] hover:underline'
               >
                 Cancel
               </button>
@@ -330,11 +343,14 @@ const ProfilePanel = ({
   }
 
   return (
-    <section className=' !max-w-[853px] h-max md:bg-white p-2 md:p-6 md:shadow-[0_20px_60px_rgba(15,23,42,0.06)] md:border md:border-[#E3E8EF] md:rounded-[32px] sm:p-8'>
+    <section className='h-max !max-w-[853px] p-2 sm:p-8 md:rounded-[32px] md:border md:border-[#E3E8EF] md:bg-white md:p-6 md:shadow-[0_20px_60px_rgba(15,23,42,0.06)]'>
       {/* Top right joined badge */}
-      <div className='flex justify-end mb-2'>
-        <Badge className='rounded-xl bg-[#F8F7FB] px-3 py-1.5 text-[11px] font-medium text-[#8F90A6] shadow-none border-none'>
-          Joined <span className="ml-1.5 text-[#0F172B] font-semibold">{joinDateLabel}</span>
+      <div className='mb-2 flex justify-end'>
+        <Badge className='rounded-xl border-none bg-[#F8F7FB] px-3 py-1.5 text-[11px] font-medium text-[#8F90A6] shadow-none'>
+          Joined{' '}
+          <span className='ml-1.5 font-semibold text-[#0F172B]'>
+            {joinDateLabel}
+          </span>
         </Badge>
       </div>
 
@@ -358,7 +374,7 @@ const ProfilePanel = ({
         <Button
           type='button'
           size='sm'
-          className='rounded-xl border border-[#E3E8EF] bg-[#F8F7FB] px-5 py-2 max-md:py-4 hover:bg-[#F8F7FB]/80 text-[13px] font-medium text-[#551FB9] shadow-none'
+          className='rounded-xl border border-[#E3E8EF] bg-[#F8F7FB] px-5 py-2 text-[13px] font-medium text-[#551FB9] shadow-none hover:bg-[#F8F7FB]/80 max-md:py-4'
           onClick={() => fileInputRef.current?.click()}
         >
           Change profile
@@ -366,7 +382,9 @@ const ProfilePanel = ({
       </div>
 
       <form onSubmit={onSubmit}>
-        <h3 className='mt-8 mb-4 text-sm md:text-base font-semibold text-[#0F172B]'>Account Management</h3>
+        <h3 className='mb-4 mt-8 text-sm font-semibold text-[#0F172B] md:text-base'>
+          Account Management
+        </h3>
 
         <div className='grid gap-5 sm:grid-cols-2'>
           <Input
@@ -403,7 +421,7 @@ const ProfilePanel = ({
             <Button
               type='button'
               size='sm'
-              className='w-fit rounded-xl border border-[#E3E8EF] bg-[#F8F7FB] px-5 py-2 hover:bg-[#F8F7FB]/80 text-[13px] font-medium text-[#551FB9] shadow-none'
+              className='w-fit rounded-xl border border-[#E3E8EF] bg-[#F8F7FB] px-5 py-2 text-[13px] font-medium text-[#551FB9] shadow-none hover:bg-[#F8F7FB]/80'
               onClick={onOpenPasswordPanel}
             >
               Change password
@@ -415,8 +433,8 @@ const ProfilePanel = ({
           type='submit'
           size='lg'
           className={cn(
-            'max-md:mb-12 mt-8 w-full rounded-xl md:rounded-2xl max-w-[400px] py-[14px] text-[0.9rem] md:text-base font-medium md:font-semibold shadow-none transition-all',
-            (!profileForm.formState.isDirty && !selectedImage)
+            'mt-8 w-full max-w-[400px] rounded-xl py-[14px] text-[0.9rem] font-medium shadow-none transition-all max-md:mb-12 md:rounded-2xl md:text-base md:font-semibold',
+            !profileForm.formState.isDirty && !selectedImage
               ? 'bg-[#E3E8EF] text-[#8F90A6] hover:bg-[#E3E8EF]'
               : 'bg-[#551FB9] text-white hover:bg-[#551FB9]/90'
           )}
