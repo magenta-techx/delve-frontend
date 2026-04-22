@@ -8,7 +8,12 @@ import React, {
   useState,
 } from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/ui';
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui';
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks';
 import { useSession } from 'next-auth/react';
@@ -143,6 +148,7 @@ export default function ChatDetailPage() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const shouldAutoScrollRef = useRef(true);
+  const [emojiOpen, setEmojiOpen] = useState(false);
 
   // Scroll helper: scroll the messages container to bottom
   const scrollToBottom = useCallback((smooth = true, force = false) => {
@@ -158,7 +164,7 @@ export default function ChatDetailPage() {
     } catch (e) {
       try {
         el.scrollTop = el.scrollHeight;
-      } catch { }
+      } catch {}
     }
   }, []);
 
@@ -266,6 +272,76 @@ export default function ChatDetailPage() {
     setText('');
   };
 
+  // Insert emoji at caret position inside textarea
+  const insertEmoji = useCallback(
+    (emoji: string) => {
+      const el = textareaRef.current;
+      if (!el) {
+        setText(prev => (prev ?? '') + emoji);
+        return;
+      }
+      const start = el.selectionStart ?? text.length;
+      const end = el.selectionEnd ?? text.length;
+      const newValue =
+        (text ?? '').slice(0, start) + emoji + (text ?? '').slice(end);
+      setText(newValue);
+      // restore caret after update
+      requestAnimationFrame(() => {
+        try {
+          el.focus();
+          const pos = start + emoji.length;
+          el.selectionStart = pos;
+          el.selectionEnd = pos;
+          resizeTextarea();
+        } catch {}
+      });
+    },
+    [text]
+  );
+
+  const COMMON_EMOJIS = useMemo(
+    () => [
+      '😀',
+      '😄',
+      '😁',
+      '😂',
+      '🤣',
+      '😊',
+      '😍',
+      '😘',
+      '😜',
+      '🤪',
+      '🤗',
+      '🙂',
+      '😇',
+      '🙃',
+      '😉',
+      '😌',
+      '🙌',
+      '👍',
+      '👏',
+      '🙏',
+      '💪',
+      '🔥',
+      '✨',
+      '🎉',
+      '❤️',
+      '💖',
+      '💯',
+      '😎',
+      '🤝',
+      '😅',
+      '😳',
+      '😴',
+      '😢',
+      '😭',
+      '😮',
+      '😐',
+      '😑',
+    ],
+    []
+  );
+
   const orderedMessages = useMemo(() => {
     if (!messages?.data) return [];
     return [...messages.data].reverse();
@@ -305,9 +381,18 @@ export default function ChatDetailPage() {
           {isMobile && (
             <Link
               href='/business/messages'
-              className='mr-1 flex size-6 md:size-8  items-center justify-center rounded-full hover:bg-muted'
+              className='mr-1 flex size-6 items-center justify-center rounded-full hover:bg-muted md:size-8'
             >
-              <svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
                 <path d='m15 18-6-6 6-6' />
               </svg>
             </Link>
@@ -316,14 +401,29 @@ export default function ChatDetailPage() {
             <div className='h-6 w-32 animate-pulse rounded bg-gray-200' />
           ) : (
             <h2 className='text-lg font-semibold'>
-              {isMobile ? 'Messages' : `${selectedChat?.customer.first_name ?? ''} ${selectedChat?.customer.last_name ?? ''}`}
+              {isMobile
+                ? 'Messages'
+                : `${selectedChat?.customer.first_name ?? ''} ${selectedChat?.customer.last_name ?? ''}`}
             </h2>
           )}
         </div>
         <div className='flex items-center gap-2'>
           {isMobile && (
-            <button className='flex size-6 md:size-8  items-center justify-center hover:bg-muted rounded-full'>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" /></svg>
+            <button className='flex size-6 items-center justify-center rounded-full hover:bg-muted md:size-8'>
+              <svg
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <circle cx='12' cy='12' r='1' />
+                <circle cx='12' cy='5' r='1' />
+                <circle cx='12' cy='19' r='1' />
+              </svg>
             </button>
           )}
         </div>
@@ -331,22 +431,35 @@ export default function ChatDetailPage() {
 
       <div
         ref={messagesContainerRef}
-        className='flex flex-1 flex-col space-y-4 overflow-y-auto p-4 lg:p-6 pb-2 lg:pb-6'
+        className='flex flex-1 flex-col space-y-4 overflow-y-auto p-4 pb-2 lg:p-6 lg:pb-6'
         onScroll={handleScroll}
       >
         <div className='flex w-full flex-col items-center justify-center pb-6 pt-4'>
           <div className='relative mb-2 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-black text-white'>
             {selectedChat?.customer?.profile_image ? (
-              <Image src={selectedChat.customer.profile_image} alt='' fill className="object-cover" />
+              <Image
+                src={selectedChat.customer.profile_image}
+                alt=''
+                fill
+                className='object-cover'
+              />
             ) : (
-              <span className='text-xl uppercase'>{selectedChat?.customer?.first_name?.[0]}</span>
+              <span className='text-xl uppercase'>
+                {selectedChat?.customer?.first_name?.[0]}
+              </span>
             )}
           </div>
           <p className='text-sm text-gray-500'>
-            Conversation with <span className='font-semibold text-black'>{selectedChat?.customer?.first_name} {selectedChat?.customer?.last_name}</span>
+            Conversation with{' '}
+            <span className='font-semibold text-black'>
+              {selectedChat?.customer?.first_name}{' '}
+              {selectedChat?.customer?.last_name}
+            </span>
           </p>
         </div>
-        {messagesLoading && <div className="text-center w-full">Loading messages...</div>}
+        {messagesLoading && (
+          <div className='w-full text-center'>Loading messages...</div>
+        )}
         {messages && messages.data.length === 0 && (
           <div className='py-6 text-center text-gray-500'>No messages yet</div>
         )}
@@ -362,7 +475,12 @@ export default function ChatDetailPage() {
                 {!isOwn && (
                   <div className='relative size-5 shrink-0 overflow-hidden rounded-full bg-gray-200'>
                     {msg.sender.profile_image ? (
-                      <Image src={msg.sender.profile_image} alt={msg.sender.first_name} fill className='object-cover' />
+                      <Image
+                        src={msg.sender.profile_image}
+                        alt={msg.sender.first_name}
+                        fill
+                        className='object-cover'
+                      />
                     ) : (
                       <span className='flex h-full w-full items-center justify-center text-[0.6rem] font-semibold uppercase text-gray-600'>
                         {msg.sender.first_name?.[0]}
@@ -394,11 +512,13 @@ export default function ChatDetailPage() {
                   )}
                   <div
                     className={cn(
-                      'w-max max-w-[min(72vw,26rem)] rounded-xl px-3.5 py-2 font-normal leading-snug bg-[#F8FAFC] text-[#0F0F0F]',
+                      'w-max max-w-[min(72vw,26rem)] rounded-xl bg-[#F8FAFC] px-3.5 py-2 font-normal leading-snug text-[#0F0F0F]',
                       isOwn ? 'rounded-tr-none' : 'rounded-bl-none'
                     )}
                   >
-                    <p className='text-[0.8rem] md:text-sm'>{msg.content ?? ''}</p>
+                    <p className='text-[0.8rem] md:text-sm'>
+                      {msg.content ?? ''}
+                    </p>
                     {msg.is_image_message && (
                       <div className='mt-2 flex flex-wrap gap-2'>
                         {msg.images && msg.images.length > 0 ? (
@@ -416,7 +536,9 @@ export default function ChatDetailPage() {
                                   fill
                                   sizes='160px'
                                   className='object-cover'
-                                  onLoadingComplete={() => scrollToBottom(false)}
+                                  onLoadingComplete={() =>
+                                    scrollToBottom(false)
+                                  }
                                 />
                               </div>
                             </button>
@@ -448,7 +570,12 @@ export default function ChatDetailPage() {
                 {isOwn && (
                   <div className='relative size-5 shrink-0 overflow-hidden rounded-full bg-gray-200'>
                     {msg.sender.profile_image ? (
-                      <Image src={msg.sender.profile_image} alt={msg.sender.first_name} fill className='object-cover' />
+                      <Image
+                        src={msg.sender.profile_image}
+                        alt={msg.sender.first_name}
+                        fill
+                        className='object-cover'
+                      />
                     ) : (
                       <span className='flex h-full w-full items-center justify-center text-[0.6rem] font-semibold uppercase text-gray-600'>
                         {msg.sender.first_name?.[0]}
@@ -509,7 +636,7 @@ export default function ChatDetailPage() {
       </div>
 
       <div className='w-full p-4 lg:p-6'>
-        <div className='flex w-full items-center rounded-xl md:rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] md:bg-[#F8FAFC] py-1 pl-4 pr-2 drop-shadow-sm shadow-sm ring-1 ring-gray-100'>
+        <div className='relative flex w-full items-center rounded-xl border border-[#FAFAFA] bg-[#FAFAFA] py-1 pl-4 pr-2 shadow-sm ring-1 ring-gray-100 drop-shadow-sm md:rounded-3xl md:bg-[#F8FAFC]'>
           <textarea
             ref={textareaRef}
             value={text}
@@ -523,7 +650,7 @@ export default function ChatDetailPage() {
             }}
             rows={1}
             placeholder='Write your message..'
-            className='max-h-[200px] text-sm md:text-base w-full resize-none border-none bg-transparent py-1 outline-none placeholder:text-gray-500 focus:border-none'
+            className='max-h-[200px] w-full resize-none border-none bg-transparent py-1 text-sm outline-none placeholder:text-gray-500 focus:border-none md:text-base'
           />
           <div className='flex items-center gap-1.5'>
             <input
@@ -534,23 +661,74 @@ export default function ChatDetailPage() {
               onChange={sendFileFromInput}
               className='hidden'
             />
-            <button
-              type='button'
-              className='flex size-6 md:size-8  items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" x2="9.01" y1="9" y2="9" /><line x1="15" x2="15.01" y1="9" y2="9" /></svg>
-            </button>
+            <DropdownMenu open={emojiOpen} onOpenChange={setEmojiOpen}>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type='button'
+                  aria-label='Insert emoji'
+                  className='flex size-6 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 md:size-8'
+                >
+                  <svg
+                    width='20'
+                    height='20'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <circle cx='12' cy='12' r='10' />
+                    <path d='M8 14s1.5 2 4 2 4-2 4-2' />
+                    <line x1='9' x2='9.01' y1='9' y2='9' />
+                    <line x1='15' x2='15.01' y1='9' y2='9' />
+                  </svg>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align='end'
+                sideOffset={8}
+                className='w-60 p-2 sm:w-72'
+              >
+                <div className='grid grid-cols-8 gap-1'>
+                  {COMMON_EMOJIS.map(e => (
+                    <button
+                      key={e}
+                      type='button'
+                      className='h-7 w-7 rounded text-base hover:bg-gray-100 sm:h-8 sm:w-8 sm:text-lg'
+                      onClick={() => {
+                        insertEmoji(e);
+                        setEmojiOpen(false);
+                      }}
+                    >
+                      {e}
+                    </button>
+                  ))}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <button
               type='button'
               onClick={handleSelectImage}
-              className='flex size-6 md:size-8  items-center justify-center text-gray-700 hover:bg-gray-100 rounded-full transition-colors'
+              className='flex size-6 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 md:size-8'
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <path d='m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48' />
+              </svg>
             </button>
             <Button
               size='icon'
               onClick={handleSend}
-              className='h-10 w-12 shrink-0 rounded-xl bg-[#FAF5FF] hover:bg-[#F3E8FF] ml-1'
+              className='ml-1 h-10 w-12 shrink-0 rounded-xl bg-[#FAF5FF] hover:bg-[#F3E8FF]'
               variant='unstyled'
             >
               <svg
@@ -561,10 +739,18 @@ export default function ChatDetailPage() {
                 xmlns='http://www.w3.org/2000/svg'
               >
                 <path
-                  d='M22 2L11 13' stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'} strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'
+                  d='M22 2L11 13'
+                  stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'}
+                  strokeWidth='2.5'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
                 />
                 <path
-                  d='M22 2L15 22L11 13L2 9L22 2Z' stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'} strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'
+                  d='M22 2L15 22L11 13L2 9L22 2Z'
+                  stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'}
+                  strokeWidth='2.5'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
                 />
               </svg>
             </Button>

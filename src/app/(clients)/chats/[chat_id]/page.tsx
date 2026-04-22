@@ -9,7 +9,13 @@ import React, {
 } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { LinkButton, Button } from '@/components/ui';
+import {
+  LinkButton,
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui';
 import { useSession } from 'next-auth/react';
 import { useIsMobile } from '@/hooks/useMobile';
 import { useUserChats } from '@/app/(clients)/misc/api/useUserChats';
@@ -167,6 +173,7 @@ export default function ChatDetailPage({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const shouldAutoScrollRef = useRef(true);
+  const [emojiOpen, setEmojiOpen] = useState(false);
 
   const scrollToBottom = useCallback((smooth = true, force = false) => {
     const el = messagesContainerRef.current;
@@ -207,6 +214,76 @@ export default function ChatDetailPage({
     ro.observe(el);
     return () => ro.disconnect();
   }, [scrollToBottom]);
+
+  // Insert emoji at caret position
+  const insertEmoji = useCallback(
+    (emoji: string) => {
+      const el = textareaRef.current;
+      if (!el) {
+        setText(prev => (prev ?? '') + emoji);
+        return;
+      }
+      const start = el.selectionStart ?? text.length;
+      const end = el.selectionEnd ?? text.length;
+      const newValue =
+        (text ?? '').slice(0, start) + emoji + (text ?? '').slice(end);
+      setText(newValue);
+      requestAnimationFrame(() => {
+        try {
+          el.focus();
+          const pos = start + emoji.length;
+          el.selectionStart = pos;
+          el.selectionEnd = pos;
+          // ensure textarea resizes if needed
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch {}
+      });
+    },
+    [text]
+  );
+
+  const COMMON_EMOJIS = useMemo(
+    () => [
+      '\ud83d\ude00',
+      '\ud83d\ude04',
+      '\ud83d\ude01',
+      '\ud83d\ude02',
+      '\ud83e\udd23',
+      '\ud83d\ude0a',
+      '\ud83d\ude0d',
+      '\ud83d\ude18',
+      '\ud83d\ude1c',
+      '\ud83e\udd2a',
+      '\ud83e\udd17',
+      '\ud83d\ude42',
+      '\ud83d\ude07',
+      '\ud83d\ude43',
+      '\ud83d\ude09',
+      '\ud83d\ude0c',
+      '\ud83d\ude4c',
+      '\ud83d\udc4d',
+      '\ud83d\udc4f',
+      '\ud83d\ude4f',
+      '\ud83d\udcaa',
+      '\ud83d\udd25',
+      '\u2728',
+      '\ud83c\udf89',
+      '\u2764\ufe0f',
+      '\ud83d\udc96',
+      '\ud83d\udcaf',
+      '\ud83d\ude0e',
+      '\ud83e\udd1d',
+      '\ud83d\ude05',
+      '\ud83d\ude33',
+      '\ud83d\ude34',
+      '\ud83d\ude22',
+      '\ud83d\ude2d',
+      '\ud83d\ude2e',
+      '\ud83d\ude10',
+      '\ud83d\ude11',
+    ],
+    []
+  );
 
   // auto-resize textarea based on content
   const resizeTextarea = () => {
@@ -601,122 +678,150 @@ export default function ChatDetailPage({
       </div>
 
       <div className='w-full p-2 md:p-4 lg:p-6'>
-        {selectedChat && (selectedChat.business.is_free_trial_active || selectedChat.business.owner?.is_premium_plan_active) ? (
-        <div className='flex w-full items-center rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] p-2 shadow-sm ring-1 ring-gray-100 drop-shadow-sm md:bg-[#F8FAFC] md:pl-4'>
-          <textarea
-            ref={textareaRef}
-            value={text}
-            onChange={e => setText(e.target.value)}
-            onInput={resizeTextarea}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                void handleSend();
-              }
-            }}
-            rows={1}
-            placeholder='Write your message..'
-            className='max-h-[200px] w-full resize-none border-none bg-transparent py-1 text-xs outline-none placeholder:text-gray-500 focus:border-none md:text-sm lg:text-base'
-          />
-          <div className='flex items-center gap-1.5'>
-            <input
-              ref={fileInputRef}
-              type='file'
-              accept='image/*'
-              multiple
-              onChange={sendFileFromInput}
-              className='hidden'
+        {selectedChat &&
+        (selectedChat.business.is_free_trial_active ||
+          selectedChat.business.owner?.is_premium_plan_active) ? (
+          <div className='relative flex w-full items-center rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] p-2 shadow-sm ring-1 ring-gray-100 drop-shadow-sm md:bg-[#F8FAFC] md:pl-4'>
+            <textarea
+              ref={textareaRef}
+              value={text}
+              onChange={e => setText(e.target.value)}
+              onInput={resizeTextarea}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  void handleSend();
+                }
+              }}
+              rows={1}
+              placeholder='Write your message..'
+              className='max-h-[200px] w-full resize-none border-none bg-transparent py-1 text-xs outline-none placeholder:text-gray-500 focus:border-none md:text-sm lg:text-base'
             />
-            <button
-              type='button'
-              className='flex size-6 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 md:size-8'
-            >
-              <svg
-                width='20'
-                height='20'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <circle cx='12' cy='12' r='10' />
-                <path d='M8 14s1.5 2 4 2 4-2 4-2' />
-                <line x1='9' x2='9.01' y1='9' y2='9' />
-                <line x1='15' x2='15.01' y1='9' y2='9' />
-              </svg>
-            </button>
-            <button
-              type='button'
-              onClick={handleSelectImage}
-              className='flex size-6 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 md:size-8'
-            >
-              <svg
-                width='20'
-                height='20'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <path d='m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48' />
-              </svg>
-            </button>
-            <Button
-              size='icon'
-              onClick={handleSend}
-              className='ml-1 h-10 w-12 shrink-0 rounded-xl bg-[#FAF5FF] hover:bg-[#F3E8FF]'
-              variant='unstyled'
-              disabled={sending || connectionState !== 'open'}
-            >
-              {sending ? (
-                <svg
-                  className='h-5 w-5 animate-spin'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
+            <div className='flex items-center gap-1.5'>
+              <input
+                ref={fileInputRef}
+                type='file'
+                accept='image/*'
+                multiple
+                onChange={sendFileFromInput}
+                className='hidden'
+              />
+              <DropdownMenu open={emojiOpen} onOpenChange={setEmojiOpen}>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type='button'
+                    aria-label='Insert emoji'
+                    className='flex size-6 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 md:size-8'
+                  >
+                    <svg
+                      width='20'
+                      height='20'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <circle cx='12' cy='12' r='10' />
+                      <path d='M8 14s1.5 2 4 2 4-2 4-2' />
+                      <line x1='9' x2='9.01' y1='9' y2='9' />
+                      <line x1='15' x2='15.01' y1='9' y2='9' />
+                    </svg>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align='end'
+                  sideOffset={8}
+                  className='w-60 p-2 sm:w-72'
                 >
-                  <circle
-                    cx='12'
-                    cy='12'
-                    r='10'
-                    stroke='#551FB9'
-                    strokeWidth='3'
-                    strokeLinecap='round'
-                    strokeDasharray='60'
-                    strokeDashoffset='0'
-                  ></circle>
-                </svg>
-              ) : (
+                  <div className='grid grid-cols-8 gap-1'>
+                    {COMMON_EMOJIS.map(e => (
+                      <button
+                        key={e}
+                        type='button'
+                        className='h-7 w-7 rounded text-base hover:bg-gray-100 sm:h-8 sm:w-8 sm:text-lg'
+                        onClick={() => {
+                          insertEmoji(e);
+                          setEmojiOpen(false);
+                        }}
+                      >
+                        {e}
+                      </button>
+                    ))}
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <button
+                type='button'
+                onClick={handleSelectImage}
+                className='flex size-6 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100 md:size-8'
+              >
                 <svg
                   width='20'
                   height='20'
                   viewBox='0 0 24 24'
                   fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
                 >
-                  <path
-                    d='M22 2L11 13'
-                    stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'}
-                    strokeWidth='2.5'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
-                  <path
-                    d='M22 2L15 22L11 13L2 9L22 2Z'
-                    stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'}
-                    strokeWidth='2.5'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  />
+                  <path d='m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48' />
                 </svg>
-              )}
-            </Button>
+              </button>
+              <Button
+                size='icon'
+                onClick={handleSend}
+                className='ml-1 h-10 w-12 shrink-0 rounded-xl bg-[#FAF5FF] hover:bg-[#F3E8FF]'
+                variant='unstyled'
+                disabled={sending || connectionState !== 'open'}
+              >
+                {sending ? (
+                  <svg
+                    className='h-5 w-5 animate-spin'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <circle
+                      cx='12'
+                      cy='12'
+                      r='10'
+                      stroke='#551FB9'
+                      strokeWidth='3'
+                      strokeLinecap='round'
+                      strokeDasharray='60'
+                      strokeDashoffset='0'
+                    ></circle>
+                  </svg>
+                ) : (
+                  <svg
+                    width='20'
+                    height='20'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d='M22 2L11 13'
+                      stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'}
+                      strokeWidth='2.5'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                    <path
+                      d='M22 2L15 22L11 13L2 9L22 2Z'
+                      stroke={text?.length > 0 ? '#551FB9' : '#9EA5B5'}
+                      strokeWidth='2.5'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
+                  </svg>
+                )}
+              </Button>
+            </div>
           </div>
-        </div>
         ) : (
           <div className='flex w-full items-center justify-center rounded-3xl border border-[#FAFAFA] bg-[#FAFAFA] p-4 text-sm text-gray-500 shadow-sm md:bg-[#F8FAFC]'>
             This business cannot receive messages at this time.
