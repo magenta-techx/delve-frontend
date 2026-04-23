@@ -46,7 +46,7 @@ const FeaturedListingCard = ({
     e.stopPropagation();
     try {
       await toggleSave(business.id);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const articleRef = React.useRef<HTMLElement>(null);
@@ -74,9 +74,11 @@ const FeaturedListingCard = ({
       <article
         ref={articleRef}
         className={cn(
-          'group rounded-[0.9rem] border-[1.5px] md:border-2 border-[#FEC601] p-1 sm:!aspect-[342/427] md:rounded-3xl md:p-1.5',
+          'group rounded-[0.9rem] border-[1.5px] border-[#FEC601] p-1 sm:!aspect-[342/427] md:rounded-3xl md:border-2 md:p-1.5',
           isSelectable && 'cursor-pointer',
-          isBigCard ? 'xl:rounded-[1.8rem] aspect-[342/427] ' : '!aspect-[15/13]'
+          isBigCard
+            ? 'rounded-[1.2rem]xl:rounded-[2.2rem] aspect-[342/427]'
+            : '!aspect-[15/13]'
         )}
         onClick={() => {
           if (!isSelectable) return;
@@ -85,8 +87,8 @@ const FeaturedListingCard = ({
       >
         <div
           className={cn(
-            'relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2 max-md:rounded-[11px] max-md:!overflow-clip',
-            isBigCard && 'xl:rounded-[1.5rem]'
+            'relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2 max-md:!overflow-clip max-md:rounded-[11px]',
+            isBigCard && 'rounded-[1.2rem] xl:rounded-[1.5rem]'
           )}
         >
           {/* Bookmark  */}
@@ -159,8 +161,8 @@ const FeaturedListingCard = ({
                 </div>
               ) : isBusinessSaved ? (
                 <svg
-                  width='25'
-                  height='28'
+                  width={isBigCard ? '32' : '25'}
+                  height={isBigCard ? '36' : '28'}
                   className='size-5 md:size-6'
                   viewBox='0 0 25 28'
                   fill='none'
@@ -198,7 +200,7 @@ const FeaturedListingCard = ({
           {!isSelectable && (
             <Link
               href={`/businesses/${business.id}`}
-              className='relative z-[15] text-xs md:text-base hidden h-9 w-24 md:h-14 md:w-36 items-center justify-center gap-2 rounded-md bg-primary px-4 text-center font-medium text-white group-hover:flex xl:rounded-lg'
+              className='relative z-[15] hidden h-9 w-24 items-center justify-center gap-2 rounded-md bg-primary px-4 text-center text-xs font-medium text-white group-hover:flex md:h-14 md:w-36 md:text-base xl:rounded-lg'
               style={{ fontSize: getFluidFontSize(0.875, 1, 0.003) }}
             >
               <span> View</span>
