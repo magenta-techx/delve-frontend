@@ -181,8 +181,8 @@ export default function ReviewManagementPage() {
   return (
     <div
       className={cn(
-        'flex h-svh flex-1 flex-col overflow-hidden bg-[#FCFCFD]',
-        'px-2 md:px-5'
+        'flex h-svh flex-1 flex-col overflow-hidden bg-[#FCFCFD] max-md:pb-16',
+        'md:px-5'
       )}
     >
       <BusinessPageHeader
