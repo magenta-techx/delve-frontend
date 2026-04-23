@@ -170,7 +170,7 @@ export default function HomePage() {
           paragraph='category'
         />
 
-        <div className='container mb-14 mt-10 flex w-full items-center gap-14 px-2 sm:px-0 md:mb-20'>
+        <div className='container mb-14 mt-10 flex w-full items-center gap-14 pl-2 sm:px-0 md:mb-20'>
           <div className='relative w-full'>
             <Carousel opts={{ align: 'start', loop: false }} className='w-full'>
               <CarouselContent className='-ml-2'>
@@ -178,7 +178,7 @@ export default function HomePage() {
                   ? Array.from({ length: 5 }).map((_, idx) => (
                       <CarouselItem
                         key={idx}
-                        className='flex basis-[35vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
+                        className='flex basis-[38vw] items-center justify-center pl-2 sm:basis-[320px] xl:basis-1/5'
                       >
                         <div className='flex flex-col items-center justify-center gap-2'>
                           <div className='mb-2 size-24 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700 lg:size-40 xl:size-44'></div>
