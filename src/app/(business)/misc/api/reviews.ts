@@ -6,13 +6,21 @@ import { apiRequest } from '@/utils/apiHandler';
 
 export function useBusinessReviews(
   businessId?: string | number,
+  filterBy?: 'all_time' | 'most_recent' | 'ratings',
 ): UseQueryResult<ApiEnvelope<BusinessReviewThread[]>, Error> {
   return useQuery({
-    queryKey: ['business-reviews', businessId],
+    queryKey: ['business-reviews', businessId, filterBy],
 
     queryFn: async () => {
+            const params = new URLSearchParams();
+            if (filterBy) {
+              params.append('filter_by', filterBy);
+            }
+            const queryString = params.toString();
+            const url = `/api/business/${businessId}/reviews/${queryString ? '?' + queryString : ''}`;
+
             const res = await apiRequest(
-                `/api/business/${businessId}/reviews/`,
+                url,
                 {
                     cache: 'no-store',
                 },

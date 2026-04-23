@@ -6,12 +6,13 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { business_id: string } }
 ): Promise<NextResponse> {
-  // Supports optional review_id query param; just pass through
+  // Supports optional review_id and filter_by query params; just pass through
   const { searchParams } = new URL(req.url);
   const review_id = searchParams.get('review_id') ?? undefined;
+  const filter_by = searchParams.get('filter_by') ?? undefined;
   const path = `/businesses/${params.business_id}/reviews/`;
   return forward(req, 'GET', path, {
-    query: { review_id },
+    query: { review_id, filter_by },
   });
 }
 

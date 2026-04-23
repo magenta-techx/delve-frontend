@@ -29,7 +29,13 @@ import { useIsMobile } from '@/hooks';
 export default function ReviewManagementPage() {
   const { currentBusiness } = useBusinessContext();
   const businessId = currentBusiness?.id;
-  const { data, isLoading, isError, refetch } = useBusinessReviews(businessId);
+  const [filterOption, setFilterOption] = useState<
+    'all_time' | 'most_recent' | 'ratings'
+  >('most_recent');
+  const { data, isLoading, isError, refetch } = useBusinessReviews(
+    businessId,
+    filterOption
+  );
   const replyMutation = useReplyToReview();
   const { isMobile } = useIsMobile(1280);
 
@@ -45,9 +51,6 @@ export default function ReviewManagementPage() {
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [filterOption, setFilterOption] = useState<'all_time' | 'most_recent'>(
-    'all_time'
-  );
 
   const selectedReview = useMemo(() => {
     if (selectedReviewId === null) return null;
@@ -179,7 +182,7 @@ export default function ReviewManagementPage() {
     <div
       className={cn(
         'flex h-svh flex-1 flex-col overflow-hidden bg-[#FCFCFD]',
-        'px-5'
+        'px-2 md:px-5'
       )}
     >
       <BusinessPageHeader
@@ -191,7 +194,7 @@ export default function ReviewManagementPage() {
           'container flex-1 grid-cols-[1fr_minmax(300px,0.45fr)] overflow-hidden xl:grid'
         )}
       >
-        <section className='flex max-h-full flex-col gap-y-6 overflow-hidden py-1 lg:py-4'>
+        <section className='flex max-h-full flex-col gap-y-6 overflow-y-auto py-1 md:overflow-hidden lg:py-4'>
           {/* Header */}
           <div className='flex items-center justify-between px-6'>
             <DropdownMenu>
@@ -200,18 +203,25 @@ export default function ReviewManagementPage() {
                   variant='outline'
                   className='gap-2 rounded-full border-border text-xs text-[#0F0F0F] hover:bg-muted md:text-sm'
                 >
-                  {filterOption === 'all_time' ? 'All Time' : 'Most Recent'}
+                  {filterOption === 'all_time'
+                    ? 'All Time'
+                    : filterOption === 'most_recent'
+                      ? 'Most Recent'
+                      : 'Highest Rated'}
                   <ChevronDown className='h-3 w-3 md:h-4 md:w-4' />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='start'>
-                <DropdownMenuItem onClick={() => setFilterOption('all_time')}>
-                  All Time
-                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => setFilterOption('most_recent')}
                 >
                   Most Recent
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterOption('all_time')}>
+                  All Time
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFilterOption('ratings')}>
+                  Highest Rated
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -403,14 +413,14 @@ export default function ReviewManagementPage() {
                         </div>
                       </section>
 
-                      <section className='p-3 md:p-4 md:pl-0 xl:p-5'>
-                        <p className='mb-1.5 text-xs font-medium text-[#0F0F0F] md:mb-4 md:text-[0.9rem]'>
+                      <section className='flex min-w-0 flex-col gap-2 p-3 md:p-4 md:pl-0 xl:p-5'>
+                        <p className='mb-0.5 truncate text-xs font-medium text-[#0F0F0F] md:mb-2 md:text-[0.9rem]'>
                           {review.service?.title ??
                             review.service_text ??
                             'General Review'}
                         </p>
 
-                        <p className='line-clamp-2 text-xs text-[#514F6E] md:text-sm'>
+                        <p className='line-clamp-3 break-words text-xs text-[#514F6E] md:line-clamp-2 md:text-sm'>
                           {review.content}
                         </p>
                       </section>
