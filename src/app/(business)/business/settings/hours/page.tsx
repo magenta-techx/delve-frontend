@@ -179,47 +179,151 @@ export default function BusinessHoursPage() {
                 <div key={day.value}>
                   <div
                     className={cn(
-                      'flex items-center justify-between gap-4 rounded-xl bg-[#FCFCFD] px-4 py-3 last:border-b-0 hover:bg-[#FAFAFA] max-md:flex-col md:gap-8',
+                      'flex items-center justify-between gap-2 rounded-xl bg-[#FCFCFD] px-3 py-2 last:border-b-0 hover:bg-[#FAFAFA] max-md:gap-3 max-md:px-4 max-md:py-3 md:gap-8 md:px-4 md:py-3',
                       !hoursWatch[index]?.is_open && 'opacity-60'
                     )}
                   >
-                    <div className='flex w-full items-center justify-between md:block md:w-24'>
-                      <p className='text-xs font-semibold text-[#212121] sm:text-sm'>
-                        {day.label}
+                    {/* Mobile Layout: Single Row */}
+                    <div className='flex flex-1 items-center justify-between gap-2 md:hidden'>
+                      {/* Day Label */}
+                      <p className='w-10 text-xs font-semibold text-[#212121]'>
+                        {day.label.slice(0, 3)}
                       </p>
-                      <div className='md:hidden'>
+
+                      {/* Time inputs on mobile */}
+                      <div className='flex flex-1 items-center justify-center gap-1.5'>
+                        {/* Open Time */}
                         <Controller
-                          name={`hours.${index}.is_open`}
+                          name={`hours.${index}.open_hour`}
                           control={control}
                           render={({ field }) => (
-                            <button
-                              type='button'
-                              onClick={() => {
-                                field.onChange(!field.value);
-                                clearErrors([
+                            <Input
+                              {...field}
+                              value={field.value ?? ''}
+                              min='1'
+                              max='12'
+                              placeholder='9'
+                              disabled={!hoursWatch[index]?.is_open}
+                              className='!h-8 w-11 !appearance-none rounded border border-[#EEF2F6] px-0.5 py-1 text-center text-xs font-semibold text-[#212121]'
+                              onChange={e => {
+                                field.onChange(e);
+                                trigger(`hours.${index}.close_hour`);
+                              }}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name={`hours.${index}.open_meridiem`}
+                          control={control}
+                          render={({ field }) => (
+                            <select
+                              {...field}
+                              onChange={e => {
+                                field.onChange(e);
+                                trigger([
                                   `hours.${index}.open_hour`,
                                   `hours.${index}.close_hour`,
                                 ]);
                               }}
-                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
-                                }`}
+                              disabled={!hoursWatch[index]?.is_open}
+                              className='!h-8 w-10 !appearance-none rounded border border-[#EEF2F6] bg-white px-1 py-1 text-xs text-[#212121]'
                             >
-                              <span
-                                className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${field.value
-                                  ? 'translate-x-5'
-                                  : 'translate-x-0.5'
-                                  }`}
-                              />
-                            </button>
+                              <option value='AM'>AM</option>
+                              <option value='PM'>PM</option>
+                            </select>
+                          )}
+                        />
+
+                        {/* Dash separator */}
+                        <span className='text-xs font-medium text-[#999999]'>
+                          −
+                        </span>
+
+                        {/* Close Time */}
+                        <Controller
+                          name={`hours.${index}.close_hour`}
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              type='number'
+                              min='1'
+                              max='12'
+                              placeholder='6'
+                              disabled={!hoursWatch[index]?.is_open}
+                              value={field.value ?? ''}
+                              className='!h-8 w-11 rounded border border-[#EEF2F6] px-0.5 py-1 text-center text-xs font-semibold text-[#212121]'
+                              onChange={e => {
+                                field.onChange(e);
+                                trigger(`hours.${index}.open_hour`);
+                              }}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name={`hours.${index}.close_meridiem`}
+                          control={control}
+                          render={({ field }) => (
+                            <select
+                              {...field}
+                              onChange={e => {
+                                field.onChange(e);
+                                trigger([
+                                  `hours.${index}.open_hour`,
+                                  `hours.${index}.close_hour`,
+                                ]);
+                              }}
+                              disabled={!hoursWatch[index]?.is_open}
+                              className='!h-8 w-10 rounded border border-[#EEF2F6] bg-white px-1 py-1 text-xs text-[#212121]'
+                            >
+                              <option value='AM'>AM</option>
+                              <option value='PM'>PM</option>
+                            </select>
                           )}
                         />
                       </div>
+
+                      {/* Mobile Toggle */}
+                      <Controller
+                        name={`hours.${index}.is_open`}
+                        control={control}
+                        render={({ field }) => (
+                          <button
+                            type='button'
+                            onClick={() => {
+                              field.onChange(!field.value);
+                              clearErrors([
+                                `hours.${index}.open_hour`,
+                                `hours.${index}.close_hour`,
+                              ]);
+                            }}
+                            className={`relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors ${
+                              field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
+                            }`}
+                          >
+                            <span
+                              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                field.value
+                                  ? 'translate-x-5'
+                                  : 'translate-x-0.5'
+                              }`}
+                            />
+                          </button>
+                        )}
+                      />
                     </div>
 
-                    {/* Time Inputs */}
+                    {/* Desktop Layout */}
+                    <div className='hidden w-24 md:block'>
+                      <p className='text-xs font-semibold text-[#212121] sm:text-sm'>
+                        {day.label}
+                      </p>
+                    </div>
+
+                    {/* Time Inputs - Desktop */}
                     <div
                       className={cn(
-                        'flex flex-1 gap-4 max-md:w-full max-md:flex-col md:items-center md:justify-center md:gap-6 lg:gap-12'
+                        'hidden md:flex md:flex-1 md:items-center md:justify-center md:gap-6 lg:gap-12'
                       )}
                     >
                       {/* From */}
@@ -238,7 +342,7 @@ export default function BusinessHoursPage() {
                               max='12'
                               placeholder='9'
                               disabled={!hoursWatch[index]?.is_open}
-                              className='!h-9 w-12 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-xs font-semibold text-[#212121] sm:text-sm md:w-14 md:rounded-lg'
+                              className='!h-9 w-14 !appearance-none rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-xs font-semibold text-[#212121] sm:text-sm md:rounded-lg'
                               onChange={e => {
                                 field.onChange(e);
                                 trigger(`hours.${index}.close_hour`);
@@ -286,7 +390,7 @@ export default function BusinessHoursPage() {
                               placeholder='6'
                               disabled={!hoursWatch[index]?.is_open}
                               value={field.value ?? ''}
-                              className='h-9 w-12 rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-xs font-semibold text-[#212121] sm:text-sm md:w-14 md:rounded-lg'
+                              className='h-9 w-14 rounded border border-[#EEF2F6] px-1 py-1.5 text-center text-xs font-semibold text-[#212121] sm:text-sm md:rounded-lg'
                               onChange={e => {
                                 field.onChange(e);
                                 trigger(`hours.${index}.open_hour`);
@@ -318,7 +422,7 @@ export default function BusinessHoursPage() {
                       </div>
                     </div>
 
-                    {/* Toggle and Status */}
+                    {/* Toggle and Status - Desktop */}
                     <div className='hidden items-center gap-2 md:flex'>
                       <Controller
                         name={`hours.${index}.is_open`}
@@ -333,14 +437,16 @@ export default function BusinessHoursPage() {
                                 `hours.${index}.close_hour`,
                               ]);
                             }}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
-                              }`}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                              field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
+                            }`}
                           >
                             <span
-                              className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${field.value
-                                ? 'translate-x-[1.45rem]'
-                                : 'translate-x-0.5'
-                                }`}
+                              className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                                field.value
+                                  ? 'translate-x-[1.45rem]'
+                                  : 'translate-x-0.5'
+                              }`}
                             />
                           </button>
                         )}
