@@ -77,7 +77,7 @@ const FeaturedListingCard = ({
           'group rounded-[0.9rem] border-[1.5px] border-[#FEC601] p-1 sm:!aspect-[342/427] md:rounded-3xl md:border-2 md:p-1.5',
           isSelectable && 'cursor-pointer',
           isBigCard
-            ? 'rounded-[1.2rem]xl:rounded-[2.2rem] aspect-[342/427]'
+            ? 'aspect-[342/427] rounded-[1.2rem] xl:rounded-[2.2rem]'
             : '!aspect-[15/13]'
         )}
         onClick={() => {
@@ -87,7 +87,7 @@ const FeaturedListingCard = ({
       >
         <div
           className={cn(
-            'relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-2xl p-2 max-md:!overflow-clip max-md:rounded-[11px]',
+            'relative flex size-full flex-col items-center justify-center !overflow-hidden rounded-[11px] p-2 max-md:!overflow-clip md:rounded-2xl',
             isBigCard && 'rounded-[1.2rem] xl:rounded-[1.5rem]'
           )}
         >
@@ -178,8 +178,8 @@ const FeaturedListingCard = ({
                 </svg>
               ) : (
                 <svg
-                  width='25'
-                  height='28'
+                  width={isBigCard ? '32' : '25'}
+                  height={isBigCard ? '36' : '28'}
                   className='size-5 md:size-6'
                   viewBox='0 0 25 28'
                   fill='none'

@@ -298,7 +298,7 @@ export default function HomePage() {
                   {LOCATIONS.map((location, key) => (
                     <CarouselItem
                       key={key}
-                      className='flex basis-48 items-center justify-center px-1.5 sm:basis-[25%]'
+                      className='flex basis-40 items-center justify-center overflow-hidden px-1.5 sm:basis-[25%]'
                     >
                       <LocationCard
                         key={key}

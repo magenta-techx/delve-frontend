@@ -79,7 +79,9 @@ export default function CollabCard({ collab }: CollabCardProps) {
       <div
         className='relative block overflow-hidden rounded-2xl border p-4 hover:bg-gray-50 xl:min-h-[150px]'
         style={{
-          backgroundImage: `url(${collab.thumbnail || '/collaboration/collab_card.jpg'})`,
+          background: collab.thumbnail
+            ? `url(${collab.thumbnail})`
+            : '#000000AD',
           backgroundSize: 'cover',
         }}
       >
@@ -91,7 +93,7 @@ export default function CollabCard({ collab }: CollabCardProps) {
                 width='20'
                 height='18'
                 viewBox='0 0 20 18'
-                className="size-4 md:size-5"
+                className='size-4 md:size-5'
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
               >
@@ -114,7 +116,7 @@ export default function CollabCard({ collab }: CollabCardProps) {
                 width='18'
                 height='19'
                 viewBox='0 0 18 19'
-                className="size-4 md:size-5"
+                className='size-4 md:size-5'
                 fill='none'
                 xmlns='http://www.w3.org/2000/svg'
               >
@@ -159,7 +161,11 @@ export default function CollabCard({ collab }: CollabCardProps) {
               </span>
 
               <LinkButton
-                href={collab.owner_id == userId ? `/businesses/saved/collaboration/${collab.id}/edit` : `/businesses/saved/collaboration/${collab.id}`}
+                href={
+                  collab.owner_id == userId
+                    ? `/businesses/saved/collaboration/${collab.id}/edit`
+                    : `/businesses/saved/collaboration/${collab.id}`
+                }
                 variant='light'
                 className='text-[#551FB9]'
                 size='md'

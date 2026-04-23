@@ -1,9 +1,8 @@
 export default function CollabCardSkeleton() {
   return (
     <div
-      className='relative block overflow-hidden rounded-2xl border p-4 xl:min-h-[150px]'
+      className='relative block overflow-hidden rounded-2xl border bg-[#FAFAFA] p-4 xl:min-h-[150px]'
       style={{
-        backgroundImage: 'url(/collaboration/collab_card.jpg)',
         backgroundSize: 'cover',
       }}
     >

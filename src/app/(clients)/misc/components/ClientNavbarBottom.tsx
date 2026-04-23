@@ -50,7 +50,7 @@ export function ClientNavbarBottom() {
 
   return (
     <>
-      <nav className='fixed bottom-0 left-0 right-0 z-50 h-14 border-t border-gray-200 bg-white lg:hidden'>
+      <nav className='fixed bottom-0 left-0 right-0 z-50 h-16 border-t border-gray-200 bg-[#FBFAFF] lg:hidden'>
         <div className='flex items-center justify-around px-4 py-2'>
           {mobileItems.map(item => {
             const Icon = item.icon;

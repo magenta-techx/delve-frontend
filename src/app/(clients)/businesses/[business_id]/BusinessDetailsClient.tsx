@@ -446,7 +446,7 @@ const BusinessDetailsClient = ({
           </div>
         </div>
 
-        <nav className='mx-auto flex max-w-[85%] items-center justify-center gap-4 md:hidden'>
+        <nav className='mx-auto mb-8 flex max-w-[85%] items-center justify-center gap-4 md:hidden'>
           {navLink.map((links, index) => {
             const isActive = activeHash === links.href;
             return (
@@ -457,7 +457,7 @@ const BusinessDetailsClient = ({
                   className={cn(
                     'relative text-sm font-medium transition-colors',
                     isActive
-                      ? 'text-[#C3B5FD] after:absolute after:-bottom-2 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-[#C3B5FD]'
+                      ? 'text-primary after:absolute after:-bottom-2 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-[#C3B5FD]'
                       : 'text-black/80'
                   )}
                 >
