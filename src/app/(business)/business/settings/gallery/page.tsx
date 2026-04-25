@@ -403,7 +403,7 @@ const GalleryPage = () => {
             uploadImagesMutation.isPending ||
             (currentBusiness?.images?.length ?? 0) >= maxImageCount
           }
-          className='fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#7C3AED] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 lg:hidden'
+          className='fixed bottom-12 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#7C3AED] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 md:bottom-6 lg:hidden'
           aria-label='Upload media'
         >
           <svg
