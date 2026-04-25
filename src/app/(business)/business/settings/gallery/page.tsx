@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useBusinessContext } from '@/contexts/BusinessContext';
 import { useUserContext } from '@/contexts/UserContext';
 import {
@@ -27,16 +27,40 @@ const CLOUDINARY_CLOUD_NAME =
 const CLOUDINARY_UPLOAD_PRESET =
   process.env['NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET'] || 'your_upload_preset';
 
+const CLOUDINARY_WIDGET_STYLES = {
+  palette: {
+    window: '#FCFCFD',
+    windowBorder: '#E8EAF6',
+    tabIcon: '#7C3AED', // primary purple
+    menuIcons: '#6B7280',
+    textDark: '#111827',
+    textLight: '#FFFFFF',
+    link: '#1A73E8', // primary blue
+    action: '#7C3AED',
+    inactiveTabIcon: '#9CA3AF',
+    error: '#EF4444',
+    inProgress: '#1A73E8',
+    complete: '#16A34A',
+    sourceBg: '#F3F4F6',
+  },
+  fonts: {
+    Inter:
+      'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+  },
+} as const;
+
 const GalleryPage = () => {
   const { currentBusiness, refetchBusinesses } = useBusinessContext();
   const { user } = useUserContext();
   const isPremium = user?.is_premium_plan_active;
   const maxImageCount = isPremium ? 20 : 10;
   const maxFileSize = isPremium ? 20000000 : 10000000; // 20MB for premium, 10MB for free
-  
+
   const [selectedImages, setSelectedImages] = useState<Set<number>>(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
+  const [showUploadWidget, setShowUploadWidget] = useState(false);
+  const uploadWidgetRef = useRef<any | null>(null);
 
   // Load Cloudinary Upload Widget script once
   useEffect(() => {
@@ -57,16 +81,44 @@ const GalleryPage = () => {
   const deleteImagesMutation = useDeleteBusinessImage();
 
   // Get business images with proper typing
-
   const openCloudinaryWidget = () => {
+    // Basic pre-checks before opening dialog
     if (!window.cloudinary) {
-      toast.error('Upload service is loading. Please try again in a moment.');
+      toast.warning('Upload service is loading. Please try again in a moment.');
       return;
     }
 
     const currentImageCount = currentBusiness?.images?.length ?? 0;
     if (currentImageCount >= maxImageCount) {
-      toast.error(`You have reached the maximum limit of ${maxImageCount} images for your ${isPremium ? 'Premium' : 'Free'} plan.`);
+      toast.error(
+        `You have reached the maximum limit of ${maxImageCount} images for your ${
+          isPremium ? 'Premium' : 'Free'
+        } plan.`
+      );
+      return;
+    }
+
+    setShowUploadWidget(true);
+  };
+
+  // When the upload dialog is open, render the Cloudinary widget inline inside it
+  useEffect(() => {
+    if (!showUploadWidget) return;
+
+    if (!window.cloudinary) {
+      toast.error('Upload service is loading. Please try again in a moment.');
+      setShowUploadWidget(false);
+      return;
+    }
+
+    const currentImageCount = currentBusiness?.images?.length ?? 0;
+    if (currentImageCount >= maxImageCount) {
+      toast.error(
+        `You have reached the maximum limit of ${maxImageCount} images for your ${
+          isPremium ? 'Premium' : 'Free'
+        } plan.`
+      );
+      setShowUploadWidget(false);
       return;
     }
 
@@ -79,15 +131,19 @@ const GalleryPage = () => {
         sources: ['local', 'url', 'camera'],
         resourceType: 'image',
         clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
-        maxFileSize: maxFileSize,
+        maxFileSize,
         showAdvancedOptions: false,
         cropping: false,
         multiple: true,
         maxFiles: maxImageCount - currentImageCount,
+        theme: 'white',
+        styles: CLOUDINARY_WIDGET_STYLES,
+        inlineContainer: '#business-gallery-upload-widget',
       },
       (error: any, result: any) => {
         if (error) {
           console.error('Cloudinary upload error:', error);
+          toast.error('Upload failed. Please try again.');
           return;
         }
 
@@ -121,13 +177,32 @@ const GalleryPage = () => {
               }
             );
           }
-          widget.close();
+
+          try {
+            widget.close();
+          } catch (e) {
+            console.error('Failed to close Cloudinary widget', e);
+          }
+          setShowUploadWidget(false);
         }
       }
     );
 
+    uploadWidgetRef.current = widget;
     widget.open();
-  };
+
+    return () => {
+      if (uploadWidgetRef.current && uploadWidgetRef.current.close) {
+        try {
+          uploadWidgetRef.current.close();
+        } catch (e) {
+          console.error('Failed to clean up Cloudinary widget', e);
+        }
+      }
+      uploadWidgetRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showUploadWidget]);
 
   const handleImageSelect = (imageId: number) => {
     if (!isSelecting) return;
@@ -263,11 +338,18 @@ const GalleryPage = () => {
           {!isSelecting && (
             <Button
               onClick={openCloudinaryWidget}
-              disabled={uploadImagesMutation.isPending || (currentBusiness?.images?.length ?? 0) >= maxImageCount}
+              disabled={
+                uploadImagesMutation.isPending ||
+                (currentBusiness?.images?.length ?? 0) >= maxImageCount
+              }
               size='dynamic_lg'
               className='max-lg:hidden'
             >
-              {uploadImagesMutation.isPending ? 'Uploading...' : (currentBusiness?.images?.length ?? 0) >= maxImageCount ? 'Limit Reached' : 'Upload Media'}
+              {uploadImagesMutation.isPending
+                ? 'Uploading...'
+                : (currentBusiness?.images?.length ?? 0) >= maxImageCount
+                  ? 'Limit Reached'
+                  : 'Upload Media'}
               <Upload2Icon />
             </Button>
           )}
@@ -278,7 +360,11 @@ const GalleryPage = () => {
       {!isSelecting && (
         <div className='flex items-center justify-between rounded-lg bg-gray-50 px-4 py-2 text-sm text-gray-600'>
           <span>
-            Storage: <span className='font-medium'>{currentBusiness?.images?.length ?? 0}</span> / {maxImageCount} images
+            Storage:{' '}
+            <span className='font-medium'>
+              {currentBusiness?.images?.length ?? 0}
+            </span>{' '}
+            / {maxImageCount} images
           </span>
           {!isPremium && (
             <span className='text-xs text-amber-600'>
@@ -289,6 +375,32 @@ const GalleryPage = () => {
       )}
 
       {/* Image Grid */}
+      {/* Mobile FAB for upload (visible only when not in selection mode and grid is visible) */}
+      {!isSelecting && (currentBusiness?.images?.length ?? 0) > 0 && (
+        <button
+          type='button'
+          onClick={openCloudinaryWidget}
+          disabled={
+            uploadImagesMutation.isPending ||
+            (currentBusiness?.images?.length ?? 0) >= maxImageCount
+          }
+          className='fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#7C3AED] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 lg:hidden'
+          aria-label='Upload media'
+        >
+          <svg
+            className='h-6 w-6'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
+            <path d='M12 3v12M12 3l-4 4M12 3l4 4M12 15v3a4 4 0 004 4h0a4 4 0 004-4v-3M4 12h16' />
+          </svg>
+        </button>
+      )}
+
       <div className='space-y-4'>
         {(currentBusiness?.images?.length ?? 0) > 0 ? (
           <div className='grid grid-cols-2 gap-6 lg:grid-cols-3 xl:grid-cols-4'>
@@ -379,14 +491,62 @@ const GalleryPage = () => {
             </p>
             <Button
               onClick={openCloudinaryWidget}
-              disabled={uploadImagesMutation.isPending || (currentBusiness?.images?.length ?? 0) >= maxImageCount}
+              disabled={
+                uploadImagesMutation.isPending ||
+                (currentBusiness?.images?.length ?? 0) >= maxImageCount
+              }
               className='bg-purple-600 hover:bg-purple-700'
             >
-              {(currentBusiness?.images?.length ?? 0) >= maxImageCount ? 'Limit Reached' : 'Upload Your First Images'}
+              {(currentBusiness?.images?.length ?? 0) >= maxImageCount
+                ? 'Limit Reached'
+                : 'Upload Your First Images'}
             </Button>
           </div>
         )}
       </div>
+
+      {/* Cloudinary Upload Widget Modal */}
+      <Dialog open={showUploadWidget} onOpenChange={setShowUploadWidget}>
+        <DialogContent className='w-[min(100%-2rem,640px)] max-w-xl overflow-hidden rounded-2xl border border-[#E8EAF6] bg-[#FCFCFD] p-0 shadow-2xl'>
+          <div className='flex items-center justify-between border-b border-[#EEF2F6] px-4 py-3 md:px-5'>
+            <DialogHeader className='p-0'>
+              <DialogTitle className='text-sm font-semibold text-[#111827]'>
+                Upload media
+              </DialogTitle>
+            </DialogHeader>
+            <button
+              type='button'
+              aria-label='Close upload'
+              onClick={() => setShowUploadWidget(false)}
+              className='inline-flex h-10 w-10 items-center justify-center rounded-full text-[#1A73E8] hover:bg-[#E0ECFF] active:bg-[#C3DAFF] max-md:h-11 max-md:w-11'
+            >
+              <svg
+                className='h-4 w-4'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <path d='M6 6l12 12' />
+                <path d='M6 18L18 6' />
+              </svg>
+            </button>
+          </div>
+          <div className='px-4 pb-4 pt-3 md:px-5 md:pb-5 md:pt-4'>
+            <div
+              id='business-gallery-upload-widget'
+              className='h-[380px] w-full rounded-xl border border-dashed border-[#EEF2F6] bg-[#F9FAFB] max-md:h-[360px]'
+            />
+            <p className='mt-3 text-xs text-[#6B7280] md:text-[0.8rem]'>
+              Drag and drop images here, or click inside the area to browse from
+              your device. PNG, JPG, JPEG or WEBP up to{' '}
+              {isPremium ? '20MB' : '10MB'} per file.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Modal */}
       <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>

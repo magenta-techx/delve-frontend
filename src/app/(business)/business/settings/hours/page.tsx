@@ -191,96 +191,100 @@ export default function BusinessHoursPage() {
                       </p>
 
                       {/* Time inputs on mobile */}
-                      <div className='flex flex-1 items-center justify-center gap-1.5'>
-                        {/* Open Time */}
-                        <Controller
-                          name={`hours.${index}.open_hour`}
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              {...field}
-                              value={field.value ?? ''}
-                              min='1'
-                              max='12'
-                              placeholder='9'
-                              disabled={!hoursWatch[index]?.is_open}
-                              className='!h-8 w-11 !appearance-none rounded border border-[#EEF2F6] px-0.5 py-1 text-center text-xs font-semibold text-[#212121]'
-                              onChange={e => {
-                                field.onChange(e);
-                                trigger(`hours.${index}.close_hour`);
-                              }}
-                            />
-                          )}
-                        />
-                        <Controller
-                          name={`hours.${index}.open_meridiem`}
-                          control={control}
-                          render={({ field }) => (
-                            <select
-                              {...field}
-                              onChange={e => {
-                                field.onChange(e);
-                                trigger([
-                                  `hours.${index}.open_hour`,
-                                  `hours.${index}.close_hour`,
-                                ]);
-                              }}
-                              disabled={!hoursWatch[index]?.is_open}
-                              className='!h-8 w-10 !appearance-none rounded border border-[#EEF2F6] bg-white px-1 py-1 text-xs text-[#212121]'
-                            >
-                              <option value='AM'>AM</option>
-                              <option value='PM'>PM</option>
-                            </select>
-                          )}
-                        />
+                      <div className='flex flex-1 items-center justify-center gap-2'>
+                        {/* Opening Time Container */}
+                        <div className='flex items-center rounded border border-[#EEF2F6] bg-white'>
+                          <Controller
+                            name={`hours.${index}.open_hour`}
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                {...field}
+                                value={field.value ?? ''}
+                                min='1'
+                                max='12'
+                                placeholder='9'
+                                disabled={!hoursWatch[index]?.is_open}
+                                className='!h-7 w-10 !appearance-none border-none px-1 py-1 text-center text-xs font-semibold text-[#212121] focus:outline-none'
+                                onChange={e => {
+                                  field.onChange(e);
+                                  trigger(`hours.${index}.close_hour`);
+                                }}
+                              />
+                            )}
+                          />
+                          <Controller
+                            name={`hours.${index}.open_meridiem`}
+                            control={control}
+                            render={({ field }) => (
+                              <select
+                                {...field}
+                                onChange={e => {
+                                  field.onChange(e);
+                                  trigger([
+                                    `hours.${index}.open_hour`,
+                                    `hours.${index}.close_hour`,
+                                  ]);
+                                }}
+                                disabled={!hoursWatch[index]?.is_open}
+                                className='!h-7 w-9 !appearance-none border-none bg-white px-0.5 py-1 text-xs text-[#212121] focus:outline-none'
+                              >
+                                <option value='AM'>AM</option>
+                                <option value='PM'>PM</option>
+                              </select>
+                            )}
+                          />
+                        </div>
 
                         {/* Dash separator */}
                         <span className='text-xs font-medium text-[#999999]'>
                           −
                         </span>
 
-                        {/* Close Time */}
-                        <Controller
-                          name={`hours.${index}.close_hour`}
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              {...field}
-                              type='number'
-                              min='1'
-                              max='12'
-                              placeholder='6'
-                              disabled={!hoursWatch[index]?.is_open}
-                              value={field.value ?? ''}
-                              className='!h-8 w-11 rounded border border-[#EEF2F6] px-0.5 py-1 text-center text-xs font-semibold text-[#212121]'
-                              onChange={e => {
-                                field.onChange(e);
-                                trigger(`hours.${index}.open_hour`);
-                              }}
-                            />
-                          )}
-                        />
-                        <Controller
-                          name={`hours.${index}.close_meridiem`}
-                          control={control}
-                          render={({ field }) => (
-                            <select
-                              {...field}
-                              onChange={e => {
-                                field.onChange(e);
-                                trigger([
-                                  `hours.${index}.open_hour`,
-                                  `hours.${index}.close_hour`,
-                                ]);
-                              }}
-                              disabled={!hoursWatch[index]?.is_open}
-                              className='!h-8 w-10 rounded border border-[#EEF2F6] bg-white px-1 py-1 text-xs text-[#212121]'
-                            >
-                              <option value='AM'>AM</option>
-                              <option value='PM'>PM</option>
-                            </select>
-                          )}
-                        />
+                        {/* Closing Time Container */}
+                        <div className='flex items-center rounded border border-[#EEF2F6] bg-white'>
+                          <Controller
+                            name={`hours.${index}.close_hour`}
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                {...field}
+                                type='number'
+                                min='1'
+                                max='12'
+                                placeholder='6'
+                                disabled={!hoursWatch[index]?.is_open}
+                                value={field.value ?? ''}
+                                className='!h-7 w-10 border-none px-1 py-1 text-center text-xs font-semibold text-[#212121] focus:outline-none'
+                                onChange={e => {
+                                  field.onChange(e);
+                                  trigger(`hours.${index}.open_hour`);
+                                }}
+                              />
+                            )}
+                          />
+                          <Controller
+                            name={`hours.${index}.close_meridiem`}
+                            control={control}
+                            render={({ field }) => (
+                              <select
+                                {...field}
+                                onChange={e => {
+                                  field.onChange(e);
+                                  trigger([
+                                    `hours.${index}.open_hour`,
+                                    `hours.${index}.close_hour`,
+                                  ]);
+                                }}
+                                disabled={!hoursWatch[index]?.is_open}
+                                className='!h-7 w-9 !appearance-none border-none bg-white px-0.5 py-1 text-xs text-[#212121] focus:outline-none'
+                              >
+                                <option value='AM'>AM</option>
+                                <option value='PM'>PM</option>
+                              </select>
+                            )}
+                          />
+                        </div>
                       </div>
 
                       {/* Mobile Toggle */}
@@ -297,14 +301,14 @@ export default function BusinessHoursPage() {
                                 `hours.${index}.close_hour`,
                               ]);
                             }}
-                            className={`relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors ${
-                              field.value ? 'bg-[#1A73E8]' : 'bg-gray-500'
+                            className={`relative inline-flex h-4 w-7 flex-shrink-0 items-center rounded-full transition-colors ${
+                              field.value ? 'bg-[#1A73E8]' : 'bg-gray-400'
                             }`}
                           >
                             <span
-                              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                              className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
                                 field.value
-                                  ? 'translate-x-5'
+                                  ? 'translate-x-4'
                                   : 'translate-x-0.5'
                               }`}
                             />
