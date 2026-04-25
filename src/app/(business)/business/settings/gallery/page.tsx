@@ -49,6 +49,21 @@ const CLOUDINARY_WIDGET_STYLES = {
   },
 } as const;
 
+const destroyUploadWidget = (widget: any | null) => {
+  if (!widget) return;
+  try {
+    if (typeof widget.destroy === 'function') {
+      widget.destroy();
+      return;
+    }
+    if (typeof widget.close === 'function') {
+      widget.close();
+    }
+  } catch (error) {
+    console.error('Failed to clean up Cloudinary widget', error);
+  }
+};
+
 const GalleryPage = () => {
   const { currentBusiness, refetchBusinesses } = useBusinessContext();
   const { user } = useUserContext();
@@ -124,81 +139,85 @@ const GalleryPage = () => {
 
     let uploadedImages: { url: string; public_id: string }[] = [];
 
-    const widget = window.cloudinary.createUploadWidget(
-      {
-        cloudName: CLOUDINARY_CLOUD_NAME,
-        uploadPreset: CLOUDINARY_UPLOAD_PRESET,
-        sources: ['local', 'url', 'camera'],
-        resourceType: 'image',
-        clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
-        maxFileSize,
-        showAdvancedOptions: false,
-        cropping: false,
-        multiple: true,
-        maxFiles: maxImageCount - currentImageCount,
-        theme: 'white',
-        styles: CLOUDINARY_WIDGET_STYLES,
-        inlineContainer: '#business-gallery-upload-widget',
-      },
-      (error: any, result: any) => {
-        if (error) {
-          console.error('Cloudinary upload error:', error);
-          toast.error('Upload failed. Please try again.');
-          return;
-        }
-
-        if (result.event === 'success') {
-          const info = result.info;
-          uploadedImages.push({
-            url: info.secure_url,
-            public_id: info.public_id,
-          });
-        }
-
-        if (result.event === 'queues-end') {
-          if (uploadedImages.length > 0 && currentBusiness?.id) {
-            toast.info('Images uploaded to cloud. Saving to business...');
-            uploadImagesMutation.mutate(
-              {
-                business_id: currentBusiness.id,
-                images: uploadedImages,
-              },
-              {
-                onSuccess: () => {
-                  toast.success(
-                    `${uploadedImages.length} image(s) saved successfully`
-                  );
-                  refetchBusinesses();
-                  uploadedImages = [];
-                },
-                onError: (err: any) => {
-                  toast.error(`Save failed: ${err.message}`);
-                },
-              }
-            );
-          }
-
-          try {
-            widget.close();
-          } catch (e) {
-            console.error('Failed to close Cloudinary widget', e);
-          }
-          setShowUploadWidget(false);
-        }
+    // Defer widget creation so the Dialog DOM is rendered and measured first.
+    const timer = window.setTimeout(() => {
+      const container = document.getElementById(
+        'business-gallery-upload-widget'
+      );
+      if (!container) {
+        console.error('Cloudinary inline container not found in DOM');
+        toast.error('Upload dialog failed to open. Please try again.');
+        setShowUploadWidget(false);
+        return;
       }
-    );
 
-    uploadWidgetRef.current = widget;
-    widget.open();
+      const widget = window.cloudinary.createUploadWidget(
+        {
+          cloudName: CLOUDINARY_CLOUD_NAME,
+          uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+          sources: ['local', 'url', 'camera'],
+          resourceType: 'image',
+          clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
+          maxFileSize,
+          showAdvancedOptions: false,
+          cropping: false,
+          multiple: true,
+          maxFiles: maxImageCount - currentImageCount,
+          theme: 'white',
+          styles: CLOUDINARY_WIDGET_STYLES,
+          inlineContainer: '#business-gallery-upload-widget',
+        },
+        (error: any, result: any) => {
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            toast.error('Upload failed. Please try again.');
+            return;
+          }
+
+          if (result.event === 'success') {
+            const info = result.info;
+            uploadedImages.push({
+              url: info.secure_url,
+              public_id: info.public_id,
+            });
+          }
+
+          if (result.event === 'queues-end') {
+            if (uploadedImages.length > 0 && currentBusiness?.id) {
+              toast.info('Images uploaded to cloud. Saving to business...');
+              uploadImagesMutation.mutate(
+                {
+                  business_id: currentBusiness.id,
+                  images: uploadedImages,
+                },
+                {
+                  onSuccess: () => {
+                    toast.success(
+                      `${uploadedImages.length} image(s) saved successfully`
+                    );
+                    refetchBusinesses();
+                    uploadedImages = [];
+                  },
+                  onError: (err: any) => {
+                    toast.error(`Save failed: ${err.message}`);
+                  },
+                }
+              );
+            }
+
+            destroyUploadWidget(widget);
+            setShowUploadWidget(false);
+          }
+        }
+      );
+
+      uploadWidgetRef.current = widget;
+      widget.open();
+    }, 0);
 
     return () => {
-      if (uploadWidgetRef.current && uploadWidgetRef.current.close) {
-        try {
-          uploadWidgetRef.current.close();
-        } catch (e) {
-          console.error('Failed to clean up Cloudinary widget', e);
-        }
-      }
+      window.clearTimeout(timer);
+      destroyUploadWidget(uploadWidgetRef.current);
       uploadWidgetRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -507,7 +526,10 @@ const GalleryPage = () => {
 
       {/* Cloudinary Upload Widget Modal */}
       <Dialog open={showUploadWidget} onOpenChange={setShowUploadWidget}>
-        <DialogContent className='w-[min(100%-2rem,640px)] max-w-xl overflow-hidden rounded-2xl border border-[#E8EAF6] bg-[#FCFCFD] p-0 shadow-2xl'>
+        <DialogContent
+          hideCloseButton
+          className='w-[min(100%-1rem,900px)] max-w-3xl overflow-hidden rounded-2xl border border-[#E8EAF6] bg-[#FCFCFD] p-0 shadow-2xl'
+        >
           <div className='flex items-center justify-between border-b border-[#EEF2F6] px-4 py-3 md:px-5'>
             <DialogHeader className='p-0'>
               <DialogTitle className='text-sm font-semibold text-[#111827]'>
@@ -537,7 +559,7 @@ const GalleryPage = () => {
           <div className='px-4 pb-4 pt-3 md:px-5 md:pb-5 md:pt-4'>
             <div
               id='business-gallery-upload-widget'
-              className='h-[380px] w-full rounded-xl border border-dashed border-[#EEF2F6] bg-[#F9FAFB] max-md:h-[360px]'
+              className='h-[70dvh] min-h-[460px] w-full overflow-hidden rounded-xl border border-dashed border-[#EEF2F6] bg-[#F9FAFB] max-md:h-[68dvh] max-md:min-h-[420px]'
             />
             <p className='mt-3 text-xs text-[#6B7280] md:text-[0.8rem]'>
               Drag and drop images here, or click inside the area to browse from
