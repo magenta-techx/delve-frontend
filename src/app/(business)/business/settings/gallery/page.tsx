@@ -377,7 +377,7 @@ const GalleryPage = () => {
 
       {/* Plan limit indicator */}
       {!isSelecting && (
-        <div className='flex items-center justify-between rounded-lg bg-gray-50 px-4 py-2 text-sm text-gray-600'>
+        <div className='flex justify-between rounded-lg bg-gray-50 px-4 py-2 text-xs text-gray-600 max-md:flex-col md:items-center md:text-sm'>
           <span>
             Storage:{' '}
             <span className='font-medium'>
@@ -386,7 +386,7 @@ const GalleryPage = () => {
             / {maxImageCount} images
           </span>
           {!isPremium && (
-            <span className='text-xs text-amber-600'>
+            <span className='text-[0.7rem] text-amber-600 md:text-xs'>
               Upgrade to Premium for 20 images and larger uploads
             </span>
           )}
@@ -407,15 +407,15 @@ const GalleryPage = () => {
           aria-label='Upload media'
         >
           <svg
-            className='h-6 w-6'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
+            xmlns='http://www.w3.org/2000/svg'
+            width='1024'
+            height='1024'
+            viewBox='0 0 1024 1024'
           >
-            <path d='M12 3v12M12 3l-4 4M12 3l4 4M12 15v3a4 4 0 004 4h0a4 4 0 004-4v-3M4 12h16' />
+            <path
+              fill='currentColor'
+              d='M544 864V672h128L512 480L352 672h128v192H320v-1.6c-5.4.3-10.5 1.6-16 1.6A240 240 0 0 1 64 624a239 239 0 0 1 212.6-237.2A240 240 0 0 1 512 192a240 240 0 0 1 235.5 194.8A239 239 0 0 1 959.9 624a240 240 0 0 1-240 240c-5.3 0-10.5-1.3-16-1.6v1.6z'
+            />
           </svg>
         </button>
       )}
