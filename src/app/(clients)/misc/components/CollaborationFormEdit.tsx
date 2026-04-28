@@ -44,9 +44,7 @@ import { useBooleanStateControl } from '@/hooks';
 import { useSavedBusinessesContext } from '@/contexts/SavedBusinessesContext';
 import FeaturedListingCard from './ListingCard';
 import { EmptyListingIcon } from '../icons';
-import ConfirmationModal, {
-  useConfirmationModal,
-} from '@/components/ui/ConfirmationModal';
+import { useConfirmationModal } from '@/components/ui/ConfirmationModal';
 import { CollabMember } from '@/types/api';
 
 const collaborationSchema = z.object({
