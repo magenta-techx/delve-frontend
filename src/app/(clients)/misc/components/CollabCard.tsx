@@ -16,7 +16,6 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUserContext } from '@/contexts/UserContext';
 import { CollaborationSummary } from '@/types/api';
-import { Trash } from 'lucide-react';
 
 interface CollabCardProps {
   collab: CollaborationSummary;
