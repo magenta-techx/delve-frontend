@@ -28,7 +28,7 @@ import {
   EmptySavedBusinessesIcon,
   VerifiedIcon,
 } from '../../misc/icons';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Edit } from 'lucide-react';
 import { useBooleanStateControl } from '@/hooks';
 import {
   BusinessDetailsGalleryCarousel,
@@ -220,21 +220,17 @@ const BusinessDetailsClient = ({
       <main
         className={cn(
           'relative mx-auto pb-8 md:pt-16 lg:pt-20',
-          preview && 'pt-4 md:pt-0 lg:pt-0'
+          preview && 'pt-4 md:pt-4 lg:pt-4'
         )}
       >
         {preview && (
-          <div className='mx-auto flex h-full min-h-12 items-center px-4 md:min-h-16 md:w-[85%] md:justify-between'>
+          <div className='mx-auto flex h-full min-h-12 items-center px-4 md:min-h-20 md:w-[90%] md:justify-between'>
             <h1 className='text-lg font-semibold text-[#0D121C] max-md:hidden'>
               Preview
             </h1>
-            <Button
-              type='button'
-              onClick={() => router.back()}
-              className='bg-[#551FB9] text-white hover:bg-[#551FB9]/90 max-md:hidden'
-              size='lg'
-            >
-              Save Changes
+            <Button type='button' onClick={() => router.back()} size='md'>
+              Back to edit
+              <Edit className='size-4' />
             </Button>
 
             <button
