@@ -23,15 +23,18 @@ interface TopNavProps {
   onNotificationsClick?: () => void;
 }
 
-export function NavbarTop({ }: TopNavProps) {
+export function NavbarTop({}: TopNavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const pathname = usePathname();
 
-
   const { isMobile } = useIsMobile();
-  if (isMobile && pathname.startsWith("/business/messages")) {
-    return null
+  if (
+    isMobile &&
+    (pathname.startsWith('/business/messages') ||
+      pathname.startsWith('/business/preview'))
+  ) {
+    return null;
   }
 
   return (

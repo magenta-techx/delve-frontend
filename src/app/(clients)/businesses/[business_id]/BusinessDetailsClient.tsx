@@ -28,6 +28,7 @@ import {
   EmptySavedBusinessesIcon,
   VerifiedIcon,
 } from '../../misc/icons';
+import { ChevronLeft } from 'lucide-react';
 import { useBooleanStateControl } from '@/hooks';
 import {
   BusinessDetailsGalleryCarousel,
@@ -219,9 +220,33 @@ const BusinessDetailsClient = ({
       <main
         className={cn(
           'relative mx-auto pb-8 md:pt-16 lg:pt-20',
-          preview && 'pt-0 lg:pt-0'
+          preview && 'pt-0 md:pt-0'
         )}
       >
+        {preview && (
+          <div className='mx-auto flex h-full min-h-12 items-center p-4 md:min-h-16 md:justify-between'>
+            <h1 className='text-lg font-semibold text-[#0D121C] max-md:hidden'>
+              Preview
+            </h1>
+            <Button
+              type='button'
+              onClick={() => router.back()}
+              className='bg-[#551FB9] text-white hover:bg-[#551FB9]/90 max-md:hidden'
+            >
+              Save Changes
+            </Button>
+
+            <button
+              type='button'
+              onClick={() => router.back()}
+              className='flex items-center gap-2 p-4 text-sm font-medium text-[#0D121C] md:hidden'
+            >
+              <ChevronLeft className='size-4' />
+              <span>Back to edit</span>
+            </button>
+          </div>
+        )}
+
         <div
           className={cn(`relative mb-8 overflow-hidden`)}
           style={{
@@ -261,7 +286,7 @@ const BusinessDetailsClient = ({
                 </button>
               )}
             </div>
-            <div className='mt-32 md:mt-48 lg:mt-96'>
+            <div className='mt-32 md:mt-48 lg:mt-72'>
               <div className='relative size-20 overflow-hidden rounded-full lg:size-24 xl:size-28'>
                 <Image
                   src={business?.logo || '/default-logo.png'}
