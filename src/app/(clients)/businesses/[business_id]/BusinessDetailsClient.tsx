@@ -220,11 +220,11 @@ const BusinessDetailsClient = ({
       <main
         className={cn(
           'relative mx-auto pb-8 md:pt-16 lg:pt-20',
-          preview && 'pt-0 md:pt-0'
+          preview && 'pt-4 md:pt-0 lg:pt-0'
         )}
       >
         {preview && (
-          <div className='mx-auto flex h-full min-h-12 items-center p-4 md:min-h-16 md:justify-between'>
+          <div className='mx-auto flex h-full min-h-12 items-center px-4 md:min-h-16 md:w-[85%] md:justify-between'>
             <h1 className='text-lg font-semibold text-[#0D121C] max-md:hidden'>
               Preview
             </h1>
@@ -232,6 +232,7 @@ const BusinessDetailsClient = ({
               type='button'
               onClick={() => router.back()}
               className='bg-[#551FB9] text-white hover:bg-[#551FB9]/90 max-md:hidden'
+              size='lg'
             >
               Save Changes
             </Button>
