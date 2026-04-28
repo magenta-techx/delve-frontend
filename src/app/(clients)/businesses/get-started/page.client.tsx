@@ -59,7 +59,7 @@ const GetStartedPage = () => {
 
   return (
     <div
-      className='relative flex h-svh w-screen flex-col items-center justify-center'
+      className='relative flex h-dvh w-screen flex-col items-center justify-center'
       style={{
         backgroundImage: 'url(/business-landing-bg.jpg)',
         backgroundSize: 'cover',

@@ -142,7 +142,7 @@ const LandingPageNavbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const vh = window.innerHeight;
-      const threshold = Math.min(768, vh);
+      const threshold = Math.min(740, 0.95 * vh);
       setIsScrolledPastHero(window.scrollY > threshold);
     };
 

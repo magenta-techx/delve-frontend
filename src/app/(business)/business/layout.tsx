@@ -34,7 +34,7 @@ const BusinessLayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       className={cn(
-        'flex h-svh bg-background',
+        'flex h-dvh bg-background',
         isMobile && businesses?.length > 0
           ? 'grid !h-dvh grid-rows-[auto,1fr,auto]'
           : isMobile

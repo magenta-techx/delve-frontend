@@ -12,7 +12,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
   return (
-    <section className='h-svh w-screen overflow-x-hidden overflow-y-hidden bg-cover bg-center px-5 pt-10 sm:bg-[url("/reset-Password-bg.png")] sm:px-20'>
+    <section className='h-dvh w-screen overflow-x-hidden overflow-y-hidden bg-cover bg-center px-5 pt-10 sm:bg-[url("/reset-Password-bg.png")] sm:px-20'>
       <div className='hidden sm:block'>{/* <Navbar /> */}</div>
       <div className='sm:hidden'>
         <Link href={'/signin'} className='flex items-center gap-3'>

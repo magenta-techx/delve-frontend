@@ -963,7 +963,7 @@ const BusinessStepForm = (): JSX.Element => {
   return (
     <div className=''>
       {isLoadingOnboarding && (
-        <div className='flex h-svh items-center justify-center'>
+        <div className='flex h-dvh items-center justify-center'>
           <div className='text-center'>
             <div className='mb-4 inline-block'>
               <Logo textColor={'black'} />

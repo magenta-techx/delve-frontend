@@ -181,7 +181,7 @@ export default function ReviewManagementPage() {
   return (
     <div
       className={cn(
-        'flex h-svh flex-1 flex-col overflow-hidden bg-[#FCFCFD] max-md:pb-16',
+        'flex h-dvh flex-1 flex-col overflow-hidden bg-[#FCFCFD] max-md:pb-16',
         'md:px-5'
       )}
     >

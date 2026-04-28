@@ -32,7 +32,7 @@ export default function BusinessPreviewPage() {
         </div>
       }
     >
-      <div className='-m-4 h-svh overflow-y-auto md:-m-6'>
+      <div className='-m-4 h-dvh overflow-y-auto md:-m-6'>
         <BusinessDetailsClient business={currentBusiness} preview />
       </div>
     </React.Suspense>

@@ -11,7 +11,7 @@ const CreateListingFormStep8Success: React.FC<
   CreateListingFormStep8SuccessProps
 > = ({}) => {
   return (
-    <div className='flex min-h-svh flex-col items-center justify-center bg-white px-4 py-8'>
+    <div className='flex min-h-dvh flex-col items-center justify-center bg-white px-4 py-8'>
       <div className='space-y-6 text-center'>
         {/* Success Image */}
         <div className='relative mx-auto h-64 w-full max-w-md'>

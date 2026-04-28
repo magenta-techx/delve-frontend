@@ -58,7 +58,7 @@ export default function UserChatsPage({
   }, [chatsToShow, chats, searchQuery]);
 
   return (
-    <div className='container mx-auto flex h-svh gap-x-4 !overflow-hidden bg-[#FCFCFD] px-0 pb-16 md:p-4 md:pt-20 lg:!pt-28'>
+    <div className='container mx-auto flex h-dvh gap-x-4 !overflow-hidden bg-[#FCFCFD] px-0 pb-16 md:p-4 md:pt-20 lg:!pt-28'>
       <section
         className={cn(
           'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background max-md:rounded-none max-md:border-none lg:w-80 xl:rounded-3xl',

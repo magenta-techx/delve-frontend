@@ -3,7 +3,7 @@ import { BaseIcons } from '@/assets/icons/base/Icons';
 
 export default function NotFound() {
   return (
-    <div className='flex min-h-svh flex-col items-center justify-center px-4'>
+    <div className='flex min-h-dvh flex-col items-center justify-center px-4'>
       <div className='text-center'>
         <div className='mb-6 flex justify-center'>
           <BaseIcons value='listing-black' />

@@ -67,7 +67,7 @@ export default function UserChatsPage({
   return (
     <div
       className={cn(
-        'container mx-auto flex h-svh flex-col !overflow-hidden bg-[#FCFCFD] px-0 md:p-4 md:pt-14',
+        'container mx-auto flex h-dvh flex-col !overflow-hidden bg-[#FCFCFD] px-0 md:p-4 md:pt-14',
         pathname.startsWith('/business/messages') ? 'md:pt-0' : 'pb-20'
       )}
     >

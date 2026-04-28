@@ -66,7 +66,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className='min-h-svh bg-[#FCFCFD] pb-20 pt-20 md:pt-28 lg:pt-32'>
+    <div className='min-h-dvh bg-[#FCFCFD] pb-20 pt-20 md:pt-28 lg:pt-32'>
       <div className='container mx-auto max-w-3xl px-4 md:px-8'>
         <div className='mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center'>
           <div className='flex items-center gap-3'>

@@ -92,7 +92,7 @@ const BlogPage = (): JSX.Element => {
   };
 
   return (
-    <div className='flex min-h-svh flex-col items-center bg-white'>
+    <div className='flex min-h-dvh flex-col items-center bg-white'>
       <LandingPageNavbar />
 
       <div className='relative flex w-full flex-col px-4 pb-20 md:px-16 md:backdrop-blur-lg lg:px-24 lg:py-16'>

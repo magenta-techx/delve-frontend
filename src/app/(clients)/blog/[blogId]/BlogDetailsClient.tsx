@@ -84,7 +84,7 @@ const BlogDetailsClient = ({ blog }: BlogDetailsClientProps): JSX.Element => {
   }
 
   return (
-    <main className='flex min-h-svh flex-col items-center bg-white'>
+    <main className='flex min-h-dvh flex-col items-center bg-white'>
       <LandingPageNavbar />
 
       <div className='relative flex w-full flex-col px-4 md:px-16 md:backdrop-blur-lg lg:px-24 lg:py-16'>

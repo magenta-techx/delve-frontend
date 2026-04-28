@@ -2,6 +2,8 @@
 import {
   useCollaboration,
   useUpdateInviteStatus,
+  useRemoveCollaborationMember,
+  useDeleteCollaboration,
 } from '@/app/(clients)/misc/api';
 import { LogoLoadingIcon } from '@/assets/icons';
 import { EmptyState, Button, LinkButton } from '@/components/ui';
@@ -12,6 +14,8 @@ import { ChevronLeft } from 'lucide-react';
 import FeaturedListingCard from './ListingCard';
 import { useMemo, useState } from 'react';
 import { useUserContext } from '@/contexts/UserContext';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function CollaborationDetails({
   collabId,
@@ -20,14 +24,23 @@ export default function CollaborationDetails({
 }) {
   const { data: collabData, isLoading } = useCollaboration(collabId);
   const { user } = useUserContext();
+  const router = useRouter();
   const { mutate: updateInviteStatus, isPending: isUpdatingStatus } =
     useUpdateInviteStatus();
+  const { mutate: removeMember, isPending: isRemovingMember } =
+    useRemoveCollaborationMember();
+  const { mutate: deleteCollaboration, isPending: isDeleting } =
+    useDeleteCollaboration();
   const [statusErrors, setStatusErrors] = useState<string | null>(null);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     memberId: number | null;
     action: 'accept' | 'decline' | null;
   }>({ isOpen: false, memberId: null, action: null });
+  const [exitModal, setExitModal] = useState<{
+    isOpen: boolean;
+    type: 'exit' | 'delete';
+  }>({ isOpen: false, type: 'exit' });
 
   const isUserOwner = useMemo(
     () =>
@@ -118,8 +131,57 @@ export default function CollaborationDetails({
     );
   };
 
+  const handleExitClick = () => {
+    if (isUserOwner) {
+      setExitModal({ isOpen: true, type: 'delete' });
+    } else {
+      setExitModal({ isOpen: true, type: 'exit' });
+    }
+  };
+
+  const handleExitConfirm = () => {
+    if (exitModal.type === 'delete' && isUserOwner) {
+      // Owner deleting the entire collaboration
+      deleteCollaboration(
+        { collab_id: collabId },
+        {
+          onSuccess: () => {
+            toast.success('Group deleted successfully');
+            setExitModal({ isOpen: false, type: 'exit' });
+            router.push('/businesses/saved/collaboration');
+          },
+          onError: (error: Error) => {
+            toast.error(`Failed to delete group: ${error.message}`);
+          },
+        }
+      );
+    } else {
+      // Member exiting the collaboration
+      const currentUserMember = collabData?.data?.members?.find(
+        m => m.member?.id === user?.id
+      );
+      if (!currentUserMember) {
+        toast.error('Could not find your membership record');
+        return;
+      }
+      removeMember(
+        { member_id: currentUserMember.id },
+        {
+          onSuccess: () => {
+            toast.success('You have left the group');
+            setExitModal({ isOpen: false, type: 'exit' });
+            router.push('/businesses/saved/collaboration');
+          },
+          onError: (error: Error) => {
+            toast.error(`Failed to leave group: ${error.message}`);
+          },
+        }
+      );
+    }
+  };
+
   return (
-    <div className='w-full overflow-hidden py-8 pt-16 lg:h-svh xl:pb-12 xl:pt-28'>
+    <div className='w-full overflow-hidden py-8 pt-16 lg:h-dvh xl:pb-12 xl:pt-28'>
       <header className='custom-scrollbar container mx-auto mb-2.5 flex h-12 w-full max-w-[1356px] justify-between overflow-y-scroll p-5 px-4 md:px-8'>
         <div className='flex items-center gap-2'>
           {(isUserContributor || isUserOwner) && (
@@ -211,6 +273,7 @@ export default function CollaborationDetails({
             </>
           ) : (
             <Button
+              onClick={handleExitClick}
               size='md'
               variant={'unstyled'}
               className='text-[#E6283C] hover:text-[#E6283C]/90'
@@ -232,7 +295,9 @@ export default function CollaborationDetails({
                   <path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4' />
                 </svg>
               </span>
-              <span className='max-md:hidden'>Exit Group</span>
+              <span className='max-md:hidden'>
+                {isUserOwner ? 'Delete Group' : 'Exit Group'}
+              </span>
             </Button>
           )}
         </div>
@@ -260,7 +325,7 @@ export default function CollaborationDetails({
             <h3 className='mb-2 text-xs font-normal text-[#9AA4B2]'>
               Group name
             </h3>
-            <p className='text-base font-semibold text-[#0D121C] md:text-lg'>
+            <p className='text-sm font-medium text-[#0D121C] md:text-lg md:font-semibold'>
               {collab.name}
             </p>
           </div>
@@ -540,6 +605,96 @@ export default function CollaborationDetails({
                   'Accept'
                 ) : (
                   'Decline'
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Exit/Delete Group Confirmation Modal */}
+      {exitModal.isOpen && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4'>
+          <div className='relative w-full max-w-[420px] rounded-2xl bg-white shadow-2xl'>
+            {/* Close button */}
+            <button
+              type='button'
+              onClick={() => setExitModal({ isOpen: false, type: 'exit' })}
+              className='absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full text-[#6B7280] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]'
+              aria-label='Close'
+            >
+              <svg
+                className='h-5 w-5'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <path d='M18 6L6 18' />
+                <path d='M6 6l12 12' />
+              </svg>
+            </button>
+
+            <div className='flex flex-col items-center px-6 pb-8 pt-10 text-center md:px-8 md:pb-10 md:pt-12'>
+              {/* Trash icon */}
+              <div className='mb-5 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#FEF2F2]'>
+                <svg
+                  className='h-6 w-6 text-[#E6283C]'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                >
+                  <polyline points='3 6 5 6 21 6' />
+                  <path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' />
+                </svg>
+              </div>
+
+              {/* Title */}
+              <h3 className='mb-3 text-lg font-semibold text-[#111827]'>
+                {exitModal.type === 'delete' ? 'Delete group?' : 'Exit group?'}
+              </h3>
+
+              {/* Description */}
+              <p className='mb-8 text-sm leading-relaxed text-[#6B7280]'>
+                {exitModal.type === 'delete'
+                  ? 'Deleting this group will permanently remove all saved vendors, comments, and team members associated with it. This action cannot be undone.'
+                  : 'Exiting this group will remove your access to saved vendors, comments, and team members. This action cannot be undone.'}
+              </p>
+
+              {/* Delete/Exit button */}
+              <Button
+                onClick={handleExitConfirm}
+                disabled={isRemovingMember || isDeleting}
+                className='w-full rounded-xl bg-[#DC2626] py-3 text-sm font-semibold text-white hover:bg-[#B91C1C] disabled:opacity-50'
+              >
+                {isRemovingMember || isDeleting ? (
+                  <span className='flex items-center justify-center gap-2'>
+                    <svg
+                      className='animate-spin'
+                      width='16'
+                      height='16'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                    >
+                      <circle cx='12' cy='12' r='10' opacity='0.25' />
+                      <path
+                        d='M12 2a10 10 0 0 1 10 10'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                      />
+                    </svg>
+                    Processing...
+                  </span>
+                ) : exitModal.type === 'delete' ? (
+                  'Delete'
+                ) : (
+                  'Exit'
                 )}
               </Button>
             </div>

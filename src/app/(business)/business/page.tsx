@@ -88,7 +88,7 @@ export default function DashboardPage(): JSX.Element {
   }
 
   return (
-    <div className='flex h-svh flex-1 flex-col overflow-hidden'>
+    <div className='flex h-dvh flex-1 flex-col overflow-hidden'>
       <BusinessPageHeader marketPlace={true} />
       <div className='grid flex-1 gap-4 gap-y-5 overflow-y-auto px-3 pt-2 max-md:pb-16 lg:px-5 xl:grid-cols-[1fr,minmax(0,280px)] 2xl:grid-cols-[1fr,minmax(0,350px)]'>
         <section className='w-full overflow-x-hidden'>

@@ -314,7 +314,7 @@ export default function CollaborationForm() {
   );
 
   return (
-    <div className='grid h-svh w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-16 md:py-8 xl:pb-12 xl:pt-28'>
+    <div className='grid h-dvh w-full grid-rows-[max-content,1fr] gap-3 overflow-hidden py-16 md:py-8 xl:pb-12 xl:pt-28'>
       <header className='container mx-auto flex w-full items-center justify-between px-4'>
         <Link
           href='/businesses/saved/collaboration'

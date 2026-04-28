@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUserContext } from '@/contexts/UserContext';
 import { CollaborationSummary } from '@/types/api';
+import { Trash } from 'lucide-react';
 
 interface CollabCardProps {
   collab: CollaborationSummary;
@@ -178,10 +179,34 @@ export default function CollabCard({ collab }: CollabCardProps) {
       </div>
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
+        <DialogContent className='max-w-sm'>
           <DialogHeader>
-            <DialogTitle>Delete Collaboration</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className='flex flex-col items-center justify-center text-center'>
+              <div className='mb-2 flex size-10 items-center justify-center rounded-lg bg-[#FFF4ED]'>
+                <svg
+                  width='15'
+                  height='16'
+                  viewBox='0 0 15 16'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    fill-rule='evenodd'
+                    clip-rule='evenodd'
+                    d='M2.88673 2.71372C2.93577 2.69354 2.9882 2.67931 3.04326 2.67204L3.06662 2.66896C3.60926 2.59733 4.07142 2.23936 4.27647 1.73188C4.69936 0.68521 5.71524 0 6.84411 0H7.96677C9.1108 0 10.1403 0.694408 10.5689 1.75512L10.6443 1.94166C10.8008 2.32908 11.1479 2.60698 11.5601 2.675C11.608 2.6829 11.6536 2.69603 11.6966 2.71371C12.3521 2.76492 12.9272 2.81583 13.3413 2.85423C13.5531 2.87388 13.7229 2.89026 13.84 2.90175L13.9747 2.91512L14.0213 2.91984C14.0214 2.91985 14.0222 2.91994 13.9584 3.54167L14.0222 2.91994C14.3656 2.95519 14.6154 3.26213 14.5801 3.6055C14.5449 3.94888 14.2379 4.19865 13.8945 4.1634L13.8497 4.15885L13.7179 4.14577C13.6028 4.13448 13.4352 4.11831 13.2258 4.09889C12.807 4.06005 12.2214 4.00825 11.5548 3.95645C10.2172 3.85252 8.57057 3.75 7.29172 3.75C6.01286 3.75 4.36619 3.85252 3.02858 3.95645C2.36206 4.00825 1.77646 4.06005 1.3576 4.09889C1.14822 4.11831 0.980631 4.13448 0.865576 4.14577L0.733771 4.15885L0.689466 4.16334C0.689464 4.16334 0.688888 4.1634 0.688273 4.15742L0.689466 4.16334C0.346094 4.19859 0.0385734 3.94888 0.00331737 3.6055C-0.0319386 3.26213 0.217839 2.95519 0.561212 2.91994L0.625049 3.54167C0.561212 2.91994 0.561161 2.91994 0.561212 2.91994L0.608749 2.91512L0.743453 2.90175C0.860515 2.89026 1.03035 2.87388 1.24217 2.85423C1.65627 2.81583 2.23134 2.76492 2.88673 2.71372ZM5.43544 2.20015C5.66745 1.62592 6.22479 1.25 6.84411 1.25H7.96677C8.60125 1.25 9.17222 1.63512 9.40991 2.2234L9.48528 2.40993C9.50738 2.46463 9.53134 2.51826 9.55707 2.57075C8.77105 2.52861 7.98313 2.5 7.29172 2.5C6.6687 2.5 5.96733 2.52323 5.2596 2.55866C5.3262 2.44451 5.38507 2.3248 5.43544 2.20015Z'
+                    fill='#BC1B06'
+                  />
+                  <path
+                    fill-rule='evenodd'
+                    clip-rule='evenodd'
+                    d='M2.32466 6.38303L2.62251 13.2336C2.68065 14.5708 3.78167 15.625 5.12015 15.625H9.13009C10.4269 15.625 11.5084 14.6335 11.6207 13.3416L12.2231 6.41442C12.2615 5.97215 11.9471 5.57818 11.5063 5.52543C10.4763 5.40218 8.6419 5.20833 7.2917 5.20833C5.92696 5.20833 4.06747 5.40638 3.04408 5.52939C2.6171 5.58072 2.30598 5.95338 2.32466 6.38303ZM4.7917 12.5C4.44652 12.5 4.1667 12.7798 4.1667 13.125C4.1667 13.4702 4.44652 13.75 4.7917 13.75H9.7917C10.1369 13.75 10.4167 13.4702 10.4167 13.125C10.4167 12.7798 10.1369 12.5 9.7917 12.5H4.7917ZM4.1667 10.625C4.1667 10.2798 4.44652 10 4.7917 10H9.7917C10.1369 10 10.4167 10.2798 10.4167 10.625C10.4167 10.9702 10.1369 11.25 9.7917 11.25H4.7917C4.44652 11.25 4.1667 10.9702 4.1667 10.625ZM4.7917 7.5C4.44652 7.5 4.1667 7.77982 4.1667 8.125C4.1667 8.47018 4.44652 8.75 4.7917 8.75H9.7917C10.1369 8.75 10.4167 8.47018 10.4167 8.125C10.4167 7.77982 10.1369 7.5 9.7917 7.5H4.7917Z'
+                    fill='#BC1B06'
+                  />
+                </svg>
+              </div>
+              <span className='sr-only'>Delete Collaboration</span>
+            </DialogTitle>
+            <DialogDescription className='text-center text-[#1A1A25]'>
               Are you sure you want to delete &quot;{collab.name}&quot;? This
               action cannot be undone and all members will lose access to this
               collaboration.
@@ -189,16 +214,11 @@ export default function CollabCard({ collab }: CollabCardProps) {
           </DialogHeader>
           <DialogFooter>
             <Button
-              variant='neutral'
-              onClick={() => setIsDeleteDialogOpen(false)}
-              disabled={deleteMutation.isPending}
-            >
-              Cancel
-            </Button>
-            <Button
+              size='lg'
               variant='destructive'
               onClick={handleConfirmDelete}
               isLoading={deleteMutation.isPending}
+              className='mt-1.5 w-full rounded-xl bg-[#BC1B06] px-5'
             >
               Delete
             </Button>

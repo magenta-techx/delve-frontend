@@ -68,7 +68,7 @@ const MenuBarIcon = ({
       <div className='sm:hidden'>
         {/* Mobile Menu items  */}
         {showMobileMenuItems && (
-          <div className='absolute left-0 z-50 min-h-svh w-full bg-white px-5 pt-4 font-inter'>
+          <div className='absolute left-0 z-50 min-h-dvh w-full bg-white px-5 pt-4 font-inter'>
             <div className='mb-4 flex flex-col gap-10 border-b-[1px] border-gray-300 pb-4'>
               {MOBILE_MENU_ITEMS.map((menu, key) => {
                 return (

@@ -54,7 +54,7 @@ export function FullScreenModal({
           <X className='h-6 w-6' />
         </button>
       )}
-      <div className='min-h-svh'>{children}</div>
+      <div className='min-h-dvh'>{children}</div>
     </div>
   );
 }
