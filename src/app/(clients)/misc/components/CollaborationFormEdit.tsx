@@ -433,7 +433,10 @@ export default function CollaborationForm() {
             </div>
             <div className='flex gap-4 max-lg:flex-col lg:grid lg:grid-cols-2'>
               {selectedSavedBusiness.map(business => (
-                <div className='md:basis-1/2 lg:basis-1/2' key={business.id}>
+                <div
+                  className='basis-3/5 md:basis-1/2 lg:basis-1/2'
+                  key={business.id}
+                >
                   <FeaturedListingCard
                     business={business}
                     isSelectable={true}
