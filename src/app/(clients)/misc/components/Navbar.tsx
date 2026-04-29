@@ -177,7 +177,7 @@ const LandingPageNavbar = () => {
   ];
 
   const isPageWithoutNavbar = PAGES_WITHOUT_NAVBAR.some(
-    page => page.route === pathname
+    page => page.route === pathname && !page.onlyOnMobile
   );
   const isMobilePageWithoutNavbar = PAGES_WITHOUT_NAVBAR.some(
     page => page.route === pathname && page.onlyOnMobile
