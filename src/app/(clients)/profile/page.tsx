@@ -68,17 +68,30 @@ const ProfilePage = () => {
   useEffect(() => {
     if (profileData) {
       profileForm.reset({
-        first_name: profileData.first_name ?? '',
-        last_name: profileData.last_name ?? '',
+        first_name:
+          profileData.first_name && profileData.first_name !== 'null'
+            ? profileData.first_name
+            : '',
+        last_name:
+          profileData.last_name && profileData.last_name !== 'null'
+            ? profileData.last_name
+            : '',
       });
     }
   }, [profileData, profileForm]);
 
   const displayName = useMemo(() => {
     const fallback = session?.user?.name || 'Delve user';
-    const composed = [profileData?.first_name, profileData?.last_name]
-      .filter(Boolean)
-      .join(' ');
+    const fname =
+      profileData?.first_name && profileData.first_name !== 'null'
+        ? profileData.first_name
+        : '';
+    const lname =
+      profileData?.last_name && profileData.last_name !== 'null'
+        ? profileData.last_name
+        : '';
+
+    const composed = [fname, lname].filter(Boolean).join(' ');
     return composed || fallback;
   }, [profileData?.first_name, profileData?.last_name, session?.user?.name]);
 
@@ -110,10 +123,22 @@ const ProfilePage = () => {
       profile_image?: File;
     } = {};
 
-    if (data.first_name && data.first_name !== profileData?.first_name) {
+    const originalFirstName =
+      profileData?.first_name && profileData.first_name !== 'null'
+        ? profileData.first_name
+        : '';
+    const originalLastName =
+      profileData?.last_name && profileData.last_name !== 'null'
+        ? profileData.last_name
+        : '';
+
+    if (
+      data.first_name !== undefined &&
+      data.first_name !== originalFirstName
+    ) {
       payload.first_name = data.first_name;
     }
-    if (data.last_name && data.last_name !== profileData?.last_name) {
+    if (data.last_name !== undefined && data.last_name !== originalLastName) {
       payload.last_name = data.last_name;
     }
     if (selectedImage) {

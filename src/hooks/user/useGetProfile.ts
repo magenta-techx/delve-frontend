@@ -21,7 +21,7 @@ export function useGetProfile(email: string | null | undefined): UseQueryResult<
       if (!res.ok) {
         throw new Error(data?.error || "Failed to fetch profile");
       }
-      return data?.data ?? data; 
+      return data?.data ?? data;
     },
   });
 }
