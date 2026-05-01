@@ -26,6 +26,7 @@ import {
   SheetTitle,
 } from '@/components/ui/Sheet';
 import { useIsMobile } from '@/hooks/useMobile';
+import { useUserContext } from '@/contexts/UserContext';
 
 type ProfileFormValues = z.infer<typeof profileUpdateSchema>;
 
@@ -46,12 +47,14 @@ const ProfilePage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { user: userFromContext } = useUserContext();
+
   // Profile form with RHF + Zod
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
-      first_name: '',
-      last_name: '',
+      first_name: userFromContext?.first_name ?? '',
+      last_name: userFromContext?.last_name ?? '',
     },
   });
 

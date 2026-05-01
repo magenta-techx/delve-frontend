@@ -166,9 +166,10 @@ export default function UserChatsPage({
               <LogoLoadingIcon />
             </div>
           ) : filteredChats?.data?.length === 0 ? (
-            <div className='flex h-full w-full items-center justify-center p-4 py-10'>
+            <div className='flex h-full w-full items-center justify-center p-4 py-10 md:hidden'>
               <EmptyState
                 media={<EmptyChatMedia />}
+                mediaClassName='md:hidden'
                 title={
                   searchQuery ? 'No conversations found' : 'No messages yet'
                 }
@@ -328,6 +329,7 @@ export default function UserChatsPage({
           <div className='flex h-full w-full items-center justify-center'>
             <EmptyState
               media={<EmptyChatMedia />}
+              mediaClassName='md:hidden'
               title='No chat selected'
               description='Select a chat to view messages'
             />
