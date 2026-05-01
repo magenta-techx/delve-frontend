@@ -200,7 +200,7 @@ const LandingPageNavbar = () => {
   return (
     <nav
       className={cn(
-        'relative z-[20] flex h-14 w-full items-center justify-between px-4 transition-colors duration-300 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24 xl:h-24',
+        'relative z-[100] flex h-14 w-full items-center justify-between px-4 transition-colors duration-300 md:px-16 md:backdrop-blur-lg lg:h-20 lg:px-24 xl:h-24',
         effectiveTransparentBg
           ? 'rounded-t-none bg-transparent'
           : isMobile

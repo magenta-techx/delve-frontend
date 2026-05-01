@@ -24,7 +24,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
     <UserNotificationsProvider>
       <div className='min-h-dvh bg-gray-50'>
         {!isCreateListingPage && (
-          <header className='fixed left-0 right-0 top-0 z-[49] w-full'>
+          <header className='fixed left-0 right-0 top-0 z-[100] w-full'>
             <LandingPageNavbar />
           </header>
         )}
