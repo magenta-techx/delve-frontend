@@ -69,19 +69,20 @@ const ProfilePage = () => {
   });
 
   useEffect(() => {
-    if (profileData) {
+    const dataToUse = profileData || userFromContext;
+    if (dataToUse) {
       profileForm.reset({
         first_name:
-          profileData.first_name && profileData.first_name !== 'null'
-            ? profileData.first_name
+          dataToUse.first_name && dataToUse.first_name !== 'null'
+            ? dataToUse.first_name
             : '',
         last_name:
-          profileData.last_name && profileData.last_name !== 'null'
-            ? profileData.last_name
+          dataToUse.last_name && dataToUse.last_name !== 'null'
+            ? dataToUse.last_name
             : '',
       });
     }
-  }, [profileData, profileForm]);
+  }, [profileData, userFromContext, profileForm]);
 
   const displayName = useMemo(() => {
     const fallback = session?.user?.name || 'Delve user';
