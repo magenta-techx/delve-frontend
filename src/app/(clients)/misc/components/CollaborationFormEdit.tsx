@@ -308,7 +308,11 @@ export default function CollaborationForm() {
           type='button'
           onClick={() => {
             setInvitedMembers([]);
-            reset();
+            reset({
+              name: '',
+              description: '',
+              business_ids: [],
+            });
           }}
           className='text-sm text-[#9AA4B2] hover:text-[#0D121C]'
         >
@@ -351,7 +355,7 @@ export default function CollaborationForm() {
       </div>
 
       {/* Group Members Section */}
-      {(currentUser || invitedMembers.length > 0) && (
+      {(currentUser || invitedMembers.length > 0 || existingMembers.length > 0) && (
         <div className='mb-4'>
           <h3 className='mb-3 text-[0.625rem] font-normal text-[#9AA4B2] lg:text-xs'>
             Group Members
@@ -384,6 +388,43 @@ export default function CollaborationForm() {
                 </span>
               </div>
             )}
+            {/* Existing Members */}
+            {existingMembers.map((member, index) => (
+              <div
+                key={`existing-${index}`}
+                className='flex items-center justify-between rounded-md bg-[#F8FAFC] px-3 py-2'
+              >
+                <div className='flex items-center gap-3'>
+                  <img
+                    src={member.member?.profile_image || '/collaboration/user_1.png'}
+                    alt={member.member ? `${member.member.first_name} ${member.member.last_name}` : member.unregistered_user_email || 'User'}
+                    className='size-6 rounded-full object-cover md:size-10'
+                  />
+                  <span className='text-[0.6125rem] font-normal text-[#0D121C] lg:text-xs'>
+                    {member.member
+                      ? `${member.member.first_name} ${member.member.last_name}`
+                      : (() => {
+                          const email = member.unregistered_user_email || '';
+                          const username = email.split('@')[0];
+                          return username && username.length > 15
+                            ? username.substring(0, 15) + '...'
+                            : username || email;
+                        })()}
+                  </span>
+                </div>
+                <span className='rounded-md bg-white p-1 text-[0.6125rem] font-normal text-[#0D121C] md:px-2 lg:text-xs capitalize'>
+                  {member.priviledge || 'Member'}
+                </span>
+                <span className='text-[0.625rem] font-normal text-[#4F5E71] lg:text-xs'>
+                  {member.accepted_when
+                    ? `Joined ${format(new Date(member.accepted_when), 'MM-d-yyyy')}`
+                    : '-'}
+                </span>
+                <span className='text-[0.625rem] font-normal lg:text-xs capitalize' style={{ color: member.status === 'pending' ? '#9AA4B2' : '#7C3AED' }}>
+                  {member.status}
+                </span>
+              </div>
+            ))}
             {/* Invited Members */}
             {invitedMembers.map((member, index) => (
               <div
