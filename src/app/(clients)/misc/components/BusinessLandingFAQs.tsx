@@ -193,7 +193,7 @@ const BusinessLandingFAQs = ({
   return (
     <section
       className={cn(
-        'mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-6 sm:py-12 text-[#0F172B] md:py-16 xl:py-24',
+        'mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-6 text-[#0F172B] sm:py-12 md:py-16 xl:py-24',
         className
       )}
     >
@@ -214,7 +214,7 @@ const BusinessLandingFAQs = ({
                 aria-expanded={isActive}
                 className='grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 text-left text-sm font-medium sm:text-base'
               >
-                <span className='flex h-10 w-10 items-center justify-center rounded-full sm:h-12 sm:w-12'>
+                <span className='flex !size-5 items-center justify-center rounded-full sm:size-12'>
                   {Icon}
                 </span>
 

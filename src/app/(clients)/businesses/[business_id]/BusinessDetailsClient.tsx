@@ -228,7 +228,12 @@ const BusinessDetailsClient = ({
             <h1 className='text-lg font-semibold text-[#0D121C] max-md:hidden'>
               Preview
             </h1>
-            <Button type='button' onClick={() => router.back()} size='md'>
+            <Button
+              type='button'
+              onClick={() => router.back()}
+              size='md'
+              className='max-md:hidden'
+            >
               Back to edit
               <Edit className='size-4' />
             </Button>
