@@ -11,6 +11,9 @@ import { useIsMobile } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { BusinessNotificationsProvider } from '@/contexts/BusinessNotificationsContext';
 import { useUserContext } from '@/contexts/UserContext';
+import { useOngoingBusinessOnboarding } from '../misc/api/business';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function BusinessLayout({
   children,
@@ -30,6 +33,17 @@ const BusinessLayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const { isMobile, isLoading: calculatingScreenWidth } = useIsMobile();
   const { user } = useUserContext();
   const { businesses } = useBusinessContext();
+  const router = useRouter();
+
+  const { data: onboardingData, isLoading: isLoadingOnboarding } =
+    useOngoingBusinessOnboarding();
+
+  useEffect(() => {
+    if (!isLoadingOnboarding && onboardingData?.data) {
+      // If there's an ongoing onboarding, redirect to the create listing page
+      router.push('/businesses/create-listing');
+    }
+  }, [onboardingData, isLoadingOnboarding, router]);
 
   return (
     <div

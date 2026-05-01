@@ -85,7 +85,7 @@ const SelectSingleSimple = <T extends Record<string, unknown>>({
             {isLoadingOptions ? 'Loading options...' : displayValue}
           </div>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className='max-h-60 overflow-y-auto'>
           {isLoadingOptions ? (
             <div className='flex items-center justify-center gap-2 text-main-solid py-2 font-medium'>
               <Loader /> Loading options...
