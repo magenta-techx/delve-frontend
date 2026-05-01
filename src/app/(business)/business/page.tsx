@@ -90,7 +90,7 @@ export default function DashboardPage(): JSX.Element {
   return (
     <div className='flex h-dvh flex-1 flex-col overflow-hidden'>
       <BusinessPageHeader marketPlace={true} />
-      <div className='grid flex-1 gap-4 gap-y-5 overflow-y-auto px-3 pt-2 max-md:pb-16 lg:px-5 xl:grid-cols-[1fr,minmax(0,280px)] 2xl:grid-cols-[1fr,minmax(0,350px)]'>
+      <div className='grid flex-1 gap-4 gap-y-5 overflow-y-auto px-3 pt-2 max-md:pb-28 lg:px-5 xl:grid-cols-[1fr,minmax(0,280px)] 2xl:grid-cols-[1fr,minmax(0,350px)]'>
         <section className='w-full overflow-x-hidden'>
           <article className='relative mb-4 flex flex-col gap-y-2 rounded-2xl bg-[#FEEE95] p-4 lg:mb-6 lg:gap-y-3 lg:p-6'>
             <h6 className='text-[0.825rem] font-medium md:text-sm'>

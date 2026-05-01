@@ -125,7 +125,7 @@ export default function PaymentsPage() {
   }
 
   return (
-    <div className='relative h-full w-full space-y-3 overflow-hidden overflow-y-scroll max-md:pb-16 md:space-y-6 lg:space-y-10'>
+    <div className='relative h-full w-full space-y-3 overflow-hidden overflow-y-scroll max-md:pb-28 md:space-y-6 lg:space-y-10'>
       <BusinessPageHeader
         title='Payment & Subscription'
         description='Effortlessly handle your billing and invoices right here.'

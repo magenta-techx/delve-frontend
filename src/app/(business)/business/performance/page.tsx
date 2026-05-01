@@ -101,7 +101,7 @@ export default function PerformancePage() {
   return (
     <div
       className={cn(
-        'h-full w-full overflow-y-scroll max-md:pb-16 md:space-y-8'
+        'h-full w-full overflow-y-scroll max-md:pb-28 md:space-y-8'
       )}
     >
       <BusinessPageHeader
@@ -109,7 +109,7 @@ export default function PerformancePage() {
         description='Effortlessly track your business performance metrics right here.'
       />
       <header>
-        <nav className='mb-4 flex items-center gap-2 px-4 lg:gap-3 lg:px-6 max-md:mb-4 max-md:mt-1.5'>
+        <nav className='mb-4 flex items-center gap-2 px-4 max-md:mb-4 max-md:mt-1.5 lg:gap-3 lg:px-6'>
           {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
             period => {
               const p = period as
@@ -122,10 +122,11 @@ export default function PerformancePage() {
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(p)}
-                  className={`rounded-[0.7rem] md:rounded-xl border p-2 font-inter text-[0.6125rem] font-normal capitalize tracking-wide transition-colors max-lg:w-max md:px-3 md:text-xs ${isActive
-                    ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
-                    : 'border-[#D9D6FE] text-[#697586]'
-                    }`}
+                  className={`rounded-[0.7rem] border p-2 font-inter text-[0.6125rem] font-normal capitalize tracking-wide transition-colors max-lg:w-max md:rounded-xl md:px-3 md:text-xs ${
+                    isActive
+                      ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
+                      : 'border-[#D9D6FE] text-[#697586]'
+                  }`}
                 >
                   {period.replace(/_/g, ' ')}
                 </button>
@@ -156,7 +157,7 @@ export default function PerformancePage() {
                   {card.title_count ?? 0}{' '}
                   <span className='ml-0.5 text-[0.625rem] font-normal text-[#697586] md:ml-1.5 md:text-[0.825rem] md:text-xs'>
                     {card.title}
-                    { }
+                    {}
                   </span>
                 </h3>
                 <p className='text-[0.625rem] text-[#0F0F0F] md:hidden'>
@@ -182,7 +183,7 @@ export default function PerformancePage() {
         <Card className='rounded-2xl border border-[#CDD5DF] bg-card'>
           <CardHeader className='!pb-3'>
             <div className='flex items-center justify-between gap-4'>
-              <CardTitle className='text-xs font-medium md:font-normal text-[#697586] md:text-sm'>
+              <CardTitle className='text-xs font-medium text-[#697586] md:text-sm md:font-normal'>
                 Performance Trends Over Time
               </CardTitle>
               <Select
@@ -195,16 +196,28 @@ export default function PerformancePage() {
                   </span>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem className='text-[0.625rem] md:text-xs' value='profile_visits'>
+                  <SelectItem
+                    className='text-[0.625rem] md:text-xs'
+                    value='profile_visits'
+                  >
                     Profile Visits
                   </SelectItem>
-                  <SelectItem className='text-[0.625rem] md:text-xs' value='conversations'>
+                  <SelectItem
+                    className='text-[0.625rem] md:text-xs'
+                    value='conversations'
+                  >
                     Conversations
                   </SelectItem>
-                  <SelectItem className='text-[0.625rem] md:text-xs' value='reviews'>
+                  <SelectItem
+                    className='text-[0.625rem] md:text-xs'
+                    value='reviews'
+                  >
                     Reviews
                   </SelectItem>
-                  <SelectItem className='text-[0.625rem] md:text-xs' value='saved_by_users'>
+                  <SelectItem
+                    className='text-[0.625rem] md:text-xs'
+                    value='saved_by_users'
+                  >
                     Saved by Users
                   </SelectItem>
                 </SelectContent>
@@ -212,7 +225,7 @@ export default function PerformancePage() {
             </div>
           </CardHeader>
 
-          <CardContent className='relative !p-4 md:!p-6 !pt-0 md:!pt-0 '>
+          <CardContent className='relative !p-4 !pt-0 md:!p-6 md:!pt-0'>
             {isLoading || isFetching ? (
               <div className='z-3 absolute left-0 top-0 flex min-h-[40vh] w-full items-center justify-center bg-white/30 backdrop-blur-lg'>
                 <LogoLoadingIcon />
@@ -220,23 +233,23 @@ export default function PerformancePage() {
             ) : (
               <>
                 <div className='mb-8 lg:mb-10'>
-                  <p className='text-[0.5rem] sm:text-sm font-medium'>
+                  <p className='text-[0.5rem] font-medium sm:text-sm'>
                     Total number of {analyticsType.replace(/_/g, ' ')}
                   </p>
 
                   <p className='mb-3 mt-1 text-xs text-green-600'>
-                    <span className='text-sm md:text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
+                    <span className='text-sm font-bold text-[#0D0D0D] md:text-2xl lg:text-4xl'>
                       {analyticsType === 'conversations'
                         ? businessPerformanceData?.data.totals
-                          .total_conversations
+                            .total_conversations
                         : analyticsType === 'reviews'
                           ? businessPerformanceData?.data.totals.total_reviews
                           : analyticsType === 'profile_visits'
                             ? businessPerformanceData?.data.totals
-                              .total_profile_visits
+                                .total_profile_visits
                             : analyticsType === 'saved_by_users'
                               ? businessPerformanceData?.data.totals
-                                .total_business_saves
+                                  .total_business_saves
                               : 0}
                     </span>{' '}
                     This month
