@@ -25,6 +25,7 @@ export default function UserChatsPage({
   children: React.ReactNode;
 }) {
   const { data: chats, isLoading: isLoadingChats } = useUserChats();
+  const hasNoChats = !isLoadingChats && (chats?.data?.length ?? 0) === 0;
   const params = useParams();
   const current_chat_id = (params?.['chat_id'] as string) || null;
   const [chatsToShow, setChatsToShow] = React.useState('All');
@@ -62,7 +63,8 @@ export default function UserChatsPage({
       <section
         className={cn(
           'relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background max-md:rounded-none max-md:border-none lg:w-80 xl:rounded-3xl',
-          !!current_chat_id && 'max-lg:hidden'
+          (!!current_chat_id || hasNoChats) && 'max-lg:hidden',
+          hasNoChats && 'lg:hidden'
         )}
       >
         <nav className='sticky top-0 flex h-16 items-center justify-between border-b border-border bg-white p-2 xl:px-6 xl:py-4'>
@@ -318,20 +320,24 @@ export default function UserChatsPage({
       <section
         className={cn(
           'flex flex-1 overflow-hidden rounded-2xl border border-[#ECE9FE] bg-background max-lg:!rounded-none max-lg:!border-none xl:rounded-3xl',
-          !current_chat_id ? 'hidden lg:flex' : 'max-lg:flex'
+          !current_chat_id && !hasNoChats ? 'hidden lg:flex' : 'flex'
         )}
       >
         {isLoadingChats ? (
           <div className='flex h-full w-full items-center justify-center'>
             <LogoLoadingIcon />
           </div>
-        ) : !current_chat_id ? (
+        ) : !current_chat_id || hasNoChats ? (
           <div className='flex h-full w-full items-center justify-center'>
             <EmptyState
               media={<EmptyChatMedia />}
               mediaClassName='md:hidden'
-              title='No chat selected'
-              description='Select a chat to view messages'
+              title={hasNoChats ? '' : 'No chat selected'}
+              description={
+                hasNoChats
+                  ? 'When you start new conversations, they will appear here.'
+                  : 'Select a chat to view messages'
+              }
             />
           </div>
         ) : (

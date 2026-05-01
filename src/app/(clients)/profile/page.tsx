@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -47,15 +47,25 @@ const ProfilePage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { user: userFromContext } = useUserContext();
+  const { user: userFromContext, isLoading: userContextLoading } =
+    useUserContext();
 
   // Profile form with RHF + Zod
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileUpdateSchema),
-    defaultValues: {
-      first_name: userFromContext?.first_name ?? '',
-      last_name: userFromContext?.last_name ?? '',
-    },
+    values: useMemo(() => {
+      const dataToUse = profileData || userFromContext;
+      return {
+        first_name:
+          dataToUse?.first_name && dataToUse.first_name !== 'null'
+            ? dataToUse.first_name
+            : '',
+        last_name:
+          dataToUse?.last_name && dataToUse.last_name !== 'null'
+            ? dataToUse.last_name
+            : '',
+      };
+    }, [profileData, userFromContext]),
   });
 
   // Password form with RHF + Zod
@@ -67,22 +77,6 @@ const ProfilePage = () => {
       confirm_password: '',
     },
   });
-
-  useEffect(() => {
-    const dataToUse = profileData || userFromContext;
-    if (dataToUse) {
-      profileForm.reset({
-        first_name:
-          dataToUse.first_name && dataToUse.first_name !== 'null'
-            ? dataToUse.first_name
-            : '',
-        last_name:
-          dataToUse.last_name && dataToUse.last_name !== 'null'
-            ? dataToUse.last_name
-            : '',
-      });
-    }
-  }, [profileData, userFromContext, profileForm]);
 
   const displayName = useMemo(() => {
     const fallback = session?.user?.name || 'Delve user';
@@ -269,7 +263,11 @@ const ProfilePage = () => {
           )}
         >
           <ProfilePanel
-            isLoading={profileLoading && !profileData}
+            isLoading={
+              (profileLoading || userContextLoading) &&
+              !profileData &&
+              !userFromContext
+            }
             displayName={displayName}
             avatarUrl={avatarImage}
             email={profileData?.email ?? userEmail ?? ''}

@@ -219,151 +219,147 @@ export default function HomePage() {
       </div>
 
       {/* featured listings  */}
-      <div className='flex w-full flex-col items-center justify-between pt-5 sm:pt-16 md:px-16 lg:px-24'>
-        <SectionHeader
-          header='Trusted by dozens of happy clients. '
-          paragraph='Featured Listing'
-        />
+      {(loadingApproved || (approved && approved.length > 0)) && (
+        <div className='flex w-full flex-col items-center justify-between pt-5 sm:pt-16 md:px-16 lg:px-24'>
+          <SectionHeader
+            header='Trusted by dozens of happy clients. '
+            paragraph='Featured Listing'
+          />
 
-        <div className='relative mt-3 flex w-full items-center justify-center xl:mt-9'>
-          <div className='mb-10 w-full items-center md:mb-20'>
-            <Carousel
-              opts={{
-                align: calculatingScreenWidth
-                  ? 'start'
-                  : !isMobile
-                    ? 'center'
-                    : 'start',
-                loop: false,
-              }}
-              className='container mx-auto w-screen md:w-[90vw] xl:w-[85vw]'
+          <div className='relative mt-3 flex w-full items-center justify-center xl:mt-9'>
+            <div className='mb-10 w-full items-center md:mb-20'>
+              <Carousel
+                opts={{
+                  align: calculatingScreenWidth
+                    ? 'start'
+                    : !isMobile
+                      ? 'center'
+                      : 'start',
+                  loop: false,
+                }}
+                className='container mx-auto w-screen md:w-[90vw] xl:w-[85vw]'
+              >
+                <CarouselContent className='-ml-2 gap-2 py-4 max-md:px-4'>
+                  {loadingApproved
+                    ? Array.from({ length: 6 }).map((_, key) => (
+                        <CarouselItem
+                          key={key}
+                          className='basis-[80vw] sm:basis-[300px] md:pl-2 xl:basis-[33%] xl:px-3.5'
+                        >
+                          <ListingCardSkeleton classStyle='w-full sm:w-[300px] xl:w-full !aspect-[342/427]' />
+                        </CarouselItem>
+                      ))
+                    : approved.map((business, key) => (
+                        <CarouselItem
+                          key={business.id ?? key}
+                          className='basis-[80vw] sm:basis-[300px] md:pl-2 xl:basis-[33%] xl:px-3.5'
+                        >
+                          <FeaturedListingCard business={business} isBigCard />
+                        </CarouselItem>
+                      ))}
+                </CarouselContent>
+                <CarouselPrevious className='absolute -left-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-left-10' />
+                <CarouselNext className='absolute -right-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-right-10' />
+              </Carousel>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Search By location  */}
+      <div className={cn('container', !!sponsoredAds?.data.length && 'mb-10')}>
+        <header className='mb-2 flex items-center justify-between px-4'>
+          <h2 className='text-base font-semibold sm:text-2xl'>
+            Search by location
+          </h2>
+
+          <div className='flex items-center gap-2 text-primary'>
+            <BaseIcons value='arrows-left-primary' />
+            <Link
+              href={'/businesses/search'}
+              className='text-[12px] uppercase sm:text-[16px]'
             >
-              <CarouselContent className='-ml-2 gap-2 py-4 max-md:px-4'>
-                {loadingApproved
-                  ? Array.from({ length: 6 }).map((_, key) => (
-                      <CarouselItem
-                        key={key}
-                        className='basis-[80vw] sm:basis-[300px] md:pl-2 xl:basis-[33%] xl:px-3.5'
-                      >
-                        <ListingCardSkeleton classStyle='w-full sm:w-[300px] xl:w-full !aspect-[342/427]' />
-                      </CarouselItem>
-                    ))
-                  : approved.map((business, key) => (
-                      <CarouselItem
-                        key={business.id ?? key}
-                        className='basis-[80vw] sm:basis-[300px] md:pl-2 xl:basis-[33%] xl:px-3.5'
-                      >
-                        <FeaturedListingCard business={business} isBigCard />
-                      </CarouselItem>
-                    ))}
+              See all
+            </Link>
+          </div>
+        </header>
+
+        <div
+          className={cn(
+            'flex w-full items-center gap-10 sm:px-0',
+            !!sponsoredAds?.data.length && 'mb-4 sm:mb-20'
+          )}
+        >
+          <div className='relative w-full'>
+            <Carousel opts={{ align: 'start', loop: false }} className='w-full'>
+              <CarouselContent className='-ml-2 p-0 max-md:px-4'>
+                {LOCATIONS.map((location, key) => (
+                  <CarouselItem
+                    key={key}
+                    className='flex basis-40 items-center justify-center overflow-hidden px-1.5 sm:basis-[25%]'
+                  >
+                    <LocationCard
+                      key={key}
+                      name={location.name}
+                      imageUrl={location.imageUrl}
+                    />
+                  </CarouselItem>
+                ))}
               </CarouselContent>
-              <CarouselPrevious className='absolute -left-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-left-10' />
-              <CarouselNext className='absolute -right-5 bottom-0 top-0 z-10 hidden h-full translate-y-0 flex-col items-center justify-center rounded-none border-none bg-white p-2 shadow-none sm:flex 2xl:-right-10' />
             </Carousel>
           </div>
         </div>
+      </div>
 
-        {/* Serch By location  */}
-        <div
-          className={cn('container', !!sponsoredAds?.data.length && 'mb-10')}
-        >
-          <header className='mb-2 flex items-center justify-between px-4'>
-            <h2 className='text-base font-semibold sm:text-2xl'>
-              Search by location
-            </h2>
+      {/* Sponsored picks  */}
+      {!!sponsoredAds?.data.length && (
+        <div className='container relative max-md:px-4'>
+          <SectionHeader header='Sponsored Picks' paragraph='Spotlight' />
 
-            <div className='flex items-center gap-2 text-primary'>
-              <BaseIcons value='arrows-left-primary' />
-              <Link
-                href={'/businesses/search'}
-                className='text-[12px] uppercase sm:text-[16px]'
+          <header className='mb-4 flex items-center justify-between font-semibold sm:flex md:mt-10 md:text-lg xl:text-xl'>
+            <h1>Hot deals and events you don&apos;t want to miss</h1>
+            <div className='hidden items-center gap-2 sm:flex'>
+              <button
+                onClick={() => sponsoredCarouselApi?.scrollPrev()}
+                className='rotate-180 rounded-none border-none bg-transparent p-2 disabled:opacity-50'
+                disabled={!canScrollPrev}
               >
-                See all
-              </Link>
+                <BaseIcons value='arrow-right-solid-black' />
+              </button>
+              <button
+                onClick={() => sponsoredCarouselApi?.scrollNext()}
+                className='rounded-none border-none bg-transparent p-2 disabled:opacity-50'
+                disabled={!canScrollNext}
+              >
+                <BaseIcons value='arrow-right-solid-black' />
+              </button>
             </div>
           </header>
 
-          <div
-            className={cn(
-              'flex w-full items-center gap-10 sm:px-0',
-              !!sponsoredAds?.data.length && 'mb-4 sm:mb-20'
-            )}
-          >
-            <div className='relative w-full'>
-              <Carousel
-                opts={{ align: 'start', loop: false }}
-                className='w-full'
-              >
-                <CarouselContent className='-ml-2 p-0 max-md:px-4'>
-                  {LOCATIONS.map((location, key) => (
+          <div className='flex w-full items-center'>
+            <Carousel
+              opts={{ align: 'start', loop: false }}
+              className='w-full max-w-full'
+              setApi={setSponsoredCarouselApi}
+            >
+              <CarouselContent className='-ml-4 max-md:px-4 sm:gap-x-2'>
+                {sponsoredAds?.data.map((sponsored, key) => {
+                  return (
                     <CarouselItem
                       key={key}
-                      className='flex basis-40 items-center justify-center overflow-hidden px-1.5 sm:basis-[25%]'
+                      className='basis-[90vw] pl-0 sm:basis-1/2'
                     >
-                      <LocationCard
-                        key={key}
-                        name={location.name}
-                        imageUrl={location.imageUrl}
-                      />
+                      <div className='flex w-full items-center justify-center'>
+                        <SponsoredAdsCard ad={sponsored} />
+                      </div>
                     </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
-            </div>
+                  );
+                })}
+              </CarouselContent>
+            </Carousel>
           </div>
         </div>
-
-        {/* Sponsored picks  */}
-        {!!sponsoredAds?.data.length && (
-          <div className='container relative max-md:px-4'>
-            <SectionHeader header='Sponsored Picks' paragraph='Spotlight' />
-
-            <header className='mb-4 flex items-center justify-between font-semibold sm:flex md:mt-10 md:text-lg xl:text-xl'>
-              <h1>Hot deals and events you don&apos;t want to miss</h1>
-              <div className='hidden items-center gap-2 sm:flex'>
-                <button
-                  onClick={() => sponsoredCarouselApi?.scrollPrev()}
-                  className='rotate-180 rounded-none border-none bg-transparent p-2 disabled:opacity-50'
-                  disabled={!canScrollPrev}
-                >
-                  <BaseIcons value='arrow-right-solid-black' />
-                </button>
-                <button
-                  onClick={() => sponsoredCarouselApi?.scrollNext()}
-                  className='rounded-none border-none bg-transparent p-2 disabled:opacity-50'
-                  disabled={!canScrollNext}
-                >
-                  <BaseIcons value='arrow-right-solid-black' />
-                </button>
-              </div>
-            </header>
-
-            <div className='flex w-full items-center'>
-              <Carousel
-                opts={{ align: 'start', loop: false }}
-                className='w-full max-w-full'
-                setApi={setSponsoredCarouselApi}
-              >
-                <CarouselContent className='-ml-4 max-md:px-4 sm:gap-x-2'>
-                  {sponsoredAds?.data.map((sponsored, key) => {
-                    return (
-                      <CarouselItem
-                        key={key}
-                        className='basis-[90vw] pl-0 sm:basis-1/2'
-                      >
-                        <div className='flex w-full items-center justify-center'>
-                          <SponsoredAdsCard ad={sponsored} />
-                        </div>
-                      </CarouselItem>
-                    );
-                  })}
-                </CarouselContent>
-              </Carousel>
-            </div>
-          </div>
-        )}
-      </div>
-
+      )}
       <section className='w-full md:px-16 lg:px-24'>
         <div
           className={cn(
@@ -426,7 +422,7 @@ export default function HomePage() {
         </div>
 
         <div className='container mb-10 flex w-full flex-col items-center px-4 sm:-mt-0 sm:mb-20 sm:px-0 md:mb-32'>
-          <h1 className='self-start font-karma text-2xl max-md:text-left max-sm:font-semibold sm:text-[44px]'>
+          <h1 className='font-karma text-2xl max-md:self-start max-md:text-left max-sm:font-semibold sm:text-[44px]'>
             Tips, Trends & Vendor Stories
           </h1>
           <p className='mb-10 font-inter text-[13px] sm:text-[18px]'>

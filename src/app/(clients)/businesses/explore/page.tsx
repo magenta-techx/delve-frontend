@@ -134,224 +134,217 @@ export default function HomePage(): JSX.Element {
             Listings around you
           </h1>
         </div>
-        <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
-          <Carousel
-            opts={{ align: 'start', loop: false }}
-            className='w-full max-w-full md:px-2'
-          >
-            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
-              {loadingApproved
-                ? Array.from({ length: 4 }).map((_, key) => (
-                  <CarouselItem
-                    key={key}
-                    className='basis-[80vw] pl-2 sm:basis-[340px]'
-                  >
-                    <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
-                  </CarouselItem>
-                ))
-                : approved.map((business, key) => (
-                  <CarouselItem
-                    key={business.id ?? key}
-                    className='basis-[80vw] pl-2 sm:basis-[340px]'
-                  >
-                    <FeaturedListingCard business={business} />
-                  </CarouselItem>
-                ))}
-            </CarouselContent>
-          </Carousel>
-        </div>
-      </div>
-
-      {/*/////////////////////////  Featured  ///////////////////////////////*/}
-      {/*/////////////////////////  Featured  ///////////////////////////////*/}
-      {/*/////////////////////////  Featured  ///////////////////////////////*/}
-      {/* Desktop  */}
-      <div className='container hidden w-full px-8 sm:block'>
-        <div className='flex justify-between'>
-          <div className='flex items-center gap-2'>
-            <BaseIcons value='flames-yellow' />
-            <h1 className='text-2xl font-semibold'>Featured</h1>
-          </div>
-          <div className='flex items-center gap-2 text-primary'>
-            <BaseIcons value='arrows-left-primary' />
-            <Link href={'/businesses/search'} className='uppercase'>
-              See all listings
-            </Link>
-          </div>
-        </div>
         {isEmptyApproved ? (
-          <div className='flex items-center justify-center md:py-6'>
+          <div className='flex items-center justify-center pb-10'>
             <EmptyState
               title='No listings to show'
               description='Try checking back later.'
-              className=''
-              headerClassName=''
-              mediaClassName=''
+              className='scale-90'
               media={<EmptyListingIcon />}
             />
           </div>
         ) : (
-          <div className='relative mb-20 mt-5 w-full'>
+          <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
             <Carousel
               opts={{ align: 'start', loop: false }}
-              className='w-full'
+              className='w-full max-w-full md:px-2'
             >
-              <CarouselContent className='-ml-4'>
+              <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
                 {loadingApproved
-                  ? Array.from({ length: 5 }).map((_, key) => (
+                  ? Array.from({ length: 4 }).map((_, key) => (
                     <CarouselItem
                       key={key}
-                      className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                      className='basis-[80vw] pl-2 sm:basis-[340px]'
                     >
-                      <ListingCardSkeleton
-                        classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
-                      />
+                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
                     </CarouselItem>
                   ))
                   : approved.map((business, key) => (
                     <CarouselItem
                       key={business.id ?? key}
-                      className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                      className='basis-[80vw] pl-2 sm:basis-[340px]'
                     >
-                      <FeaturedListingCard
-                        business={business}
-                        group={true}
-                      />
+                      <FeaturedListingCard business={business} />
                     </CarouselItem>
                   ))}
               </CarouselContent>
-              <CarouselPrevious className='hidden xl:flex -left-4' />
-              <CarouselNext className='hidden xl:flex -right-4' />
             </Carousel>
           </div>
         )}
       </div>
 
-      {/* mobile  */}
-      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
-        <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
-          <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
-            <BaseIcons value='flames-yellow' className='!size-4' />
-            Featured
-          </h1>
-        </div>
-        <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
-          <Carousel
-            opts={{ align: 'start', loop: false }}
-            className='w-full max-w-full md:px-2'
-          >
-            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
-              {loadingApproved
-                ? Array.from({ length: 4 }).map((_, key) => (
-                  <CarouselItem
-                    key={key}
-                    className='basis-[80vw] pl-2 sm:basis-[340px]'
-                  >
-                    <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
-                  </CarouselItem>
-                ))
-                : approved.map((business, key) => (
-                  <CarouselItem
-                    key={business.id ?? key}
-                    className='basis-[80vw] pl-2 sm:basis-[340px]'
-                  >
-                    <FeaturedListingCard business={business} />
-                  </CarouselItem>
-                ))}
-            </CarouselContent>
-          </Carousel>
-        </div>
-      </div>
+      {/*/////////////////////////  Featured  ///////////////////////////////*/}
+      {/*/////////////////////////  Featured  ///////////////////////////////*/}
+      {/*/////////////////////////  Featured  ///////////////////////////////*/}
+      {!isEmptyApproved && (
+        <>
+          {/* Desktop  */}
+          <div className='container hidden w-full px-8 sm:block'>
+            <div className='flex justify-between'>
+              <div className='flex items-center gap-2'>
+                <BaseIcons value='flames-yellow' />
+                <h1 className='text-2xl font-semibold'>Featured</h1>
+              </div>
+              <div className='flex items-center gap-2 text-primary'>
+                <BaseIcons value='arrows-left-primary' />
+                <Link href={'/businesses/search'} className='uppercase'>
+                  See all listings
+                </Link>
+              </div>
+            </div>
+            <div className='relative mb-20 mt-5 w-full'>
+              <Carousel
+                opts={{ align: 'start', loop: false }}
+                className='w-full'
+              >
+                <CarouselContent className='-ml-4'>
+                  {loadingApproved
+                    ? Array.from({ length: 5 }).map((_, key) => (
+                      <CarouselItem
+                        key={key}
+                        className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                      >
+                        <ListingCardSkeleton
+                          classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
+                        />
+                      </CarouselItem>
+                    ))
+                    : approved.map((business, key) => (
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                      >
+                        <FeaturedListingCard
+                          business={business}
+                          group={true}
+                        />
+                      </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious className='hidden xl:flex -left-4' />
+                <CarouselNext className='hidden xl:flex -right-4' />
+              </Carousel>
+            </div>
+          </div>
+
+          {/* mobile  */}
+          <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
+            <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
+              <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
+                <BaseIcons value='flames-yellow' className='!size-4' />
+                Featured
+              </h1>
+            </div>
+            <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
+              <Carousel
+                opts={{ align: 'start', loop: false }}
+                className='w-full max-w-full md:px-2'
+              >
+                <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
+                  {loadingApproved
+                    ? Array.from({ length: 4 }).map((_, key) => (
+                      <CarouselItem
+                        key={key}
+                        className='basis-[80vw] pl-2 sm:basis-[340px]'
+                      >
+                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
+                      </CarouselItem>
+                    ))
+                    : approved.map((business, key) => (
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='basis-[80vw] pl-2 sm:basis-[340px]'
+                      >
+                        <FeaturedListingCard business={business} />
+                      </CarouselItem>
+                    ))}
+                </CarouselContent>
+              </Carousel>
+            </div>
+          </div>
+        </>
+      )}
 
       {/*/////////////////////////  Explore  ///////////////////////////////*/}
       {/*/////////////////////////  Explore  ///////////////////////////////*/}
       {/*/////////////////////////  Explore  ///////////////////////////////*/}
-      {/* Desktop  */}
-      <div className='container hidden w-full px-8 sm:block'>
-        <div className='flex justify-between'>
-          <div className='flex items-center gap-2'>
-            <BaseIcons value='stars-primary' className='!size-4' />
-            <h1 className='text-2xl font-semibold'>Explore</h1>
-          </div>
-          <div className='flex items-center gap-2 text-primary'>
-            <BaseIcons value='arrows-left-primary' />
-            <Link href={'/businesses/search'} className='uppercase'>
-              See all listings
-            </Link>
-          </div>
-        </div>
-        {isEmptyApproved ? (
-          <div className='flex items-center justify-center md:py-6'>
-            <EmptyState
-              title='No listings to show'
-              description='Try checking back later.'
-              className=''
-              headerClassName=''
-              mediaClassName=''
-              media={<EmptyListingIcon />}
-            />
-          </div>
-        ) : (
-          <div
-            className={cn(
-              'mb-20 mt-5 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 2xl:grid-cols-4',
-              approved.length < 4
-                ? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]'
-                : 'grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
-            )}
-          >
-            {loadingApproved
-              ? Array.from({ length: 5 }).map((_, key) => (
-                <ListingCardSkeleton
-                  key={key}
-                  classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
-                />
-              ))
-              : approved.map((business, key) => (
-                <FeaturedListingCard
-                  key={business.id ?? key}
-                  business={business}
-                  group={true}
-                />
-              ))}
-          </div>
-        )}
-      </div>
-
-      {/* mobile  */}
-      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
-        <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
-          <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
-            Explore
-          </h1>
-        </div>
-        <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
-          <Carousel
-            opts={{ align: 'start', loop: false }}
-            className='w-full max-w-full md:px-2'
-          >
-            <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
+      {!isEmptyApproved && (
+        <>
+          {/* Desktop  */}
+          <div className='container hidden w-full px-8 sm:block'>
+            <div className='flex justify-between'>
+              <div className='flex items-center gap-2'>
+                <BaseIcons value='stars-primary' className='!size-4' />
+                <h1 className='text-2xl font-semibold'>Explore</h1>
+              </div>
+              <div className='flex items-center gap-2 text-primary'>
+                <BaseIcons value='arrows-left-primary' />
+                <Link href={'/businesses/search'} className='uppercase'>
+                  See all listings
+                </Link>
+              </div>
+            </div>
+            <div
+              className={cn(
+                'mb-20 mt-5 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 2xl:grid-cols-4',
+                approved.length < 4
+                  ? 'grid-cols-[repeat(auto-fill,minmax(280px,1fr))]'
+                  : 'grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
+              )}
+            >
               {loadingApproved
-                ? Array.from({ length: 4 }).map((_, key) => (
-                  <CarouselItem
+                ? Array.from({ length: 5 }).map((_, key) => (
+                  <ListingCardSkeleton
                     key={key}
-                    className='basis-[80vw] pl-2 sm:basis-[340px]'
-                  >
-                    <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
-                  </CarouselItem>
+                    classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
+                  />
                 ))
                 : approved.map((business, key) => (
-                  <CarouselItem
+                  <FeaturedListingCard
                     key={business.id ?? key}
-                    className='basis-[80vw] pl-2 sm:basis-[340px]'
-                  >
-                    <FeaturedListingCard business={business} />
-                  </CarouselItem>
+                    business={business}
+                    group={true}
+                  />
                 ))}
-            </CarouselContent>
-          </Carousel>
-        </div>
-      </div>
+            </div>
+          </div>
+
+          {/* mobile  */}
+          <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
+            <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
+              <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
+                Explore
+              </h1>
+            </div>
+            <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
+              <Carousel
+                opts={{ align: 'start', loop: false }}
+                className='w-full max-w-full md:px-2'
+              >
+                <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
+                  {loadingApproved
+                    ? Array.from({ length: 4 }).map((_, key) => (
+                      <CarouselItem
+                        key={key}
+                        className='basis-[80vw] pl-2 sm:basis-[340px]'
+                      >
+                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
+                      </CarouselItem>
+                    ))
+                    : approved.map((business, key) => (
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='basis-[80vw] pl-2 sm:basis-[340px]'
+                      >
+                        <FeaturedListingCard business={business} />
+                      </CarouselItem>
+                    ))}
+                </CarouselContent>
+              </Carousel>
+            </div>
+          </div>
+        </>
+      )}
       <UpComingEvents />
 
       {/* <div className='w-full sm:h-[217px]'>
