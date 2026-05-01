@@ -42,9 +42,9 @@ interface BusinessShowCaseFormProps {
     files: { url: string; public_id: string }[]
   ) => void;
   setCloudImages?: (
-    images: { id: number; image: string; uploaded_at: string }[]
+    images: { id: number; url: string; uploaded_at: string }[]
   ) => void;
-  initialCloudImages?: { id: number; image: string; uploaded_at: string }[];
+  initialCloudImages?: { id: number; url: string; uploaded_at: string }[];
   /** Called whenever a video is successfully uploaded via Cloudinary */
   onVideoUploaded?: (result: VideoUploadResult) => void;
   /** Called whenever a video is removed */
@@ -74,7 +74,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   const [previews, setPreviews] = useState<ImageData[]>(() => {
     const images: ImageData[] = (initialCloudImages || []).map(img => ({
       type: 'cloud',
-      source: img.image,
+      source: img.url,
       id: img.id,
     }));
 
@@ -111,7 +111,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     const cloudImagePreviews: ImageData[] = (initialCloudImages || []).map(
       img => ({
         type: 'cloud',
-        source: img.image,
+        source: img.url,
         id: img.id,
       })
     );
@@ -126,11 +126,16 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
         ]
       : [];
 
-    setPreviews([...cloudImagePreviews, ...videoPreview]);
-    setUploadedImages([]);
-    setBusinessShowCaseFile([]);
-    setCurrentIndex(0);
-  }, [initialCloudImages, initialVideoUrl, setBusinessShowCaseFile]);
+    const newImagePreviews: ImageData[] = uploadedImages.map(img => ({
+      type: 'new_cloud',
+      source: img.url,
+      publicId: img.public_id,
+    }));
+
+    setPreviews([...cloudImagePreviews, ...newImagePreviews, ...videoPreview]);
+    // We don't reset uploadedImages here anymore to prevent them from disappearing
+    // when other props like initialVideoUrl change.
+  }, [initialCloudImages, initialVideoUrl, uploadedImages]); // added uploadedImages to ensure sync
 
   // Load Cloudinary Upload Widget script once
   useEffect(() => {

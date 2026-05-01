@@ -72,10 +72,10 @@ const BusinessStepForm = (): JSX.Element => {
     { url: string; public_id: string }[]
   >([]);
   const [cloudImages, setCloudImages] = useState<
-    { id: number; image: string; uploaded_at: string }[]
+    { id: number; url: string; uploaded_at: string }[]
   >([]);
   const [initialCloudImages, setInitialCloudImages] = useState<
-    { id: number; image: string; uploaded_at: string }[]
+    { id: number; url: string; uploaded_at: string }[]
   >([]);
 
   // Services: Cloud (from onboarding) and Local (newly created)
