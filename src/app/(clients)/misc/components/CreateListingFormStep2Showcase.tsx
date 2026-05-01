@@ -12,6 +12,7 @@ import {
 import Image from 'next/image';
 import { useUserContext } from '@/contexts/UserContext';
 import { toast } from 'sonner';
+import { BusinessImage } from '@/types/business/types';
 
 const CLOUDINARY_CLOUD_NAME =
   process.env['NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME'] || 'your_cloud_name';
@@ -41,10 +42,8 @@ interface BusinessShowCaseFormProps {
   setBusinessShowCaseFile: (
     files: { url: string; public_id: string }[]
   ) => void;
-  setCloudImages?: (
-    images: { id: number; url: string; uploaded_at: string }[]
-  ) => void;
-  initialCloudImages?: { id: number; url: string; uploaded_at: string }[];
+  setCloudImages?: (images: BusinessImage[]) => void;
+  initialCloudImages?: BusinessImage[];
   /** Called whenever a video is successfully uploaded via Cloudinary */
   onVideoUploaded?: (result: VideoUploadResult) => void;
   /** Called whenever a video is removed */

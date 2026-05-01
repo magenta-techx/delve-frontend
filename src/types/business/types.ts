@@ -89,7 +89,8 @@ export interface BusinessHours {
 
 export interface BusinessImage {
   id: number;
-  image: string; // URL of the image
+  url: string;
+  is_thumbnail?: boolean;
   uploaded_at: string;
 }
 

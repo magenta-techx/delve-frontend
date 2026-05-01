@@ -11,7 +11,7 @@ import BusinessServicesForm from './CreateListingFormStep5Services';
 import BusinessLocationForm from './CreateListingFormStep6Location';
 import BusinessContactAndBusiness from './CreateListingFormStep7Contact';
 import CreateListingFormStep8Success from './CreateListingFormStep8Success';
-import { BusinessShowCaseProps } from '@/types/business/types';
+import { BusinessShowCaseProps, BusinessImage } from '@/types/business/types';
 import { useBusinessRegistrationStore } from '@/stores/businessRegistrationStore';
 import ArrowLeftIconBlackSm from '@/assets/icons/ArrowLeftIconBlackSm';
 
@@ -71,12 +71,10 @@ const BusinessStepForm = (): JSX.Element => {
   const [businessShowCaseFile, setBusinessShowCaseFile] = useState<
     { url: string; public_id: string }[]
   >([]);
-  const [cloudImages, setCloudImages] = useState<
-    { id: number; url: string; uploaded_at: string }[]
-  >([]);
-  const [initialCloudImages, setInitialCloudImages] = useState<
-    { id: number; url: string; uploaded_at: string }[]
-  >([]);
+  const [cloudImages, setCloudImages] = useState<BusinessImage[]>([]);
+  const [initialCloudImages, setInitialCloudImages] = useState<BusinessImage[]>(
+    []
+  );
 
   // Services: Cloud (from onboarding) and Local (newly created)
   interface CloudService {
