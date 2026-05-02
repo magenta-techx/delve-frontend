@@ -153,8 +153,9 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   const carouselConfig = useMemo(
     () => ({
-      // Mobile: make the center item much larger and side peeks smaller
-      slotWidths: isMobile ? [10, 80, 10] : [20, 25, 30, 25, 20],
+      // Mobile: Large side slots (25%) so they appear prominent (taller)
+      // while still perfectly positioning their inner edges at the 10% / 90% marks
+      slotWidths: isMobile ? [25, 80, 25] : [20, 25, 30, 25, 20],
       centerPosition: isMobile ? 1 : 2,
     }),
     [isMobile]
