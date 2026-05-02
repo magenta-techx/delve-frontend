@@ -26,7 +26,7 @@ import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardPage(): JSX.Element {
-  const { currentBusiness, isLoading } = useBusinessContext();
+  const { currentBusiness, businesses, isLoading } = useBusinessContext();
   const { isMobile } = useIsMobile();
   const { data, isLoading: isBusinessDetailsLoading } =
     useBusinessDashboardDetails(currentBusiness?.id, 'dashboard');
@@ -67,7 +67,10 @@ export default function DashboardPage(): JSX.Element {
     );
   }
 
-  if (!currentBusiness) {
+  // Only redirect if we are certain the user truly has zero businesses.
+  // During initialization currentBusiness can be null even when businesses exist,
+  // so we guard against that by checking the raw businesses array.
+  if (!isLoading && businesses.length === 0) {
     router.replace('/businesses/create-listing');
     return (
       <EmptyState
@@ -75,11 +78,7 @@ export default function DashboardPage(): JSX.Element {
         title='No business created yet'
         description='Get started by creating your first business listing.'
         actions={
-          <Button
-            isLoading
-            // className='inline-block rounded-lg bg-primary px-6 py-3 text-white transition-colors hover:bg-primary/90'
-            size='xl'
-          >
+          <Button isLoading size='xl'>
             Redirecting you to create your first business listing...
           </Button>
         }

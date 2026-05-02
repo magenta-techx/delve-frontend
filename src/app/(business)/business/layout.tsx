@@ -39,7 +39,16 @@ const BusinessLayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     useOngoingBusinessOnboarding();
 
   useEffect(() => {
-    if (!isLoadingOnboarding && onboardingData?.data) {
+    const data = onboardingData?.data;
+    // data can be an empty array [] when onboarding is finished;
+    // [] is truthy in JS, so we must explicitly reject arrays and empty objects.
+    const hasOngoingOnboarding =
+      data &&
+      !Array.isArray(data) &&
+      typeof data === 'object' &&
+      Object.keys(data).length > 0;
+
+    if (!isLoadingOnboarding && hasOngoingOnboarding) {
       // If there's an ongoing onboarding, redirect to the create listing page
       router.push('/businesses/create-listing');
     }

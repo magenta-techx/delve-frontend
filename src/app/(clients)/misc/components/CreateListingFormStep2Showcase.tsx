@@ -153,7 +153,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   const carouselConfig = useMemo(
     () => ({
-      slotWidths: isMobile ? [28, 44, 28] : [20, 25, 30, 25, 20],
+      slotWidths: isMobile ? [20, 60, 20] : [20, 25, 30, 25, 20],
       centerPosition: isMobile ? 1 : 2,
     }),
     [isMobile]

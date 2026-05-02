@@ -1,5 +1,6 @@
 'use client';
 import React, { useRef, useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import ArrowRightIconWhite from '@/assets/icons/ArrowRightIconWhite';
 
@@ -42,6 +43,7 @@ const BusinessStepForm = (): JSX.Element => {
   };
 
   const introFormRef = useRef<IntroFormHandle | null>(null);
+  const queryClient = useQueryClient();
 
   const {
     business_registration_step: savedStep,
@@ -667,6 +669,11 @@ const BusinessStepForm = (): JSX.Element => {
           });
 
           await handleStepComplete();
+
+          // Invalidate user-businesses so the dashboard picks up the newly created business
+          await queryClient.invalidateQueries({
+            queryKey: ['user-businesses'],
+          });
 
           // Move to success page (step 7)
           setStep(7);

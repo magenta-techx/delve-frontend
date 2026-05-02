@@ -1,7 +1,8 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { LinkButton } from '@/components/ui';
+import { useBusinessRegistrationStore } from '@/stores/businessRegistrationStore';
 
 interface CreateListingFormStep8SuccessProps {
   businessId?: string | number | undefined;
@@ -9,7 +10,15 @@ interface CreateListingFormStep8SuccessProps {
 
 const CreateListingFormStep8Success: React.FC<
   CreateListingFormStep8SuccessProps
-> = ({}) => {
+> = ({ businessId }) => {
+  const resetStore = useBusinessRegistrationStore(state => state.reset);
+
+  // Clear registration store as soon as the success screen mounts so that
+  // revisiting /businesses/create-listing starts a fresh onboarding flow.
+  useEffect(() => {
+    resetStore();
+  }, [resetStore]);
+
   return (
     <div className='flex min-h-svh flex-col items-center justify-center bg-white px-4 py-8'>
       <div className='space-y-6 text-center'>
