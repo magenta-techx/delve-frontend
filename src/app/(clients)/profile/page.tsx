@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -50,22 +50,18 @@ const ProfilePage = () => {
   const { user: userFromContext, isLoading: userContextLoading } =
     useUserContext();
 
+  const resolvedProfileData = useMemo(
+    () => profileData ?? userFromContext ?? null,
+    [profileData, userFromContext]
+  );
+
   // Profile form with RHF + Zod
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileUpdateSchema),
-    values: useMemo(() => {
-      const dataToUse = profileData || userFromContext;
-      return {
-        first_name:
-          dataToUse?.first_name && dataToUse.first_name !== 'null'
-            ? dataToUse.first_name
-            : '',
-        last_name:
-          dataToUse?.last_name && dataToUse.last_name !== 'null'
-            ? dataToUse.last_name
-            : '',
-      };
-    }, [profileData, userFromContext]),
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+    },
   });
 
   // Password form with RHF + Zod
@@ -78,27 +74,36 @@ const ProfilePage = () => {
     },
   });
 
+  useEffect(() => {
+    if (!resolvedProfileData) {
+      return;
+    }
+
+    profileForm.reset({
+      first_name: normalizeProfileName(resolvedProfileData.first_name),
+      last_name: normalizeProfileName(resolvedProfileData.last_name),
+    });
+  }, [resolvedProfileData, profileForm]);
+
   const displayName = useMemo(() => {
     const fallback = session?.user?.name || 'Delve user';
-    const fname =
-      profileData?.first_name && profileData.first_name !== 'null'
-        ? profileData.first_name
-        : '';
-    const lname =
-      profileData?.last_name && profileData.last_name !== 'null'
-        ? profileData.last_name
-        : '';
+    const fname = normalizeProfileName(resolvedProfileData?.first_name);
+    const lname = normalizeProfileName(resolvedProfileData?.last_name);
 
     const composed = [fname, lname].filter(Boolean).join(' ');
     return composed || fallback;
-  }, [profileData?.first_name, profileData?.last_name, session?.user?.name]);
+  }, [
+    resolvedProfileData?.first_name,
+    resolvedProfileData?.last_name,
+    session?.user?.name,
+  ]);
 
-  const joinedDate = profileData?.['date_joined'] as string | undefined;
+  const joinedDate = resolvedProfileData?.['date_joined'] as string | undefined;
   const joinDateLabel = useMemo(() => formatJoinDate(joinedDate), [joinedDate]);
 
   const avatarImage =
     imagePreview ??
-    (profileData?.['profile_image'] as string | null | undefined) ??
+    (resolvedProfileData?.['profile_image'] as string | null | undefined) ??
     session?.user?.image ??
     null;
 
@@ -121,14 +126,12 @@ const ProfilePage = () => {
       profile_image?: File;
     } = {};
 
-    const originalFirstName =
-      profileData?.first_name && profileData.first_name !== 'null'
-        ? profileData.first_name
-        : '';
-    const originalLastName =
-      profileData?.last_name && profileData.last_name !== 'null'
-        ? profileData.last_name
-        : '';
+    const originalFirstName = normalizeProfileName(
+      resolvedProfileData?.first_name
+    );
+    const originalLastName = normalizeProfileName(
+      resolvedProfileData?.last_name
+    );
 
     if (
       data.first_name !== undefined &&
@@ -270,7 +273,7 @@ const ProfilePage = () => {
             }
             displayName={displayName}
             avatarUrl={avatarImage}
-            email={profileData?.email ?? userEmail ?? ''}
+            email={resolvedProfileData?.email ?? userEmail ?? ''}
             profileForm={profileForm}
             onSubmit={handleProfileSubmit}
             isSubmitting={updateProfileMutation.isPending}
@@ -510,6 +513,10 @@ function getInitials(firstName?: string, lastName?: string, fallback?: string) {
       .toUpperCase();
   }
   return 'DM';
+}
+
+function normalizeProfileName(value: unknown) {
+  return typeof value === 'string' && value !== 'null' ? value : '';
 }
 
 function formatJoinDate(input?: string) {

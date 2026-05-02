@@ -107,6 +107,37 @@ export default function CollaborationForm() {
     );
   }, [savedBusinesses, watch('business_ids')]);
 
+  const currentUserPrivilege = useMemo(() => {
+    const currentUserId = currentUser?.user?.id;
+
+    if (!currentUserId) {
+      return undefined;
+    }
+
+    const memberPrivilege = collabData?.data?.members?.find(
+      member => member.member?.id === currentUserId
+    )?.priviledge;
+
+    if (memberPrivilege) {
+      return memberPrivilege;
+    }
+
+    return collabData?.data?.owner?.id === currentUserId ? 'owner' : undefined;
+  }, [
+    collabData?.data?.members,
+    collabData?.data?.owner?.id,
+    currentUser?.user?.id,
+  ]);
+
+  const handleClearPreview = () => {
+    setInvitedMembers([]);
+    reset({
+      name: '',
+      description: '',
+      business_ids: [],
+    });
+  };
+
   // Initialize form with collabData
   React.useEffect(() => {
     if (collabData?.data) {
@@ -304,20 +335,15 @@ export default function CollaborationForm() {
       {/* Preview Header */}
       <div className='mb-5 flex items-center justify-between border-b pb-2 pt-5'>
         <h2 className='text-lg font-semibold text-[#0D121C]'>Preview</h2>
-        <button
-          type='button'
-          onClick={() => {
-            setInvitedMembers([]);
-            reset({
-              name: '',
-              description: '',
-              business_ids: [],
-            });
-          }}
-          className='text-sm text-[#9AA4B2] hover:text-[#0D121C]'
-        >
-          Clear
-        </button>
+        {currentUserPrivilege === 'owner' && (
+          <button
+            type='button'
+            onClick={handleClearPreview}
+            className='text-sm text-[#9AA4B2] hover:text-[#0D121C]'
+          >
+            Clear
+          </button>
+        )}
       </div>
 
       {/* Group Name Section */}
@@ -355,7 +381,9 @@ export default function CollaborationForm() {
       </div>
 
       {/* Group Members Section */}
-      {(currentUser || invitedMembers.length > 0 || existingMembers.length > 0) && (
+      {(currentUser ||
+        invitedMembers.length > 0 ||
+        existingMembers.length > 0) && (
         <div className='mb-4'>
           <h3 className='mb-3 text-[0.625rem] font-normal text-[#9AA4B2] lg:text-xs'>
             Group Members
@@ -396,8 +424,15 @@ export default function CollaborationForm() {
               >
                 <div className='flex items-center gap-3'>
                   <img
-                    src={member.member?.profile_image || '/collaboration/user_1.png'}
-                    alt={member.member ? `${member.member.first_name} ${member.member.last_name}` : member.unregistered_user_email || 'User'}
+                    src={
+                      member.member?.profile_image ||
+                      '/collaboration/user_1.png'
+                    }
+                    alt={
+                      member.member
+                        ? `${member.member.first_name} ${member.member.last_name}`
+                        : member.unregistered_user_email || 'User'
+                    }
                     className='size-6 rounded-full object-cover md:size-10'
                   />
                   <span className='text-[0.6125rem] font-normal text-[#0D121C] lg:text-xs'>
@@ -412,7 +447,7 @@ export default function CollaborationForm() {
                         })()}
                   </span>
                 </div>
-                <span className='rounded-md bg-white p-1 text-[0.6125rem] font-normal text-[#0D121C] md:px-2 lg:text-xs capitalize'>
+                <span className='rounded-md bg-white p-1 text-[0.6125rem] font-normal capitalize text-[#0D121C] md:px-2 lg:text-xs'>
                   {member.priviledge || 'Member'}
                 </span>
                 <span className='text-[0.625rem] font-normal text-[#4F5E71] lg:text-xs'>
@@ -420,7 +455,12 @@ export default function CollaborationForm() {
                     ? `Joined ${format(new Date(member.accepted_when), 'MM-d-yyyy')}`
                     : '-'}
                 </span>
-                <span className='text-[0.625rem] font-normal lg:text-xs capitalize' style={{ color: member.status === 'pending' ? '#9AA4B2' : '#7C3AED' }}>
+                <span
+                  className='text-[0.625rem] font-normal capitalize lg:text-xs'
+                  style={{
+                    color: member.status === 'pending' ? '#9AA4B2' : '#7C3AED',
+                  }}
+                >
                   {member.status}
                 </span>
               </div>

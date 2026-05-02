@@ -85,13 +85,20 @@ const BusinessStepForm = (): JSX.Element => {
     uploaded_at: string;
   }
 
+  interface EditableCloudService extends CloudService {
+    imagePreview?: string;
+    imageFile?: File | null;
+  }
+
   interface LocalService {
     title: string;
     description?: string;
     image?: File | null;
   }
 
-  const [cloudServices, setCloudServices] = useState<CloudService[]>([]);
+  const [cloudServices, setCloudServices] = useState<EditableCloudService[]>(
+    []
+  );
   const [initialCloudServices, setInitialCloudServices] = useState<
     CloudService[]
   >([]);
@@ -154,6 +161,27 @@ const BusinessStepForm = (): JSX.Element => {
   );
   const [isIntroFormValid, setIsIntroFormValid] = useState<boolean>(false);
   const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
+
+  const getNormalizedLocalServices = (serviceList: LocalService[]) =>
+    serviceList
+      .filter(service => {
+        const title = service.title?.trim() ?? '';
+        const description = service.description?.trim() ?? '';
+
+        return title !== '' && description !== '';
+      })
+      .map(service => ({
+        title: service.title.trim(),
+        description: service.description?.trim() ?? '',
+        image: service.image ?? null,
+      }));
+
+  const syncPersistedServices = (persistedServices: CloudService[]) => {
+    setInitialCloudServices(persistedServices);
+    setCloudServices(persistedServices);
+    setLocalServices([]);
+    setServices([]);
+  };
 
   // Map onboarding phases to step numbers
   const phaseToStepMap: Record<string, number> = {
@@ -263,13 +291,11 @@ const BusinessStepForm = (): JSX.Element => {
       }
 
       // Set cloud services from onboarding
-      if (
-        Array.isArray(onboarding.services) &&
-        onboarding.services.length > 0
-      ) {
-        setInitialCloudServices(onboarding.services);
-        setCloudServices(onboarding.services);
-      }
+      const persistedServices = Array.isArray(onboarding.services)
+        ? onboarding.services
+        : [];
+      setInitialCloudServices(persistedServices);
+      setCloudServices(persistedServices);
 
       // Note: Services, images, and other complex data should be handled
       // by the individual form components that fetch and manage them
@@ -455,102 +481,94 @@ const BusinessStepForm = (): JSX.Element => {
     }
 
     try {
-      // 1. Delete removed cloud services
-      const deletedServices = initialCloudServices.filter(
-        initialService => !cloudServices.find(s => s.id === initialService.id)
+      const initialServicesById = new Map(
+        initialCloudServices.map(service => [service.id, service])
+      );
+      const currentCloudServiceIds = new Set(
+        cloudServices.map(service => service.id)
+      );
+      const servicesToDelete = initialCloudServices.filter(
+        service => !currentCloudServiceIds.has(service.id)
       );
 
-      if (deletedServices.length > 0) {
-        console.log('Deleting services:', deletedServices);
-        for (const service of deletedServices) {
-          await deleteServiceMutation.mutateAsync({
+      const servicesToUpdate = cloudServices.filter(service => {
+        const initialService = initialServicesById.get(service.id);
+
+        if (!initialService) {
+          return false;
+        }
+
+        const titleChanged = service.title !== initialService.title;
+        const descriptionChanged =
+          (service.description ?? '') !== (initialService.description ?? '');
+        const imageChanged = service.imageFile instanceof File;
+
+        return titleChanged || descriptionChanged || imageChanged;
+      });
+
+      const servicesToCreate = getNormalizedLocalServices(localServices);
+      const hasChanges =
+        servicesToDelete.length > 0 ||
+        servicesToUpdate.length > 0 ||
+        servicesToCreate.length > 0;
+
+      if (!hasChanges) {
+        toast.success('No changes detected', {
+          description: 'Moving to the next step.',
+        });
+        await handleStepComplete();
+        setStep(pageNumber + 1);
+        setPageNumber(prev => prev + 1);
+        setIsSubmitting(false);
+        return;
+      }
+
+      await Promise.all([
+        ...servicesToDelete.map(service =>
+          deleteServiceMutation.mutateAsync({
             business_id: businessId,
             service_id: service.id,
-          });
-        }
-      }
-
-      // 2. Update edited cloud services
-      const editedCloudServices: typeof cloudServices = [];
-
-      for (const service of cloudServices) {
-        const initialService = initialCloudServices.find(
-          s => s.id === service.id
-        );
-        if (initialService) {
-          // Check if title, description, or image changed
-          const titleChanged = service.title !== initialService.title;
-          const descriptionChanged =
-            service.description !== initialService.description;
-          const imageFileAdded = 'imageFile' in service && service.imageFile;
-
-          if (titleChanged || descriptionChanged || imageFileAdded) {
-            editedCloudServices.push(service);
-          }
-        }
-      }
-
-      if (editedCloudServices.length > 0) {
-        for (const service of editedCloudServices) {
-          const updateData: any = {
+          })
+        ),
+        ...servicesToUpdate.map(service =>
+          updateServiceMutation.mutateAsync({
             business_id: businessId,
             service_id: service.id,
             service: {
               title: service.title,
-              description: service.description,
+              description: service.description ?? '',
+              ...(service.imageFile instanceof File
+                ? { image: service.imageFile }
+                : {}),
             },
-          };
-          // If image was changed (has imageFile), include it
-          if ('imageFile' in service && service.imageFile) {
-            updateData.service.image = service.imageFile;
-          }
+          })
+        ),
+        ...(servicesToCreate.length > 0
+          ? [
+              createServicesMutation.mutateAsync({
+                business_id: businessId,
+                services: servicesToCreate,
+              }),
+            ]
+          : []),
+      ]);
 
-          await updateServiceMutation.mutateAsync(updateData);
-        }
-      }
+      const refreshedOnboarding = await refetchOnboarding();
+      const refreshedServices = Array.isArray(
+        refreshedOnboarding.data?.data?.services
+      )
+        ? refreshedOnboarding.data.data.services
+        : [];
 
-      // 3. Create new local services
-      if (localServices.length > 0) {
-        console.log('Creating new services:', localServices);
-
-        // Log each service to debug image issue
-        localServices.forEach((service, idx) => {
-          console.log(`Service ${idx}:`, {
-            title: service.title,
-            description: service.description,
-            hasImage: !!service.image,
-            imageType: service.image ? typeof service.image : 'null',
-            isFile: service.image instanceof File,
-          });
-        });
-
-        // Transform services to ensure description is always present and include images
-        const servicesWithDescription = localServices.map(service => ({
-          title: service.title,
-          description: service.description || '',
-          image: service.image || null,
-        }));
-
-        console.log(
-          'Services with description (before API call):',
-          servicesWithDescription
-        );
-
-        await createServicesMutation.mutateAsync({
-          business_id: businessId,
-          services: servicesWithDescription,
-        });
-      }
+      syncPersistedServices(refreshedServices);
 
       toast.success('Step completed!', {
         description: 'Business services saved successfully.',
       });
-      await handleStepComplete();
       setStep(pageNumber + 1);
       setPageNumber(prev => prev + 1);
     } catch (error) {
       console.log('Request failed:', error);
-      await handleStepComplete();
       toast.error('Error', {
         description: 'Error saving services. Please try again.',
       });
