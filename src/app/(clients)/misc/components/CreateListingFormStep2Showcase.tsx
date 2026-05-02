@@ -155,7 +155,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     () => ({
       // Mobile: Large side slots (25%) so they appear prominent (taller)
       // while still perfectly positioning their inner edges at the 10% / 90% marks
-      slotWidths: isMobile ? [40, 80, 40] : [20, 25, 30, 25, 20],
+      slotWidths: isMobile ? [60, 80, 60] : [20, 25, 30, 25, 20],
       centerPosition: isMobile ? 1 : 2,
     }),
     [isMobile]
@@ -514,12 +514,11 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
           )}
 
           {/* Edge fade effects (hidden on mobile per new design) */}
-          {!isMobile && (
-            <>
-              <div className='pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-16 bg-gradient-to-r from-white to-transparent md:w-32' />
-              <div className='pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-16 bg-gradient-to-l from-white to-transparent md:w-32' />
-            </>
-          )}
+
+          <>
+            <div className='pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-10 bg-gradient-to-r from-white to-transparent md:w-32' />
+            <div className='pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-10 bg-gradient-to-l from-white to-transparent md:w-32' />
+          </>
         </div>
       )}
 
