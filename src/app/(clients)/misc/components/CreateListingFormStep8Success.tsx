@@ -10,7 +10,7 @@ interface CreateListingFormStep8SuccessProps {
 
 const CreateListingFormStep8Success: React.FC<
   CreateListingFormStep8SuccessProps
-> = ({ businessId }) => {
+> = ({ businessId: _businessId }) => {
   const resetStore = useBusinessRegistrationStore(state => state.reset);
 
   // Clear registration store as soon as the success screen mounts so that
