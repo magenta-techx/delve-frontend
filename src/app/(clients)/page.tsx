@@ -142,7 +142,7 @@ export default function HomePage() {
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[85vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
         <section />
-        <div className='relative -top-16 flex h-dvh min-h-[756px] w-full rounded-b-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
+        <div className='relative -top-16 flex h-svh min-h-[756px] w-full rounded-b-2xl bg-[url("/landingpage/landing-pagemobile-hero.jpg")] bg-cover bg-no-repeat sm:hidden'>
           <div className='insert-0 absolute top-0 flex h-full w-full rounded-b-xl bg-black/60 sm:rounded-none'></div>
         </div>
 

@@ -7,7 +7,7 @@ interface AuthLayoutProps {
 
 export default function Layout({ children }: AuthLayoutProps): JSX.Element {
   return (
-    <section className='mx-auto grid h-dvh max-w-[1920px] overflow-y-scroll p-4 sm:w-full lg:grid-cols-[1fr,.85fr]'>
+    <section className='mx-auto grid h-svh max-w-[1920px] overflow-y-scroll p-4 sm:w-full lg:grid-cols-[1fr,.85fr]'>
       {children}
       <div className='hidden lg:flex'>
         <SimpleAuthPanel />
