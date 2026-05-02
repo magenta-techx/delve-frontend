@@ -531,7 +531,7 @@ export default function CollaborationForm() {
   );
 
   return (
-    <div className='w-full gap-3 py-16 pt-16 md:py-8 lg:grid lg:h-svh lg:grid-rows-[max-content,1fr] lg:overflow-hidden xl:pb-12 xl:pt-28'>
+    <div className='custom-scrollbar w-full gap-3 overflow-y-auto py-16 pt-16 md:py-8 lg:grid lg:h-svh lg:grid-rows-[max-content,1fr] lg:overflow-hidden xl:pb-12 xl:pt-28'>
       <header className='container mx-auto flex w-full items-center justify-between px-4'>
         <Link
           href='/businesses/saved/collaboration'
@@ -565,7 +565,7 @@ export default function CollaborationForm() {
           </SheetTrigger>
           <SheetContent
             side='bottom'
-            className='h-[82vh] overflow-y-auto px-0 pt-6 sm:max-w-none'
+            className='max-h-[85svh] overflow-y-auto px-0 pt-6 sm:max-w-none'
             showCloseButton={false}
           >
             <div className='h-full px-4 pb-12'>{renderPreview(true)}</div>
@@ -576,7 +576,7 @@ export default function CollaborationForm() {
           </SheetContent>
         </Sheet>
       </header>
-      <section className='container mx-auto grid w-full gap-8 overflow-hidden px-4 xl:grid-cols-2 xl:gap-16'>
+      <section className='custom-scrollbar container mx-auto grid w-full gap-8 overflow-y-auto px-4 lg:overflow-hidden xl:grid-cols-2 xl:gap-16'>
         <form className='custom-scrollbar flex flex-col gap-4 overflow-scroll rounded-lg pl-4 max-md:mt-4 lg:h-full'>
           <h1 className='text-base font-semibold max-md:mt-4 md:mb-2 md:text-lg'>
             Collaborate With Your Crew

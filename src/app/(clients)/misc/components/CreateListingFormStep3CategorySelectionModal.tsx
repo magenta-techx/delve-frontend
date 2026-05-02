@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCategories, useSubcategories } from '@/app/(business)/misc/api/business';
+import {
+  useCategories,
+  useSubcategories,
+} from '@/app/(business)/misc/api/business';
 import { Button } from '@/components/ui/Button';
 
 interface CategorySelectionModalProps {
@@ -18,12 +21,15 @@ const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
   onClose,
   onSubmit,
   categoryId,
-  existingSubcategoryIds = []
+  existingSubcategoryIds = [],
 }) => {
-  const [selectedSubcategoryIds, setSelectedSubcategoryIds] = useState<number[]>([]);
-  
+  const [selectedSubcategoryIds, setSelectedSubcategoryIds] = useState<
+    number[]
+  >([]);
+
   const { data: categories = [] } = useCategories();
-  const { data: subcategories = [], isLoading: subcategoriesLoading } = useSubcategories(categoryId);
+  const { data: subcategories = [], isLoading: subcategoriesLoading } =
+    useSubcategories(categoryId);
 
   // Reset selections when modal opens/closes or initialize with existing selections
   useEffect(() => {
@@ -36,7 +42,7 @@ const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
   }, [isOpen, categoryId, existingSubcategoryIds]);
 
   const toggleSubcategory = (subcategoryId: number) => {
-    setSelectedSubcategoryIds(prev => 
+    setSelectedSubcategoryIds(prev =>
       prev.includes(subcategoryId)
         ? prev.filter(id => id !== subcategoryId)
         : [...prev, subcategoryId]
@@ -55,66 +61,73 @@ const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
   // If we have a categoryId, show subcategories directly
   if (categoryId) {
     const selectedCategory = categories.find(c => c.id === categoryId);
-    
+
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="relative mx-4 w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl">
-          <button
-            onClick={onClose}
-            className="absolute right-6 top-6 text-gray-400 hover:text-gray-600"
-          >
-            <X size={24} />
-          </button>
+      <div className='fixed inset-0 z-50 bg-black/50'>
+        <div className='custom-scrollbar flex h-full w-full items-start justify-center overflow-y-auto py-6'>
+          <div className='custom-scrollbar relative mx-4 max-h-[85svh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl md:p-8'>
+            <button
+              onClick={onClose}
+              className='absolute right-6 top-6 text-gray-400 hover:text-gray-600'
+            >
+              <X size={24} />
+            </button>
 
-          <h2 className="mb-2 text-2xl md:text-3xl font-semibold font-karma text-balance text-[#0F0F0F]">
-            Choose your {selectedCategory?.name.toLowerCase()} business type
-          </h2>
-          <p className="mb-8 text-gray-600 ">
-            Select the subcategories that best describe your {selectedCategory?.name.toLowerCase()} business
-          </p>
+            <h2 className='mb-2 text-balance font-karma text-2xl font-semibold text-[#0F0F0F] md:text-3xl'>
+              Choose your {selectedCategory?.name.toLowerCase()} business type
+            </h2>
+            <p className='mb-8 text-gray-600'>
+              Select the subcategories that best describe your{' '}
+              {selectedCategory?.name.toLowerCase()} business
+            </p>
 
-          {subcategoriesLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent"></div>
-            </div>
-          ) : (
-            <>
-              <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {subcategories.map((subcategory) => {
-                  const isSelected = selectedSubcategoryIds.includes(subcategory.id);
-                  
-                  return (
-                    <button
-                      key={subcategory.id}
-                      type="button"
-                      onClick={() => toggleSubcategory(subcategory.id)}
-                      className={cn(
-                        'rounded-lg border px-4 py-3 text-left transition-all duration-200',
-                        isSelected
-                          ? 'border-[#A48AFB] bg-[#FBFAFF] text-purple-700'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300 hover:bg-purple-50'
-                      )}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">{subcategory.name}</span>
-                        {isSelected && (
-                          <div className="size-3 rounded-full bg-[#A48AFB]"></div>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
+            {subcategoriesLoading ? (
+              <div className='flex items-center justify-center py-8'>
+                <div className='h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent'></div>
               </div>
+            ) : (
+              <>
+                <div className='mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2'>
+                  {subcategories.map(subcategory => {
+                    const isSelected = selectedSubcategoryIds.includes(
+                      subcategory.id
+                    );
 
-              <Button
-                onClick={handleSubmit}
-                disabled={selectedSubcategoryIds.length === 0}
-                size="lg"
-              >
-                Submit & Continue
-              </Button>
-            </>
-          )}
+                    return (
+                      <button
+                        key={subcategory.id}
+                        type='button'
+                        onClick={() => toggleSubcategory(subcategory.id)}
+                        className={cn(
+                          'rounded-lg border px-3 py-2 text-left text-sm transition-all duration-200 md:text-base',
+                          isSelected
+                            ? 'border-[#A48AFB] bg-[#FBFAFF] text-purple-700'
+                            : 'border-gray-200 bg-white text-gray-700 hover:border-purple-300 hover:bg-purple-50'
+                        )}
+                      >
+                        <div className='flex items-center justify-between'>
+                          <span className='font-medium'>
+                            {subcategory.name}
+                          </span>
+                          {isSelected && (
+                            <div className='size-2.5 rounded-full bg-[#A48AFB]'></div>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <Button
+                  onClick={handleSubmit}
+                  disabled={selectedSubcategoryIds.length === 0}
+                  size='lg'
+                >
+                  Submit & Continue
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     );

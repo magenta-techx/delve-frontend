@@ -339,7 +339,7 @@ export default function CollaborationFormBusinessSelector({
       >
         <SheetContent
           side='bottom'
-          className='h-[82vh] overflow-hidden px-0 pt-6 sm:max-w-none'
+          className='custom-scrollbar max-h-[85svh] overflow-y-auto px-0 pt-6 sm:max-w-none'
         >
           {MobileContent}
         </SheetContent>
