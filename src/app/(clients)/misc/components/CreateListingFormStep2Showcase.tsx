@@ -153,7 +153,8 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   const carouselConfig = useMemo(
     () => ({
-      slotWidths: isMobile ? [20, 60, 20] : [20, 25, 30, 25, 20],
+      // Mobile: make the center item much larger and side peeks smaller
+      slotWidths: isMobile ? [10, 80, 10] : [20, 25, 30, 25, 20],
       centerPosition: isMobile ? 1 : 2,
     }),
     [isMobile]
@@ -414,7 +415,8 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
           style={{
             position: 'absolute',
             width: `${widthPercent}%`,
-            aspectRatio: '15 / 10',
+            // Square aspect on mobile for bolder presentation
+            aspectRatio: isMobile ? '1 / 1' : '15 / 10',
             left: `${leftPercent}%`,
             transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
             zIndex: position === carouselConfig.centerPosition ? 10 : 5,
@@ -475,7 +477,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
       {previews.length > 0 && (
         <div className='relative w-full overflow-hidden'>
           <div
-            className='relative flex min-h-96 w-full items-center gap-4 px-12 py-4 md:px-16'
+            className='relative flex min-h-96 w-full items-center gap-4 px-4 py-4 md:px-16'
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             onTouchCancel={() => {
@@ -510,9 +512,13 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
             </>
           )}
 
-          {/* Edge fade effects */}
-          <div className='pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-16 bg-gradient-to-r from-white to-transparent md:w-32' />
-          <div className='pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-16 bg-gradient-to-l from-white to-transparent md:w-32' />
+          {/* Edge fade effects (hidden on mobile per new design) */}
+          {!isMobile && (
+            <>
+              <div className='pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-16 bg-gradient-to-r from-white to-transparent md:w-32' />
+              <div className='pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-16 bg-gradient-to-l from-white to-transparent md:w-32' />
+            </>
+          )}
         </div>
       )}
 
