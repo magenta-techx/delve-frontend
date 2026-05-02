@@ -565,7 +565,7 @@ export default function CollaborationForm() {
           </SheetTrigger>
           <SheetContent
             side='bottom'
-            className='h-[90vh] overflow-y-auto px-0 pt-6 sm:max-w-none'
+            className='h-[82vh] overflow-y-auto px-0 pt-6 sm:max-w-none'
             showCloseButton={false}
           >
             <div className='h-full px-4 pb-12'>{renderPreview(true)}</div>
