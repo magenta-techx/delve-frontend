@@ -155,7 +155,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     () => ({
       // Mobile: Large side slots (25%) so they appear prominent (taller)
       // while still perfectly positioning their inner edges at the 10% / 90% marks
-      slotWidths: isMobile ? [25, 80, 25] : [20, 25, 30, 25, 20],
+      slotWidths: isMobile ? [40, 80, 40] : [20, 25, 30, 25, 20],
       centerPosition: isMobile ? 1 : 2,
     }),
     [isMobile]
