@@ -181,7 +181,7 @@ export default function CollaborationDetails({
   };
 
   return (
-    <div className='w-full overflow-hidden py-8 pt-16 lg:h-dvh xl:pb-12 xl:pt-28'>
+    <div className='w-full overflow-hidden py-8 pt-16 lg:h-svh xl:pb-12 xl:pt-28'>
       <header className='custom-scrollbar container mx-auto mb-2.5 flex h-12 w-full max-w-[1356px] justify-between overflow-y-scroll p-5 px-4 md:px-8'>
         <div className='flex items-center gap-2'>
           {(isUserContributor || isUserOwner) && (

@@ -157,10 +157,14 @@
 }
 
 /* Prevent iPhone input focus zoom app-wide by ensuring at least 16px font-size on iOS */
+/* Using html body prefix to beat Tailwind utility-class specificity (0,2,1 vs 0,1,0) */
 @supports (-webkit-touch-callout: none) {
-  input,
-  select,
-  textarea {
+  html body input,
+  html body select,
+  html body textarea,
+  html body input[class],
+  html body select[class],
+  html body textarea[class] {
     font-size: 16px !important;
   }
 }
