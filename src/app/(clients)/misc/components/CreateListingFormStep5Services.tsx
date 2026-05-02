@@ -39,21 +39,24 @@ const CreateServices: React.FC<CreateServicesProps> = ({
   onCloudServicesChange,
   // initialCloudServices = [],
   cloudServices = [],
-  onSubmit
+  onSubmit,
 }) => {
   const [services, setServices] = useState<Service[]>([]);
-  const [localCloudServices, setLocalCloudServices] = useState<EditableCloudService[]>(cloudServices);
+  const [localCloudServices, setLocalCloudServices] =
+    useState<EditableCloudService[]>(cloudServices);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     if (isInitialized) return;
-    
+
     if (cloudServices && cloudServices.length > 0) {
-      setLocalCloudServices(cloudServices.map(s => ({
-        ...s,
-        imagePreview: s.image,
-        imageFile: null
-      })));
+      setLocalCloudServices(
+        cloudServices.map(s => ({
+          ...s,
+          imagePreview: s.image,
+          imageFile: null,
+        }))
+      );
       // If there are cloud services, don't initialize with empty service
       setServices([]);
     } else {
@@ -67,14 +70,16 @@ const CreateServices: React.FC<CreateServicesProps> = ({
   useEffect(() => {
     if (isInitialized) {
       // Preserve imagePreview and imageFile from existing local services if they exist
-      setLocalCloudServices(cloudServices.map(s => {
-        const existing = localCloudServices.find(ls => ls.id === s.id);
-        return {
-          ...s,
-          imagePreview: existing?.imagePreview || s.image,
-          imageFile: existing?.imageFile || null
-        };
-      }));
+      setLocalCloudServices(
+        cloudServices.map(s => {
+          const existing = localCloudServices.find(ls => ls.id === s.id);
+          return {
+            ...s,
+            imagePreview: existing?.imagePreview || s.image,
+            imageFile: existing?.imageFile || null,
+          };
+        })
+      );
     }
   }, [cloudServices, isInitialized]);
 
@@ -88,7 +93,7 @@ const CreateServices: React.FC<CreateServicesProps> = ({
   const addService = () => {
     const newServices = [
       ...services,
-      { title: '', description: '', image: null }
+      { title: '', description: '', image: null },
     ];
     updateParent(newServices);
   };
@@ -108,8 +113,9 @@ const CreateServices: React.FC<CreateServicesProps> = ({
   };
 
   const getValidServices = () => {
-    return services.filter(service => 
-      service.title.trim() !== '' && service.description.trim() !== ''
+    return services.filter(
+      service =>
+        service.title.trim() !== '' && service.description.trim() !== ''
     );
   };
 
@@ -132,7 +138,9 @@ const CreateServices: React.FC<CreateServicesProps> = ({
     reader.onloadend = () => {
       // Update both image and preview in a single state update
       const newServices = services.map((service, i) =>
-        i === index ? { ...service, image: file, imagePreview: reader.result as string } : service
+        i === index
+          ? { ...service, image: file, imagePreview: reader.result as string }
+          : service
       );
       updateParent(newServices);
     };
@@ -140,7 +148,9 @@ const CreateServices: React.FC<CreateServicesProps> = ({
   };
 
   const removeCloudService = (serviceId: number) => {
-    const updatedCloudServices = localCloudServices.filter(s => s.id !== serviceId);
+    const updatedCloudServices = localCloudServices.filter(
+      s => s.id !== serviceId
+    );
     setLocalCloudServices(updatedCloudServices);
     // Send to parent with imageFile so it can track changes
     onCloudServicesChange?.(updatedCloudServices as any);
@@ -158,7 +168,9 @@ const CreateServices: React.FC<CreateServicesProps> = ({
   const handleCloudImageUpload = (serviceId: number, file: File | null) => {
     if (!file) {
       const updated = localCloudServices.map(service =>
-        service.id === serviceId ? { ...service, imagePreview: '', imageFile: null } : service
+        service.id === serviceId
+          ? { ...service, imagePreview: '', imageFile: null }
+          : service
       ) as EditableCloudService[];
       setLocalCloudServices(updated);
       onCloudServicesChange?.(updated as any);
@@ -170,7 +182,13 @@ const CreateServices: React.FC<CreateServicesProps> = ({
     reader.onloadend = () => {
       // Update both file and preview in a single state update to avoid race conditions
       const updatedCloudServices = localCloudServices.map(service =>
-        service.id === serviceId ? { ...service, imagePreview: reader.result as string, imageFile: file } : service
+        service.id === serviceId
+          ? {
+              ...service,
+              imagePreview: reader.result as string,
+              imageFile: file,
+            }
+          : service
       ) as EditableCloudService[];
       setLocalCloudServices(updatedCloudServices);
       // Send to parent with imageFile so it can track changes
@@ -181,7 +199,7 @@ const CreateServices: React.FC<CreateServicesProps> = ({
 
   return (
     <div className='mx-auto max-w-xl space-y-6'>
-      <div className='divide-y divide-[#CDD5DF] space-y-8'>
+      <div className='space-y-8 divide-y divide-[#CDD5DF]'>
         {/* Cloud Services - Same styling as local services */}
         {localCloudServices.map((cloudService, index) => (
           <div key={`cloud-${cloudService.id}`} className='pb-8 pt-5'>
@@ -212,7 +230,9 @@ const CreateServices: React.FC<CreateServicesProps> = ({
                   id={`cloud-service-title-${cloudService.id}`}
                   placeholder='e.g., Hair Cut, Web Design, Consultation'
                   value={cloudService.title}
-                  onChange={e => updateCloudService(cloudService.id, 'title', e.target.value)}
+                  onChange={e =>
+                    updateCloudService(cloudService.id, 'title', e.target.value)
+                  }
                   className='w-full'
                 />
               </div>
@@ -228,7 +248,13 @@ const CreateServices: React.FC<CreateServicesProps> = ({
                   id={`cloud-service-description-${cloudService.id}`}
                   placeholder='Describe what this service includes and what clients can expect...'
                   value={cloudService.description}
-                  onChange={e => updateCloudService(cloudService.id, 'description', e.target.value)}
+                  onChange={e =>
+                    updateCloudService(
+                      cloudService.id,
+                      'description',
+                      e.target.value
+                    )
+                  }
                   rows={4}
                   className='w-full'
                 />
@@ -257,14 +283,14 @@ const CreateServices: React.FC<CreateServicesProps> = ({
                     className='flex h-[10.5rem] w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 transition-colors hover:border-purple-400 hover:bg-purple-50'
                   >
                     {cloudService.imagePreview ? (
-                      <div className='relative h-full w-full rounded-lg overflow-hidden'>
+                      <div className='relative h-full w-full overflow-hidden rounded-lg'>
                         <img
                           src={cloudService.imagePreview}
                           alt='Service preview'
-                          className='h-full w-full object-cover rounded-lg'
+                          className='h-full w-full rounded-lg object-cover'
                         />
-                        <div className='absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity'>
-                          <span className='flex items-center justify-center px-4 py-1.5 rounded-full bg-white text-black text-sm font-medium'>
+                        <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 transition-opacity hover:opacity-100'>
+                          <span className='flex items-center justify-center rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black'>
                             Click to change
                           </span>
                         </div>
@@ -280,10 +306,14 @@ const CreateServices: React.FC<CreateServicesProps> = ({
                     <button
                       type='button'
                       onClick={() => {
-                        updateCloudService(cloudService.id, 'imagePreview', undefined);
+                        updateCloudService(
+                          cloudService.id,
+                          'imagePreview',
+                          undefined
+                        );
                         updateCloudService(cloudService.id, 'imageFile', null);
                       }}
-                      className='absolute right-2 top-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200 z-10'
+                      className='absolute right-2 top-2 z-10 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200'
                     >
                       <X size={16} />
                     </button>
@@ -297,7 +327,7 @@ const CreateServices: React.FC<CreateServicesProps> = ({
         {/* Local Services - Same styling as cloud services */}
         {services.length > 0 && (
           <div>
-            <h3 className='font-inter text-sm font-semibold text-gray-900 mb-4'>
+            <h3 className='mb-4 font-inter text-sm font-semibold text-gray-900'>
               New Services
             </h3>
           </div>
@@ -349,8 +379,10 @@ const CreateServices: React.FC<CreateServicesProps> = ({
                   id={`service-description-${index}`}
                   placeholder='Describe what this service includes and what clients can expect...'
                   value={service.description}
-                  onChange={e => updateService(index, 'description', e.target.value)}
-                  rows={4}
+                  onChange={e =>
+                    updateService(index, 'description', e.target.value)
+                  }
+                  rows={8}
                   className='w-full'
                 />
               </div>
@@ -378,14 +410,14 @@ const CreateServices: React.FC<CreateServicesProps> = ({
                     className='flex h-[10.5rem] w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 transition-colors hover:border-purple-400 hover:bg-purple-50'
                   >
                     {service.imagePreview ? (
-                      <div className='relative h-full w-full rounded-lg overflow-hidden'>
+                      <div className='relative h-full w-full overflow-hidden rounded-lg'>
                         <img
                           src={service.imagePreview}
                           alt='Service preview'
-                          className='h-full w-full object-cover rounded-lg'
+                          className='h-full w-full rounded-lg object-cover'
                         />
-                        <div className='absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity'>
-                          <span className='flex items-center justify-center px-4 py-1.5 rounded-full bg-white text-black text-sm font-medium'>
+                        <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 transition-opacity hover:opacity-100'>
+                          <span className='flex items-center justify-center rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black'>
                             Click to change
                           </span>
                         </div>
@@ -404,7 +436,7 @@ const CreateServices: React.FC<CreateServicesProps> = ({
                         updateService(index, 'image', null);
                         updateService(index, 'imagePreview', undefined);
                       }}
-                      className='absolute right-2 top-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200 z-10'
+                      className='absolute right-2 top-2 z-10 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200'
                     >
                       <X size={16} />
                     </button>
@@ -433,7 +465,9 @@ const CreateServices: React.FC<CreateServicesProps> = ({
           <div className='flex items-center justify-between'>
             <div>
               <p className='text-sm font-medium text-green-800'>
-                {getValidServices().length} service{getValidServices().length !== 1 ? 's' : ''} ready for submission
+                {getValidServices().length} service
+                {getValidServices().length !== 1 ? 's' : ''} ready for
+                submission
               </p>
               <p className='mt-1 text-xs text-green-600'>
                 All required fields are completed
@@ -442,7 +476,7 @@ const CreateServices: React.FC<CreateServicesProps> = ({
             {onSubmit && (
               <Button
                 onClick={handleSubmit}
-                className='bg-green-600 hover:bg-green-700 text-white'
+                className='bg-green-600 text-white hover:bg-green-700'
               >
                 Submit Services
               </Button>

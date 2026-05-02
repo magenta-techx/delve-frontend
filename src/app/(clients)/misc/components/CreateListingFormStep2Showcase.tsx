@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Trash,
   ChevronLeft,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useUserContext } from '@/contexts/UserContext';
+import { useIsMobile } from '@/hooks/useMobile';
 import { toast } from 'sonner';
 import { BusinessImage } from '@/types/business/types';
 
@@ -60,6 +61,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   initialVideoUrl,
 }: BusinessShowCaseFormProps) => {
   const { user } = useUserContext();
+  const { isMobile } = useIsMobile();
   const isPremium = user?.is_premium_plan_active;
   const maxImageCount = isPremium ? 20 : 10;
   const maxImageSize = isPremium ? 20000000 : 10000000; // 20MB vs 10MB
@@ -91,6 +93,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const touchStartXRef = useRef<number | null>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -148,12 +151,26 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   // ─── Carousel helpers ────────────────────────────────────────────────────────
 
-  const getSlotWidth = (position: number) => {
-    const relativePos = position - 2;
+  const carouselConfig = useMemo(
+    () => ({
+      slotWidths: isMobile ? [28, 44, 28] : [20, 25, 30, 25, 20],
+      centerPosition: isMobile ? 1 : 2,
+    }),
+    [isMobile]
+  );
 
-    if (relativePos === 0) return 30;
-    if (relativePos === -1 || relativePos === 1) return 25;
-    return 20;
+  const getSlotWidth = (position: number) => {
+    if (position < 0) {
+      return carouselConfig.slotWidths[0] ?? 0;
+    }
+
+    if (position >= carouselConfig.slotWidths.length) {
+      return (
+        carouselConfig.slotWidths[carouselConfig.slotWidths.length - 1] ?? 0
+      );
+    }
+
+    return carouselConfig.slotWidths[position] ?? 0;
   };
 
   const handlePrev = () => {
@@ -171,6 +188,34 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
   const canGoLeft = currentIndex > 0;
   const canGoRight = currentIndex < previews.length - 1;
 
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchStartXRef.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    const touchStartX = touchStartXRef.current;
+    const touchEndX = event.changedTouches[0]?.clientX;
+
+    touchStartXRef.current = null;
+
+    if (touchStartX === null || touchEndX === undefined) {
+      return;
+    }
+
+    const deltaX = touchEndX - touchStartX;
+
+    if (Math.abs(deltaX) < 40) {
+      return;
+    }
+
+    if (deltaX > 0) {
+      handlePrev();
+      return;
+    }
+
+    handleNext();
+  };
+
   // ─── Upload handlers ─────────────────────────────────────────────────────────
 
   const openImageCloudinaryWidget = () => {
@@ -181,7 +226,9 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
     const currentImageCount = cloudImages.length + uploadedImages.length;
     if (currentImageCount >= maxImageCount) {
-      toast.error(`You have reached the maximum limit of ${maxImageCount} images for your ${isPremium ? 'Premium' : 'Free'} plan.`);
+      toast.error(
+        `You have reached the maximum limit of ${maxImageCount} images for your ${isPremium ? 'Premium' : 'Free'} plan.`
+      );
       return;
     }
 
@@ -336,10 +383,12 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
     return previews.map((imageData, index) => {
       // Calculate position relative to currentIndex
-      const position = index - currentIndex + 2; // Position in 0-4 range where 2 is center
+      const position = index - currentIndex + carouselConfig.centerPosition;
 
       // Only render if within visible range
-      if (position < -1 || position > 5) return null;
+      if (position < -1 || position > carouselConfig.slotWidths.length) {
+        return null;
+      }
 
       const imgSrc =
         typeof imageData.source === 'string' ? imageData.source : '';
@@ -354,7 +403,9 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
       }
 
       // Center the entire carousel strip
-      const centerOffset = (20 + 25 + 30 + 25 + 20) / 2; // Half of total width (60%)
+      const centerOffset =
+        carouselConfig.slotWidths.reduce((total, width) => total + width, 0) /
+        2;
       leftPercent = leftPercent - centerOffset + 50;
 
       return (
@@ -366,13 +417,15 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
             aspectRatio: '15 / 10',
             left: `${leftPercent}%`,
             transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-            zIndex: position === 2 ? 10 : 5,
+            zIndex: position === carouselConfig.centerPosition ? 10 : 5,
           }}
           className='flex-shrink-0 cursor-pointer pr-4 lg:pr-6'
           onClick={() => setCurrentIndex(index)}
         >
           <div className='relative h-full w-full overflow-hidden rounded-lg'>
-            {isVideo && position === 2 && imageData.videoUrl ? (
+            {isVideo &&
+            position === carouselConfig.centerPosition &&
+            imageData.videoUrl ? (
               <video
                 src={imageData.videoUrl}
                 controls
@@ -392,7 +445,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
               />
             )}
             {/* Video badge */}
-            {isVideo && position !== 2 && (
+            {isVideo && position !== carouselConfig.centerPosition && (
               <span className='absolute bottom-2 right-2 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white'>
                 <Video size={10} />
                 Video
@@ -421,7 +474,14 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
       {/* Carousel */}
       {previews.length > 0 && (
         <div className='relative w-full overflow-hidden'>
-          <div className='relative flex min-h-96 w-full items-center gap-4 px-16 py-4'>
+          <div
+            className='relative flex min-h-96 w-full items-center gap-4 px-12 py-4 md:px-16'
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={() => {
+              touchStartXRef.current = null;
+            }}
+          >
             {renderCarouselItems()}
           </div>
 
@@ -451,8 +511,8 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
           )}
 
           {/* Edge fade effects */}
-          <div className='pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-32 bg-gradient-to-r from-white to-transparent' />
-          <div className='pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-32 bg-gradient-to-l from-white to-transparent' />
+          <div className='pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-16 bg-gradient-to-r from-white to-transparent md:w-32' />
+          <div className='pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-16 bg-gradient-to-l from-white to-transparent md:w-32' />
         </div>
       )}
 
@@ -523,9 +583,10 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
         </div>
 
         {totalImages >= maxImageCount && (
-          <p className='mt-2 text-center text-sm text-amber-600 font-medium'>
-            Maximum of {maxImageCount} images allowed on your {isPremium ? 'Premium' : 'Free'} plan.
-            {!isPremium && " Upgrade for more storage."}
+          <p className='mt-2 text-center text-sm font-medium text-amber-600'>
+            Maximum of {maxImageCount} images allowed on your{' '}
+            {isPremium ? 'Premium' : 'Free'} plan.
+            {!isPremium && ' Upgrade for more storage.'}
           </p>
         )}
       </div>
