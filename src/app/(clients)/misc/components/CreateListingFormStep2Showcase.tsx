@@ -94,6 +94,7 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const touchStartXRef = useRef<number | null>(null);
+  const initialCloudImagesRef = useRef(initialCloudImages);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -138,6 +139,18 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     // We don't reset uploadedImages here anymore to prevent them from disappearing
     // when other props like initialVideoUrl change.
   }, [initialCloudImages, initialVideoUrl, uploadedImages]); // added uploadedImages to ensure sync
+
+  // When the parent refetches onboarding and pushes a new initialCloudImages
+  // reference, the local uploads have been persisted server-side. Clearing
+  // them here prevents duplicate re-uploads on revisit and keeps previews
+  // sourced from the cloud data only.
+  useEffect(() => {
+    if (initialCloudImagesRef.current !== initialCloudImages) {
+      initialCloudImagesRef.current = initialCloudImages;
+      setUploadedImages([]);
+      setBusinessShowCaseFile([]);
+    }
+  }, [initialCloudImages, setBusinessShowCaseFile]);
 
   // Load Cloudinary Upload Widget script once
   useEffect(() => {
@@ -352,20 +365,16 @@ const BusinessShowCaseForm: React.FC<BusinessShowCaseFormProps> = ({
     const imageData = previews[index];
     if (!imageData) return;
 
-    if (imageData.type === 'cloud') {
-      const cloudImagesBefore = previews
-        .slice(0, index)
-        .filter(p => p.type === 'cloud').length;
-      const newCloudImages = cloudImages.filter(
-        (_, i) => i !== cloudImagesBefore
-      );
+    if (imageData.type === 'cloud' && typeof imageData.id === 'number') {
+      // Match against the stable cloud image id rather than positional index
+      const newCloudImages = cloudImages.filter(img => img.id !== imageData.id);
       setLocalCloudImages(newCloudImages);
       setCloudImages?.(newCloudImages);
-    } else if (imageData.type === 'new_cloud') {
-      const newCloudBefore = previews
-        .slice(0, index)
-        .filter(p => p.type === 'new_cloud').length;
-      const newFiles = uploadedImages.filter((_, i) => i !== newCloudBefore);
+    } else if (imageData.type === 'new_cloud' && imageData.publicId) {
+      // Match against the Cloudinary public_id captured at upload time
+      const newFiles = uploadedImages.filter(
+        img => img.public_id !== imageData.publicId
+      );
       setUploadedImages(newFiles);
       setBusinessShowCaseFile(newFiles);
     } else if (imageData.type === 'video') {

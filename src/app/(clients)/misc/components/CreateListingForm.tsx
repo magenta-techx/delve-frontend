@@ -362,6 +362,9 @@ const BusinessStepForm = (): JSX.Element => {
         description: 'Showcase images saved successfully.',
       });
 
+      // Clear locally tracked uploads so they are not re-submitted on revisit
+      setBusinessShowCaseFile([]);
+
       // Update initial video URL state to the current value
       setInitialVideoUrlState(values.video_url);
 
