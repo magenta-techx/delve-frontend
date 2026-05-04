@@ -9,6 +9,23 @@ export interface BusinessShowCaseProps {
   video_url?: string | undefined;
 }
 
+// Updated media upload/delete payloads per new API spec
+export interface UploadBusinessMediaPayload {
+  images: {
+    url: string;
+    public_id: string;
+  }[];
+  video_url?: {
+    url: string;
+    public_id: string;
+  };
+}
+
+export interface DeleteBusinessMediaPayload {
+  image_ids?: number[];
+  video_business_id?: number;
+}
+
 export interface BusinessAmenitiesTypeProp {
   id: number | null;
   icon_name: string;

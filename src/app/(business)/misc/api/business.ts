@@ -515,7 +515,11 @@ export function useBusinessActivation(): UseMutationResult<
 export function useUploadBusinessImages(): UseMutationResult<
   ApiEnvelope<string[]>,
   Error,
-  { business_id: BusinessId; images: { url: string; public_id: string }[]; video_url?: string | undefined }
+  {
+    business_id: BusinessId;
+    images: { url: string; public_id: string }[];
+    video_url?: { url: string; public_id: string } | undefined;
+  }
 > {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
@@ -523,7 +527,11 @@ export function useUploadBusinessImages(): UseMutationResult<
   return useMutation<
     ApiEnvelope<string[]>,
     Error,
-    { business_id: BusinessId; images: { url: string; public_id: string }[]; video_url?: string | undefined }
+    {
+      business_id: BusinessId;
+      images: { url: string; public_id: string }[];
+      video_url?: { url: string; public_id: string } | undefined;
+    }
   >({
     mutationFn: async ({ business_id, images, video_url }) => {
       const payload = { images, video_url };
@@ -536,7 +544,7 @@ export function useUploadBusinessImages(): UseMutationResult<
         }
       );
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || 'Image upload failed');
+      if (!res.ok) throw new Error(data?.error || 'Media upload failed');
       return data;
     },
     onSuccess: (_data, { business_id }) => {
@@ -546,24 +554,28 @@ export function useUploadBusinessImages(): UseMutationResult<
   });
 }
 
-export function useDeleteBusinessImages(): UseMutationResult<
+export function useDeleteBusinessMedia(): UseMutationResult<
   ApiMessage,
   Error,
-  { image_ids: number[] }
+  { image_ids?: number[]; video_business_id?: number }
 > {
   const qc = useQueryClient();
   const { handleErrorObject } = useAuthErrorHandler();
 
-  return useMutation<ApiMessage, Error, { image_ids: number[] }>({
-    mutationFn: async ({ image_ids }) => {
-      const res = await authAwareFetch(`/api/business/image/delete`, {
+  return useMutation<
+    ApiMessage,
+    Error,
+    { image_ids?: number[]; video_business_id?: number }
+  >({
+    mutationFn: async ({ image_ids, video_business_id }) => {
+      const res = await authAwareFetch(`/api/business/media/delete`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image_ids }),
+        body: JSON.stringify({ image_ids, video_business_id }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok)
-        throw new Error((data as any)?.error || 'Delete image failed');
+        throw new Error((data as any)?.error || 'Delete media failed');
       return data;
     },
     onSuccess: () => {
@@ -573,8 +585,9 @@ export function useDeleteBusinessImages(): UseMutationResult<
   });
 }
 
-// ALLLLOW!. This is just for Backward-compatible alias (singular name)
-export const useDeleteBusinessImage = useDeleteBusinessImages;
+// Backward-compatible aliases
+export const useDeleteBusinessImages = useDeleteBusinessMedia;
+export const useDeleteBusinessImage = useDeleteBusinessMedia;
 
 // General business update (name, description, website, logo, thumbnail)
 export function useUpdateBusiness(): UseMutationResult<

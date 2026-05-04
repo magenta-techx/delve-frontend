@@ -154,6 +154,9 @@ const BusinessStepForm = (): JSX.Element => {
   const [videoUrl, setVideoUrl] = useState<string | undefined>(
     onboardingData?.data?.video_url || undefined
   );
+  const [videoPublicId, setVideoPublicId] = useState<string | undefined>(
+    undefined
+  );
   const [initialVideoUrl, setInitialVideoUrlState] = useState<
     string | undefined
   >(onboardingData?.data?.video_url || undefined);
@@ -339,11 +342,22 @@ const BusinessStepForm = (): JSX.Element => {
         }
       }
 
+      // Check if video was removed (had one initially, doesn't anymore)
+      const videoWasRemoved = initialVideoUrl && !videoUrl;
+
       // If there are deletions, call the delete endpoint
-      if (deletedImageIds.length > 0) {
-        await deleteImagesMutation.mutateAsync({
-          image_ids: deletedImageIds,
-        });
+      if (deletedImageIds.length > 0 || videoWasRemoved) {
+        const deletePayload: {
+          image_ids?: number[];
+          video_business_id?: number;
+        } = {};
+        if (deletedImageIds.length > 0) {
+          deletePayload.image_ids = deletedImageIds;
+        }
+        if (videoWasRemoved) {
+          deletePayload.video_business_id = businessId;
+        }
+        await deleteImagesMutation.mutateAsync(deletePayload);
       }
 
       // Upload new local images and video URL ONLY if there are changes
@@ -351,10 +365,16 @@ const BusinessStepForm = (): JSX.Element => {
       const hasVideoChanged = values.video_url !== initialVideoUrl;
 
       if (hasNewImages || hasVideoChanged) {
+        // Format video_url as object with url and public_id per new API spec
+        const videoPayload =
+          videoUrl && videoPublicId
+            ? { url: videoUrl, public_id: videoPublicId }
+            : undefined;
+
         await uploadImagesMutation.mutateAsync({
           business_id: businessId,
           images: values.images || [],
-          video_url: values.video_url,
+          video_url: videoPayload,
         });
       }
 
@@ -908,8 +928,14 @@ const BusinessStepForm = (): JSX.Element => {
           setBusinessShowCaseFile={setBusinessShowCaseFile}
           setCloudImages={setCloudImages}
           initialCloudImages={initialCloudImages}
-          onVideoUploaded={result => setVideoUrl(result.secure_url)}
-          onVideoRemoved={() => setVideoUrl(undefined)}
+          onVideoUploaded={result => {
+            setVideoUrl(result.secure_url);
+            setVideoPublicId(result.public_id);
+          }}
+          onVideoRemoved={() => {
+            setVideoUrl(undefined);
+            setVideoPublicId(undefined);
+          }}
           initialVideoUrl={videoUrl || undefined}
         />
       ),
