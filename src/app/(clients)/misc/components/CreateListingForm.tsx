@@ -360,16 +360,17 @@ const BusinessStepForm = (): JSX.Element => {
         await deleteImagesMutation.mutateAsync(deletePayload);
       }
 
-      // Upload new local images and video URL ONLY if there are changes
+      // Upload new local images and video URL ONLY if there's new content to upload
       const hasNewImages = values.images && values.images.length > 0;
-      const hasVideoChanged = values.video_url !== initialVideoUrl;
+      // Only upload video if we have a NEW video (not just removal)
+      const hasNewVideo =
+        videoUrl && videoPublicId && videoUrl !== initialVideoUrl;
 
-      if (hasNewImages || hasVideoChanged) {
+      if (hasNewImages || hasNewVideo) {
         // Format video_url as object with url and public_id per new API spec
-        const videoPayload =
-          videoUrl && videoPublicId
-            ? { url: videoUrl, public_id: videoPublicId }
-            : undefined;
+        const videoPayload = hasNewVideo
+          ? { url: videoUrl, public_id: videoPublicId }
+          : undefined;
 
         await uploadImagesMutation.mutateAsync({
           business_id: businessId,
