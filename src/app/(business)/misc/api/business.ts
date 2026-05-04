@@ -534,7 +534,7 @@ export function useUploadBusinessImages(): UseMutationResult<
     }
   >({
     mutationFn: async ({ business_id, images, video_url }) => {
-      const payload = { images, video_url };
+      const payload = { images, video:video_url };
       const res = await authAwareFetch(
         `/api/businesses/${business_id}/upload-media`,
         {
