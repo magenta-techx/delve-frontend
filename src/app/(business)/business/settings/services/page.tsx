@@ -369,11 +369,11 @@ export default function ServicesPage() {
 
               {/* Delete Service Section */}
               <section className='flex grid-cols-[240px,1fr,150px] flex-col border-b-[0.7px] border-[#E3E8EF] p-4 xl:grid xl:items-center xl:gap-8'>
-                <Label className='sr-only text-sm font-medium text-[#0F0F0F]'>
+                <Label className='invisible text-sm font-medium text-[#0F0F0F]'>
                   Delete Service
                 </Label>
 
-                <div className='sr-only flex-1'>
+                <div className='invisible flex-1'>
                   <span className='text-sm text-gray-600'>
                     Remove this service from your business listing
                   </span>
