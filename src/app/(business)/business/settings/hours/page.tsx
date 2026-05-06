@@ -26,7 +26,7 @@ const DAYS_OF_WEEK = [
 ];
 
 export default function BusinessHoursPage() {
-  const { currentBusiness } = useBusinessContext();
+  const { currentBusiness, refetchBusinesses } = useBusinessContext();
   const businessId = currentBusiness?.id;
   const [isLoading, setIsLoading] = useState(false);
 
@@ -146,6 +146,7 @@ export default function BusinessHoursPage() {
         hours: payload as any,
       });
 
+      refetchBusinesses();
       toast.success('Business hours updated successfully');
     } catch (error) {
       toast.error(
