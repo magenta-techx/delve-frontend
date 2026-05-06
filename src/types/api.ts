@@ -198,7 +198,7 @@ export interface BusinessDetail {
   website?: string;
   thumbnail?: string;
   logo?: string;
-  video_url?: string;
+  video_url?: string | null;
   address?: string;
   state?: string;
   owner?: BusinessOwner;

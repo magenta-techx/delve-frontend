@@ -17,10 +17,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Upload2Icon } from '@/app/(clients)/misc/icons';
 import { TrashIcon } from '@/assets/icons';
-import { ArrowLeft, Check } from 'lucide-react';
+import {
+  ArrowLeft,
+  Check,
+  ChevronDown,
+  Image as ImageIcon,
+  Video,
+} from 'lucide-react';
 import { LinkButton } from '@/components/ui';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui';
 
 const CLOUDINARY_CLOUD_NAME =
   process.env['NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME'] || 'your_cloud_name';
@@ -72,10 +83,13 @@ const GalleryPage = () => {
   const maxFileSize = isPremium ? 20000000 : 10000000; // 20MB for premium, 10MB for free
 
   const [selectedImages, setSelectedImages] = useState<Set<number>>(new Set());
+  const [selectedVideo, setSelectedVideo] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
   const [showUploadWidget, setShowUploadWidget] = useState(false);
+  const [uploadType, setUploadType] = useState<'image' | 'video'>('image');
   const uploadWidgetRef = useRef<any | null>(null);
+  const maxVideoSize = isPremium ? 500000000 : 100000000; // 500MB for premium, 100MB for free
 
   // Load Cloudinary Upload Widget script once
   useEffect(() => {
@@ -96,23 +110,31 @@ const GalleryPage = () => {
   const deleteImagesMutation = useDeleteBusinessImage();
 
   // Get business images with proper typing
-  const openCloudinaryWidget = () => {
+  const openCloudinaryWidget = (type: 'image' | 'video') => {
     // Basic pre-checks before opening dialog
     if (!window.cloudinary) {
       toast.warning('Upload service is loading. Please try again in a moment.');
       return;
     }
 
-    const currentImageCount = currentBusiness?.images?.length ?? 0;
-    if (currentImageCount >= maxImageCount) {
-      toast.error(
-        `You have reached the maximum limit of ${maxImageCount} images for your ${
-          isPremium ? 'Premium' : 'Free'
-        } plan.`
-      );
-      return;
+    if (type === 'image') {
+      const currentImageCount = currentBusiness?.images?.length ?? 0;
+      if (currentImageCount >= maxImageCount) {
+        toast.error(
+          `You have reached the maximum limit of ${maxImageCount} images for your ${
+            isPremium ? 'Premium' : 'Free'
+          } plan.`
+        );
+        return;
+      }
+    } else if (type === 'video') {
+      if (currentBusiness?.video_url) {
+        toast.error('Only one video is allowed per business.');
+        return;
+      }
     }
 
+    setUploadType(type);
     setShowUploadWidget(true);
   };
 
@@ -127,7 +149,9 @@ const GalleryPage = () => {
     }
 
     const currentImageCount = currentBusiness?.images?.length ?? 0;
-    if (currentImageCount >= maxImageCount) {
+
+    // Pre-check limits again (in case state changed between open and mount)
+    if (uploadType === 'image' && currentImageCount >= maxImageCount) {
       toast.error(
         `You have reached the maximum limit of ${maxImageCount} images for your ${
           isPremium ? 'Premium' : 'Free'
@@ -137,7 +161,14 @@ const GalleryPage = () => {
       return;
     }
 
+    if (uploadType === 'video' && currentBusiness?.video_url) {
+      toast.error('Only one video is allowed per business.');
+      setShowUploadWidget(false);
+      return;
+    }
+
     let uploadedImages: { url: string; public_id: string }[] = [];
+    let uploadedVideo: { url: string; public_id: string } | null = null;
 
     // Defer widget creation so the Dialog DOM is rendered and measured first.
     const timer = window.setTimeout(() => {
@@ -156,13 +187,17 @@ const GalleryPage = () => {
           cloudName: CLOUDINARY_CLOUD_NAME,
           uploadPreset: CLOUDINARY_UPLOAD_PRESET,
           sources: ['local', 'url', 'camera'],
-          resourceType: 'image',
-          clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
-          maxFileSize,
+          resourceType: uploadType,
+          clientAllowedFormats:
+            uploadType === 'image'
+              ? ['png', 'jpeg', 'jpg', 'webp']
+              : ['mp4', 'mov', 'avi', 'webm', 'mkv'],
+          maxFileSize: uploadType === 'image' ? maxFileSize : maxVideoSize,
           showAdvancedOptions: false,
           cropping: false,
-          multiple: true,
-          maxFiles: maxImageCount - currentImageCount,
+          multiple: uploadType === 'image',
+          maxFiles:
+            uploadType === 'image' ? maxImageCount - currentImageCount : 1,
           theme: 'white',
           styles: CLOUDINARY_WIDGET_STYLES,
           inlineContainer: '#business-gallery-upload-widget',
@@ -176,33 +211,53 @@ const GalleryPage = () => {
 
           if (result.event === 'success') {
             const info = result.info;
-            uploadedImages.push({
-              url: info.secure_url,
-              public_id: info.public_id,
-            });
+            if (uploadType === 'image') {
+              uploadedImages.push({
+                url: info.secure_url,
+                public_id: info.public_id,
+              });
+            } else {
+              uploadedVideo = {
+                url: info.secure_url,
+                public_id: info.public_id,
+              };
+            }
           }
 
           if (result.event === 'queues-end') {
-            if (uploadedImages.length > 0 && currentBusiness?.id) {
-              toast.info('Images uploaded to cloud. Saving to business...');
-              uploadImagesMutation.mutate(
-                {
-                  business_id: currentBusiness.id,
-                  images: uploadedImages,
-                },
-                {
-                  onSuccess: () => {
-                    toast.success(
-                      `${uploadedImages.length} image(s) saved successfully`
-                    );
-                    refetchBusinesses();
-                    uploadedImages = [];
+            if (currentBusiness?.id) {
+              const hasImages = uploadedImages.length > 0;
+              const hasVideo = uploadedVideo !== null;
+
+              if (hasImages || hasVideo) {
+                toast.info(
+                  `${uploadType === 'image' ? 'Images' : 'Video'} uploaded to cloud. Saving to business...`
+                );
+                uploadImagesMutation.mutate(
+                  {
+                    business_id: currentBusiness.id,
+                    images: uploadedImages,
+                    video_url: uploadedVideo || undefined,
                   },
-                  onError: (err: any) => {
-                    toast.error(`Save failed: ${err.message}`);
-                  },
-                }
-              );
+                  {
+                    onSuccess: () => {
+                      if (uploadType === 'image') {
+                        toast.success(
+                          `${uploadedImages.length} image(s) saved successfully`
+                        );
+                      } else {
+                        toast.success('Video saved successfully');
+                      }
+                      refetchBusinesses();
+                      uploadedImages = [];
+                      uploadedVideo = null;
+                    },
+                    onError: (err: any) => {
+                      toast.error(`Save failed: ${err.message}`);
+                    },
+                  }
+                );
+              }
             }
 
             destroyUploadWidget(widget);
@@ -242,26 +297,44 @@ const GalleryPage = () => {
 
   const confirmDelete = () => {
     const imageIds = Array.from(selectedImages);
-    deleteImagesMutation.mutate(
-      { image_ids: imageIds },
-      {
-        onSuccess: () => {
-          toast.success(`${imageIds.length} image(s) deleted successfully`);
-          setSelectedImages(new Set());
-          setIsSelecting(false);
-          setShowDeleteModal(false);
-          refetchBusinesses();
-        },
-        onError: (error: any) => {
-          toast.error(`Delete failed: ${error.message}`);
-        },
-      }
-    );
+    const deletePayload: {
+      image_ids?: number[];
+      video_business_id?: number;
+    } = {};
+
+    if (imageIds.length > 0) {
+      deletePayload.image_ids = imageIds;
+    }
+    if (selectedVideo && currentBusiness?.id) {
+      deletePayload.video_business_id = currentBusiness.id;
+    }
+
+    deleteImagesMutation.mutate(deletePayload, {
+      onSuccess: () => {
+        const deletedCount = imageIds.length + (selectedVideo ? 1 : 0);
+        const type =
+          imageIds.length > 0 && selectedVideo
+            ? 'items'
+            : imageIds.length > 0
+              ? 'image(s)'
+              : 'video';
+        toast.success(`${deletedCount} ${type} deleted successfully`);
+        setSelectedImages(new Set());
+        setSelectedVideo(false);
+        setIsSelecting(false);
+        setShowDeleteModal(false);
+        refetchBusinesses();
+      },
+      onError: (error: any) => {
+        toast.error(`Delete failed: ${error.message}`);
+      },
+    });
   };
 
   const toggleSelectionMode = () => {
     setIsSelecting(!isSelecting);
     setSelectedImages(new Set());
+    setSelectedVideo(false);
   };
 
   if (!currentBusiness) {
@@ -291,35 +364,48 @@ const GalleryPage = () => {
         </div>
 
         <div className='flex items-center gap-2'>
-          {isSelecting && (currentBusiness?.images?.length ?? 0) > 0 && (
-            <div
-              className='mr-4 flex cursor-pointer items-center gap-1.5 font-medium text-primary'
-              onClick={() => {
-                if (
-                  selectedImages.size === (currentBusiness?.images?.length ?? 0)
-                ) {
-                  setSelectedImages(new Set());
-                } else {
-                  setSelectedImages(
-                    new Set(currentBusiness?.images?.map(img => img.id))
-                  );
-                }
-              }}
-            >
-              <div className='flex size-5 items-center justify-center rounded-md border-[1.6px] border-primary p-1 text-primary'>
-                <Check
-                  className={cn(
-                    selectedImages.size ===
-                      (currentBusiness?.images?.length ?? 0)
-                      ? 'opacity-100'
-                      : 'opacity-0',
-                    'size-4 text-primary transition-all'
-                  )}
-                />
+          {isSelecting &&
+            ((currentBusiness?.images?.length ?? 0) > 0 ||
+              currentBusiness?.video_url) && (
+              <div
+                className='mr-4 flex cursor-pointer items-center gap-1.5 font-medium text-primary'
+                onClick={() => {
+                  const totalItems =
+                    (currentBusiness?.images?.length ?? 0) +
+                    (currentBusiness?.video_url ? 1 : 0);
+                  const selectedCount =
+                    selectedImages.size + (selectedVideo ? 1 : 0);
+
+                  if (selectedCount === totalItems) {
+                    // Deselect all
+                    setSelectedImages(new Set());
+                    setSelectedVideo(false);
+                  } else {
+                    // Select all
+                    setSelectedImages(
+                      new Set(currentBusiness?.images?.map(img => img.id))
+                    );
+                    if (currentBusiness?.video_url) {
+                      setSelectedVideo(true);
+                    }
+                  }
+                }}
+              >
+                <div className='flex size-5 items-center justify-center rounded-md border-[1.6px] border-primary p-1 text-primary'>
+                  <Check
+                    className={cn(
+                      selectedImages.size ===
+                        (currentBusiness?.images?.length ?? 0) &&
+                        (!currentBusiness?.video_url || selectedVideo)
+                        ? 'opacity-100'
+                        : 'opacity-0',
+                      'size-4 text-primary transition-all'
+                    )}
+                  />
+                </div>
+                All
               </div>
-              All
-            </div>
-          )}
+            )}
           {(currentBusiness?.images?.length ?? 0) > 0 && (
             <>
               <Button
@@ -343,34 +429,56 @@ const GalleryPage = () => {
                   variant='destructive'
                   onClick={handleDeleteSelected}
                   disabled={
-                    selectedImages.size === 0 || deleteImagesMutation.isPending
+                    (selectedImages.size === 0 && !selectedVideo) ||
+                    deleteImagesMutation.isPending
                   }
                 >
                   {deleteImagesMutation.isPending
                     ? 'Deleting...'
-                    : `Delete Selected (${selectedImages.size})`}
+                    : `Delete Selected (${selectedImages.size + (selectedVideo ? 1 : 0)})`}
                   <TrashIcon className='text-[#4B5565] hover:text-red-500 max-lg:size-2.5' />
                 </Button>
               )}
             </>
           )}
           {!isSelecting && (
-            <Button
-              onClick={openCloudinaryWidget}
-              disabled={
-                uploadImagesMutation.isPending ||
-                (currentBusiness?.images?.length ?? 0) >= maxImageCount
-              }
-              size='dynamic_lg'
-              className='max-lg:hidden'
-            >
-              {uploadImagesMutation.isPending
-                ? 'Uploading...'
-                : (currentBusiness?.images?.length ?? 0) >= maxImageCount
-                  ? 'Limit Reached'
-                  : 'Upload Media'}
-              <Upload2Icon />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  disabled={uploadImagesMutation.isPending}
+                  size='dynamic_lg'
+                  className='max-lg:hidden'
+                >
+                  {uploadImagesMutation.isPending
+                    ? 'Uploading...'
+                    : 'Upload Media'}
+                  <ChevronDown size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end' className='w-48'>
+                <DropdownMenuItem
+                  disabled={
+                    (currentBusiness?.images?.length ?? 0) >= maxImageCount
+                  }
+                  onClick={() => openCloudinaryWidget('image')}
+                  className='flex items-center gap-2'
+                >
+                  <ImageIcon size={16} />
+                  <span>
+                    Photo ({currentBusiness?.images?.length ?? 0}/
+                    {maxImageCount})
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={!!currentBusiness?.video_url}
+                  onClick={() => openCloudinaryWidget('video')}
+                  className='flex items-center gap-2'
+                >
+                  <Video size={16} />
+                  <span>Video {currentBusiness?.video_url && '(1 max)'}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </header>
@@ -394,35 +502,123 @@ const GalleryPage = () => {
       )}
 
       {/* Image Grid */}
-      {/* Mobile FAB for upload (visible only when not in selection mode and grid is visible) */}
-      {!isSelecting && (currentBusiness?.images?.length ?? 0) > 0 && (
-        <button
-          type='button'
-          onClick={openCloudinaryWidget}
-          disabled={
-            uploadImagesMutation.isPending ||
-            (currentBusiness?.images?.length ?? 0) >= maxImageCount
-          }
-          className='fixed bottom-12 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#7C3AED] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 md:bottom-6 lg:hidden'
-          aria-label='Upload media'
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='1024'
-            height='1024'
-            viewBox='0 0 1024 1024'
-          >
-            <path
-              fill='currentColor'
-              d='M544 864V672h128L512 480L352 672h128v192H320v-1.6c-5.4.3-10.5 1.6-16 1.6A240 240 0 0 1 64 624a239 239 0 0 1 212.6-237.2A240 240 0 0 1 512 192a240 240 0 0 1 235.5 194.8A239 239 0 0 1 959.9 624a240 240 0 0 1-240 240c-5.3 0-10.5-1.3-16-1.6v1.6z'
-            />
-          </svg>
-        </button>
-      )}
+      {/* Mobile FAB for upload - now a dropdown menu */}
+      {!isSelecting &&
+        ((currentBusiness?.images?.length ?? 0) > 0 ||
+          currentBusiness?.video_url) && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type='button'
+                disabled={uploadImagesMutation.isPending}
+                className='fixed bottom-12 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#7C3AED] text-white shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 md:bottom-6 lg:hidden'
+                aria-label='Upload media'
+              >
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='1024'
+                  height='1024'
+                  viewBox='0 0 1024 1024'
+                >
+                  <path
+                    fill='currentColor'
+                    d='M544 864V672h128L512 480L352 672h128v192H320v-1.6c-5.4.3-10.5 1.6-16 1.6A240 240 0 0 1 64 624a239 239 0 0 1 212.6-237.2A240 240 0 0 1 512 192a240 240 0 0 1 235.5 194.8A239 239 0 0 1 959.9 624a240 240 0 0 1-240 240c-5.3 0-10.5-1.3-16-1.6v1.6z'
+                  />
+                </svg>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end' className='w-48'>
+              <DropdownMenuItem
+                disabled={
+                  (currentBusiness?.images?.length ?? 0) >= maxImageCount
+                }
+                onClick={() => openCloudinaryWidget('image')}
+                className='flex items-center gap-2'
+              >
+                <ImageIcon size={16} />
+                <span>
+                  Photo ({currentBusiness?.images?.length ?? 0}/{maxImageCount})
+                </span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={!!currentBusiness?.video_url}
+                onClick={() => openCloudinaryWidget('video')}
+                className='flex items-center gap-2'
+              >
+                <Video size={16} />
+                <span>Video {currentBusiness?.video_url && '(1 max)'}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
       <div className='space-y-4'>
-        {(currentBusiness?.images?.length ?? 0) > 0 ? (
+        {(currentBusiness?.images?.length ?? 0) > 0 ||
+        currentBusiness?.video_url ? (
           <div className='grid grid-cols-2 gap-6 lg:grid-cols-3 xl:grid-cols-4'>
+            {/* Video first if it exists */}
+            {currentBusiness?.video_url && (
+              <div
+                className={cn(
+                  'group relative aspect-square overflow-hidden rounded-lg border-2 transition-all duration-200',
+                  isSelecting ? 'cursor-pointer' : '',
+                  'border-gray-200 hover:border-gray-300'
+                )}
+                onClick={() => {
+                  if (isSelecting) {
+                    setSelectedVideo(!selectedVideo);
+                  }
+                }}
+              >
+                <video
+                  src={currentBusiness.video_url}
+                  className={cn(
+                    'h-full w-full object-cover transition-all duration-200',
+                    isSelecting && selectedVideo ? 'opacity-50' : 'opacity-100'
+                  )}
+                  controls={!isSelecting}
+                  playsInline
+                />
+
+                {/* Selection Checkbox */}
+                {isSelecting && (
+                  <div className='absolute left-2 top-2'>
+                    <div
+                      className={cn(
+                        'flex size-6 items-center justify-center rounded-md border-[0.5px] transition-all duration-200',
+                        selectedVideo
+                          ? 'border-gray-300 bg-white'
+                          : 'border-gray-300 bg-white'
+                      )}
+                    >
+                      {selectedVideo && (
+                        <svg
+                          className='size-3.5 text-red-500'
+                          fill='currentColor'
+                          viewBox='0 0 20 20'
+                        >
+                          <path
+                            fillRule='evenodd'
+                            d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                            clipRule='evenodd'
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Video badge */}
+                {!isSelecting && (
+                  <div className='absolute left-2 top-2 flex items-center gap-1 rounded bg-black bg-opacity-60 px-2 py-1 text-xs text-white'>
+                    <Video size={12} />
+                    Video
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Images */}
             {currentBusiness?.images?.map(image => (
               <div
                 key={image.id}
@@ -503,23 +699,40 @@ const GalleryPage = () => {
               </svg>
             </div>
             <h3 className='mb-2 text-lg font-medium text-gray-900'>
-              No images yet
+              No media yet
             </h3>
             <p className='mb-4 text-gray-600'>
-              Upload images to showcase your business
+              Upload images or video to showcase your business
             </p>
-            <Button
-              onClick={openCloudinaryWidget}
-              disabled={
-                uploadImagesMutation.isPending ||
-                (currentBusiness?.images?.length ?? 0) >= maxImageCount
-              }
-              className='bg-purple-600 hover:bg-purple-700'
-            >
-              {(currentBusiness?.images?.length ?? 0) >= maxImageCount
-                ? 'Limit Reached'
-                : 'Upload Your First Images'}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  disabled={uploadImagesMutation.isPending}
+                  className='bg-purple-600 hover:bg-purple-700'
+                >
+                  {uploadImagesMutation.isPending
+                    ? 'Uploading...'
+                    : 'Upload Your First Media'}
+                  <ChevronDown size={16} className='ml-1' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='center' className='w-48'>
+                <DropdownMenuItem
+                  onClick={() => openCloudinaryWidget('image')}
+                  className='flex items-center gap-2'
+                >
+                  <ImageIcon size={16} />
+                  <span>Photo</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => openCloudinaryWidget('video')}
+                  className='flex items-center gap-2'
+                >
+                  <Video size={16} />
+                  <span>Video</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
       </div>
