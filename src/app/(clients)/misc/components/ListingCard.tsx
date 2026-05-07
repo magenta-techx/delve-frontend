@@ -38,7 +38,7 @@ const FeaturedListingCard = ({
   const desc = business.description || '';
   const imageUrl = business.thumbnail || '/landingpage/feature-listing-2.jpg';
   const logoUrl = business.logo || '/landingpage/logo.jpg';
-  const address = business.address || '';
+  const address = business.address || 'Online Store';
   const rating = business.average_review_rating ?? 0;
 
   const handleBookmarkClick = async (e: React.MouseEvent) => {

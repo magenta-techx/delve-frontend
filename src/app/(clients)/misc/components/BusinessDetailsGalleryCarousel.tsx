@@ -65,7 +65,10 @@ export function BusinessDetailsGalleryCarousel({
   if (!isOpen) return null;
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-lg'>
+    <div
+      className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-lg'
+      onClick={onClose}
+    >
       {/* Close button */}
       <button
         onClick={onClose}
@@ -76,7 +79,10 @@ export function BusinessDetailsGalleryCarousel({
       </button>
 
       {/* Main image */}
-      <div className='relative flex h-[72vh] w-full max-w-6xl items-center justify-center px-4'>
+      <div
+        className='relative flex h-[72vh] w-full max-w-6xl items-center justify-center px-4'
+        onClick={e => e.stopPropagation()}
+      >
         <Image
           src={getCurrentImageSrc() || '/placeholder.svg'}
           alt={`Gallery image ${currentIndex + 1}`}
@@ -94,7 +100,10 @@ export function BusinessDetailsGalleryCarousel({
 
       {/* Navigation arrows */}
       <button
-        onClick={handlePrevious}
+        onClick={e => {
+          e.stopPropagation();
+          handlePrevious();
+        }}
         className='absolute left-4 top-1/2 z-40 -translate-y-1/2 rounded-full border-2 border-white p-3 transition-colors hover:bg-white/10'
         aria-label='Previous image'
       >
@@ -102,7 +111,10 @@ export function BusinessDetailsGalleryCarousel({
       </button>
 
       <button
-        onClick={handleNext}
+        onClick={e => {
+          e.stopPropagation();
+          handleNext();
+        }}
         className='absolute right-4 top-1/2 z-40 -translate-y-1/2 rounded-full border-2 border-white p-3 transition-colors hover:bg-white/10'
         aria-label='Next image'
       >
@@ -110,7 +122,10 @@ export function BusinessDetailsGalleryCarousel({
       </button>
 
       {/* Thumbnail strip */}
-      <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent px-4 py-8'>
+      <div
+        className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent px-4 py-8'
+        onClick={e => e.stopPropagation()}
+      >
         <div className='mx-auto flex justify-center gap-2 overflow-x-auto'>
           {images.slice(thumbnailStart, thumbnailEnd).map((image, i) => {
             const actualIndex = thumbnailStart + i;
