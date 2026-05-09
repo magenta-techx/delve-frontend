@@ -87,9 +87,9 @@ export function BusinessDetailsGalleryCarousel({
           src={getCurrentImageSrc() || '/placeholder.svg'}
           alt={`Gallery image ${currentIndex + 1}`}
           fill
-          className='overflow-hidden rounded-2xl object-contain'
+          className='mx-auto overflow-hidden rounded-2xl object-contain'
           priority
-          sizes='(max-width: 1536px) 100vw, 1536px'
+          // sizes='(max-width: 1536px) 100vw, 1536px'
         />
 
         {/* Image counter */}
