@@ -63,7 +63,7 @@ const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
     const selectedCategory = categories.find(c => c.id === categoryId);
 
     return (
-      <div className='fixed inset-0 z-50 bg-black/50'>
+      <div className='fixed inset-0 z-[55] bg-black/50'>
         <div className='custom-scrollbar flex h-full w-full items-start justify-center overflow-y-auto py-6'>
           <div className='custom-scrollbar relative mx-4 max-h-[85svh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl md:p-8'>
             <button

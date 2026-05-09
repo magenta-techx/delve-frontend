@@ -263,7 +263,7 @@ export default function UserChatsPage({
 
           {/* Pin Confirmation Dialog */}
           {pinConfirm && (
-            <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'>
+            <div className='fixed inset-0 z-[55] flex items-center justify-center bg-black/40 p-4'>
               <div className='w-full max-w-xs rounded-2xl bg-white p-5 shadow-xl'>
                 <h3 className='text-base font-semibold text-[#0F0F0F]'>
                   {pinConfirm.is_pinned

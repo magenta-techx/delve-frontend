@@ -537,7 +537,7 @@ export default function CollaborationDetails({
 
       {/* Confirmation Modal */}
       {confirmModal.isOpen && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
+        <div className='fixed inset-0 z-[55] flex items-center justify-center bg-black/50'>
           <div className='relative w-full max-w-sm rounded-lg bg-white p-6 shadow-lg'>
             <div className='mb-4'>
               <h3 className='text-lg font-semibold text-[#0D121C]'>
@@ -614,7 +614,7 @@ export default function CollaborationDetails({
 
       {/* Exit/Delete Group Confirmation Modal */}
       {exitModal.isOpen && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4'>
+        <div className='fixed inset-0 z-[55] flex items-center justify-center bg-black/50 px-4'>
           <div className='relative w-full max-w-[420px] rounded-2xl bg-white shadow-2xl'>
             {/* Close button */}
             <button

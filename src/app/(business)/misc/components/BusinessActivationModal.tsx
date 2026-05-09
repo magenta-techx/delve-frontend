@@ -36,7 +36,7 @@ export const BusinessActivationModal: React.FC<
   if (!isOpen) return null;
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40'>
+    <div className='fixed inset-0 z-[55] flex items-center justify-center bg-black bg-opacity-40'>
       <div className='w-full max-w-md rounded-lg bg-white p-6 shadow-lg'>
         <h2 className='mb-4 text-lg font-semibold'>Activate Business</h2>
         <p className='mb-4'>Are you sure you want to activate this business?</p>

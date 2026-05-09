@@ -31,7 +31,7 @@ export function ReceiptModal({
   };
 
   return (
-    <div className='fixed inset-0 z-50 !m-0 flex items-center justify-center bg-black/50 backdrop-blur-md'>
+    <div className='fixed inset-0 z-[55] !m-0 flex items-center justify-center bg-black/50 backdrop-blur-md'>
       <Card className='relative mx-4 w-full max-w-md'>
         <CardHeader className='pb-3 print:pb-0'>
           <div className='flex items-center justify-between print:hidden'>
