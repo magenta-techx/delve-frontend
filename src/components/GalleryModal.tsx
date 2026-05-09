@@ -53,7 +53,7 @@ export const GalleryModal: React.FC<GalleryModalProps> = ({
   if (!open) return null;
 
   return (
-    <div className='fixed inset-0 z-[55] flex items-center justify-center bg-black/70 backdrop-blur-sm'>
+    <div className='fixed inset-0 z-[51] flex items-center justify-center bg-black/70 backdrop-blur-sm'>
       {/* Click-away overlay (kept below content) */}
       <div className='absolute inset-0 z-0' onClick={onClose} />
       <div className='relative z-10 flex w-full max-w-3xl flex-col items-center px-3 sm:px-4'>

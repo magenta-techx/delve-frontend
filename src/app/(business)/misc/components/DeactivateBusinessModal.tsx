@@ -89,7 +89,7 @@ export function DeactivateBusinessModal({
   };
 
   return (
-    <div className='fixed inset-0 z-[55] flex items-center justify-center bg-black/50'>
+    <div className='fixed inset-0 z-[51] flex items-center justify-center bg-black/50'>
       <div className='relative mx-4 w-full max-w-md rounded-xl bg-white shadow-xl'>
         {/* Close Button */}
         <button

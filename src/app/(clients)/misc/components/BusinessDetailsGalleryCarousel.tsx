@@ -66,7 +66,7 @@ export function BusinessDetailsGalleryCarousel({
 
   return (
     <div
-      className='fixed inset-0 z-[55] flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-lg'
+      className='fixed inset-0 z-[51] flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-lg'
       onClick={onClose}
     >
       {/* Close button */}
