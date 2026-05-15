@@ -78,18 +78,20 @@ export function BusinessDetailsGalleryCarousel({
         <X className='h-6 w-6 text-white' />
       </button>
 
-      {/* Main image */}
+      {/* Main image — clicking empty space around the image closes the modal */}
       <div
-        className='relative flex h-[72vh] w-full max-w-6xl items-center justify-center px-4'
-        onClick={e => e.stopPropagation()}
+        className='flex h-[72vh] w-full max-w-6xl items-center justify-center px-4'
+        onClick={onClose}
       >
         <Image
           src={getCurrentImageSrc() || '/placeholder.svg'}
           alt={`Gallery image ${currentIndex + 1}`}
-          fill
-          className='mx-auto overflow-hidden rounded-2xl object-contain'
+          width={1920}
+          height={1080}
+          className='max-h-[72vh] max-w-full rounded-2xl object-contain'
           priority
-          // sizes='(max-width: 1536px) 100vw, 1536px'
+          sizes='(max-width: 1536px) 100vw, 1536px'
+          onClick={e => e.stopPropagation()}
         />
 
         {/* Image counter */}
