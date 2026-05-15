@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Button,
   DropdownMenu,
@@ -9,7 +10,7 @@ import {
   DropdownMenuTrigger,
   EmptyState,
 } from '@/components/ui';
-import { ChevronDown, MoveRight, Settings } from 'lucide-react';
+import { ChevronDown, MoveRight, Settings, CheckCircle } from 'lucide-react';
 import { useBilling, useCurrentUser } from '@/app/(clients)/misc/api';
 import { useChangeCard } from '@/app/(clients)/misc/api/payment';
 import { useBooleanStateControl } from '@/hooks';
@@ -31,8 +32,16 @@ import { PaymentHistory } from '@/types/api';
 import { format } from 'date-fns';
 import { PaymentsIcon } from '../../misc/components/icons';
 import { toast } from 'sonner';
+import Link from 'next/link';
 
 export default function PaymentsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Check for Paystack redirect parameters
+  const paystackReference =
+    searchParams.get('reference') || searchParams.get('trxref');
+  const isPaystackSuccess = !!paystackReference;
   const changeCardMutation = useChangeCard();
   const [selectedReceiptIndex, setSelectedReceiptIndex] = useState<
     number | null
@@ -120,6 +129,33 @@ export default function PaymentsPage() {
     return (
       <div className='flex h-full w-full items-center justify-center'>
         <LogoLoadingIcon />
+      </div>
+    );
+  }
+
+  // Paystack redirect success state
+  if (isPaystackSuccess) {
+    return (
+      <div className='flex h-full w-full items-center justify-center'>
+        <div className='flex max-w-md flex-col items-center gap-6 px-6 text-center'>
+          <div className='flex size-20 items-center justify-center rounded-full bg-[#E3F5E1]'>
+            <CheckCircle className='size-10 text-[#2E7D32]' />
+          </div>
+          <div className='space-y-2'>
+            <h1 className='font-inter text-2xl font-semibold text-[#1A1A1A]'>
+              Payment Successful
+            </h1>
+            <p className='text-sm text-[#4B5565]'>
+              Your transaction has been processed successfully.
+            </p>
+          </div>
+          <Link
+            href={'/business/promotions'}
+            className='h-12 w-full bg-[#6E44FF] font-inter font-medium text-white hover:bg-[#5a35d6]'
+          >
+            Go to Promotions
+          </Link>
+        </div>
       </div>
     );
   }
