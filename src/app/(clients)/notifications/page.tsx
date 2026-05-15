@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { BellRing } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 import { Button } from '@/components/ui/Button';
 import {
@@ -17,11 +18,17 @@ import {
 import type { NotificationItem } from '@/types/api';
 
 export default function NotificationsPage() {
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+
   const {
     data: notificationData,
     isLoading: notificationsLoading,
     refetch: refetchNotifications,
-  } = useNotifications({ notification_for: 'user' });
+  } = useNotifications(
+    { notification_for: 'user' },
+    { enabled: isAuthenticated }
+  );
 
   const markAllMutation = useMarkAllNotifications();
   const markNotificationSeenMutation = useMarkNotificationSeen();

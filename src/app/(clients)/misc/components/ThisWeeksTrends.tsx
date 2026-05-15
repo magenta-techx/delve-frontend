@@ -14,7 +14,7 @@ const ThisWeeksTrends = (): JSX.Element => {
         <div className='w-full py-10 sm:mb-10 sm:py-0 md:mb-12'>
           <div className='relative flex w-[100%] flex-col items-center md:h-[30rem] lg:grid lg:h-[35rem] lg:grid-cols-[1.45fr_1fr] xl:grid-cols-[1.6fr_1fr]'>
             <div
-              className='relative flex h-full w-full items-center justify-start'
+              className='relative flex h-full w-full items-center justify-start max-md:py-12'
               style={{
                 background: `url(${data?.data.thumbnail || '/landingpage/trendz-1.jpg'})`,
                 backgroundSize: 'cover',
@@ -22,7 +22,7 @@ const ThisWeeksTrends = (): JSX.Element => {
                 backgroundRepeat: 'no-repeat',
               }}
             >
-              <div className='w-full max-w-md rounded-xl bg-black/70 p-5 md:ml-16 lg:ml-24'>
+              <div className='w-[80%] max-w-md rounded-xl bg-black/70 p-5 max-md:mx-auto md:ml-16 lg:ml-24'>
                 <div className='relative z-10 flex h-full w-full flex-col gap-2 p-2 text-white sm:p-3'>
                   {/* Info  */}
                   <div className='flex h-[85px] items-center gap-2 border-b-[1px] border-b-white sm:-mt-5'>
@@ -50,7 +50,7 @@ const ThisWeeksTrends = (): JSX.Element => {
                     <div className='flex items-center gap-2 truncate'>
                       <BaseIcons value='marker-light-red' />
                       <span className='truncate text-[0.625rem] text-[#FFE6D5] sm:text-sm'>
-                        {data?.data.address || '...'}
+                        {data?.data.address || 'Online Store'}
                       </span>
                     </div>
                     <div className='flex items-center gap-1'>
