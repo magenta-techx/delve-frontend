@@ -138,6 +138,26 @@ export default function HomePage() {
   const { data: sponsoredAds } = useSponsoredAds();
   const {} = useEvents('Lagos');
 
+  const [listingsCarouselApi, setListingsCarouselApi] = useState<CarouselApi>();
+  const [listingsCanScrollNext, setListingsCanScrollNext] = useState(false);
+
+  useEffect(() => {
+    if (!listingsCarouselApi) return;
+
+    const updateScrollState = () => {
+      setListingsCanScrollNext(listingsCarouselApi.canScrollNext());
+    };
+
+    updateScrollState();
+    listingsCarouselApi.on('select', updateScrollState);
+    listingsCarouselApi.on('reInit', updateScrollState);
+
+    return () => {
+      listingsCarouselApi.off('select', updateScrollState);
+      listingsCarouselApi.off('reInit', updateScrollState);
+    };
+  }, [listingsCarouselApi]);
+
   return (
     <main className='relative flex flex-col items-center overflow-x-hidden'>
       <section className='relative flex w-screen flex-col items-center bg-cover bg-no-repeat sm:h-[85vh] sm:bg-[url("/landingpage/landing-page-hero-image.jpg")]'>
@@ -381,28 +401,31 @@ export default function HomePage() {
                   Listings around you
                 </h1>
               </div>
-              <div className='flex items-center gap-2 text-primary'>
-                <BaseIcons value='arrows-left-primary' />
-                <Link
-                  href={'/businesses/search'}
-                  className='text-[12px] uppercase sm:text-[16px]'
-                >
-                  See all
-                </Link>
-              </div>
+              {listingsCanScrollNext && (
+                <div className='flex items-center gap-2 text-primary'>
+                  <BaseIcons value='arrows-left-primary' />
+                  <Link
+                    href={'/businesses/search'}
+                    className='text-[12px] uppercase sm:text-[16px]'
+                  >
+                    See all
+                  </Link>
+                </div>
+              )}
             </header>
 
             <div className='mb-10 w-full items-center md:mb-20'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
                 className='w-full max-w-full px-2'
+                setApi={setListingsCarouselApi}
               >
                 <CarouselContent className='-ml-2 w-full gap-1.5'>
                   {loadingApproved
                     ? Array.from({ length: 6 }).map((_, key) => (
                         <CarouselItem
                           key={key}
-                          className='basis-[70vw] sm:basis-[300px] md:pl-2 xl:basis-[380px] 2xl:px-4'
+                          className='basis-[70vw] sm:basis-[300px] md:pl-2 xl:basis-[25%] 2xl:px-4'
                         >
                           <ListingCardSkeleton classStyle='w-[70vw] sm:w-[300px] xl:w-[380px] !aspect-[342/427]' />
                         </CarouselItem>

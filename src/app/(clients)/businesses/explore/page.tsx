@@ -10,6 +10,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from '@/components/ui';
 import UpComingEvents from '@/components/UpComingEvents';
 import { useApprovedBusinesses } from '@/app/(clients)/misc/api';
@@ -18,6 +19,7 @@ import { EmptyState } from '@/components/ui';
 import { EmptyListingIcon } from '../../misc/icons';
 import { cn } from '@/lib/utils';
 import { BusinessSearch } from '../../misc/components';
+import { useEffect, useState } from 'react';
 
 export default function HomePage(): JSX.Element {
   const { data: approvedResp, isLoading: loadingApproved } =
@@ -27,13 +29,44 @@ export default function HomePage(): JSX.Element {
 
   const isEmptyApproved = !loadingApproved && approved.length === 0;
 
+  // Carousel scroll tracking for conditional "See all" links
+  const [listingsApi, setListingsApi] = useState<CarouselApi>();
+  const [listingsCanScroll, setListingsCanScroll] = useState(false);
+
+  const [featuredApi, setFeaturedApi] = useState<CarouselApi>();
+  const [featuredCanScroll, setFeaturedCanScroll] = useState(false);
+
+  useEffect(() => {
+    if (!listingsApi) return;
+    const onChange = () => setListingsCanScroll(listingsApi.canScrollNext());
+    onChange();
+    listingsApi.on('select', onChange);
+    listingsApi.on('reInit', onChange);
+    return () => {
+      listingsApi.off('select', onChange);
+      listingsApi.off('reInit', onChange);
+    };
+  }, [listingsApi]);
+
+  useEffect(() => {
+    if (!featuredApi) return;
+    const onChange = () => setFeaturedCanScroll(featuredApi.canScrollNext());
+    onChange();
+    featuredApi.on('select', onChange);
+    featuredApi.on('reInit', onChange);
+    return () => {
+      featuredApi.off('select', onChange);
+      featuredApi.off('reInit', onChange);
+    };
+  }, [featuredApi]);
+
   return (
     <main className='relative flex flex-col items-center'>
       <div className='relative mb-12 flex w-screen flex-col items-start bg-right bg-no-repeat sm:mb-24 sm:min-h-[65vh] sm:bg-[url("/explore/explore-hero.jpg")]'>
         <div className='absolute hidden w-full bg-gradient-to-t from-black via-black/95 to-transparent sm:flex sm:min-h-[65vh] sm:bg-gradient-to-r'></div>
 
         {/* Mobile hero  */}
-        <div className='relative flex h-[750px] w-full rounded-b-2xl bg-black bg-[url("/explore/explore-hero-image-mobile.png")] [background-size:120%] bg-top bg-no-repeat sm:hidden'>
+        <div className='relative flex h-[750px] w-full rounded-b-2xl bg-black bg-[url("/explore/explore-hero-image-mobile.png")] bg-top bg-no-repeat [background-size:120%] sm:hidden'>
           <div className='insert-0 absolute bottom-0 flex h-[100%] w-full rounded-b-2xl bg-black/10 sm:rounded-none'></div>
           <div className='absolute bottom-0 flex h-[88%] w-[100%] rounded-bl-2xl rounded-br-2xl bg-gradient-to-t from-black via-black/100 to-transparent sm:hidden'></div>
         </div>
@@ -47,7 +80,7 @@ export default function HomePage(): JSX.Element {
                 LISTINGS
               </p>
             </div>
-            <h1 className='mb-6 max-w-3xl text-balance pr-8 font-karma text-2xl md:text-[clamp(2rem,5vw,3.2rem)] font-bold leading-tight text-white'>
+            <h1 className='mb-6 max-w-3xl text-balance pr-8 font-karma text-2xl font-bold leading-tight text-white md:text-[clamp(2rem,5vw,3.2rem)]'>
               Discover services tailored to your needs, location, and style.
             </h1>
             <p className='-mt-2 max-w-3xl font-inter text-sm leading-relaxed text-white sm:text-base'>
@@ -58,7 +91,7 @@ export default function HomePage(): JSX.Element {
           </div>
         </div>
 
-        <section className='absolute bottom-16 left-1/2 z-[49] mx-auto flex sm:w-[90vw] max-w-4xl -translate-x-1/2 justify-center px-5 sm:-bottom-9 sm:px-0 lg:w-full'>
+        <section className='absolute bottom-16 left-1/2 z-[49] mx-auto flex max-w-4xl -translate-x-1/2 justify-center px-5 sm:-bottom-9 sm:w-[90vw] sm:px-0 lg:w-full'>
           <BusinessSearch />
         </section>
       </div>
@@ -71,12 +104,14 @@ export default function HomePage(): JSX.Element {
             <BaseIcons value='stars-primary' />
             <h1 className='text-2xl font-semibold'>Listings around you</h1>
           </div>
-          <div className='flex items-center gap-2 text-primary'>
-            <BaseIcons value='arrows-left-primary' />
-            <Link href={'/businesses/search'} className='uppercase'>
-              See all listings
-            </Link>
-          </div>
+          {listingsCanScroll && (
+            <div className='flex items-center gap-2 text-primary'>
+              <BaseIcons value='arrows-left-primary' />
+              <Link href={'/businesses/search'} className='uppercase'>
+                See all listings
+              </Link>
+            </div>
+          )}
         </div>
         {isEmptyApproved ? (
           <div className='flex items-center justify-center md:py-6'>
@@ -94,40 +129,40 @@ export default function HomePage(): JSX.Element {
             <Carousel
               opts={{ align: 'start', loop: false }}
               className='w-full'
+              setApi={setListingsApi}
             >
               <CarouselContent className='-ml-4'>
                 {loadingApproved
                   ? Array.from({ length: 5 }).map((_, key) => (
-                    <CarouselItem
-                      key={key}
-                      className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
-                    >
-                      <ListingCardSkeleton
-                        classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
-                      />
-                    </CarouselItem>
-                  ))
+                      <CarouselItem
+                        key={key}
+                        className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                      >
+                        <ListingCardSkeleton
+                          classStyle={
+                            '!aspect-[15/13] w-full sm:!aspect-[342/427] '
+                          }
+                        />
+                      </CarouselItem>
+                    ))
                   : approved.map((business, key) => (
-                    <CarouselItem
-                      key={business.id ?? key}
-                      className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
-                    >
-                      <FeaturedListingCard
-                        business={business}
-                        group={true}
-                      />
-                    </CarouselItem>
-                  ))}
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                      >
+                        <FeaturedListingCard business={business} group={true} />
+                      </CarouselItem>
+                    ))}
               </CarouselContent>
-              <CarouselPrevious className='hidden xl:flex -left-4' />
-              <CarouselNext className='hidden xl:flex -right-4' />
+              <CarouselPrevious className='-left-4 hidden xl:flex' />
+              <CarouselNext className='-right-4 hidden xl:flex' />
             </Carousel>
           </div>
         )}
       </div>
 
       {/* mobile  */}
-      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
+      <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden sm:hidden md:px-4'>
         <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
           <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
             <BaseIcons value='stars-primary' className='!size-4' />
@@ -144,29 +179,29 @@ export default function HomePage(): JSX.Element {
             />
           </div>
         ) : (
-          <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
+          <div className='mb-8 w-full items-center md:mb-10 md:mb-20'>
             <Carousel
               opts={{ align: 'start', loop: false }}
               className='w-full max-w-full md:px-2'
             >
-              <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
+              <CarouselContent className='-ml-2 gap-1.5 max-md:px-4 md:gap-4 md:p-4'>
                 {loadingApproved
                   ? Array.from({ length: 4 }).map((_, key) => (
-                    <CarouselItem
-                      key={key}
-                      className='basis-[80vw] pl-2 sm:basis-[340px]'
-                    >
-                      <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
-                    </CarouselItem>
-                  ))
+                      <CarouselItem
+                        key={key}
+                        className='basis-[80vw] pl-2 sm:basis-[340px]'
+                      >
+                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
+                      </CarouselItem>
+                    ))
                   : approved.map((business, key) => (
-                    <CarouselItem
-                      key={business.id ?? key}
-                      className='basis-[80vw] pl-2 sm:basis-[340px]'
-                    >
-                      <FeaturedListingCard business={business} />
-                    </CarouselItem>
-                  ))}
+                      <CarouselItem
+                        key={business.id ?? key}
+                        className='basis-[80vw] pl-2 sm:basis-[340px]'
+                      >
+                        <FeaturedListingCard business={business} />
+                      </CarouselItem>
+                    ))}
               </CarouselContent>
             </Carousel>
           </div>
@@ -185,79 +220,84 @@ export default function HomePage(): JSX.Element {
                 <BaseIcons value='flames-yellow' />
                 <h1 className='text-2xl font-semibold'>Featured</h1>
               </div>
-              <div className='flex items-center gap-2 text-primary'>
-                <BaseIcons value='arrows-left-primary' />
-                <Link href={'/businesses/search'} className='uppercase'>
-                  See all listings
-                </Link>
-              </div>
+              {featuredCanScroll && (
+                <div className='flex items-center gap-2 text-primary'>
+                  <BaseIcons value='arrows-left-primary' />
+                  <Link href={'/businesses/search'} className='uppercase'>
+                    See all listings
+                  </Link>
+                </div>
+              )}
             </div>
             <div className='relative mb-20 mt-5 w-full'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
                 className='w-full'
+                setApi={setFeaturedApi}
               >
                 <CarouselContent className='-ml-4'>
                   {loadingApproved
                     ? Array.from({ length: 5 }).map((_, key) => (
-                      <CarouselItem
-                        key={key}
-                        className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
-                      >
-                        <ListingCardSkeleton
-                          classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
-                        />
-                      </CarouselItem>
-                    ))
+                        <CarouselItem
+                          key={key}
+                          className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                        >
+                          <ListingCardSkeleton
+                            classStyle={
+                              '!aspect-[15/13] w-full sm:!aspect-[342/427] '
+                            }
+                          />
+                        </CarouselItem>
+                      ))
                     : approved.map((business, key) => (
-                      <CarouselItem
-                        key={business.id ?? key}
-                        className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
-                      >
-                        <FeaturedListingCard
-                          business={business}
-                          group={true}
-                        />
-                      </CarouselItem>
-                    ))}
+                        <CarouselItem
+                          key={business.id ?? key}
+                          className='pl-4 sm:basis-1/2 md:basis-1/3 xl:basis-1/4'
+                        >
+                          <FeaturedListingCard
+                            business={business}
+                            group={true}
+                          />
+                        </CarouselItem>
+                      ))}
                 </CarouselContent>
-                <CarouselPrevious className='hidden xl:flex -left-4' />
-                <CarouselNext className='hidden xl:flex -right-4' />
+                <CarouselPrevious className='-left-4 hidden xl:flex' />
+                <CarouselNext className='-right-4 hidden xl:flex' />
               </Carousel>
             </div>
           </div>
 
           {/* mobile  */}
-          <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
+          <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden sm:hidden md:px-4'>
             <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
               <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
                 <BaseIcons value='flames-yellow' className='!size-4' />
                 Featured
               </h1>
             </div>
-            <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
+            <div className='mb-8 w-full items-center md:mb-10 md:mb-20'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
                 className='w-full max-w-full md:px-2'
               >
-                <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
+                <CarouselContent className='-ml-2 gap-1.5 max-md:px-4 md:gap-4 md:p-4'>
                   {loadingApproved
                     ? Array.from({ length: 4 }).map((_, key) => (
-                      <CarouselItem
-                        key={key}
-                        className='basis-[80vw] pl-2 sm:basis-[340px]'
-                      >
-                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
-                      </CarouselItem>
-                    ))
+                        <CarouselItem
+                          key={key}
+                          className='basis-[80vw] pl-2 sm:basis-[340px]'
+                        >
+                          <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
+                        </CarouselItem>
+                      ))
                     : approved.map((business, key) => (
-                      <CarouselItem
-                        key={business.id ?? key}
-                        className='basis-[80vw] pl-2 sm:basis-[340px]'
-                      >
-                        <FeaturedListingCard business={business} />
-                      </CarouselItem>
-                    ))}
+                        <CarouselItem
+                          key={business.id ?? key}
+                          className='basis-[80vw] pl-2 sm:basis-[340px]'
+                        >
+                          <FeaturedListingCard business={business} />
+                        </CarouselItem>
+                      ))}
                 </CarouselContent>
               </Carousel>
             </div>
@@ -277,12 +317,14 @@ export default function HomePage(): JSX.Element {
                 <BaseIcons value='stars-primary' className='!size-4' />
                 <h1 className='text-2xl font-semibold'>Explore</h1>
               </div>
-              <div className='flex items-center gap-2 text-primary'>
-                <BaseIcons value='arrows-left-primary' />
-                <Link href={'/businesses/search'} className='uppercase'>
-                  See all listings
-                </Link>
-              </div>
+              {approved.length > 4 && (
+                <div className='flex items-center gap-2 text-primary'>
+                  <BaseIcons value='arrows-left-primary' />
+                  <Link href={'/businesses/search'} className='uppercase'>
+                    See all listings
+                  </Link>
+                </div>
+              )}
             </div>
             <div
               className={cn(
@@ -294,51 +336,53 @@ export default function HomePage(): JSX.Element {
             >
               {loadingApproved
                 ? Array.from({ length: 5 }).map((_, key) => (
-                  <ListingCardSkeleton
-                    key={key}
-                    classStyle={'!aspect-[15/13] w-full sm:!aspect-[342/427] '}
-                  />
-                ))
+                    <ListingCardSkeleton
+                      key={key}
+                      classStyle={
+                        '!aspect-[15/13] w-full sm:!aspect-[342/427] '
+                      }
+                    />
+                  ))
                 : approved.map((business, key) => (
-                  <FeaturedListingCard
-                    key={business.id ?? key}
-                    business={business}
-                    group={true}
-                  />
-                ))}
+                    <FeaturedListingCard
+                      key={business.id ?? key}
+                      business={business}
+                      group={true}
+                    />
+                  ))}
             </div>
           </div>
 
           {/* mobile  */}
-          <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden md:px-4 sm:hidden'>
+          <div className='mt:px-0 relative flex w-screen flex-col items-center justify-center overflow-x-hidden sm:hidden md:px-4'>
             <div className='mb-2 flex w-full items-center gap-2 px-4 sm:px-0'>
               <h1 className='flex items-center gap-2 font-inter text-[16px] font-semibold sm:text-2xl'>
                 Explore
               </h1>
             </div>
-            <div className='mb-8 md:mb-10 md:mb-20 w-full items-center'>
+            <div className='mb-8 w-full items-center md:mb-10 md:mb-20'>
               <Carousel
                 opts={{ align: 'start', loop: false }}
                 className='w-full max-w-full md:px-2'
               >
-                <CarouselContent className='-ml-2 gap-1.5 md:gap-4 md:p-4 max-md:px-4'>
+                <CarouselContent className='-ml-2 gap-1.5 max-md:px-4 md:gap-4 md:p-4'>
                   {loadingApproved
                     ? Array.from({ length: 4 }).map((_, key) => (
-                      <CarouselItem
-                        key={key}
-                        className='basis-[80vw] pl-2 sm:basis-[340px]'
-                      >
-                        <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
-                      </CarouselItem>
-                    ))
+                        <CarouselItem
+                          key={key}
+                          className='basis-[80vw] pl-2 sm:basis-[340px]'
+                        >
+                          <ListingCardSkeleton classStyle='w-[70vw] !aspect-[5/6]' />
+                        </CarouselItem>
+                      ))
                     : approved.map((business, key) => (
-                      <CarouselItem
-                        key={business.id ?? key}
-                        className='basis-[80vw] pl-2 sm:basis-[340px]'
-                      >
-                        <FeaturedListingCard business={business} />
-                      </CarouselItem>
-                    ))}
+                        <CarouselItem
+                          key={business.id ?? key}
+                          className='basis-[80vw] pl-2 sm:basis-[340px]'
+                        >
+                          <FeaturedListingCard business={business} />
+                        </CarouselItem>
+                      ))}
                 </CarouselContent>
               </Carousel>
             </div>
