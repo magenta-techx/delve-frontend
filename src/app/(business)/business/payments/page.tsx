@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import {
   Button,
   DropdownMenu,
@@ -36,7 +36,6 @@ import Link from 'next/link';
 
 export default function PaymentsPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   // Check for Paystack redirect parameters
   const paystackReference =
