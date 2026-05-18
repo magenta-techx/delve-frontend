@@ -35,13 +35,20 @@ import {
   BusinessPageHeader,
 } from '../../misc/components';
 import { cn } from '@/lib/utils';
-import { Check, Circle } from 'lucide-react';
+import { Check, CheckCircle, Circle } from 'lucide-react';
 import Image from 'next/image';
 import { EmptySavedBusinessesIcon } from '@/app/(clients)/misc/icons';
 import { useUpdateSponsoredAd } from '@/app/(clients)/misc/api/sponsored';
 import { toast } from 'sonner';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 export default function PromotionsPage() {
+  const searchParams = useSearchParams();
+  const paystackReference =
+    searchParams.get('reference') || searchParams.get('trxref');
+  const isPaystackSuccess = !!paystackReference;
+
   const [selectedView, setSelectedView] = useState<'advert' | 'promotion'>(
     'promotion'
   );
@@ -180,6 +187,33 @@ export default function PromotionsPage() {
       dailyMetrics: data?.performance_metrics?.daily_metrics || [],
     };
   }, [selectedAnalyticsData]);
+
+  // Paystack redirect success state
+  if (isPaystackSuccess) {
+    return (
+      <div className='flex h-full w-full items-center justify-center'>
+        <div className='flex max-w-md flex-col items-center gap-6 px-6 text-center'>
+          <div className='flex size-20 items-center justify-center rounded-full bg-[#E3F5E1]'>
+            <CheckCircle className='size-10 text-[#2E7D32]' />
+          </div>
+          <div className='space-y-2'>
+            <h1 className='font-inter text-2xl font-semibold text-[#1A1A1A]'>
+              Payment Successful
+            </h1>
+            <p className='text-sm text-[#4B5565]'>
+              Your transaction has been processed successfully.
+            </p>
+          </div>
+          <Link
+            href={'/business/promotions'}
+            className='h-12 w-full bg-[#6E44FF] font-inter font-medium text-white hover:bg-[#5a35d6]'
+          >
+            Go to Promotions
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading || advertAnalyticsLoading || promotionAnalyticsLoading) {
     return (
