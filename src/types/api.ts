@@ -435,6 +435,12 @@ export interface PaymentCard {
   payment_card_expiratin_year: string;
 }
 
+export interface PaymentVerifyResponse {
+  status: boolean;
+  transaction_status?: 'success' | 'pending' | 'processing' | 'failed';
+  message: string;
+}
+
 export interface CurrentPlan {
   name: string;
   billing_cycle: string;

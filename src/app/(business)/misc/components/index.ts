@@ -1,6 +1,7 @@
 export { default as AddServiceDialog } from './AddServiceDialog';
 export { default as CreateAdPromoForm } from './CreateAdPromoForm';
 export { default as PremiumUserHelpForm } from './PremiumUserHelpForm';
+export { default as PaystackStatusView, type PaystackStatusViewProps } from './PaystackStatusView';
 export { NavbarTop } from './layout/NavbarTop';
 export { NavbarBottom } from './layout/NavbarBottom';
 export { BusinessPageHeader } from './layout/BusinessPageHeader';

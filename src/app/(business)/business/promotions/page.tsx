@@ -33,22 +33,16 @@ import {
   CreateAdPromoForm,
   PaymentHistoryChart,
   BusinessPageHeader,
+  PaystackStatusView,
 } from '../../misc/components';
 import { cn } from '@/lib/utils';
-import { Check, CheckCircle, Circle } from 'lucide-react';
+import { Check, Circle } from 'lucide-react';
 import Image from 'next/image';
 import { EmptySavedBusinessesIcon } from '@/app/(clients)/misc/icons';
 import { useUpdateSponsoredAd } from '@/app/(clients)/misc/api/sponsored';
 import { toast } from 'sonner';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 
 export default function PromotionsPage() {
-  const searchParams = useSearchParams();
-  const paystackReference =
-    searchParams.get('reference') || searchParams.get('trxref');
-  const isPaystackSuccess = !!paystackReference;
-
   const [selectedView, setSelectedView] = useState<'advert' | 'promotion'>(
     'promotion'
   );
@@ -188,33 +182,6 @@ export default function PromotionsPage() {
     };
   }, [selectedAnalyticsData]);
 
-  // Paystack redirect success state
-  if (isPaystackSuccess) {
-    return (
-      <div className='flex h-full w-full items-center justify-center'>
-        <div className='flex max-w-md flex-col items-center gap-6 px-6 text-center'>
-          <div className='flex size-20 items-center justify-center rounded-full bg-[#E3F5E1]'>
-            <CheckCircle className='size-10 text-[#2E7D32]' />
-          </div>
-          <div className='space-y-2'>
-            <h1 className='font-inter text-2xl font-semibold text-[#1A1A1A]'>
-              Payment Successful
-            </h1>
-            <p className='text-sm text-[#4B5565]'>
-              Your transaction has been processed successfully.
-            </p>
-          </div>
-          <Link
-            href={'/business/promotions'}
-            className='h-12 w-full bg-[#6E44FF] font-inter font-medium text-white hover:bg-[#5a35d6]'
-          >
-            Go to Promotions
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   if (isLoading || advertAnalyticsLoading || promotionAnalyticsLoading) {
     return (
       <div className='flex h-full w-full items-center justify-center'>
@@ -236,245 +203,77 @@ export default function PromotionsPage() {
   }
 
   return (
-    <div
-      className={cn(
-        'h-full w-full overflow-y-scroll max-md:pb-28 md:space-y-8'
-      )}
-    >
-      <BusinessPageHeader
-        title='Promotions and Adverts'
-        description='Effortlessly handle your promotions and adverts right here.'
+    <>
+      {/* Paystack redirect status overlay */}
+      <PaystackStatusView
+        redirectPath='/business/promotions'
+        redirectLabel='Go to Promotions'
       />
-      {/* Header */}
-      <header>
-        <nav className='flex items-center gap-2 px-4 max-md:mb-4 max-md:mt-1.5 lg:gap-3 lg:px-6'>
-          {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
-            period => {
-              const p = period as
-                | 'all_time'
-                | 'this_month'
-                | 'last_6_months'
-                | 'last_12_months';
-              const isActive = selectedPeriod === p;
-              return (
-                <button
-                  key={period}
-                  onClick={() => setSelectedPeriod(p)}
-                  className={`rounded-[0.7rem] border p-2 font-inter text-[0.6125rem] font-normal capitalize tracking-wide transition-colors max-lg:w-max md:rounded-xl md:px-3 md:text-xs ${
-                    isActive
-                      ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
-                      : 'border-[#D9D6FE] text-[#697586]'
-                  }`}
-                >
-                  {period.replace(/_/g, ' ')}
-                </button>
-              );
-            }
-          )}
-        </nav>
-      </header>
 
-      {hasActiveCampaign && (
-        <>
-          <section className='grid gap-4 px-4 md:gap-5 lg:grid-cols-[1fr,minmax(auto,300px)] lg:items-stretch lg:gap-6 lg:px-8 xl:grid-cols-[1fr,minmax(auto,470px)]'>
-            <article className='flex flex-col gap-4 overflow-x-hidden rounded-2xl border border-[#CDD5DF] bg-card p-3 text-card-foreground md:gap-5 md:p-4 lg:px-6'>
-              {/* Payment History Chart */}
-              <PaymentHistoryChart
-                paymentHistory={paymentHistory}
-                totalSpending={totalSpending}
-                selectedPeriod={selectedPeriod}
-              />
-            </article>
-            <article className='flex grid-rows-[auto,1fr,max-content] flex-col gap-4 overflow-x-hidden rounded-2xl bg-[#7839EE] p-3 text-white md:gap-5 md:p-4 lg:grid lg:p-6'>
-              <header className='flex items-center justify-between'>
-                <h1 className='font-inter text-sm font-semibold text-white md:text-base lg:text-lg'>
-                  Your Active Campaigns
-                </h1>
+      <div
+        className={cn(
+          'h-full w-full overflow-y-scroll max-md:pb-28 md:space-y-8'
+        )}
+      >
+        <BusinessPageHeader
+          title='Promotions and Adverts'
+          description='Effortlessly handle your promotions and adverts right here.'
+        />
+        {/* Header */}
+        <header>
+          <nav className='flex items-center gap-2 px-4 max-md:mb-4 max-md:mt-1.5 lg:gap-3 lg:px-6'>
+            {['this_month', 'last_6_months', 'last_12_months', 'all_time'].map(
+              period => {
+                const p = period as
+                  | 'all_time'
+                  | 'this_month'
+                  | 'last_6_months'
+                  | 'last_12_months';
+                const isActive = selectedPeriod === p;
+                return (
+                  <button
+                    key={period}
+                    onClick={() => setSelectedPeriod(p)}
+                    className={`rounded-[0.7rem] border p-2 font-inter text-[0.6125rem] font-normal capitalize tracking-wide transition-colors max-lg:w-max md:rounded-xl md:px-3 md:text-xs ${
+                      isActive
+                        ? 'border-[#5F2EEA] bg-[#5F2EEA] text-white'
+                        : 'border-[#D9D6FE] text-[#697586]'
+                    }`}
+                  >
+                    {period.replace(/_/g, ' ')}
+                  </button>
+                );
+              }
+            )}
+          </nav>
+        </header>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger className='inline-flex w-max items-center justify-between rounded-lg border-2 border-[#C3B5FD] bg-[#FFFFFF] px-1.5 py-1 text-left text-[0.625rem] font-medium text-[#0F0F0F] md:px-2 md:py-2 md:text-xs'>
-                    {selectedView === 'advert' ? 'Adverts' : 'Promotions'}
-                    <CaretDown className='ml-1 h-3 w-3 md:ml-2 md:h-4 md:w-4' />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className='!min-w-20 !max-w-40'>
-                    <div className='flex flex-col'>
-                      <DropdownMenuItem
-                        className='!p-1 text-[0.625rem] md:text-xs'
-                        onClick={() => setSelectedView('advert')}
-                      >
-                        {selectedView === 'advert' && (
-                          <Check className='mr-2 h-4 w-4 text-green-500' />
-                        )}
-                        Adverts
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className='!p-1 text-[0.625rem] md:text-xs'
-                        onClick={() => setSelectedView('promotion')}
-                      >
-                        {selectedView === 'promotion' && (
-                          <Check className='mr-2 h-4 w-4 text-green-500' />
-                        )}
-                        Promotions
-                      </DropdownMenuItem>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </header>
-
-              {}
-              <section className='relative rounded-2xl border border-white p-1'>
-                <input
-                  ref={advertImageInputRef}
-                  type='file'
-                  accept='image/png,image/jpeg,image/jpg'
-                  className='hidden'
-                  onChange={handleAdvertImageFileChange}
+        {hasActiveCampaign && (
+          <>
+            <section className='grid gap-4 px-4 md:gap-5 lg:grid-cols-[1fr,minmax(auto,300px)] lg:items-stretch lg:gap-6 lg:px-8 xl:grid-cols-[1fr,minmax(auto,470px)]'>
+              <article className='flex flex-col gap-4 overflow-x-hidden rounded-2xl border border-[#CDD5DF] bg-card p-3 text-card-foreground md:gap-5 md:p-4 lg:px-6'>
+                {/* Payment History Chart */}
+                <PaymentHistoryChart
+                  paymentHistory={paymentHistory}
+                  totalSpending={totalSpending}
+                  selectedPeriod={selectedPeriod}
                 />
-                {selectedView === 'advert' ? (
-                  <>
-                    {hasActiveAdvertCampaign ? (
-                      <div
-                        className='relative h-full overflow-hidden rounded-2xl bg-[#0F172A]/30'
-                        // style={{ aspectRatio: '16 / 9' }}
-                      >
-                        <Image
-                          src={
-                            advertAnalyticsData?.data.performance_metrics
-                              .summary_metrics?.image || '/default-image.png'
-                          }
-                          alt='Advert Campaign Thumbnail'
-                          className='object-cover'
-                          fill
-                          objectFit='cover'
-                        />
-                      </div>
-                    ) : (
-                      <div>
-                        <EmptyState
-                          title='No Active Advert Campaign'
-                          description='You currently have no active advert campaigns. Create one to start reaching a wider audience and boosting your business visibility.'
-                          className='h-auto py-4 md:h-48 md:py-0'
-                          titleClassName='text-white text-sm md:text-lg font-semibold'
-                          descriptionClassName='!text-white text-xs md:text-sm'
-                          actions={
-                            <Button
-                              onClick={() =>
-                                setCreateCampaignFormState({
-                                  ...createCampaignFormState,
-                                  isOpen: true,
-                                  isCloseable: true,
-                                  isExtension: false,
-                                })
-                              }
-                            >
-                              Create Advert Campaign
-                            </Button>
-                          }
-                        />
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <article className='relative size-full min-h-[180px] overflow-hidden rounded-2xl md:min-h-0'>
-                    {hasActivePromoCampaign ? (
-                      <Image
-                        src={currentBusiness?.thumbnail || ''}
-                        alt='Promotion Campaign Thumbnail'
-                        className='rounded-xl object-cover text-[0.6rem]'
-                        fill
-                        objectFit='cover'
-                      />
-                    ) : (
-                      <div className='flex flex-col items-center'>
-                        <EmptyState
-                          title='No Active Promotion Campaign'
-                          description='You currently have no active promotion campaigns. Create one to start reaching a wider audience and boosting your business visibility.'
-                          className='h-auto py-4 md:h-48 md:py-0'
-                          titleClassName='text-white text-sm md:text-lg font-semibold'
-                          descriptionClassName='!text-white text-xs md:text-sm'
-                          actions={
-                            <Button
-                              onClick={() =>
-                                setCreateCampaignFormState({
-                                  ...createCampaignFormState,
-                                  isOpen: true,
-                                  isCloseable: true,
-                                  isExtension: false,
-                                })
-                              }
-                            >
-                              Create Promotion Campaign
-                            </Button>
-                          }
-                        />
-                      </div>
-                    )}
-                  </article>
-                )}
-              </section>
-
-              <footer className='flex items-center justify-between'>
-                <span className='rounded-md border border-[#9AA4B2] bg-[#0000002E] px-2.5 py-1 text-xs font-light md:rounded-xl md:px-4 md:py-1.5 md:text-sm'>
-                  <span className='mr-1.5 text-xs font-semibold md:mr-2 md:text-[0.9rem]'>
-                    {
-                      selectedAnalyticsData?.data.performance_metrics
-                        .summary_metrics?.total_impressions
-                    }
-                  </span>
-                  {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
-                  (selectedView === 'promotion' && hasActivePromoCampaign)
-                    ? 'Engagements'
-                    : 'No Active Campaign'}
-                </span>
-                <span className='flex w-max items-center rounded-md border border-[#9AA4B2] bg-[#0000002E] px-2.5 py-1 text-xs font-light md:rounded-xl md:px-4 md:py-1.5 md:text-sm'>
-                  <span className='mr-1.5 flex items-center text-xs font-semibold md:mr-2 md:text-[0.9rem]'>
-                    <Circle
-                      className={cn(
-                        'mr-1 inline-block size-2 md:size-3',
-                        (selectedView === 'advert' &&
-                          hasActiveAdvertCampaign) ||
-                          (selectedView === 'promotion' &&
-                            hasActivePromoCampaign)
-                          ? 'animate-pulse fill-[#D0F8AB] text-[#D0F8AB]'
-                          : 'fill-[#ee2e2e] text-[#e42222]'
-                      )}
-                    />
-
-                    {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
-                    (selectedView === 'promotion' && hasActivePromoCampaign)
-                      ? ' Live Now'
-                      : 'Inactive'}
-                  </span>
-                  {
-                    selectedAnalyticsData?.data.performance_metrics
-                      .summary_metrics?.days_left
-                  }{' '}
-                  {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
-                    (selectedView === 'promotion' &&
-                      hasActivePromoCampaign &&
-                      'days left')}
-                </span>
-              </footer>
-            </article>
-          </section>
-
-          <section className='px-4 lg:px-6'>
-            <header className='mb-6 mt-16 flex justify-between gap-y-2.5 max-md:flex-col md:mt-12 md:items-center'>
-              <div>
-                <div className='flex gap-2'>
-                  <h3 className='font-inter font-semibold text-black lg:text-lg'>
-                    Promotion Performance Metrics
-                  </h3>
+              </article>
+              <article className='flex grid-rows-[auto,1fr,max-content] flex-col gap-4 overflow-x-hidden rounded-2xl bg-[#7839EE] p-3 text-white md:gap-5 md:p-4 lg:grid lg:p-6'>
+                <header className='flex items-center justify-between'>
+                  <h1 className='font-inter text-sm font-semibold text-white md:text-base lg:text-lg'>
+                    Your Active Campaigns
+                  </h1>
 
                   <DropdownMenu>
-                    <DropdownMenuTrigger className='inline-flex w-max items-center justify-between rounded-lg bg-[#FDE272] px-2 py-1.5 text-left text-xs font-medium text-[#0F0F0F]'>
-                      {selectedView === 'advert' ? 'Adverts' : 'Promos'}
-                      <CaretDown className='ml-2 h-4 w-4' />
+                    <DropdownMenuTrigger className='inline-flex w-max items-center justify-between rounded-lg border-2 border-[#C3B5FD] bg-[#FFFFFF] px-1.5 py-1 text-left text-[0.625rem] font-medium text-[#0F0F0F] md:px-2 md:py-2 md:text-xs'>
+                      {selectedView === 'advert' ? 'Adverts' : 'Promotions'}
+                      <CaretDown className='ml-1 h-3 w-3 md:ml-2 md:h-4 md:w-4' />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className='!min-w-20 !max-w-40'>
                       <div className='flex flex-col'>
                         <DropdownMenuItem
-                          className='!p-1 text-xs'
+                          className='!p-1 text-[0.625rem] md:text-xs'
                           onClick={() => setSelectedView('advert')}
                         >
                           {selectedView === 'advert' && (
@@ -483,7 +282,7 @@ export default function PromotionsPage() {
                           Adverts
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          className='!p-1 text-xs'
+                          className='!p-1 text-[0.625rem] md:text-xs'
                           onClick={() => setSelectedView('promotion')}
                         >
                           {selectedView === 'promotion' && (
@@ -494,86 +293,262 @@ export default function PromotionsPage() {
                       </div>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                </header>
+
+                {}
+                <section className='relative rounded-2xl border border-white p-1'>
+                  <input
+                    ref={advertImageInputRef}
+                    type='file'
+                    accept='image/png,image/jpeg,image/jpg'
+                    className='hidden'
+                    onChange={handleAdvertImageFileChange}
+                  />
+                  {selectedView === 'advert' ? (
+                    <>
+                      {hasActiveAdvertCampaign ? (
+                        <div
+                          className='relative h-full overflow-hidden rounded-2xl bg-[#0F172A]/30'
+                          // style={{ aspectRatio: '16 / 9' }}
+                        >
+                          <Image
+                            src={
+                              advertAnalyticsData?.data.performance_metrics
+                                .summary_metrics?.image || '/default-image.png'
+                            }
+                            alt='Advert Campaign Thumbnail'
+                            className='object-cover'
+                            fill
+                            objectFit='cover'
+                          />
+                        </div>
+                      ) : (
+                        <div>
+                          <EmptyState
+                            title='No Active Advert Campaign'
+                            description='You currently have no active advert campaigns. Create one to start reaching a wider audience and boosting your business visibility.'
+                            className='h-auto py-4 md:h-48 md:py-0'
+                            titleClassName='text-white text-sm md:text-lg font-semibold'
+                            descriptionClassName='!text-white text-xs md:text-sm'
+                            actions={
+                              <Button
+                                onClick={() =>
+                                  setCreateCampaignFormState({
+                                    ...createCampaignFormState,
+                                    isOpen: true,
+                                    isCloseable: true,
+                                    isExtension: false,
+                                  })
+                                }
+                              >
+                                Create Advert Campaign
+                              </Button>
+                            }
+                          />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <article className='relative size-full min-h-[180px] overflow-hidden rounded-2xl md:min-h-0'>
+                      {hasActivePromoCampaign ? (
+                        <Image
+                          src={currentBusiness?.thumbnail || ''}
+                          alt='Promotion Campaign Thumbnail'
+                          className='rounded-xl object-cover text-[0.6rem]'
+                          fill
+                          objectFit='cover'
+                        />
+                      ) : (
+                        <div className='flex flex-col items-center'>
+                          <EmptyState
+                            title='No Active Promotion Campaign'
+                            description='You currently have no active promotion campaigns. Create one to start reaching a wider audience and boosting your business visibility.'
+                            className='h-auto py-4 md:h-48 md:py-0'
+                            titleClassName='text-white text-sm md:text-lg font-semibold'
+                            descriptionClassName='!text-white text-xs md:text-sm'
+                            actions={
+                              <Button
+                                onClick={() =>
+                                  setCreateCampaignFormState({
+                                    ...createCampaignFormState,
+                                    isOpen: true,
+                                    isCloseable: true,
+                                    isExtension: false,
+                                  })
+                                }
+                              >
+                                Create Promotion Campaign
+                              </Button>
+                            }
+                          />
+                        </div>
+                      )}
+                    </article>
+                  )}
+                </section>
+
+                <footer className='flex items-center justify-between'>
+                  <span className='rounded-md border border-[#9AA4B2] bg-[#0000002E] px-2.5 py-1 text-xs font-light md:rounded-xl md:px-4 md:py-1.5 md:text-sm'>
+                    <span className='mr-1.5 text-xs font-semibold md:mr-2 md:text-[0.9rem]'>
+                      {
+                        selectedAnalyticsData?.data.performance_metrics
+                          .summary_metrics?.total_impressions
+                      }
+                    </span>
+                    {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
+                    (selectedView === 'promotion' && hasActivePromoCampaign)
+                      ? 'Engagements'
+                      : 'No Active Campaign'}
+                  </span>
+                  <span className='flex w-max items-center rounded-md border border-[#9AA4B2] bg-[#0000002E] px-2.5 py-1 text-xs font-light md:rounded-xl md:px-4 md:py-1.5 md:text-sm'>
+                    <span className='mr-1.5 flex items-center text-xs font-semibold md:mr-2 md:text-[0.9rem]'>
+                      <Circle
+                        className={cn(
+                          'mr-1 inline-block size-2 md:size-3',
+                          (selectedView === 'advert' &&
+                            hasActiveAdvertCampaign) ||
+                            (selectedView === 'promotion' &&
+                              hasActivePromoCampaign)
+                            ? 'animate-pulse fill-[#D0F8AB] text-[#D0F8AB]'
+                            : 'fill-[#ee2e2e] text-[#e42222]'
+                        )}
+                      />
+
+                      {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
+                      (selectedView === 'promotion' && hasActivePromoCampaign)
+                        ? ' Live Now'
+                        : 'Inactive'}
+                    </span>
+                    {
+                      selectedAnalyticsData?.data.performance_metrics
+                        .summary_metrics?.days_left
+                    }{' '}
+                    {(selectedView === 'advert' && hasActiveAdvertCampaign) ||
+                      (selectedView === 'promotion' &&
+                        hasActivePromoCampaign &&
+                        'days left')}
+                  </span>
+                </footer>
+              </article>
+            </section>
+
+            <section className='px-4 lg:px-6'>
+              <header className='mb-6 mt-16 flex justify-between gap-y-2.5 max-md:flex-col md:mt-12 md:items-center'>
+                <div>
+                  <div className='flex gap-2'>
+                    <h3 className='font-inter font-semibold text-black lg:text-lg'>
+                      Promotion Performance Metrics
+                    </h3>
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className='inline-flex w-max items-center justify-between rounded-lg bg-[#FDE272] px-2 py-1.5 text-left text-xs font-medium text-[#0F0F0F]'>
+                        {selectedView === 'advert' ? 'Adverts' : 'Promos'}
+                        <CaretDown className='ml-2 h-4 w-4' />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className='!min-w-20 !max-w-40'>
+                        <div className='flex flex-col'>
+                          <DropdownMenuItem
+                            className='!p-1 text-xs'
+                            onClick={() => setSelectedView('advert')}
+                          >
+                            {selectedView === 'advert' && (
+                              <Check className='mr-2 h-4 w-4 text-green-500' />
+                            )}
+                            Adverts
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className='!p-1 text-xs'
+                            onClick={() => setSelectedView('promotion')}
+                          >
+                            {selectedView === 'promotion' && (
+                              <Check className='mr-2 h-4 w-4 text-green-500' />
+                            )}
+                            Promotions
+                          </DropdownMenuItem>
+                        </div>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  <div className='rounded-full bg-[#F5F3FF] text-[0.6rem] font-light'></div>
                 </div>
 
-                <div className='rounded-full bg-[#F5F3FF] text-[0.6rem] font-light'></div>
-              </div>
+                <Button
+                  onClick={() =>
+                    setCreateCampaignFormState({
+                      ...createCampaignFormState,
+                      isOpen: true,
+                      isCloseable: true,
+                      isExtension:
+                        selectedView === 'advert'
+                          ? !!hasActiveAdvertCampaign
+                          : !!hasActivePromoCampaign,
+                      showTabs: !hasActiveCampaign,
+                    })
+                  }
+                  size='dynamic_lg'
+                >
+                  {selectedView === 'advert' ? (
+                    <>
+                      {hasActiveAdvertCampaign
+                        ? 'Extend Campaign Duration'
+                        : 'Create Advert'}
+                    </>
+                  ) : (
+                    <>
+                      {hasActivePromoCampaign
+                        ? 'Extend Campaign Duration'
+                        : 'Create Promotion'}
+                    </>
+                  )}
+                </Button>
+              </header>
 
-              <Button
-                onClick={() =>
-                  setCreateCampaignFormState({
-                    ...createCampaignFormState,
-                    isOpen: true,
-                    isCloseable: true,
-                    isExtension:
-                      selectedView === 'advert'
-                        ? !!hasActiveAdvertCampaign
-                        : !!hasActivePromoCampaign,
-                    showTabs: !hasActiveCampaign,
-                  })
-                }
-                size='dynamic_lg'
-              >
-                {selectedView === 'advert' ? (
-                  <>
-                    {hasActiveAdvertCampaign
-                      ? 'Extend Campaign Duration'
-                      : 'Create Advert'}
-                  </>
-                ) : (
-                  <>
-                    {hasActivePromoCampaign
-                      ? 'Extend Campaign Duration'
-                      : 'Create Promotion'}
-                  </>
-                )}
-              </Button>
-            </header>
-
-            {/* Performance Metrics */}
-            <div className='grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3 xl:gap-6'>
-              <Card className='col-span-2 !flex flex-col !border border-[#EEF2F6] bg-[#FEFDF0] lg:col-span-1'>
-                <CardHeader className='p-3 pb-2 md:p-6 md:pb-3'>
-                  <CardTitle className='text-xs font-medium text-gray-600 md:text-sm lg:text-base'>
-                    Promotion Duration
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className='flex flex-1 flex-col space-y-3 max-md:p-3'>
-                  <div className='mt-auto h-4 w-full rounded-full bg-[#FFF5D4]'>
-                    <div
-                      className='h-4 rounded-full bg-[#FEC601]'
-                      style={{
-                        width: `${Math.max(0, Math.min(100, (daysLeft / 14) * 100))}%`,
-                      }}
-                    ></div>
-                  </div>
-                  <section className='flex items-end justify-between px-3 md:px-6 md:pb-6'>
-                    <div className=''>
-                      <p className='text-[0.65rem] text-gray-500 md:text-xs'>
-                        <span className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
-                          {daysLeft}{' '}
-                        </span>
-                        Days Left
-                      </p>
+              {/* Performance Metrics */}
+              <div className='grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3 xl:gap-6'>
+                <Card className='col-span-2 !flex flex-col !border border-[#EEF2F6] bg-[#FEFDF0] lg:col-span-1'>
+                  <CardHeader className='p-3 pb-2 md:p-6 md:pb-3'>
+                    <CardTitle className='text-xs font-medium text-gray-600 md:text-sm lg:text-base'>
+                      Promotion Duration
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className='flex flex-1 flex-col space-y-3 max-md:p-3'>
+                    <div className='mt-auto h-4 w-full rounded-full bg-[#FFF5D4]'>
+                      <div
+                        className='h-4 rounded-full bg-[#FEC601]'
+                        style={{
+                          width: `${Math.max(0, Math.min(100, (daysLeft / 14) * 100))}%`,
+                        }}
+                      ></div>
                     </div>
-                    <p className='text-[0.65rem] text-gray-500 md:text-xs'>
-                      Created on the 16th of July
-                    </p>
-                  </section>
-                </CardContent>
-              </Card>
+                    <section className='flex items-end justify-between px-3 md:px-6 md:pb-6'>
+                      <div className=''>
+                        <p className='text-[0.65rem] text-gray-500 md:text-xs'>
+                          <span className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
+                            {daysLeft}{' '}
+                          </span>
+                          Days Left
+                        </p>
+                      </div>
+                      <p className='text-[0.65rem] text-gray-500 md:text-xs'>
+                        Created on the 16th of July
+                      </p>
+                    </section>
+                  </CardContent>
+                </Card>
 
-              <Card className='flex flex-col !border border-[#EEF2F6] bg-[#FFF4ED]'>
-                <CardHeader className='p-3 pb-2 md:p-6 md:pb-3'>
-                  <CardTitle className='text-xs font-medium text-gray-600 md:text-sm lg:text-base'>
-                    Promotion Views
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className='flex flex-1 flex-col space-y-3 p-3 pt-0 md:p-6 md:pt-0'>
-                  <div className='flex h-10 w-full max-w-40 items-end justify-center md:h-12 lg:max-w-60'>
-                    <div className='flex h-full w-full items-end justify-between gap-1 lg:gap-2'>
-                      {[20, 30, 35, 40, 60, 55, 45, 32, 25, 30, 48, 20, 35].map(
-                        (height, i) => (
+                <Card className='flex flex-col !border border-[#EEF2F6] bg-[#FFF4ED]'>
+                  <CardHeader className='p-3 pb-2 md:p-6 md:pb-3'>
+                    <CardTitle className='text-xs font-medium text-gray-600 md:text-sm lg:text-base'>
+                      Promotion Views
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className='flex flex-1 flex-col space-y-3 p-3 pt-0 md:p-6 md:pt-0'>
+                    <div className='flex h-10 w-full max-w-40 items-end justify-center md:h-12 lg:max-w-60'>
+                      <div className='flex h-full w-full items-end justify-between gap-1 lg:gap-2'>
+                        {[
+                          20, 30, 35, 40, 60, 55, 45, 32, 25, 30, 48, 20, 35,
+                        ].map((height, i) => (
                           <div
                             key={i}
                             className='flex-1 rounded-lg bg-[#FFD6AE]'
@@ -585,38 +560,38 @@ export default function PromotionsPage() {
                               minHeight: '4px',
                             }}
                           ></div>
-                        )
-                      )}
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  <section className='flex flex-row items-end justify-between gap-1'>
-                    <div className=''>
+                    <section className='flex flex-row items-end justify-between gap-1'>
+                      <div className=''>
+                        <p className='text-[0.65rem] text-gray-500 md:text-xs'>
+                          <span className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
+                            {totalViews.toLocaleString()}{' '}
+                          </span>
+                          Views
+                        </p>
+                      </div>
                       <p className='text-[0.65rem] text-gray-500 md:text-xs'>
-                        <span className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
-                          {totalViews.toLocaleString()}{' '}
-                        </span>
-                        Views
+                        Now
                       </p>
-                    </div>
-                    <p className='text-[0.65rem] text-gray-500 md:text-xs'>
-                      Now
-                    </p>
-                  </section>
-                </CardContent>
-              </Card>
+                    </section>
+                  </CardContent>
+                </Card>
 
-              <Card className='flex flex-col !border border-[#EEF2F6] bg-[#F3FEE7]'>
-                <CardHeader className='p-3 pb-2 md:p-6 md:pb-3'>
-                  <CardTitle className='text-xs font-medium text-gray-600 md:text-sm lg:text-base'>
-                    Clicks & Engagements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className='flex flex-1 flex-col space-y-3 p-3 pt-0 md:p-6 md:pt-0'>
-                  <div className='flex h-10 w-full max-w-40 items-end justify-center md:h-12 lg:max-w-60'>
-                    <div className='flex size-full items-end justify-between gap-1 lg:gap-2'>
-                      {[20, 30, 35, 40, 60, 55, 45, 32, 25, 30, 48, 35, 20].map(
-                        (height, i) => (
+                <Card className='flex flex-col !border border-[#EEF2F6] bg-[#F3FEE7]'>
+                  <CardHeader className='p-3 pb-2 md:p-6 md:pb-3'>
+                    <CardTitle className='text-xs font-medium text-gray-600 md:text-sm lg:text-base'>
+                      Clicks & Engagements
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className='flex flex-1 flex-col space-y-3 p-3 pt-0 md:p-6 md:pt-0'>
+                    <div className='flex h-10 w-full max-w-40 items-end justify-center md:h-12 lg:max-w-60'>
+                      <div className='flex size-full items-end justify-between gap-1 lg:gap-2'>
+                        {[
+                          20, 30, 35, 40, 60, 55, 45, 32, 25, 30, 48, 35, 20,
+                        ].map((height, i) => (
                           <div
                             key={i}
                             className='flex-1 rounded-sm bg-green-200 transition-all duration-300 ease-linear'
@@ -628,113 +603,113 @@ export default function PromotionsPage() {
                               minHeight: '4px',
                             }}
                           ></div>
-                        )
-                      )}
+                        ))}
+                      </div>
                     </div>
+
+                    <section className='flex items-end justify-between gap-1'>
+                      <div>
+                        <p className='text-[0.65rem] text-gray-500 md:text-xs'>
+                          <span className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
+                            {totalClicks.toLocaleString()}{' '}
+                          </span>
+                          Interactions
+                        </p>
+                      </div>
+                      <p className='text-[0.65rem] text-gray-500 md:text-xs'>
+                        Now
+                      </p>
+                    </section>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* Performance Trends */}
+            <section className='mt-5 p-4 pt-0 lg:p-6 lg:pt-0'>
+              <Card>
+                <CardHeader className='!pb-3'>
+                  <div className='flex items-center justify-between'>
+                    <CardTitle className='text-[0.825rem] font-normal text-[#697586] md:text-sm'>
+                      Performance Trends Over Time
+                    </CardTitle>
+                    <Select
+                      value={selectedGraphView}
+                      onValueChange={e =>
+                        setSelectedGraphView(e as 'views' | 'clicks')
+                      }
+                    >
+                      <SelectTrigger className='!h-7 w-[60px] border border-[#EEF2F6] bg-[#F8FAFC] !p-1 md:!h-10 md:w-[100px] md:!py-1.5'>
+                        <span className='text-[0.625rem] text-black md:text-sm'>
+                          {selectedGraphView === 'views' ? 'Views' : 'Clicks'}
+                        </span>
+                      </SelectTrigger>
+                      <SelectContent className='max-w-max'>
+                        <SelectItem
+                          className='!text-[0.625rem] md:!text-xs'
+                          value='views'
+                        >
+                          Views
+                        </SelectItem>
+                        <SelectItem
+                          className='!text-[0.625rem] md:!text-xs'
+                          value='clicks'
+                        >
+                          Clicks
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardHeader>
+                <CardContent className='!p-4 !pt-0 md:!p-6 md:!pt-0'>
+                  <div className='mb-4'>
+                    <p className='text-[0.625rem] font-medium md:text-sm'>
+                      Total number of {selectedGraphView}
+                    </p>
+                    <p className='mb-3 text-xs text-green-600 md:mt-1'>
+                      <span className='text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
+                        {selectedGraphView == 'clicks'
+                          ? totalClicks.toLocaleString()
+                          : totalViews.toLocaleString()}
+                      </span>{' '}
+                      {selectedPeriod.replace('_', ' ')}
+                    </p>
                   </div>
 
-                  <section className='flex items-end justify-between gap-1'>
-                    <div>
-                      <p className='text-[0.65rem] text-gray-500 md:text-xs'>
-                        <span className='text-xl font-semibold text-[#0F0F0F] md:text-2xl lg:text-3xl'>
-                          {totalClicks.toLocaleString()}{' '}
-                        </span>
-                        Interactions
-                      </p>
+                  {!hasActiveCampaign ||
+                  (selectedView === 'promotion' && !hasActivePromoCampaign) ||
+                  (selectedView === 'advert' && !hasActiveAdvertCampaign) ? (
+                    <div className='py-10'>
+                      <EmptyState
+                        description={`No active ${selectedView === 'advert' ? 'advert' : 'promotion'} campaigns to display performance trends.`}
+                        className='h-48'
+                        titleClassName='text-black text-xl font-semibold'
+                        descriptionClassName='!text-gray-500'
+                        media={
+                          <EmptySavedBusinessesIcon className='max-md:size-16' />
+                        }
+                      />
                     </div>
-                    <p className='text-[0.65rem] text-gray-500 md:text-xs'>
-                      Now
-                    </p>
-                  </section>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Performance Trends */}
-          <section className='mt-5 p-4 pt-0 lg:p-6 lg:pt-0'>
-            <Card>
-              <CardHeader className='!pb-3'>
-                <div className='flex items-center justify-between'>
-                  <CardTitle className='text-[0.825rem] font-normal text-[#697586] md:text-sm'>
-                    Performance Trends Over Time
-                  </CardTitle>
-                  <Select
-                    value={selectedGraphView}
-                    onValueChange={e =>
-                      setSelectedGraphView(e as 'views' | 'clicks')
-                    }
-                  >
-                    <SelectTrigger className='!h-7 w-[60px] border border-[#EEF2F6] bg-[#F8FAFC] !p-1 md:!h-10 md:w-[100px] md:!py-1.5'>
-                      <span className='text-[0.625rem] text-black md:text-sm'>
-                        {selectedGraphView === 'views' ? 'Views' : 'Clicks'}
-                      </span>
-                    </SelectTrigger>
-                    <SelectContent className='max-w-max'>
-                      <SelectItem
-                        className='!text-[0.625rem] md:!text-xs'
-                        value='views'
-                      >
-                        Views
-                      </SelectItem>
-                      <SelectItem
-                        className='!text-[0.625rem] md:!text-xs'
-                        value='clicks'
-                      >
-                        Clicks
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardHeader>
-              <CardContent className='!p-4 !pt-0 md:!p-6 md:!pt-0'>
-                <div className='mb-4'>
-                  <p className='text-[0.625rem] font-medium md:text-sm'>
-                    Total number of {selectedGraphView}
-                  </p>
-                  <p className='mb-3 text-xs text-green-600 md:mt-1'>
-                    <span className='text-2xl font-bold text-[#0D0D0D] lg:text-4xl'>
-                      {selectedGraphView == 'clicks'
-                        ? totalClicks.toLocaleString()
-                        : totalViews.toLocaleString()}
-                    </span>{' '}
-                    {selectedPeriod.replace('_', ' ')}
-                  </p>
-                </div>
-
-                {!hasActiveCampaign ||
-                (selectedView === 'promotion' && !hasActivePromoCampaign) ||
-                (selectedView === 'advert' && !hasActiveAdvertCampaign) ? (
-                  <div className='py-10'>
-                    <EmptyState
-                      description={`No active ${selectedView === 'advert' ? 'advert' : 'promotion'} campaigns to display performance trends.`}
-                      className='h-48'
-                      titleClassName='text-black text-xl font-semibold'
-                      descriptionClassName='!text-gray-500'
-                      media={
-                        <EmptySavedBusinessesIcon className='max-md:size-16' />
+                  ) : (
+                    <CampaignAreaChart
+                      data={dailyMetrics.map(m => ({
+                        date: m.date,
+                        views: m.daily_views,
+                        clicks: m.daily_clicks,
+                      }))}
+                      metric={
+                        selectedGraphView === 'views'
+                          ? 'views'
+                          : (selectedGraphView as 'views' | 'clicks')
                       }
                     />
-                  </div>
-                ) : (
-                  <CampaignAreaChart
-                    data={dailyMetrics.map(m => ({
-                      date: m.date,
-                      views: m.daily_views,
-                      clicks: m.daily_clicks,
-                    }))}
-                    metric={
-                      selectedGraphView === 'views'
-                        ? 'views'
-                        : (selectedGraphView as 'views' | 'clicks')
-                    }
-                  />
-                )}
-              </CardContent>
-            </Card>
-          </section>
-        </>
-      )}
-    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </section>
+          </>
+        )}
+      </div>
+    </>
   );
 }

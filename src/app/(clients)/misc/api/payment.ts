@@ -1,6 +1,6 @@
 "use client";
 import { useQuery, useMutation, type UseQueryResult, type UseMutationResult } from "@tanstack/react-query";
-import type { ApiEnvelope, ApiMessage, PremiumPlan } from "@/types/api";
+import type { ApiEnvelope, ApiMessage, PremiumPlan, PaymentVerifyResponse } from "@/types/api";
 import { apiRequest } from '@/utils/apiHandler';
 
 export function usePlans(): UseQueryResult<ApiEnvelope<PremiumPlan[]>, Error> {
@@ -13,6 +13,25 @@ export function usePlans(): UseQueryResult<ApiEnvelope<PremiumPlan[]>, Error> {
       return data;
     },
     staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useVerifyPaymentReference(
+  referenceId?: string | null
+): UseQueryResult<PaymentVerifyResponse, Error> {
+  return useQuery({
+    queryKey: ["payment-verify", referenceId],
+    queryFn: async () => {
+      const res = await apiRequest(
+        `/api/payment/verify?reference_id=${encodeURIComponent(referenceId!)}`
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || data?.error || "Verification failed");
+      return data as PaymentVerifyResponse;
+    },
+    enabled: !!referenceId,
+    retry: false,
+    staleTime: 0,
   });
 }
 
